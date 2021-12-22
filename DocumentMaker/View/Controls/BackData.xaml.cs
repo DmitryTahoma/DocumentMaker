@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DocumentMaker.Controller;
+using DocumentMaker.Model;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,14 +15,24 @@ namespace DocumentMaker.View.Controls
     {
         public static readonly DependencyProperty IsRegionsProperty;
         public static readonly DependencyProperty BackDataIdProperty;
+        public static readonly DependencyProperty BackNumberTextProperty;
+        public static readonly DependencyProperty BackNameProperty;
+        public static readonly DependencyProperty CountRegionsTextProperty;
+        public static readonly DependencyProperty IsReworkProperty;
         public static readonly DependencyProperty TimeTextProperty;
 
         static BackData()
         {
             IsRegionsProperty = DependencyProperty.Register("IsRegions", typeof(bool), typeof(BackData));
             BackDataIdProperty = DependencyProperty.Register("BackDataId", typeof(uint), typeof(BackData));
+            BackNumberTextProperty = DependencyProperty.Register("BackNumberText", typeof(string), typeof(BackData));
+            BackNameProperty = DependencyProperty.Register("BackName", typeof(string), typeof(BackData));
+            CountRegionsTextProperty = DependencyProperty.Register("CountRegionsText", typeof(string), typeof(BackData));
+            IsReworkProperty = DependencyProperty.Register("IsRework", typeof(bool), typeof(BackData));
             TimeTextProperty = DependencyProperty.Register("TimeText", typeof(string), typeof(BackData));
         }
+
+        private BackDataController controller;
 
         private event Action onDeletion;
         private event Action onChangedTime;
@@ -29,31 +41,91 @@ namespace DocumentMaker.View.Controls
         {
             InitializeComponent();
             DataContext = this;
+
+            controller = new BackDataController();
         }
 
         public uint BackDataId 
         {
             get => (uint)GetValue(BackDataIdProperty);
-            set => SetValue(BackDataIdProperty, value);
+            set 
+            {
+                SetValue(BackDataIdProperty, value);
+                controller.Id = value;
+            }
+        }
+
+        public string BackNumberText
+        {
+            get => (string)GetValue(BackNumberTextProperty);
+            set
+            {
+                SetValue(BackNumberTextProperty, value);
+                controller.BackNumberText = value;
+            }
+        }
+
+        public string BackName
+        {
+            get => (string)GetValue(BackNameProperty);
+            set
+            {
+                SetValue(BackNameProperty, value);
+                controller.BackName = value;
+            }
+        }
+
+        public string CountRegionsText
+        {
+            get => (string)GetValue(CountRegionsTextProperty);
+            set
+            {
+                SetValue(CountRegionsTextProperty, value);
+                controller.BackCountRegionsText = value;
+            }
         }
 
         public bool IsRegions
         {
             get => (bool)GetValue(IsRegionsProperty);
-            set => SetValue(IsRegionsProperty, value);
+            set 
+            {
+                if(!value)
+                {
+                    CountRegionsText = "";
+                }
+                SetValue(IsRegionsProperty, value); 
+            }
+        }
+
+        public bool IsRework
+        {
+            get => (bool)GetValue(IsReworkProperty);
+            set 
+            {
+                SetValue(IsReworkProperty, value);
+                controller.IsRework = value;
+            }
         }
 
         public string TimeText
         {
             get => (string)GetValue(TimeTextProperty);
-            set => SetValue(TimeTextProperty, value);
+            set
+            {
+                SetValue(TimeTextProperty, value);
+                controller.SpentTimeText = value;
+            }
         }
+
+        public BackDataController Controller { get => controller; }
 
         private void TypeChanged(object sender, SelectionChangedEventArgs e)
         {
             if (sender is ComboBox comboBox)
             {
-                IsRegions = comboBox.SelectedIndex == 1 || comboBox.SelectedIndex == 5;
+                controller.Type = (BackType)comboBox.SelectedIndex;
+                IsRegions = controller.Type == BackType.Regions || controller.Type == BackType.HogRegions;
             }
         }
 
@@ -103,5 +175,6 @@ namespace DocumentMaker.View.Controls
         {
             onChangedTime += action;
         }
+
     }
 }

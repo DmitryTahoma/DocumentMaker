@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace DocumentMaker.View.Controls
 {
@@ -7,6 +8,13 @@ namespace DocumentMaker.View.Controls
     /// </summary>
     public partial class InputWithText : UserControl
     {
+        public static readonly DependencyProperty InputTextProperty;
+
+        static InputWithText()
+        {
+            InputTextProperty = DependencyProperty.Register("InputText", typeof(string), typeof(InputWithText));
+        }
+
         public InputWithText()
         {
             InitializeComponent();
@@ -15,6 +23,10 @@ namespace DocumentMaker.View.Controls
 
         public string TextInfo { get; set; }
 
-        public string InputText { get; set; }
+        public string InputText
+        {
+            get => (string)GetValue(InputTextProperty);
+            set => SetValue(InputTextProperty, value);
+        }
     }
 }

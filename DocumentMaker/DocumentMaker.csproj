@@ -79,6 +79,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controller\BackDataController.cs" />
+    <Compile Include="Controller\MainWindowController.cs" />
+    <Compile Include="Model\BackType.cs" />
     <Compile Include="View\Controls\BackData.xaml.cs">
       <DependentUpon>BackData.xaml</DependentUpon>
     </Compile>
@@ -122,5 +125,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

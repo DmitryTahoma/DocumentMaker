@@ -35,7 +35,7 @@
 
                 <StackPanel x:Name="BacksData" Orientation="Vertical" />
 
-                <uc:BackDataFooter Data="{Binding ElementName=BacksData}" />
+                <uc:BackDataFooter x:Name="DataFooter" Data="{Binding ElementName=BacksData}" />
             </StackPanel>
 
             <Grid Grid.Row="2" Grid.ColumnSpan="3">

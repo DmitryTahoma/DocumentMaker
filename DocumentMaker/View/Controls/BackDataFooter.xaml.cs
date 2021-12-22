@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace DocumentMaker.View.Controls
@@ -16,6 +17,9 @@ namespace DocumentMaker.View.Controls
             DataProperty = DependencyProperty.Register("Data", typeof(StackPanel), typeof(BackDataFooter));
             AllTimeProperty = DependencyProperty.Register("AllTime", typeof(string), typeof(BackDataFooter));
         }
+
+        private event ActionWithBackData onAdded;
+        private event ActionWithBackData onRemoved;
 
         public BackDataFooter()
         {
@@ -47,6 +51,8 @@ namespace DocumentMaker.View.Controls
                 });
                 backData.SubscribeChangedTime(OnChangedSomeTime);
                 Data.Children.Add(backData);
+
+                onAdded?.Invoke(backData);
             }
         }
 
@@ -67,6 +73,7 @@ namespace DocumentMaker.View.Controls
                 }
             }
 
+            onRemoved?.Invoke(sender);
             OnChangedSomeTime();
         }
 
@@ -89,6 +96,16 @@ namespace DocumentMaker.View.Controls
             }
 
             AllTime = time.ToString();
+        }
+
+        public void SubscribeAddition(ActionWithBackData action)
+        {
+            onAdded += action;
+        }
+
+        public void SubscribeRemoving(ActionWithBackData action)
+        {
+            onRemoved += action;
         }
     }
 }
