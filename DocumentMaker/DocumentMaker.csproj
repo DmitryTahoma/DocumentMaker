@@ -55,7 +55,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
+    <Page Include="View\Controls\BackData.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Controls\BackDataFooter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Controls\BackDataHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Controls\InputWithText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -63,7 +79,19 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="View\Controls\BackData.xaml.cs">
+      <DependentUpon>BackData.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Controls\BackDataFooter.xaml.cs">
+      <DependentUpon>BackDataFooter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Controls\BackDataHeader.xaml.cs">
+      <DependentUpon>BackDataHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Controls\InputWithText.xaml.cs">
+      <DependentUpon>InputWithText.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>

@@ -1,0 +1,71 @@
+﻿<Window
+    x:Class="DocumentMaker.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:DocumentMaker.View.Controls"
+    Title="MainWindow"
+    Width="800"
+    Height="450"
+    mc:Ignorable="d">
+    <ScrollViewer>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <uc:InputWithText Grid.Column="0" TextInfo="Технічне завдання від:" />
+            <uc:InputWithText Grid.Column="1" TextInfo="Акт від:" />
+            <uc:InputWithText Grid.Column="2" TextInfo="Номер додатку:" />
+
+            <StackPanel
+                Grid.Row="1"
+                Grid.ColumnSpan="3"
+                Orientation="Vertical">
+                <uc:BackDataHeader />
+
+                <StackPanel x:Name="BacksData" Orientation="Vertical" />
+
+                <uc:BackDataFooter Data="{Binding ElementName=BacksData}" />
+            </StackPanel>
+
+            <Grid Grid.Row="2" Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+                    <uc:InputWithText TextInfo="Повне ім’я:" />
+                    <uc:InputWithText TextInfo="ІН:" />
+                    <uc:InputWithText TextInfo="Адреса проживання:" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Vertical">
+                    <uc:InputWithText TextInfo="р/р:" />
+                    <uc:InputWithText TextInfo="Банк:" />
+                    <uc:InputWithText TextInfo="МФО:" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Vertical">
+                    <uc:InputWithText TextInfo="Номер договору:" />
+                    <uc:InputWithText TextInfo="Дата складання договору:" />
+                    <Button
+                        Margin="10,38,10,10"
+                        Content="Зберегти"
+                        FontSize="15" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</Window>
