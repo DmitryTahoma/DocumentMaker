@@ -25,11 +25,11 @@ namespace DocumentMaker.View.Controls
         {
             IsRegionsProperty = DependencyProperty.Register("IsRegions", typeof(bool), typeof(BackData));
             BackDataIdProperty = DependencyProperty.Register("BackDataId", typeof(uint), typeof(BackData));
-            BackNumberTextProperty = DependencyProperty.Register("BackNumberText", typeof(string), typeof(BackData));
-            BackNameProperty = DependencyProperty.Register("BackName", typeof(string), typeof(BackData));
-            CountRegionsTextProperty = DependencyProperty.Register("CountRegionsText", typeof(string), typeof(BackData));
-            IsReworkProperty = DependencyProperty.Register("IsRework", typeof(bool), typeof(BackData));
-            TimeTextProperty = DependencyProperty.Register("TimeText", typeof(string), typeof(BackData));
+            BackNumberTextProperty = DependencyProperty.Register("BackNumberText", typeof(string), typeof(BackDataController));
+            BackNameProperty = DependencyProperty.Register("BackName", typeof(string), typeof(BackDataController));
+            CountRegionsTextProperty = DependencyProperty.Register("CountRegionsText", typeof(string), typeof(BackDataController));
+            IsReworkProperty = DependencyProperty.Register("IsRework", typeof(bool), typeof(BackDataController));
+            TimeTextProperty = DependencyProperty.Register("TimeText", typeof(string), typeof(BackDataController));
         }
 
         private BackDataController controller;
@@ -45,10 +45,10 @@ namespace DocumentMaker.View.Controls
             controller = new BackDataController();
         }
 
-        public uint BackDataId 
+        public uint BackDataId
         {
             get => (uint)GetValue(BackDataIdProperty);
-            set 
+            set
             {
                 SetValue(BackDataIdProperty, value);
                 controller.Id = value;
@@ -88,20 +88,20 @@ namespace DocumentMaker.View.Controls
         public bool IsRegions
         {
             get => (bool)GetValue(IsRegionsProperty);
-            set 
+            set
             {
-                if(!value)
+                if (!value)
                 {
                     CountRegionsText = "";
                 }
-                SetValue(IsRegionsProperty, value); 
+                SetValue(IsRegionsProperty, value);
             }
         }
 
         public bool IsRework
         {
             get => (bool)GetValue(IsReworkProperty);
-            set 
+            set
             {
                 SetValue(IsReworkProperty, value);
                 controller.IsRework = value;
@@ -122,7 +122,7 @@ namespace DocumentMaker.View.Controls
 
         private void TypeChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (sender is ComboBox comboBox)
+            if (controller != null && sender is ComboBox comboBox)
             {
                 controller.Type = (BackType)comboBox.SelectedIndex;
                 IsRegions = controller.Type == BackType.Regions || controller.Type == BackType.HogRegions;

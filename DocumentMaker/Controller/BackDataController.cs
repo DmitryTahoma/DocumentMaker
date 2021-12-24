@@ -18,5 +18,10 @@ namespace DocumentMaker.Controller
         public string BackCountRegionsText { get => model.BackCountRegionsText; set => model.BackCountRegionsText = value; }
         public bool IsRework { get => model.IsRework; set => model.IsRework = value; }
         public string SpentTimeText { get => model.SpentTimeText; set => model.SpentTimeText = value; }
+
+        public BackDataModel GetModel()
+        {
+            return model;
+        }
     }
 }

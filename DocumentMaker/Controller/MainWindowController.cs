@@ -1,15 +1,20 @@
 ﻿using DocumentMaker.Model;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 namespace DocumentMaker.Controller
 {
     public class MainWindowController
     {
+        private const string saveFile = "session.xml";
+
         private DocumentMakerModel model;
 
         public MainWindowController()
         {
             model = new DocumentMakerModel();
+            BackDataControllers = new List<BackDataController>();
         }
 
         public string TechnicalTaskDateText { get => model.TechnicalTaskDateText; set => model.TechnicalTaskDateText = value; }
@@ -24,5 +29,18 @@ namespace DocumentMaker.Controller
         public string ContractNumberText { get => model.ContractNumberText; set => model.ContractNumberText = value; }
         public string ContractDateText { get => model.ContractDateText; set => model.ContractDateText = value; }
         public List<BackDataController> BackDataControllers { get; set; }
+
+        public void Save()
+        {
+            string fullpath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), saveFile);
+
+            List<BackDataModel> backDataModels = new List<BackDataModel>();
+            foreach(BackDataController controller in BackDataControllers)
+            {
+                backDataModels.Add(controller.GetModel());
+            }
+
+            model.Save(fullpath, backDataModels);
+        }
     }
 }

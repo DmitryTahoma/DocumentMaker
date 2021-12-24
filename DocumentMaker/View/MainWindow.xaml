@@ -5,9 +5,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:DocumentMaker.View.Controls"
+    x:Name="WindowContext"
     Title="MainWindow"
     Width="800"
     Height="450"
+    Closing="WindowClosing"
     mc:Ignorable="d">
     <ScrollViewer>
         <Grid>
@@ -23,9 +25,18 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <uc:InputWithText Grid.Column="0" TextInfo="Технічне завдання від:" />
-            <uc:InputWithText Grid.Column="1" TextInfo="Акт від:" />
-            <uc:InputWithText Grid.Column="2" TextInfo="Номер додатку:" />
+            <uc:InputWithText
+                Grid.Column="0"
+                InputText="{Binding ElementName=WindowContext, Path=TechnicalTaskDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                TextInfo="Технічне завдання від:" />
+            <uc:InputWithText
+                Grid.Column="1"
+                InputText="{Binding ElementName=WindowContext, Path=ActDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                TextInfo="Акт від:" />
+            <uc:InputWithText
+                Grid.Column="2"
+                InputText="{Binding ElementName=WindowContext, Path=AdditionNumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                TextInfo="Номер додатку:" />
 
             <StackPanel
                 Grid.Row="1"
@@ -46,20 +57,20 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" Orientation="Vertical">
-                    <uc:InputWithText TextInfo="Повне ім’я:" />
-                    <uc:InputWithText TextInfo="ІН:" />
-                    <uc:InputWithText TextInfo="Адреса проживання:" />
+                    <uc:InputWithText InputText="{Binding ElementName=WindowContext, Path=FullHumanName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextInfo="Повне ім'я:" />
+                    <uc:InputWithText InputText="{Binding ElementName=WindowContext, Path=HumanIdText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextInfo="ІН:" />
+                    <uc:InputWithText InputText="{Binding ElementName=WindowContext, Path=AddressText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextInfo="Адреса проживання:" />
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Vertical">
-                    <uc:InputWithText TextInfo="р/р:" />
-                    <uc:InputWithText TextInfo="Банк:" />
-                    <uc:InputWithText TextInfo="МФО:" />
+                    <uc:InputWithText InputText="{Binding ElementName=WindowContext, Path=PaymentAccountText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextInfo="р/р:" />
+                    <uc:InputWithText InputText="{Binding ElementName=WindowContext, Path=BankName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextInfo="Банк:" />
+                    <uc:InputWithText InputText="{Binding ElementName=WindowContext, Path=MfoText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextInfo="МФО:" />
                 </StackPanel>
 
                 <StackPanel Grid.Column="2" Orientation="Vertical">
-                    <uc:InputWithText TextInfo="Номер договору:" />
-                    <uc:InputWithText TextInfo="Дата складання договору:" />
+                    <uc:InputWithText InputText="{Binding ElementName=WindowContext, Path=ContractNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextInfo="Номер договору:" />
+                    <uc:InputWithText InputText="{Binding ElementName=WindowContext, Path=ContractDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextInfo="Дата складання договору:" />
                     <Button
                         Margin="10,38,10,10"
                         Content="Зберегти"

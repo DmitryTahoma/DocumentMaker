@@ -1,6 +1,6 @@
 ﻿namespace DocumentMaker.Model
 {
-    class BackDataModel
+    public class BackDataModel
     {
         public uint Id { get; set; }
         public BackType Type { get; set; }

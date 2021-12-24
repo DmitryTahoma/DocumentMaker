@@ -65,7 +65,7 @@ namespace DocumentMaker
             }
         }
 
-        public string ActDatText
+        public string ActDateText
         {
             get => (string)GetValue(ActDateTextProperty);
             set
@@ -163,6 +163,11 @@ namespace DocumentMaker
                 SetValue(ContractDateTextProperty, value);
                 controller.ContractDateText = value;
             }
+        }
+
+        private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            controller.Save();
         }
     }
 }
