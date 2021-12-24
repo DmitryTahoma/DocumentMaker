@@ -81,7 +81,9 @@
     </Compile>
     <Compile Include="Controller\BackDataController.cs" />
     <Compile Include="Controller\MainWindowController.cs" />
+    <Compile Include="Model\BackDataModel.cs" />
     <Compile Include="Model\BackType.cs" />
+    <Compile Include="Model\DocumentMakerModel.cs" />
     <Compile Include="View\Controls\BackData.xaml.cs">
       <DependentUpon>BackData.xaml</DependentUpon>
     </Compile>
