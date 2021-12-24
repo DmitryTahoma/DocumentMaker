@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using DocumentMaker.Controller;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace DocumentMaker.View.Controls
@@ -39,32 +40,46 @@ namespace DocumentMaker.View.Controls
             set => SetValue(AllTimeProperty, value);
         }
 
+        public void SubscribeAddition(ActionWithBackData action)
+        {
+            onAdded += action;
+        }
+
+        public void SubscribeRemoving(ActionWithBackData action)
+        {
+            onRemoved += action;
+        }
+
+        public void AddLoadedBackData(BackDataController controller)
+        {
+            if (Data != null)
+            {
+                BackData backData = new BackData() { Controller = controller };
+                AddBackData(backData);
+                backData.SetDataFromController();
+            }
+        }
+
         private void AddBtnClick(object sender, RoutedEventArgs e)
         {
             if (Data != null)
             {
                 BackData backData = new BackData { BackDataId = (uint)(Data.Children.Count + 1) };
-                backData.SubscribeDeletion(() =>
-                {
-                    OnRemoveBackData(backData);
-                });
-                backData.SubscribeChangedTime(OnChangedSomeTime);
-                Data.Children.Add(backData);
-
+                AddBackData(backData);
                 onAdded?.Invoke(backData);
             }
         }
 
         private void OnRemoveBackData(BackData sender)
         {
-            if(Data != null)
+            if (Data != null)
             {
                 Data.Children.Remove(sender);
 
                 uint id = 1;
-                foreach(FrameworkElement elem in Data.Children)
+                foreach (FrameworkElement elem in Data.Children)
                 {
-                    if(elem is BackData backData)
+                    if (elem is BackData backData)
                     {
                         backData.BackDataId = id;
                         id++;
@@ -82,11 +97,11 @@ namespace DocumentMaker.View.Controls
 
             if (Data != null)
             {
-                foreach(FrameworkElement elem in Data.Children)
+                foreach (FrameworkElement elem in Data.Children)
                 {
                     if (elem is BackData backData)
                     {
-                        if(uint.TryParse(backData.TimeText, out uint backTime))
+                        if (uint.TryParse(backData.TimeText, out uint backTime))
                         {
                             time += backTime;
                         }
@@ -97,14 +112,14 @@ namespace DocumentMaker.View.Controls
             AllTime = time.ToString();
         }
 
-        public void SubscribeAddition(ActionWithBackData action)
+        private void AddBackData(BackData backData)
         {
-            onAdded += action;
-        }
-
-        public void SubscribeRemoving(ActionWithBackData action)
-        {
-            onRemoved += action;
+            backData.SubscribeDeletion(() =>
+            {
+                OnRemoveBackData(backData);
+            });
+            backData.SubscribeChangedTime(OnChangedSomeTime);
+            Data.Children.Add(backData);
         }
     }
 }

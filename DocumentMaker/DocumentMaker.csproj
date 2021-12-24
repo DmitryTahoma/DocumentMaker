@@ -84,6 +84,8 @@
     <Compile Include="Model\BackDataModel.cs" />
     <Compile Include="Model\BackType.cs" />
     <Compile Include="Model\DocumentMakerModel.cs" />
+    <Compile Include="Model\Session\XmlConfNames.cs" />
+    <Compile Include="Model\Session\XmlLoader.cs" />
     <Compile Include="Model\Session\XmlSaver.cs" />
     <Compile Include="View\Controls\BackData.xaml.cs">
       <DependentUpon>BackData.xaml</DependentUpon>

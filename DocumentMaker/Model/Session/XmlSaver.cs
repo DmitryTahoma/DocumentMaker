@@ -5,11 +5,6 @@ namespace DocumentMaker.Model.Session
 {
     class XmlSaver
     {
-        private const string rootNodeName = "Session";
-        private const string backNodeName = "BackData";
-        private const string nodeAttributeName = "Value";
-        private const string nodeAttributeDescriptionName = "Description";
-
         private XmlDocument xml;
         private XmlNode rootNode;
         private XmlNode backNode;
@@ -17,7 +12,7 @@ namespace DocumentMaker.Model.Session
         public XmlSaver()
         {
             xml = new XmlDocument();
-            rootNode = xml.CreateElement(rootNodeName);
+            rootNode = xml.CreateElement(XmlConfNames.RootNodeName);
             xml.AppendChild(rootNode);
             backNode = null;
         }
@@ -29,7 +24,7 @@ namespace DocumentMaker.Model.Session
 
         public void CreateBackNode()
         {
-            backNode = xml.CreateElement(backNodeName);
+            backNode = xml.CreateElement(XmlConfNames.BackNodeName);
         }
 
         public void AppendTagWithValueToBack(string name, string value, string description = null)
@@ -66,7 +61,7 @@ namespace DocumentMaker.Model.Session
                 object value = prop.GetValue(obj);
                 if (value != null)
                 {
-                    if(value.GetType().IsEnum)
+                    if (value.GetType().IsEnum)
                     {
                         AppendTagWithValue(root, prop.Name, ((int)value).ToString(), value.ToString());
                     }
@@ -82,13 +77,13 @@ namespace DocumentMaker.Model.Session
         {
             XmlNode node = xml.CreateElement(name);
 
-            XmlAttribute attribute = xml.CreateAttribute(nodeAttributeName);
+            XmlAttribute attribute = xml.CreateAttribute(XmlConfNames.NodeAttributeName);
             attribute.Value = value;
             node.Attributes.Append(attribute);
 
             if (description != null)
             {
-                attribute = xml.CreateAttribute(nodeAttributeDescriptionName);
+                attribute = xml.CreateAttribute(XmlConfNames.NodeAttributeDescriptionName);
                 attribute.Value = description;
                 node.Attributes.Append(attribute);
             }

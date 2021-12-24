@@ -22,7 +22,7 @@ namespace DocumentMaker.Model
             XmlSaver saver = new XmlSaver();
             saver.AppendAllProperties(this);
 
-            foreach(BackDataModel backDataModel in backModels)
+            foreach (BackDataModel backDataModel in backModels)
             {
                 saver.CreateBackNode();
                 saver.AppendAllBackProperties(backDataModel);
@@ -30,6 +30,18 @@ namespace DocumentMaker.Model
             }
 
             saver.Save(path);
+        }
+
+        public void Load(string path, out List<BackDataModel> backModels)
+        {
+            backModels = new List<BackDataModel>();
+
+            XmlLoader loader = new XmlLoader();
+            if (loader.TryLoad(path))
+            {
+                loader.SetLoadedProperties(this);
+                loader.SetLoadedBacksProperties(backModels);
+            }
         }
     }
 }

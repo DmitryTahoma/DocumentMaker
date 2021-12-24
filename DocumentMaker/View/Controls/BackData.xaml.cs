@@ -118,7 +118,38 @@ namespace DocumentMaker.View.Controls
             }
         }
 
-        public BackDataController Controller { get => controller; }
+        public BackDataController Controller
+        {
+            get => controller;
+            set
+            {
+                if (value != null)
+                {
+                    controller = value;
+                }
+            }
+        }
+
+        public void SubscribeDeletion(Action action)
+        {
+            onDeletion += action;
+        }
+
+        public void SubscribeChangedTime(Action action)
+        {
+            onChangedTime += action;
+        }
+
+        public void SetDataFromController()
+        {
+            BackDataIdLabel.Text = controller.Id.ToString();
+            BackTypeComboBox.SelectedIndex = (int)controller.Type;
+            BackNumberTextInput.Text = controller.BackNumberText;
+            BackNameInput.Text = controller.BackName;
+            CountRegionsTextInput.Text = controller.BackCountRegionsText;
+            IsReworkCheckBox.IsChecked = controller.IsRework;
+            TimeTextInput.Text = controller.SpentTimeText;
+        }
 
         private void TypeChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -165,16 +196,5 @@ namespace DocumentMaker.View.Controls
                 onChangedTime?.Invoke();
             }
         }
-
-        public void SubscribeDeletion(Action action)
-        {
-            onDeletion += action;
-        }
-
-        public void SubscribeChangedTime(Action action)
-        {
-            onChangedTime += action;
-        }
-
     }
 }

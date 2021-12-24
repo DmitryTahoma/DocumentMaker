@@ -42,5 +42,16 @@ namespace DocumentMaker.Controller
 
             model.Save(fullpath, backDataModels);
         }
+
+        public void Load()
+        {
+            string fullpath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), saveFile);
+
+            model.Load(fullpath, out List<BackDataModel> backModels);
+            foreach(BackDataModel model in backModels)
+            {
+                BackDataControllers.Add(new BackDataController(model));
+            }
+        }
     }
 }

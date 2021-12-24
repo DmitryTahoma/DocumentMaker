@@ -169,5 +169,30 @@ namespace DocumentMaker
         {
             controller.Save();
         }
+
+        private void WindowLoaded(object sender, RoutedEventArgs e)
+        {
+            if (controller != null)
+            {
+                controller.Load();
+
+                TechnicalTaskDateTextInput.InputText = controller.TechnicalTaskDateText;
+                ActDateTextInput.InputText = controller.ActDateText;
+                AdditionNumTextInput.InputText = controller.AdditionNumText;
+                FullHumanNameInput.InputText = controller.FullHumanName;
+                HumanIdTextInput.InputText = controller.HumanIdText;
+                AddressTextInput.InputText = controller.AddressText;
+                PaymentAccountTextInput.InputText = controller.PaymentAccountText;
+                BankNameInput.InputText = controller.BankName;
+                MfoTextInput.InputText = controller.MfoText;
+                ContractNumberTextInput.InputText = controller.ContractNumberText;
+                ContractDateTextInput.InputText = controller.ContractDateText;
+
+                foreach (BackDataController backDataController in controller.BackDataControllers)
+                {
+                    DataFooter.AddLoadedBackData(backDataController);
+                }
+            }
+        }
     }
 }

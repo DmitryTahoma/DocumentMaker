@@ -11,6 +11,18 @@ namespace DocumentMaker.Controller
             model = new BackDataModel();
         }
 
+        public BackDataController(BackDataModel _model)
+        {
+            if(_model != null)
+            {
+                model = _model;
+            }
+            else
+            {
+                model = new BackDataModel();
+            }
+        }
+
         public uint Id { get => model.Id; set => model.Id = value; }
         public BackType Type { get => model.Type; set => model.Type = value; }
         public string BackNumberText { get => model.BackNumberText; set => model.BackNumberText = value; }
