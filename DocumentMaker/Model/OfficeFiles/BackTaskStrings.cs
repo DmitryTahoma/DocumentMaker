@@ -2,14 +2,14 @@
 {
     public static class BackTaskStrings
     {
-        public static string Generate(BackType backType, string backNumberStr, string backName, string backRegsStr, bool isRework)
+        public static string Generate(BackType backType, string backNumberStr, string backName, string backRegsStr, string gameName, bool isRework)
         {
             string str = GetBaseString(backType, isRework);
 
             str = str.Replace("[BackNumber]", backNumberStr);
             str = str.Replace("[BackName]", backName);
             str = str.Replace("[RegionsText]", backRegsStr);
-            //str = str.Replace("[GameName]", gameName);
+            str = str.Replace("[GameName]", gameName);
 
             return str;
         }

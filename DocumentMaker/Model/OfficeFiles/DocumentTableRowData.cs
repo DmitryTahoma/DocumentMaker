@@ -7,6 +7,7 @@
         private readonly string backNumberText;
         private readonly string backName;
         private readonly string backCountRegionsText;
+        private readonly string gameName;
         private readonly bool isRework;
         private readonly string spentTimeText;
 
@@ -17,6 +18,7 @@
             backNumberText = model.BackNumberText;
             backName = model.BackName;
             backCountRegionsText = model.BackCountRegionsText;
+            gameName = model.GameName;
             isRework = model.IsRework;
             spentTimeText = model.SpentTimeText;
         }
@@ -38,7 +40,7 @@
                 }
             }
 
-            return BackTaskStrings.Generate(type, backNumberText, backName, regs, isRework);
+            return BackTaskStrings.Generate(type, backNumberText, backName, regs, gameName, isRework);
         }
     }
 }

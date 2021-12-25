@@ -18,6 +18,7 @@ namespace DocumentMaker.View.Controls
         public static readonly DependencyProperty BackNumberTextProperty;
         public static readonly DependencyProperty BackNameProperty;
         public static readonly DependencyProperty CountRegionsTextProperty;
+        public static readonly DependencyProperty GameNameProperty;
         public static readonly DependencyProperty IsReworkProperty;
         public static readonly DependencyProperty TimeTextProperty;
 
@@ -28,6 +29,7 @@ namespace DocumentMaker.View.Controls
             BackNumberTextProperty = DependencyProperty.Register("BackNumberText", typeof(string), typeof(BackDataController));
             BackNameProperty = DependencyProperty.Register("BackName", typeof(string), typeof(BackDataController));
             CountRegionsTextProperty = DependencyProperty.Register("CountRegionsText", typeof(string), typeof(BackDataController));
+            GameNameProperty = DependencyProperty.Register("GameName", typeof(string), typeof(BackDataController));
             IsReworkProperty = DependencyProperty.Register("IsRework", typeof(bool), typeof(BackDataController));
             TimeTextProperty = DependencyProperty.Register("TimeText", typeof(string), typeof(BackDataController));
         }
@@ -82,6 +84,16 @@ namespace DocumentMaker.View.Controls
             {
                 SetValue(CountRegionsTextProperty, value);
                 controller.BackCountRegionsText = value;
+            }
+        }
+
+        public string GameName
+        {
+            get => (string)GetValue(GameNameProperty);
+            set
+            {
+                SetValue(GameNameProperty, value);
+                controller.GameName = value;
             }
         }
 
@@ -147,6 +159,7 @@ namespace DocumentMaker.View.Controls
             BackNumberTextInput.Text = controller.BackNumberText;
             BackNameInput.Text = controller.BackName;
             CountRegionsTextInput.Text = controller.BackCountRegionsText;
+            GameNameInput.Text = controller.GameName;
             IsReworkCheckBox.IsChecked = controller.IsRework;
             TimeTextInput.Text = controller.SpentTimeText;
         }

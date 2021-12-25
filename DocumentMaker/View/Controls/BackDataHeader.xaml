@@ -16,6 +16,7 @@
             <ColumnDefinition />
             <ColumnDefinition />
             <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
         <TextBlock
@@ -46,10 +47,15 @@
         <TextBlock
             Grid.Column="5"
             FontSize="15"
-            Text="Дообробка"
+            Text="Назва гри"
             TextAlignment="Center" />
         <TextBlock
             Grid.Column="6"
+            FontSize="15"
+            Text="Дообробка"
+            TextAlignment="Center" />
+        <TextBlock
+            Grid.Column="7"
             FontSize="15"
             Text="Затр. час"
             TextAlignment="Center" />
