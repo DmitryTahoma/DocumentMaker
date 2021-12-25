@@ -1,5 +1,6 @@
 ﻿using DocumentMaker.Model.OfficeFiles;
 using DocumentMaker.Model.Session;
+using DocumentMaker.Resources;
 using System.Collections.Generic;
 
 namespace DocumentMaker.Model
@@ -47,11 +48,17 @@ namespace DocumentMaker.Model
 
         public void Export(string path, IEnumerable<BackDataModel> backModels)
         {
-            OfficeExporter exporter = new OfficeExporter();
-            exporter.ExportWordTemplate("DocumentMakerTemplate01.docx");
-            exporter.FillGeneralData(new DocumentGeneralData(this));
-            exporter.FillTableData(new DocumentTableData(backModels));
-            exporter.SaveTemplate(path, "DocumentMakerTemplate01.docx");
+            DocumentGeneralData generalData = new DocumentGeneralData(this);
+            DocumentTableData tableData = new DocumentTableData(backModels);
+
+            foreach (ResourceInfo resource in DocumentResourceManager.Items)
+            {
+                OfficeExporter exporter = new OfficeExporter();
+                exporter.ExportWordTemplate(resource.ProjectName);
+                exporter.FillGeneralData(generalData);
+                exporter.FillTableData(tableData);
+                exporter.SaveTemplate(generalData, path, resource.ProjectName, resource.TemplateName);
+            }
         }
     }
 }

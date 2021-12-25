@@ -80,12 +80,13 @@ namespace DocumentMaker.Model.OfficeFiles
             }
         }
 
-        public void SaveTemplate(string path, string name)
+        public void SaveTemplate(DocumentGeneralData data, string path, string projectName, string templateName)
         {
-            string nearFullname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), name);
+            string nearFullname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), projectName);
             SetXmlToWordFile(nearFullname);
+            FillPropertiesData(data, ref templateName);
 
-            File.Move(nearFullname, Path.Combine(path, name));
+            File.Move(nearFullname, Path.Combine(path, templateName));
         }
 
         private string GetXmlFromWordFile(string fullpath)

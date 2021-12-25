@@ -97,6 +97,8 @@
     <Compile Include="Model\Session\XmlConfNames.cs" />
     <Compile Include="Model\Session\XmlLoader.cs" />
     <Compile Include="Model\Session\XmlSaver.cs" />
+    <Compile Include="Resources\ResourceInfo.cs" />
+    <Compile Include="Resources\DocumentResourceManager.cs" />
     <Compile Include="Resources\ResourceUnloader.cs" />
     <Compile Include="View\Controls\BackData.xaml.cs">
       <DependentUpon>BackData.xaml</DependentUpon>
@@ -139,6 +141,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <EmbeddedResource Include="Resources\DocumentMakerTemplate01.docx" />
+    <EmbeddedResource Include="Resources\DocumentMakerTemplate02.docx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

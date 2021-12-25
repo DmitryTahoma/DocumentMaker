@@ -65,6 +65,12 @@ namespace DocumentMaker.Model.OfficeFiles
 
         public string HumanFullName { get; }
 
+        public string TTDateStr2 => DateTime.Parse(technicalTaskDateText).ToString("yyyy.MM.dd");
+
+        public string HumanSecondName => HumanFullName.Split(' ')[0];
+
+        public string ActDate2 => DateTime.Parse(ActDate).ToString("yyyy.MM.dd");
+
         private string Get2dNumber(string str)
         {
             while (str.Length < 2)
