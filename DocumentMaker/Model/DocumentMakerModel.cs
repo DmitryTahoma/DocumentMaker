@@ -50,6 +50,7 @@ namespace DocumentMaker.Model
             OfficeExporter exporter = new OfficeExporter();
             exporter.ExportWordTemplate("DocumentMakerTemplate01.docx");
             exporter.FillGeneralData(new DocumentGeneralData(this));
+            exporter.FillTableData(new DocumentTableData(backModels));
             exporter.SaveTemplate(path, "DocumentMakerTemplate01.docx");
         }
     }

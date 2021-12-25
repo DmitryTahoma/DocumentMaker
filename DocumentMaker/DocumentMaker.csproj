@@ -88,7 +88,10 @@
     <Compile Include="Model\BackDataModel.cs" />
     <Compile Include="Model\BackType.cs" />
     <Compile Include="Model\DocumentMakerModel.cs" />
+    <Compile Include="Model\OfficeFiles\BackTaskStrings.cs" />
     <Compile Include="Model\OfficeFiles\DocumentGeneralData.cs" />
+    <Compile Include="Model\OfficeFiles\DocumentTableData.cs" />
+    <Compile Include="Model\OfficeFiles\DocumentTableRowData.cs" />
     <Compile Include="Model\OfficeFiles\OfficeExporter.cs" />
     <Compile Include="Model\OfficeFiles\OfficeStrings.cs" />
     <Compile Include="Model\Session\XmlConfNames.cs" />

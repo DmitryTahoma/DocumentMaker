@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentMaker.Resources;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Xml;
@@ -47,13 +48,35 @@ namespace DocumentMaker.Model.OfficeFiles
         {
             if (!TemplateLoaded) throw new Exception("Template file didn't loaded!");
 
+            string str = xml.InnerXml;
+            FillPropertiesData(data, ref str);
+            xml.InnerXml = str;
+        }
+
+        public void FillTableData(DocumentTableData data)
+        {
+            if (!TemplateLoaded) throw new Exception("Template file didn't loaded!");
+
+            List<string> xmlRows = new List<string>();
+            foreach (DocumentTableRowData row in data)
+            {
+                string xmlTemplate = rowPartXml;
+                FillPropertiesData(row, ref xmlTemplate);
+                xmlRows.Add(xmlTemplate);
+            }
+
+            AddXmlRows(xmlRows);
+        }
+
+        public void FillPropertiesData(object data, ref string xmlStr)
+        {
             PropertyInfo[] properties = data.GetType().GetProperties();
             foreach (PropertyInfo property in properties)
             {
                 string replaceStr = '[' + property.Name + ']';
                 string value = (string)property.GetValue(data);
 
-                xml.InnerXml = xml.InnerXml.Replace(replaceStr, value);
+                xmlStr = xmlStr.Replace(replaceStr, value);
             }
         }
 
@@ -101,9 +124,20 @@ namespace DocumentMaker.Model.OfficeFiles
 
             XmlElement row = (XmlElement)rows[rows.Count - 1];
             rowPartXml = row.OuterXml;
-            table.InnerText = table.InnerText.Replace(rowPartXml, "");
+            table.InnerXml = table.InnerXml.Replace(rowPartXml, "");
 
             return true;
+        }
+
+        private void AddXmlRows(IEnumerable<string> xmlRows)
+        {
+            XmlNodeList tables = xml.DocumentElement.GetElementsByTagName(OfficeStrings.WordTableTagName);
+            XmlElement table = (XmlElement)tables[0];
+
+            foreach (string row in xmlRows)
+            {
+                table.InnerXml += row;
+            }
         }
     }
 }
