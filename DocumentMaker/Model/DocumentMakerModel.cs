@@ -1,4 +1,5 @@
-﻿using DocumentMaker.Model.Session;
+﻿using DocumentMaker.Model.OfficeFiles;
+using DocumentMaker.Model.Session;
 using System.Collections.Generic;
 
 namespace DocumentMaker.Model
@@ -42,6 +43,14 @@ namespace DocumentMaker.Model
                 loader.SetLoadedProperties(this);
                 loader.SetLoadedBacksProperties(backModels);
             }
+        }
+
+        public void Export(string path, IEnumerable<BackDataModel> backModels)
+        {
+            OfficeExporter exporter = new OfficeExporter();
+            exporter.ExportWordTemplate("DocumentMakerTemplate01.docx");
+            exporter.FillGeneralData(new DocumentGeneralData(this));
+            exporter.SaveTemplate(path, "DocumentMakerTemplate01.docx");
         }
     }
 }

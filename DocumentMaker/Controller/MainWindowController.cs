@@ -35,7 +35,7 @@ namespace DocumentMaker.Controller
             string fullpath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), saveFile);
 
             List<BackDataModel> backDataModels = new List<BackDataModel>();
-            foreach(BackDataController controller in BackDataControllers)
+            foreach (BackDataController controller in BackDataControllers)
             {
                 backDataModels.Add(controller.GetModel());
             }
@@ -48,10 +48,21 @@ namespace DocumentMaker.Controller
             string fullpath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), saveFile);
 
             model.Load(fullpath, out List<BackDataModel> backModels);
-            foreach(BackDataModel model in backModels)
+            foreach (BackDataModel model in backModels)
             {
                 BackDataControllers.Add(new BackDataController(model));
             }
+        }
+
+        public void Export(string path)
+        {
+            List<BackDataModel> backDataModels = new List<BackDataModel>();
+            foreach (BackDataController controller in BackDataControllers)
+            {
+                backDataModels.Add(controller.GetModel());
+            }
+
+            model.Export(path, backDataModels);
         }
     }
 }

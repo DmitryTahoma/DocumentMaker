@@ -101,6 +101,7 @@
                         TextInfo="Дата складання договору:" />
                     <Button
                         Margin="10,38,10,10"
+                        Click="ExportBtnClick"
                         Content="Зберегти"
                         FontSize="15" />
                 </StackPanel>
