@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:DocumentMaker.View.Controls"
     x:Name="WindowContext"
-    Title="MainWindow"
+    Title="DocumentMaker"
     Width="1000"
     Height="700"
     MinWidth="700"
