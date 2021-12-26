@@ -13,8 +13,21 @@ namespace DocumentMaker.Model.OfficeFiles
     {
         private XmlDocument xml;
         private string rowPartXml;
+        private List<KeyValuePair<string, string>> notMovedFiles;
 
         public OfficeExporter()
+        {
+            xml = new XmlDocument();
+            rowPartXml = "";
+            notMovedFiles = new List<KeyValuePair<string, string>>();
+
+            TemplateLoaded = false;
+        }
+
+        public bool TemplateLoaded { get; private set; }
+        public bool HasNoMovedFiles => notMovedFiles.Count > 0;
+
+        public void Clear()
         {
             xml = new XmlDocument();
             rowPartXml = "";
@@ -22,14 +35,17 @@ namespace DocumentMaker.Model.OfficeFiles
             TemplateLoaded = false;
         }
 
-        public bool TemplateLoaded { get; private set; }
-
         public void ExportWordTemplate(string name)
         {
             if (!TemplateLoaded)
             {
                 string nearPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 string nearFullname = Path.Combine(nearPath, name);
+                if (File.Exists(nearFullname))
+                {
+                    File.Delete(nearFullname);
+                }
+
                 ResourceUnloader.Unload(name, nearPath);
 
                 xml.LoadXml(GetXmlFromWordFile(nearFullname));
@@ -86,7 +102,49 @@ namespace DocumentMaker.Model.OfficeFiles
             SetXmlToWordFile(nearFullname);
             FillPropertiesData(data, ref templateName);
 
-            File.Move(nearFullname, Path.Combine(path, templateName));
+            string fullpath = Path.Combine(path, templateName);
+            if (File.Exists(fullpath))
+            {
+                notMovedFiles.Add(new KeyValuePair<string, string>(nearFullname, fullpath));
+            }
+            else
+            {
+                File.Move(nearFullname, fullpath);
+            }
+        }
+
+        public IEnumerable<KeyValuePair<string, string>> GetNoMovedFiles()
+        {
+            return notMovedFiles;
+        }
+
+        public void ReplaceCreatedFiles()
+        {
+            List<KeyValuePair<string, string>> files = new List<KeyValuePair<string, string>>(notMovedFiles);
+            notMovedFiles.Clear();
+
+            foreach (KeyValuePair<string, string> file in files)
+            {
+                try
+                {
+                    File.Delete(file.Value);
+                    File.Move(file.Key, file.Value);
+                }
+                catch
+                {
+                    notMovedFiles.Add(file);
+                }
+            }
+        }
+
+        public void RemoveTemplates()
+        {
+            foreach (KeyValuePair<string, string> file in notMovedFiles)
+            {
+                File.Delete(file.Key);
+            }
+
+            notMovedFiles.Clear();
         }
 
         private string GetXmlFromWordFile(string fullpath)

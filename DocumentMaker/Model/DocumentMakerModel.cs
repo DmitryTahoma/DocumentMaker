@@ -7,6 +7,13 @@ namespace DocumentMaker.Model
 {
     public class DocumentMakerModel
     {
+        private readonly OfficeExporter exporter;
+
+        public DocumentMakerModel()
+        {
+            exporter = new OfficeExporter();
+        }
+
         public string TechnicalTaskDateText { get; set; }
         public string ActDateText { get; set; }
         public string AdditionNumText { get; set; }
@@ -18,6 +25,7 @@ namespace DocumentMaker.Model
         public string MfoText { get; set; }
         public string ContractNumberText { get; set; }
         public string ContractDateText { get; set; }
+        public bool HasNoMovedFiles => exporter.HasNoMovedFiles;
 
         public void Save(string path, IEnumerable<BackDataModel> backModels)
         {
@@ -53,12 +61,27 @@ namespace DocumentMaker.Model
 
             foreach (ResourceInfo resource in DocumentResourceManager.Items)
             {
-                OfficeExporter exporter = new OfficeExporter();
+                exporter.Clear();
                 exporter.ExportWordTemplate(resource.ProjectName);
                 exporter.FillGeneralData(generalData);
                 exporter.FillTableData(tableData);
                 exporter.SaveTemplate(generalData, path, resource.ProjectName, resource.TemplateName);
             }
+        }
+
+        public IEnumerable<KeyValuePair<string, string>> GetInfoNoMovedFiles()
+        {
+            return exporter.GetNoMovedFiles();
+        }
+
+        public void ReplaceCreatedFiles()
+        {
+            exporter.ReplaceCreatedFiles();
+        }
+
+        public void RemoveTemplates()
+        {
+            exporter.RemoveTemplates();
         }
     }
 }

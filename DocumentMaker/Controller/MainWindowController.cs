@@ -32,6 +32,7 @@ namespace DocumentMaker.Controller
         public string ContractNumberText { get => model.ContractNumberText; set => model.ContractNumberText = value; }
         public string ContractDateText { get => model.ContractDateText; set => model.ContractDateText = value; }
         public List<BackDataController> BackDataControllers { get; set; }
+        public bool HasNoMovedFiles => model.HasNoMovedFiles;
 
         public void Save()
         {
@@ -112,6 +113,29 @@ namespace DocumentMaker.Controller
             }
 
             return false;
+        }
+
+        public string GetInfoNoMovedFiles()
+        {
+            IEnumerable<KeyValuePair<string, string>> files = model.GetInfoNoMovedFiles();
+            string res = "";
+
+            foreach (KeyValuePair<string, string> file in files)
+            {
+                res += file.Value + "\n";
+            }
+
+            return res;
+        }
+
+        public void ReplaceCreatedFiles()
+        {
+            model.ReplaceCreatedFiles();
+        }
+
+        public void RemoveTemplates()
+        {
+            model.RemoveTemplates();
         }
     }
 }

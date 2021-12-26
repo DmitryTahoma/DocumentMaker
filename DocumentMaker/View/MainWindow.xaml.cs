@@ -204,7 +204,43 @@ namespace DocumentMaker
                 FolderBrowserDialog dialog = new FolderBrowserDialog();
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
+                    bool isShowResult = true;
                     controller.Export(dialog.SelectedPath);
+
+                    if (controller.HasNoMovedFiles)
+                    {
+                        if (MessageBox.Show("Файли за заданними путями вже існують.\n\n" + controller.GetInfoNoMovedFiles() + "\nЗамінити?",
+                                            "DocumentMaker | Export",
+                                            MessageBoxButtons.YesNo,
+                                            MessageBoxIcon.Question)
+                                                == System.Windows.Forms.DialogResult.Yes)
+                        {
+                            controller.ReplaceCreatedFiles();
+
+                            if (controller.HasNoMovedFiles)
+                            {
+                                MessageBox.Show("Не вдалось перемістити наступні файли. Можливо вони відкриті в іншій програмі.\n\n" + controller.GetInfoNoMovedFiles(),
+                                                "DocumentMaker | Export",
+                                                MessageBoxButtons.OK,
+                                                MessageBoxIcon.Warning);
+
+                                controller.RemoveTemplates();
+                                isShowResult = false;
+                            }
+                        }
+                        else
+                        {
+                            controller.RemoveTemplates();
+                        }
+                    }
+
+                    if (isShowResult)
+                    {
+                        MessageBox.Show("Файли збережені.",
+                                        "DocumentMaker | Export",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information);
+                    }
                 }
             }
             else
