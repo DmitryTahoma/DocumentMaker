@@ -57,6 +57,7 @@
             Grid.Column="2"
             Margin="5"
             FontSize="15"
+            IsEnabled="{Binding ElementName=BackDataContext, Path=HasBackNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             Text="{Binding ElementName=BackDataContext, Path=BackNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBox
             x:Name="BackNameInput"

@@ -14,6 +14,7 @@ namespace DocumentMaker.View.Controls
     public partial class BackData : UserControl
     {
         public static readonly DependencyProperty IsRegionsProperty;
+        public static readonly DependencyProperty HasBackNumberProperty;
         public static readonly DependencyProperty BackDataIdProperty;
         public static readonly DependencyProperty BackNumberTextProperty;
         public static readonly DependencyProperty BackNameProperty;
@@ -25,6 +26,7 @@ namespace DocumentMaker.View.Controls
         static BackData()
         {
             IsRegionsProperty = DependencyProperty.Register("IsRegions", typeof(bool), typeof(BackData));
+            HasBackNumberProperty = DependencyProperty.Register("HasBackNumber", typeof(bool), typeof(BackData));
             BackDataIdProperty = DependencyProperty.Register("BackDataId", typeof(uint), typeof(BackData));
             BackNumberTextProperty = DependencyProperty.Register("BackNumberText", typeof(string), typeof(BackDataController));
             BackNameProperty = DependencyProperty.Register("BackName", typeof(string), typeof(BackDataController));
@@ -100,14 +102,13 @@ namespace DocumentMaker.View.Controls
         public bool IsRegions
         {
             get => (bool)GetValue(IsRegionsProperty);
-            set
-            {
-                if (!value)
-                {
-                    CountRegionsText = "";
-                }
-                SetValue(IsRegionsProperty, value);
-            }
+            set => SetValue(IsRegionsProperty, value);
+        }
+
+        public bool HasBackNumber
+        {
+            get => (bool)GetValue(HasBackNumberProperty);
+            set => SetValue(HasBackNumberProperty, value);
         }
 
         public bool IsRework
@@ -162,6 +163,8 @@ namespace DocumentMaker.View.Controls
             GameNameInput.Text = controller.GameName;
             IsReworkCheckBox.IsChecked = controller.IsRework;
             TimeTextInput.Text = controller.SpentTimeText;
+
+            UpdateInputStates();
         }
 
         private void TypeChanged(object sender, SelectionChangedEventArgs e)
@@ -169,7 +172,7 @@ namespace DocumentMaker.View.Controls
             if (controller != null && sender is ComboBox comboBox)
             {
                 controller.Type = (BackType)comboBox.SelectedIndex;
-                IsRegions = controller.Type == BackType.Regions || controller.Type == BackType.HogRegions;
+                UpdateInputStates();
             }
         }
 
@@ -207,6 +210,23 @@ namespace DocumentMaker.View.Controls
             if (sender is TextBox)
             {
                 onChangedTime?.Invoke();
+            }
+        }
+
+        private void UpdateInputStates()
+        {
+            IsRegions = controller.Type == BackType.Regions || controller.Type == BackType.HogRegions;
+            if (!IsRegions)
+            {
+                CountRegionsText = "";
+                CountRegionsTextInput.Text = controller.BackCountRegionsText;
+            }
+
+            HasBackNumber = controller.Type != BackType.Craft;
+            if (!HasBackNumber)
+            {
+                BackNumberText = "";
+                BackNumberTextInput.Text = controller.BackNumberText;
             }
         }
     }
