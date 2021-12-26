@@ -7,8 +7,10 @@
     xmlns:uc="clr-namespace:DocumentMaker.View.Controls"
     x:Name="WindowContext"
     Title="MainWindow"
-    Width="800"
-    Height="450"
+    Width="1000"
+    Height="700"
+    MinWidth="700"
+    MinHeight="300"
     Closing="WindowClosing"
     Loaded="WindowLoaded"
     mc:Ignorable="d">
@@ -29,16 +31,19 @@
             <uc:InputWithText
                 x:Name="TechnicalTaskDateTextInput"
                 Grid.Column="0"
+                InputBackground="AliceBlue"
                 InputText="{Binding ElementName=WindowContext, Path=TechnicalTaskDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 TextInfo="Технічне завдання від:" />
             <uc:InputWithText
                 x:Name="ActDateTextInput"
                 Grid.Column="1"
+                InputBackground="AliceBlue"
                 InputText="{Binding ElementName=WindowContext, Path=ActDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 TextInfo="Акт від:" />
             <uc:InputWithText
                 x:Name="AdditionNumTextInput"
                 Grid.Column="2"
+                InputBackground="AliceBlue"
                 InputText="{Binding ElementName=WindowContext, Path=AdditionNumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 TextInfo="Номер додатку:" />
 
@@ -63,14 +68,17 @@
                 <StackPanel Grid.Column="0" Orientation="Vertical">
                     <uc:InputWithText
                         x:Name="FullHumanNameInput"
+                        InputBackground="AliceBlue"
                         InputText="{Binding ElementName=WindowContext, Path=FullHumanName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        TextInfo="Повне ім'я:" />
+                        TextInfo="Повне ім'я (ПІБ):" />
                     <uc:InputWithText
                         x:Name="HumanIdTextInput"
+                        InputBackground="#ebffdb"
                         InputText="{Binding ElementName=WindowContext, Path=HumanIdText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextInfo="ІН:" />
                     <uc:InputWithText
                         x:Name="AddressTextInput"
+                        InputBackground="#ebffdb"
                         InputText="{Binding ElementName=WindowContext, Path=AddressText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextInfo="Адреса проживання:" />
                 </StackPanel>
@@ -78,14 +86,17 @@
                 <StackPanel Grid.Column="1" Orientation="Vertical">
                     <uc:InputWithText
                         x:Name="PaymentAccountTextInput"
+                        InputBackground="#ebffdb"
                         InputText="{Binding ElementName=WindowContext, Path=PaymentAccountText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextInfo="р/р:" />
                     <uc:InputWithText
                         x:Name="BankNameInput"
+                        InputBackground="#ebffdb"
                         InputText="{Binding ElementName=WindowContext, Path=BankName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextInfo="Банк:" />
                     <uc:InputWithText
                         x:Name="MfoTextInput"
+                        InputBackground="#ebffdb"
                         InputText="{Binding ElementName=WindowContext, Path=MfoText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextInfo="МФО:" />
                 </StackPanel>
@@ -93,10 +104,12 @@
                 <StackPanel Grid.Column="2" Orientation="Vertical">
                     <uc:InputWithText
                         x:Name="ContractNumberTextInput"
+                        InputBackground="#ebffdb"
                         InputText="{Binding ElementName=WindowContext, Path=ContractNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextInfo="Номер договору:" />
                     <uc:InputWithText
                         x:Name="ContractDateTextInput"
+                        InputBackground="#ebffdb"
                         InputText="{Binding ElementName=WindowContext, Path=ContractDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextInfo="Дата складання договору:" />
                     <Button

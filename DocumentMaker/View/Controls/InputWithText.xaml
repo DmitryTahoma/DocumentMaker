@@ -14,6 +14,7 @@
             Text="{Binding TextInfo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBox
             Margin="10"
+            Background="{Binding InputBackground, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             FontSize="15"
             Text="{Binding InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </StackPanel>

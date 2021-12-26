@@ -1,4 +1,5 @@
-﻿using DocumentMaker.Model;
+﻿using DocumentMaker.Controller.Validation;
+using DocumentMaker.Model;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -9,10 +10,12 @@ namespace DocumentMaker.Controller
     {
         private const string saveFile = "session.xml";
 
+        private readonly StringValidator validator;
         private DocumentMakerModel model;
 
         public MainWindowController()
         {
+            validator = new StringValidator();
             model = new DocumentMakerModel();
             BackDataControllers = new List<BackDataController>();
         }
@@ -63,6 +66,52 @@ namespace DocumentMaker.Controller
             }
 
             model.Export(path, backDataModels);
+        }
+
+        public bool Validate(out string errorText)
+        {
+            errorText = "";
+            bool isValidGeneralData = false;
+
+            if (!validator.IsDate(TechnicalTaskDateText))
+                errorText = "Невірно заповнена дата тех.завдання.\nПриклад: 20.07.2021";
+            else if (!validator.IsDate(ActDateText))
+                errorText = "Невірно заповнена дата акту.\nПриклад: 20.07.2021";
+            else if (!validator.IsDigit(AdditionNumText))
+                errorText = "Невірно заповнений номер додатку.\nПриклад: 1";
+            else if (!validator.IsFullName(FullHumanName))
+                errorText = "Невірно заповнена строка з повним ім’ям.\nПриклад: Іванов Іван Іванович";
+            else if (!validator.IsFree(HumanIdText))
+                errorText = "Строка \"ІН\" не може бути пустою.";
+            else if (!validator.IsFree(AddressText))
+                errorText = "Строка \"Адреса проживання\" не може бути пустою.";
+            else if (!validator.IsFree(PaymentAccountText))
+                errorText = "Строка \"р/р\" не може бути пустою.";
+            else if (!validator.IsFree(BankName))
+                errorText = "Строка \"Банк\" не може бути пустою.";
+            else if (!validator.IsFree(MfoText))
+                errorText = "Строка \"МФО\" не може бути пустою.";
+            else if (!validator.IsFree(ContractNumberText))
+                errorText = "Строка \"Номер договору\" не може бути пустою.";
+            else if (!validator.IsFree(ContractDateText))
+                errorText = "Строка \"Дата складання договору\" не може бути пустою.";
+            else
+                isValidGeneralData = true;
+
+            if (isValidGeneralData)
+            {
+                foreach (BackDataController backDataController in BackDataControllers)
+                {
+                    if (!backDataController.Validate(ref errorText))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

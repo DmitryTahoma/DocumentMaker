@@ -56,6 +56,7 @@
             x:Name="BackNumberTextInput"
             Grid.Column="2"
             Margin="5"
+            Background="AliceBlue"
             FontSize="15"
             IsEnabled="{Binding ElementName=BackDataContext, Path=HasBackNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             Text="{Binding ElementName=BackDataContext, Path=BackNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -63,12 +64,14 @@
             x:Name="BackNameInput"
             Grid.Column="3"
             Margin="5"
+            Background="#ebffdb"
             FontSize="15"
             Text="{Binding ElementName=BackDataContext, Path=BackName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBox
             x:Name="CountRegionsTextInput"
             Grid.Column="4"
             Margin="5"
+            Background="AliceBlue"
             FontSize="15"
             IsEnabled="{Binding ElementName=BackDataContext, Path=IsRegions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             Text="{Binding ElementName=BackDataContext, Path=CountRegionsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -77,6 +80,7 @@
             x:Name="GameNameInput"
             Grid.Column="5"
             Margin="5"
+            Background="#ebffdb"
             FontSize="15"
             Text="{Binding ElementName=BackDataContext, Path=GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
@@ -92,6 +96,7 @@
             x:Name="TimeTextInput"
             Grid.Column="7"
             Margin="5"
+            Background="AliceBlue"
             FontSize="15"
             Text="{Binding ElementName=BackDataContext, Path=TimeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             TextChanged="TextChangedTextBoxTime" />

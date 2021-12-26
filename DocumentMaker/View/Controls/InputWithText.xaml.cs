@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace DocumentMaker.View.Controls
 {
@@ -28,5 +29,7 @@ namespace DocumentMaker.View.Controls
             get => (string)GetValue(InputTextProperty);
             set => SetValue(InputTextProperty, value);
         }
+
+        public Brush InputBackground { get; set; }
     }
 }

@@ -1,19 +1,23 @@
-﻿using DocumentMaker.Model;
+﻿using DocumentMaker.Controller.Validation;
+using DocumentMaker.Model;
 
 namespace DocumentMaker.Controller
 {
     public class BackDataController
     {
+        private readonly StringValidator validator;
         private BackDataModel model;
 
         public BackDataController()
         {
+            validator = new StringValidator();
             model = new BackDataModel();
         }
 
         public BackDataController(BackDataModel _model)
         {
-            if(_model != null)
+            validator = new StringValidator();
+            if (_model != null)
             {
                 model = _model;
             }
@@ -35,6 +39,26 @@ namespace DocumentMaker.Controller
         public BackDataModel GetModel()
         {
             return model;
+        }
+
+        public bool Validate(ref string errorText)
+        {
+            errorText = "Строка таблиці №" + Id.ToString() + ": ";
+
+            if (Type != BackType.Craft && !validator.IsDigit(BackNumberText))
+                errorText += "Номер беку заповнений невірно.\nПриклад: 64";
+            else if (!validator.IsFree(BackName))
+                errorText += "Строка \"Ім’я беку\" не може бути пустою.";
+            else if ((Type == BackType.Regions || Type == BackType.HogRegions) && !validator.IsDigit(BackCountRegionsText))
+                errorText += "Кількість регіонів невірно введена.\nПриклад: 11";
+            else if (!validator.IsFree(GameName))
+                errorText += "Строка \"Назва гри\" не може бути пустою.";
+            //else if (!validator.IsDigit(SpentTimeText))
+            //    errorText += "Затрачений час невірно введений.\nПриклад: 7";
+            else
+                return true;
+
+            return false;
         }
     }
 }

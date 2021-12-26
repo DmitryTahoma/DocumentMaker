@@ -2,6 +2,7 @@
 using DocumentMaker.View.Controls;
 using System.Windows;
 using System.Windows.Forms;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace DocumentMaker
 {
@@ -198,10 +199,17 @@ namespace DocumentMaker
 
         private void ExportBtnClick(object sender, RoutedEventArgs e)
         {
-            FolderBrowserDialog dialog = new FolderBrowserDialog();
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (controller.Validate(out string errorText))
             {
-                controller.Export(dialog.SelectedPath);
+                FolderBrowserDialog dialog = new FolderBrowserDialog();
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    controller.Export(dialog.SelectedPath);
+                }
+            }
+            else
+            {
+                MessageBox.Show(errorText, "DocumentMaker | Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

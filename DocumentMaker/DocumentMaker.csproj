@@ -85,6 +85,7 @@
     </Compile>
     <Compile Include="Controller\BackDataController.cs" />
     <Compile Include="Controller\MainWindowController.cs" />
+    <Compile Include="Controller\Validation\StringValidator.cs" />
     <Compile Include="Model\BackDataModel.cs" />
     <Compile Include="Model\BackType.cs" />
     <Compile Include="Model\DocumentMakerModel.cs" />
