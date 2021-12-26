@@ -56,30 +56,33 @@ namespace DocumentMaker.Model.Session
                 {
                     string value = (nodeList[0] as XmlElement).GetAttribute(XmlConfNames.NodeAttributeName);
 
-                    if (property.PropertyType == typeof(string))
+                    if (property.CanWrite)
                     {
-                        property.SetValue(model, value);
-                    }
-                    else if (property.PropertyType.IsEnum)
-                    {
-                        if (int.TryParse(value, out int val))
+                        if (property.PropertyType == typeof(string))
                         {
-                            property.SetValue(model, val);
+                            property.SetValue(model, value);
                         }
-                    }
-                    else
-                    {
-                        MethodInfo tryParseMethod = property.PropertyType.GetMethod(nameof(int.TryParse),
-                                                                                    BindingFlags.Static | BindingFlags.Public,
-                                                                                    null,
-                                                                                    new Type[] { typeof(string), property.PropertyType.MakeByRefType() },
-                                                                                    null);
-                        if (tryParseMethod != null)
+                        else if (property.PropertyType.IsEnum)
                         {
-                            object[] parameters = new object[] { value, null };
-                            if ((bool)tryParseMethod.Invoke(null, parameters))
+                            if (int.TryParse(value, out int val))
                             {
-                                property.SetValue(model, parameters[1]);
+                                property.SetValue(model, val);
+                            }
+                        }
+                        else
+                        {
+                            MethodInfo tryParseMethod = property.PropertyType.GetMethod(nameof(int.TryParse),
+                                                                                        BindingFlags.Static | BindingFlags.Public,
+                                                                                        null,
+                                                                                        new Type[] { typeof(string), property.PropertyType.MakeByRefType() },
+                                                                                        null);
+                            if (tryParseMethod != null)
+                            {
+                                object[] parameters = new object[] { value, null };
+                                if ((bool)tryParseMethod.Invoke(null, parameters))
+                                {
+                                    property.SetValue(model, parameters[1]);
+                                }
                             }
                         }
                     }
