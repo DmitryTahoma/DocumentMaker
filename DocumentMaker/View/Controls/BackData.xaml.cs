@@ -213,7 +213,7 @@ namespace DocumentMaker.View.Controls
             }
         }
 
-        private void UpdateInputStates()
+        public void UpdateInputStates()
         {
             IsRegions = controller.Type == BackType.Regions || controller.Type == BackType.HogRegions;
             if (!IsRegions)

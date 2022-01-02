@@ -120,6 +120,7 @@ namespace DocumentMaker.View.Controls
             });
             backData.SubscribeChangedTime(OnChangedSomeTime);
             Data.Children.Add(backData);
+            backData.UpdateInputStates();
         }
     }
 }
