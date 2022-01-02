@@ -45,8 +45,8 @@ namespace DocumentMaker.Controller
         {
             errorText = "Строка таблиці №" + Id.ToString() + ": ";
 
-            if (Type != BackType.Craft && !validator.IsDigit(BackNumberText))
-                errorText += "Номер беку заповнений невірно.\nПриклад: 64";
+            if (Type != BackType.Craft && !validator.IsFree(BackNumberText))
+                errorText += "Строка \"Номер беку\" не може бути пустою.";
             else if (!validator.IsFree(BackName))
                 errorText += "Строка \"Ім’я беку\" не може бути пустою.";
             else if ((Type == BackType.Regions || Type == BackType.HogRegions) && !validator.IsDigit(BackCountRegionsText))
