@@ -53,8 +53,8 @@ namespace DocumentMaker.Controller
                 errorText += "Кількість регіонів невірно введена.\nПриклад: 11";
             else if (!validator.IsFree(GameName))
                 errorText += "Строка \"Назва гри\" не може бути пустою.";
-            //else if (!validator.IsDigit(SpentTimeText))
-            //    errorText += "Затрачений час невірно введений.\nПриклад: 7";
+            else if (!validator.IsDigit(SpentTimeText))
+                errorText += "Затрачений час невірно введений.\nПриклад: 7";
             else
                 return true;
 

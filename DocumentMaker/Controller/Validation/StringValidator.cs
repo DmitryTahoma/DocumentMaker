@@ -23,28 +23,31 @@ namespace DocumentMaker.Controller.Validation
 
         public bool IsDate(string str)
         {
-            return dateRegex.IsMatch(str) && DateTime.TryParse(str, out _);
+            return IsFree(str) && dateRegex.IsMatch(str) && DateTime.TryParse(str, out _);
         }
 
         public bool IsDigit(string str)
         {
-            return digitRegex.IsMatch(str);
+            return IsFree(str) && digitRegex.IsMatch(str);
         }
 
         public bool IsFullName(string str)
         {
-            string[] parts = str.Split(' ');
-            if (parts.Length == 3)
+            if (IsFree(str))
             {
-                foreach (string part in parts)
+                string[] parts = str.Split(' ');
+                if (parts.Length == 3)
                 {
-                    if (string.IsNullOrWhiteSpace(part) || part.Length < 3 || !nameRegex.IsMatch(part))
+                    foreach (string part in parts)
                     {
-                        return false;
+                        if (string.IsNullOrWhiteSpace(part) || part.Length < 3 || !nameRegex.IsMatch(part))
+                        {
+                            return false;
+                        }
                     }
-                }
 
-                return true;
+                    return true;
+                }
             }
             return false;
         }
