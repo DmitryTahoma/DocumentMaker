@@ -1,9 +1,11 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentMaker.Resources;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Xml;
 
@@ -39,14 +41,7 @@ namespace DocumentMaker.Model.OfficeFiles
         {
             if (!TemplateLoaded)
             {
-                string nearPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string nearFullname = Path.Combine(nearPath, name);
-                if (File.Exists(nearFullname))
-                {
-                    File.Delete(nearFullname);
-                }
-
-                ResourceUnloader.Unload(name, nearPath);
+                ExportTemplate(name, out string nearFullname);
 
                 xml.LoadXml(GetXmlFromWordFile(nearFullname));
                 if (FindRowPart())
@@ -60,7 +55,7 @@ namespace DocumentMaker.Model.OfficeFiles
             }
         }
 
-        public void FillGeneralData(DocumentGeneralData data)
+        public void FillWordGeneralData(DocumentGeneralData data)
         {
             if (!TemplateLoaded) throw new Exception("Template file didn't loaded!");
 
@@ -69,7 +64,7 @@ namespace DocumentMaker.Model.OfficeFiles
             xml.InnerXml = str;
         }
 
-        public void FillTableData(DocumentTableData data)
+        public void FillWordTableData(DocumentTableData data)
         {
             if (!TemplateLoaded) throw new Exception("Template file didn't loaded!");
 
@@ -96,10 +91,15 @@ namespace DocumentMaker.Model.OfficeFiles
             }
         }
 
-        public void SaveTemplate(DocumentGeneralData data, string path, string projectName, string templateName)
+        public void SaveWordContent(string projectName)
         {
             string nearFullname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), projectName);
             SetXmlToWordFile(nearFullname);
+        }
+
+        public void SaveTemplate(DocumentGeneralData data, string path, string projectName, string templateName)
+        {
+            string nearFullname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), projectName);
             FillPropertiesData(data, ref templateName);
 
             string fullpath = Path.Combine(path, templateName);
@@ -145,6 +145,30 @@ namespace DocumentMaker.Model.OfficeFiles
             }
 
             notMovedFiles.Clear();
+        }
+
+        public void ExportExcelTemplate(string name)
+        {
+            ExportTemplate(name, out _);
+        }
+
+        public void FillExcelTableData(string name, DocumentTableData data)
+        {
+            string filepath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), name);
+            using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(filepath, true))
+            {
+                WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
+                WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
+                SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
+
+                xml.LoadXml(sheetData.OuterXml);
+                FillExcelData(data);
+                sheetData.InnerXml = xml.DocumentElement.InnerXml;
+
+                FlushCachedValues(spreadsheetDocument);
+                spreadsheetDocument.Save();
+                spreadsheetDocument.Close();
+            }
         }
 
         private string GetXmlFromWordFile(string fullpath)
@@ -197,6 +221,99 @@ namespace DocumentMaker.Model.OfficeFiles
             {
                 table.InnerXml += row;
             }
+        }
+
+        private void ExportTemplate(string name, out string nearFullname)
+        {
+            string nearPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            nearFullname = Path.Combine(nearPath, name);
+            if (File.Exists(nearFullname))
+            {
+                File.Delete(nearFullname);
+            }
+
+            ResourceUnloader.Unload(name, nearPath);
+        }
+
+        private void FillExcelData(DocumentTableData data)
+        {
+            XmlElement root = xml.DocumentElement;
+
+            const char startColId = 'B';
+            const int startRowId = 2;
+
+            int curValue = 0;
+
+            foreach(DocumentTableRowData rowData in data)
+            {
+                string curRowId = (startRowId + curValue).ToString();
+                string curCellId = startColId.ToString() + curRowId;
+                
+                XmlNodeList rows = root.GetElementsByTagName(OfficeStrings.ExcelRowTagName);
+                XmlElement curRow = GetXmlElementById(rows, OfficeStrings.ExcelArgIdName, curRowId);
+
+                if (curRow != null)
+                {
+                    XmlNodeList cells = curRow.GetElementsByTagName(OfficeStrings.ExcelCellTagName);
+                    XmlElement curCell = GetXmlElementById(cells, OfficeStrings.ExcelArgIdName, curCellId);
+
+                    if (curCell != null)
+                    {
+                        XmlElement valueTag = GetFirstXmlElement(curCell.GetElementsByTagName(OfficeStrings.ExcelCellValueTagName));
+                        if (valueTag != null)
+                        {
+                            valueTag.InnerXml = rowData.GetSpentTime();
+                        }
+                        else
+                        {
+                            curCell.InnerXml = "<" + OfficeStrings.ExcelCellValueTagName + ">" + rowData.GetSpentTime() + "</" + OfficeStrings.ExcelCellValueTagName + ">";
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("End of excel template!");
+                    }
+                }
+                else
+                {
+                    throw new Exception("End of excel template!");
+                }
+
+                ++curValue;
+            }
+        }
+
+        private static XmlElement GetXmlElementById(XmlNodeList nodes, string argName, string id)
+        {
+            foreach (XmlElement element in nodes)
+            {
+                if (element.HasAttribute(argName) && element.GetAttribute(argName) == id)
+                {
+                    return element;
+                }
+            }
+
+            return null;
+        }
+
+        private static XmlElement GetFirstXmlElement(XmlNodeList nodes)
+        {
+            if (nodes.Count > 0)
+                return (XmlElement)nodes[0];
+
+            return null;
+        }
+
+        private void FlushCachedValues(SpreadsheetDocument doc)
+        {
+            doc.WorkbookPart.WorksheetParts
+                .SelectMany(part => part.Worksheet.Elements<SheetData>())
+                .SelectMany(data => data.Elements<Row>())
+                .SelectMany(row => row.Elements<Cell>())
+                .Where(cell => cell.CellFormula != null)
+                .Where(cell => cell.CellValue != null)
+                .ToList()
+                .ForEach(cell => cell.CellValue.Remove());
         }
     }
 }

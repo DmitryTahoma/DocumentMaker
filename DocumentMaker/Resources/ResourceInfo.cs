@@ -2,13 +2,15 @@
 {
     internal class ResourceInfo
     {
-        public ResourceInfo(string name, string template = "")
+        public ResourceInfo(ResourceType type, string name, string template = "")
         {
+            Type = type;
             ProjectName = name;
             TemplateName = template;
         }
 
         public string ProjectName { get; }
         public string TemplateName { get; }
+        public ResourceType Type { get; }
     }
 }

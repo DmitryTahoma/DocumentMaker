@@ -42,5 +42,10 @@
 
             return BackTaskStrings.Generate(type, backNumberText, backName, regs, gameName, isRework);
         }
+
+        public string GetSpentTime()
+        {
+            return spentTimeText;
+        }
     }
 }

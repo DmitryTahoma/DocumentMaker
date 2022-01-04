@@ -62,9 +62,20 @@ namespace DocumentMaker.Model
             foreach (ResourceInfo resource in DocumentResourceManager.Items)
             {
                 exporter.Clear();
-                exporter.ExportWordTemplate(resource.ProjectName);
-                exporter.FillGeneralData(generalData);
-                exporter.FillTableData(tableData);
+
+                if (resource.Type == ResourceType.Docx)
+                {
+                    exporter.ExportWordTemplate(resource.ProjectName);
+                    exporter.FillWordGeneralData(generalData);
+                    exporter.FillWordTableData(tableData);
+                    exporter.SaveWordContent(resource.ProjectName);
+                }
+                else if(resource.Type == ResourceType.Xlsx)
+                {
+                    exporter.ExportExcelTemplate(resource.ProjectName);
+                    exporter.FillExcelTableData(resource.ProjectName, tableData);
+                }
+
                 exporter.SaveTemplate(generalData, path, resource.ProjectName, resource.TemplateName);
             }
         }
