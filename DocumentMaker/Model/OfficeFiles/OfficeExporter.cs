@@ -190,7 +190,7 @@ namespace DocumentMaker.Model.OfficeFiles
             using (WordprocessingDocument doc = WordprocessingDocument.Open(fullpath, true))
             {
                 Body docBody = doc.MainDocumentPart.Document.Body;
-                docBody.InnerXml = xml.InnerXml;
+                docBody.InnerXml = xml.DocumentElement.InnerXml;
                 doc.Save();
                 doc.Close();
             }
