@@ -1,5 +1,6 @@
 ﻿using DocumentMaker.Controller;
 using DocumentMaker.View.Controls;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Forms;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -40,7 +41,8 @@ namespace DocumentMaker
             ContractDateTextProperty = DependencyProperty.Register("ContractDateText", typeof(string), typeof(InputWithText));
         }
 
-        private MainWindowController controller;
+        private MainWindowController controller; 
+        private FolderBrowserDialog folderBrowserDialog;
 
         public MainWindow()
         {
@@ -55,6 +57,8 @@ namespace DocumentMaker
             {
                 controller.BackDataControllers.Remove(x.Controller);
             });
+
+            folderBrowserDialog = new FolderBrowserDialog();
         }
 
         public string TechnicalTaskDateText
@@ -201,11 +205,10 @@ namespace DocumentMaker
         {
             if (controller.Validate(out string errorText))
             {
-                FolderBrowserDialog dialog = new FolderBrowserDialog();
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     bool isShowResult = true;
-                    controller.Export(dialog.SelectedPath);
+                    controller.Export(folderBrowserDialog.SelectedPath);
 
                     if (controller.HasNoMovedFiles)
                     {
@@ -234,12 +237,14 @@ namespace DocumentMaker
                         }
                     }
 
-                    if (isShowResult)
-                    {
-                        MessageBox.Show("Файли збережені.",
+                    if (isShowResult && MessageBox.Show("Файли збережені.\nВідкрити папку з файлами?",
                                         "DocumentMaker | Export",
-                                        MessageBoxButtons.OK,
-                                        MessageBoxIcon.Information);
+                                        MessageBoxButtons.YesNo,
+                                        MessageBoxIcon.Information,
+                                        MessageBoxDefaultButton.Button2)
+                        == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        Process.Start("explorer", folderBrowserDialog.SelectedPath);
                     }
                 }
             }
