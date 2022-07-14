@@ -65,6 +65,18 @@ namespace DocumentMaker.View.Controls
             if (Data != null)
             {
                 BackData backData = new BackData { BackDataId = (uint)(Data.Children.Count + 1) };
+
+                if (Data.Children.Count > 0 && Data.Children[Data.Children.Count - 1] is BackData lastData)
+                {
+                    backData.BackNumberText = lastData.BackNumberText;
+                    backData.BackName = lastData.BackName;
+                    backData.CountRegionsText = lastData.CountRegionsText;
+                    backData.GameName = lastData.GameName;
+                    backData.IsRework = lastData.IsRework;
+                    backData.TimeText = lastData.TimeText;
+                    backData.SetBackType(lastData.GetBackType());
+                }
+
                 AddBackData(backData);
                 onAdded?.Invoke(backData);
             }

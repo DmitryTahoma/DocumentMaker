@@ -229,5 +229,17 @@ namespace DocumentMaker.View.Controls
                 BackNumberTextInput.Text = controller.BackNumberText;
             }
         }
+
+        public void SetBackType(BackType type)
+		{
+            controller.Type = type;
+            SetDataFromController();
+            UpdateInputStates();
+        }
+
+        public BackType GetBackType()
+		{
+            return controller.Type;
+		}
     }
 }
