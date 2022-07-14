@@ -155,5 +155,12 @@
   <ItemGroup>
     <Resource Include="icon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Cross.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\RoundCross.png" />
+    <Resource Include="Images\RoundCrossPressed.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

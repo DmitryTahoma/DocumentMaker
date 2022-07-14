@@ -176,23 +176,7 @@ namespace DocumentMaker.View.Controls
             }
         }
 
-        private void MouseEnterTextBlockNum(object sender, MouseEventArgs e)
-        {
-            if (sender is TextBlock textBlock)
-            {
-                textBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-            }
-        }
-
-        private void MouseLeaveTextBlockNum(object sender, MouseEventArgs e)
-        {
-            if (sender is TextBlock textBlock)
-            {
-                textBlock.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-            }
-        }
-
-        private void MouseDownTextBlockNum(object sender, MouseButtonEventArgs e)
+        private void DeleteBtnClick(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Ви впевнені, що хочете видалити пункт №" + BackDataId.ToString(),
                 "Підтвердіть видалення",

@@ -18,6 +18,7 @@
             <ColumnDefinition />
             <ColumnDefinition />
             <ColumnDefinition />
+            <ColumnDefinition Width="50" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -29,10 +30,9 @@
             x:Name="BackDataIdLabel"
             Grid.Column="0"
             Margin="5"
+            Padding="0,5"
+            VerticalAlignment="Center"
             FontSize="15"
-            MouseDown="MouseDownTextBlockNum"
-            MouseEnter="MouseEnterTextBlockNum"
-            MouseLeave="MouseLeaveTextBlockNum"
             Text="{Binding ElementName=BackDataContext, Path=BackDataId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             TextAlignment="Center" />
 
@@ -40,6 +40,8 @@
             x:Name="BackTypeComboBox"
             Grid.Column="1"
             Margin="5"
+            Padding="5"
+            VerticalAlignment="Center"
             FontSize="15"
             SelectedIndex="0"
             SelectionChanged="TypeChanged">
@@ -56,6 +58,8 @@
             x:Name="BackNumberTextInput"
             Grid.Column="2"
             Margin="5"
+            Padding="0,5"
+            VerticalAlignment="Center"
             Background="#ebffdb"
             FontSize="15"
             IsEnabled="{Binding ElementName=BackDataContext, Path=HasBackNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -64,6 +68,8 @@
             x:Name="BackNameInput"
             Grid.Column="3"
             Margin="5"
+            Padding="0,5"
+            VerticalAlignment="Center"
             Background="#ebffdb"
             FontSize="15"
             Text="{Binding ElementName=BackDataContext, Path=BackName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -71,6 +77,8 @@
             x:Name="CountRegionsTextInput"
             Grid.Column="4"
             Margin="5"
+            Padding="0,5"
+            VerticalAlignment="Center"
             Background="AliceBlue"
             FontSize="15"
             IsEnabled="{Binding ElementName=BackDataContext, Path=IsRegions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -80,6 +88,8 @@
             x:Name="GameNameInput"
             Grid.Column="5"
             Margin="5"
+            Padding="0,5"
+            VerticalAlignment="Center"
             Background="#ebffdb"
             FontSize="15"
             Text="{Binding ElementName=BackDataContext, Path=GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -96,10 +106,38 @@
             x:Name="TimeTextInput"
             Grid.Column="7"
             Margin="5"
+            Padding="0,5"
+            VerticalAlignment="Center"
             Background="AliceBlue"
             FontSize="15"
             Text="{Binding ElementName=BackDataContext, Path=TimeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             TextChanged="TextChangedTextBoxTime" />
+
+        <Button
+            Grid.Column="8"
+            Width="30"
+            Margin="5"
+            Background="Transparent"
+            BorderThickness="0"
+            Click="DeleteBtnClick">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Image x:Name="CrossImg" />
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter TargetName="CrossImg" Property="Source" Value="pack://application:,,,/Images/RoundCross.png" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="False">
+                            <Setter TargetName="CrossImg" Property="Source" Value="pack://application:,,,/Images/Cross.png" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="CrossImg" Property="Source" Value="pack://application:,,,/Images/RoundCrossPressed.png" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
 
         <TextBox
             Grid.Row="1"
