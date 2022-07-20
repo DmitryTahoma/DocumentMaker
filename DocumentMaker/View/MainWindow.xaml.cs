@@ -57,6 +57,10 @@ namespace DocumentMaker
             {
                 controller.BackDataControllers.Remove(x.Controller);
             });
+            DataFooter.SubscribeClearing(() =>
+            {
+                controller.BackDataControllers.Clear();
+            });
 
             folderBrowserDialog = new FolderBrowserDialog();
         }

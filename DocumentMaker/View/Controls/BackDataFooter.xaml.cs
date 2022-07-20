@@ -1,4 +1,5 @@
 ﻿using DocumentMaker.Controller;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -20,6 +21,7 @@ namespace DocumentMaker.View.Controls
 
         private event ActionWithBackData onAdded;
         private event ActionWithBackData onRemoved;
+        private event Action onCleared;
 
         public BackDataFooter()
         {
@@ -48,6 +50,11 @@ namespace DocumentMaker.View.Controls
         public void SubscribeRemoving(ActionWithBackData action)
         {
             onRemoved += action;
+        }
+
+        public void SubscribeClearing(Action action)
+        {
+            onCleared += action;
         }
 
         public void AddLoadedBackData(BackDataController controller)
@@ -79,6 +86,22 @@ namespace DocumentMaker.View.Controls
 
                 AddBackData(backData);
                 onAdded?.Invoke(backData);
+            }
+        }
+
+        private void DeleteBtnClick(object sender, RoutedEventArgs e)
+		{
+            if (Data != null &&
+                MessageBox.Show("Ви впевнені, що хочете видалити всі пункти?",
+                "Підтвердіть видалення",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question,
+                MessageBoxResult.No)
+                    == MessageBoxResult.Yes)
+			{
+                Data.Children.Clear();
+                OnChangedSomeTime();
+                onCleared?.Invoke();
             }
         }
 
