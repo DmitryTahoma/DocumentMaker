@@ -22,43 +22,35 @@
 
         <TextBlock
             Grid.Column="0"
-            FontSize="15"
-            Text="№"
-            TextAlignment="Center" />
+            Style="{StaticResource BackDataTitle}"
+            Text="№" />
         <TextBlock
             Grid.Column="1"
-            FontSize="15"
-            Text="Тип"
-            TextAlignment="Center" />
+            Style="{StaticResource BackDataTitle}"
+            Text="Тип" />
         <TextBlock
             Grid.Column="2"
-            FontSize="15"
-            Text="Номер беку"
-            TextAlignment="Center" />
+            Style="{StaticResource BackDataTitle}"
+            Text="Номер беку" />
         <TextBlock
             Grid.Column="3"
-            FontSize="15"
-            Text="Ім’я беку"
-            TextAlignment="Center" />
+            Style="{StaticResource BackDataTitle}"
+            Text="Ім'я беку" />
         <TextBlock
             Grid.Column="4"
-            FontSize="15"
-            Text="Кіл. рег."
-            TextAlignment="Center" />
+            Style="{StaticResource BackDataTitle}"
+            Text="Кіл. рег." />
         <TextBlock
             Grid.Column="5"
-            FontSize="15"
-            Text="Назва гри"
-            TextAlignment="Center" />
+            Style="{StaticResource BackDataTitle}"
+            Text="Назва гри" />
         <TextBlock
             Grid.Column="6"
-            FontSize="15"
-            Text="Дообробка"
-            TextAlignment="Center" />
+            Style="{StaticResource BackDataTitle}"
+            Text="Дообробка" />
         <TextBlock
             Grid.Column="7"
-            FontSize="15"
-            Text="Затр. час"
-            TextAlignment="Center" />
+            Style="{StaticResource BackDataTitle}"
+            Text="Затр. час" />
     </Grid>
 </UserControl>

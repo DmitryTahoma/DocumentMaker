@@ -16,18 +16,13 @@
 
         <Button
             Grid.ColumnSpan="2"
-            Margin="5"
-            Padding="3"
-            HorizontalAlignment="Center"
             Click="AddBtnClick"
             Content="Добавити"
-            FontSize="15" />
+            Style="{StaticResource BackDataAddButton}" />
 
         <TextBox
             Grid.Column="1"
-            Margin="5"
-            FontSize="15"
-            IsEnabled="False"
+            Style="{StaticResource BackDataAllTimeTextBox}"
             Text="{Binding AllTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </Grid>
 </UserControl>

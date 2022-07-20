@@ -4,5 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:DocumentMaker"
     StartupUri="View/MainWindow.xaml">
-    <Application.Resources />
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ResourceDictionaries/BackDataDictionary.xaml" />
+                <ResourceDictionary Source="ResourceDictionaries/MainWindowDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

@@ -10,10 +10,12 @@ namespace DocumentMaker.View.Controls
     public partial class InputWithText : UserControl
     {
         public static readonly DependencyProperty InputTextProperty;
+        public static readonly DependencyProperty InputBackgroundProperty;
 
         static InputWithText()
         {
             InputTextProperty = DependencyProperty.Register("InputText", typeof(string), typeof(InputWithText));
+            InputBackgroundProperty = DependencyProperty.Register("InputBackground", typeof(Brush), typeof(InputWithText));
         }
 
         public InputWithText()
@@ -30,6 +32,10 @@ namespace DocumentMaker.View.Controls
             set => SetValue(InputTextProperty, value);
         }
 
-        public Brush InputBackground { get; set; }
+        public Brush InputBackground 
+        {
+            get => (Brush)GetValue(InputBackgroundProperty);
+            set => SetValue(InputBackgroundProperty, value);
+        }
     }
 }

@@ -17,9 +17,10 @@
     <ScrollViewer>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="78*" />
+                <ColumnDefinition Width="37*" />
+                <ColumnDefinition Width="41*" />
+                <ColumnDefinition Width="39*" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -31,25 +32,26 @@
             <uc:InputWithText
                 x:Name="TechnicalTaskDateTextInput"
                 Grid.Column="0"
-                InputBackground="AliceBlue"
                 InputText="{Binding ElementName=WindowContext, Path=TechnicalTaskDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource InputWithTextNumberValidation}"
                 TextInfo="Технічне завдання від:" />
             <uc:InputWithText
                 x:Name="ActDateTextInput"
                 Grid.Column="1"
-                InputBackground="AliceBlue"
+                Grid.ColumnSpan="2"
                 InputText="{Binding ElementName=WindowContext, Path=ActDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource InputWithTextNumberValidation}"
                 TextInfo="Акт від:" />
             <uc:InputWithText
                 x:Name="AdditionNumTextInput"
-                Grid.Column="2"
-                InputBackground="AliceBlue"
+                Grid.Column="3"
                 InputText="{Binding ElementName=WindowContext, Path=AdditionNumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource InputWithTextNumberValidation}"
                 TextInfo="Номер додатку:" />
 
             <StackPanel
                 Grid.Row="1"
-                Grid.ColumnSpan="3"
+                Grid.ColumnSpan="4"
                 Orientation="Vertical">
                 <uc:BackDataHeader />
 
@@ -58,7 +60,7 @@
                 <uc:BackDataFooter x:Name="DataFooter" Data="{Binding ElementName=BacksData}" />
             </StackPanel>
 
-            <Grid Grid.Row="2" Grid.ColumnSpan="3">
+            <Grid Grid.Row="2" Grid.ColumnSpan="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
@@ -68,55 +70,54 @@
                 <StackPanel Grid.Column="0" Orientation="Vertical">
                     <uc:InputWithText
                         x:Name="FullHumanNameInput"
-                        InputBackground="AliceBlue"
                         InputText="{Binding ElementName=WindowContext, Path=FullHumanName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextNumberValidation}"
                         TextInfo="Повне ім'я (ПІБ):" />
                     <uc:InputWithText
                         x:Name="HumanIdTextInput"
-                        InputBackground="#ebffdb"
                         InputText="{Binding ElementName=WindowContext, Path=HumanIdText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextFreeValidation}"
                         TextInfo="ІН:" />
                     <uc:InputWithText
                         x:Name="AddressTextInput"
-                        InputBackground="#ebffdb"
                         InputText="{Binding ElementName=WindowContext, Path=AddressText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextFreeValidation}"
                         TextInfo="Адреса проживання:" />
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Vertical">
                     <uc:InputWithText
                         x:Name="PaymentAccountTextInput"
-                        InputBackground="#ebffdb"
                         InputText="{Binding ElementName=WindowContext, Path=PaymentAccountText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextFreeValidation}"
                         TextInfo="р/р:" />
                     <uc:InputWithText
                         x:Name="BankNameInput"
-                        InputBackground="#ebffdb"
                         InputText="{Binding ElementName=WindowContext, Path=BankName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextFreeValidation}"
                         TextInfo="Банк:" />
                     <uc:InputWithText
                         x:Name="MfoTextInput"
-                        InputBackground="#ebffdb"
                         InputText="{Binding ElementName=WindowContext, Path=MfoText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextFreeValidation}"
                         TextInfo="МФО:" />
                 </StackPanel>
 
                 <StackPanel Grid.Column="2" Orientation="Vertical">
                     <uc:InputWithText
                         x:Name="ContractNumberTextInput"
-                        InputBackground="#ebffdb"
                         InputText="{Binding ElementName=WindowContext, Path=ContractNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextFreeValidation}"
                         TextInfo="Номер договору:" />
                     <uc:InputWithText
                         x:Name="ContractDateTextInput"
-                        InputBackground="#ebffdb"
                         InputText="{Binding ElementName=WindowContext, Path=ContractDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextFreeValidation}"
                         TextInfo="Дата складання договору:" />
                     <Button
-                        Margin="10,38,10,10"
                         Click="ExportBtnClick"
                         Content="Зберегти"
-                        FontSize="15" />
+                        Style="{StaticResource ExportBtn}" />
                 </StackPanel>
             </Grid>
         </Grid>
