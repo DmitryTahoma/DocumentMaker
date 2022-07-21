@@ -86,6 +86,7 @@ namespace DocumentMaker.View.Controls
 
                 AddBackData(backData);
                 onAdded?.Invoke(backData);
+                OnChangedSomeTime();
             }
         }
 
