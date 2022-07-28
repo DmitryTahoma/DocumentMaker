@@ -61,7 +61,7 @@
                 Grid.Row="1"
                 Grid.ColumnSpan="4"
                 Orientation="Vertical">
-                <uc:BackDataHeader />
+                <uc:BackDataHeader x:Name="DataHeader" />
 
                 <StackPanel x:Name="BacksData" Orientation="Vertical" />
 

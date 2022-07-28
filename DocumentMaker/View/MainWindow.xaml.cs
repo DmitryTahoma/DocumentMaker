@@ -55,6 +55,7 @@ namespace DocumentMaker
             DataFooter.SubscribeAddition((x) =>
             {
                 controller.BackDataControllers.Add(x.Controller);
+                x.SetViewByTemplate(controller.TemplateType);
             });
             DataFooter.SubscribeRemoving((x) =>
             {
@@ -208,6 +209,8 @@ namespace DocumentMaker
                 {
                     DataFooter.AddLoadedBackData(backDataController);
                 }
+
+                UpdateViewBackData();
             }
         }
 
@@ -218,6 +221,7 @@ namespace DocumentMaker
                 && comboBox.SelectedItem is DocumentTemplate documentTemplate)
 			{
                 controller.TemplateType = documentTemplate.Type;
+                UpdateViewBackData();
             }
         }
 
@@ -273,5 +277,18 @@ namespace DocumentMaker
 				MessageBox.Show(errorText, "DocumentMaker | Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
+
+        private void UpdateViewBackData()
+        {
+            foreach (UIElement control in BacksData.Children)
+            {
+                if (control is BackData backData)
+                {
+                    backData.SetViewByTemplate(controller.TemplateType);
+                }
+            }
+            DataFooter.SetViewByTemplate(controller.TemplateType);
+            DataHeader.SetViewByTemplate(controller.TemplateType);
+        }
 	}
 }

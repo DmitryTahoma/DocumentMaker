@@ -1,4 +1,5 @@
 ﻿using DocumentMaker.Controller;
+using DocumentMaker.Model.Template;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -157,6 +158,18 @@ namespace DocumentMaker.View.Controls
             backData.SubscribeChangedTime(OnChangedSomeTime);
             Data.Children.Add(backData);
             backData.UpdateInputStates();
+        }
+
+        public void SetViewByTemplate(DocumentTemplateType templateType)
+        {
+            if (templateType == DocumentTemplateType.Painter)
+            {
+                IsSketchColumn.Width = new GridLength(1, GridUnitType.Star);
+            }
+            else
+            {
+                IsSketchColumn.Width = GridLength.Auto;
+            }
         }
     }
 }

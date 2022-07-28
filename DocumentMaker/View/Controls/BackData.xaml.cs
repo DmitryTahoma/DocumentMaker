@@ -1,5 +1,6 @@
 ﻿using DocumentMaker.Controller;
 using DocumentMaker.Model;
+using DocumentMaker.Model.Template;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,6 +22,7 @@ namespace DocumentMaker.View.Controls
         public static readonly DependencyProperty CountRegionsTextProperty;
         public static readonly DependencyProperty GameNameProperty;
         public static readonly DependencyProperty IsReworkProperty;
+        public static readonly DependencyProperty IsSketchProperty;
         public static readonly DependencyProperty TimeTextProperty;
 
         static BackData()
@@ -33,6 +35,7 @@ namespace DocumentMaker.View.Controls
             CountRegionsTextProperty = DependencyProperty.Register("CountRegionsText", typeof(string), typeof(BackDataController));
             GameNameProperty = DependencyProperty.Register("GameName", typeof(string), typeof(BackDataController));
             IsReworkProperty = DependencyProperty.Register("IsRework", typeof(bool), typeof(BackDataController));
+            IsSketchProperty = DependencyProperty.Register("IsSketch", typeof(bool), typeof(BackDataController));
             TimeTextProperty = DependencyProperty.Register("TimeText", typeof(string), typeof(BackDataController));
         }
 
@@ -121,6 +124,16 @@ namespace DocumentMaker.View.Controls
             }
         }
 
+        public bool IsSketch
+        {
+            get => (bool)GetValue(IsSketchProperty);
+            set
+            {
+                SetValue(IsSketchProperty, value);
+                controller.IsSketch = value;
+            }
+        }
+
         public string TimeText
         {
             get => (string)GetValue(TimeTextProperty);
@@ -162,7 +175,8 @@ namespace DocumentMaker.View.Controls
             CountRegionsTextInput.Text = controller.BackCountRegionsText;
             GameNameInput.Text = controller.GameName;
             IsReworkCheckBox.IsChecked = controller.IsRework;
-            TimeTextInput.Text = controller.SpentTimeText;
+			IsSketchCheckBox.IsChecked = controller.IsSketch;
+			TimeTextInput.Text = controller.SpentTimeText;
 
             UpdateInputStates();
         }
@@ -213,6 +227,20 @@ namespace DocumentMaker.View.Controls
                 BackNumberTextInput.Text = controller.BackNumberText;
             }
         }
+
+        public void SetViewByTemplate(DocumentTemplateType templateType)
+		{
+            if(templateType == DocumentTemplateType.Painter)
+			{
+                IsSketchCheckBox.Visibility = Visibility.Visible;
+                IsSketchColumn.Width = new GridLength(1, GridUnitType.Star);
+            }
+            else
+            {
+                IsSketchCheckBox.Visibility = Visibility.Collapsed;
+                IsSketchColumn.Width = GridLength.Auto;
+            }
+		}
 
         public void SetBackType(BackType type)
 		{

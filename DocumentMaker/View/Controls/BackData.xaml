@@ -10,13 +10,8 @@
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.5*" />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition Width="1.5*" />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="7*" />
+            <ColumnDefinition x:Name="IsSketchColumn" />
             <ColumnDefinition />
             <ColumnDefinition Width="50" />
         </Grid.ColumnDefinitions>
@@ -26,65 +21,84 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock
-            x:Name="BackDataIdLabel"
-            Grid.Column="0"
-            Style="{StaticResource BackDataTextBlock}"
-            Text="{Binding ElementName=BackDataContext, Path=BackDataId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*" />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition Width="1.5*" />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-        <ComboBox
-            x:Name="BackTypeComboBox"
-            Grid.Column="1"
-            SelectedIndex="0"
-            SelectionChanged="TypeChanged"
-            Style="{StaticResource BackDataComboBox}">
-            <ComboBoxItem Content="Бек" Style="{StaticResource BackDataComboBoxItem}" />
-            <ComboBoxItem Content="Регіони" Style="{StaticResource BackDataComboBoxItem}" />
-            <ComboBoxItem Content="Діалог" Style="{StaticResource BackDataComboBoxItem}" />
-            <ComboBoxItem Content="Мініігра" Style="{StaticResource BackDataComboBoxItem}" />
-            <ComboBoxItem Content="Хог" Style="{StaticResource BackDataComboBoxItem}" />
-            <ComboBoxItem Content="Хог регіони" Style="{StaticResource BackDataComboBoxItem}" />
-            <ComboBoxItem Content="Крафт" Style="{StaticResource BackDataComboBoxItem}" />
-        </ComboBox>
+            <TextBlock
+                x:Name="BackDataIdLabel"
+                Grid.Column="0"
+                Style="{StaticResource BackDataTextBlock}"
+                Text="{Binding ElementName=BackDataContext, Path=BackDataId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-        <TextBox
-            x:Name="BackNumberTextInput"
-            Grid.Column="2"
-            IsEnabled="{Binding ElementName=BackDataContext, Path=HasBackNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-            Style="{StaticResource TextBoxFreeValidation}"
-            Text="{Binding ElementName=BackDataContext, Path=BackNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBox
-            x:Name="BackNameInput"
-            Grid.Column="3"
-            Style="{StaticResource TextBoxFreeValidation}"
-            Text="{Binding ElementName=BackDataContext, Path=BackName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBox
-            x:Name="CountRegionsTextInput"
-            Grid.Column="4"
-            IsEnabled="{Binding ElementName=BackDataContext, Path=IsRegions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-            Style="{StaticResource TextBoxNumberValidation}"
-            Text="{Binding ElementName=BackDataContext, Path=CountRegionsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <ComboBox
+                x:Name="BackTypeComboBox"
+                Grid.Column="1"
+                SelectedIndex="0"
+                SelectionChanged="TypeChanged"
+                Style="{StaticResource BackDataComboBox}">
+                <ComboBoxItem Content="Бек" Style="{StaticResource BackDataComboBoxItem}" />
+                <ComboBoxItem Content="Регіони" Style="{StaticResource BackDataComboBoxItem}" />
+                <ComboBoxItem Content="Діалог" Style="{StaticResource BackDataComboBoxItem}" />
+                <ComboBoxItem Content="Мініігра" Style="{StaticResource BackDataComboBoxItem}" />
+                <ComboBoxItem Content="Хог" Style="{StaticResource BackDataComboBoxItem}" />
+                <ComboBoxItem Content="Хог регіони" Style="{StaticResource BackDataComboBoxItem}" />
+                <ComboBoxItem Content="Крафт" Style="{StaticResource BackDataComboBoxItem}" />
+            </ComboBox>
 
-        <TextBox
-            x:Name="GameNameInput"
-            Grid.Column="5"
-            Style="{StaticResource TextBoxFreeValidation}"
-            Text="{Binding ElementName=BackDataContext, Path=GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox
+                x:Name="BackNumberTextInput"
+                Grid.Column="2"
+                IsEnabled="{Binding ElementName=BackDataContext, Path=HasBackNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource TextBoxFreeValidation}"
+                Text="{Binding ElementName=BackDataContext, Path=BackNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox
+                x:Name="BackNameInput"
+                Grid.Column="3"
+                Style="{StaticResource TextBoxFreeValidation}"
+                Text="{Binding ElementName=BackDataContext, Path=BackName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox
+                x:Name="CountRegionsTextInput"
+                Grid.Column="4"
+                IsEnabled="{Binding ElementName=BackDataContext, Path=IsRegions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource TextBoxNumberValidation}"
+                Text="{Binding ElementName=BackDataContext, Path=CountRegionsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBox
+                x:Name="GameNameInput"
+                Grid.Column="5"
+                Style="{StaticResource TextBoxFreeValidation}"
+                Text="{Binding ElementName=BackDataContext, Path=GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <CheckBox
+                x:Name="IsReworkCheckBox"
+                Grid.Column="6"
+                IsChecked="{Binding ElementName=BackDataContext, Path=IsRework, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource BackDataCheckBox}" />
+        </Grid>
 
         <CheckBox
-            x:Name="IsReworkCheckBox"
-            Grid.Column="6"
-            IsChecked="{Binding ElementName=BackDataContext, Path=IsRework, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            x:Name="IsSketchCheckBox"
+            Grid.Column="1"
+            IsChecked="{Binding ElementName=BackDataContext, Path=IsSketch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             Style="{StaticResource BackDataCheckBox}" />
+
         <TextBox
             x:Name="TimeTextInput"
-            Grid.Column="7"
+            Grid.Column="2"
             Style="{StaticResource TextBoxNumberValidation}"
             Text="{Binding ElementName=BackDataContext, Path=TimeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             TextChanged="TextChangedTextBoxTime" />
 
         <Button
-            Grid.Column="8"
+            Grid.Column="3"
             Click="DeleteBtnClick"
             Style="{StaticResource BtnRoundedCross}" />
 

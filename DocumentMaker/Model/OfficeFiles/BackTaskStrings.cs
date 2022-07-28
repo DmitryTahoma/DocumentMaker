@@ -4,9 +4,9 @@ namespace DocumentMaker.Model.OfficeFiles
 {
     public static class BackTaskStrings
     {
-        public static string Generate(BackType backType, DocumentTemplateType templateType, string backNumberStr, string backName, string backRegsStr, string gameName, bool isRework)
+        public static string Generate(BackType backType, DocumentTemplateType templateType, string backNumberStr, string backName, string backRegsStr, string gameName, bool isRework, bool isSketch)
         {
-            string str = GetBaseString(backType, templateType, isRework);
+            string str = GetBaseString(backType, templateType, isRework, isSketch);
 
             str = str.Replace("[BackNumber]", backNumberStr);
             str = str.Replace("[BackName]", backName);
@@ -16,14 +16,18 @@ namespace DocumentMaker.Model.OfficeFiles
             return str;
         }
 
-        private static string GetBaseString(BackType backType, DocumentTemplateType templateType, bool isRework)
+        private static string GetBaseString(BackType backType, DocumentTemplateType templateType, bool isRework, bool isSketch)
         {
 			string res;
 			switch (templateType)
 			{
                 case DocumentTemplateType.Scripter: res = isRework ? "Актуалізація логіки поведінки об’єктів " : "Послуги з розробки логіки та візуальних ефектів "; break;
                 case DocumentTemplateType.Cutter: res = isRework ? "Коригування об’єктів анімацій пошарової 3D моделі та візуальних ефектів " : "Послуги з розробки пошарової 3D моделі та візуальних ефектів "; break;
-                case DocumentTemplateType.Painter: res = isRework ? "Графічні роботи з коригування кольорової гами " : "Послуги з розробки графічних матеріалів "; break;
+                case DocumentTemplateType.Painter: {
+                        res = isRework ? "Графічні роботи з коригування кольорової гами " : "Послуги з розробки графічних матеріалів ";
+                        if (isSketch)
+                            res += "ескізу ";
+                    } break;
                 case DocumentTemplateType.Modeller: res = isRework ? "Коригування текстур 3D - моделі " : "Послуги з розробки 3D - моделі "; break;
                 default: res = string.Empty; break;
             }

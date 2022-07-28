@@ -9,47 +9,61 @@
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.5*" />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition Width="1.5*" />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="7*" />
+            <ColumnDefinition x:Name="IsSketchColumn" />
             <ColumnDefinition />
             <ColumnDefinition Width="50" />
         </Grid.ColumnDefinitions>
 
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*" />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition Width="1.5*" />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock
+                Grid.Column="0"
+                Style="{StaticResource BackDataTitle}"
+                Text="№" />
+            <TextBlock
+                Grid.Column="1"
+                Style="{StaticResource BackDataTitle}"
+                Text="Тип" />
+            <TextBlock
+                Grid.Column="2"
+                Style="{StaticResource BackDataTitle}"
+                Text="Номер беку" />
+            <TextBlock
+                Grid.Column="3"
+                Style="{StaticResource BackDataTitle}"
+                Text="Ім'я беку" />
+            <TextBlock
+                Grid.Column="4"
+                Style="{StaticResource BackDataTitle}"
+                Text="Кіл. рег." />
+            <TextBlock
+                Grid.Column="5"
+                Style="{StaticResource BackDataTitle}"
+                Text="Назва гри" />
+            <TextBlock
+                Grid.Column="6"
+                Style="{StaticResource BackDataTitle}"
+                Text="Дообробка" />
+        </Grid>
+
         <TextBlock
-            Grid.Column="0"
-            Style="{StaticResource BackDataTitle}"
-            Text="№" />
-        <TextBlock
+            x:Name="IsSketchTextBlock"
             Grid.Column="1"
             Style="{StaticResource BackDataTitle}"
-            Text="Тип" />
+            Text="Ескіз" />
+
         <TextBlock
             Grid.Column="2"
-            Style="{StaticResource BackDataTitle}"
-            Text="Номер беку" />
-        <TextBlock
-            Grid.Column="3"
-            Style="{StaticResource BackDataTitle}"
-            Text="Ім'я беку" />
-        <TextBlock
-            Grid.Column="4"
-            Style="{StaticResource BackDataTitle}"
-            Text="Кіл. рег." />
-        <TextBlock
-            Grid.Column="5"
-            Style="{StaticResource BackDataTitle}"
-            Text="Назва гри" />
-        <TextBlock
-            Grid.Column="6"
-            Style="{StaticResource BackDataTitle}"
-            Text="Дообробка" />
-        <TextBlock
-            Grid.Column="7"
             Style="{StaticResource BackDataTitle}"
             Text="Затр. час" />
     </Grid>

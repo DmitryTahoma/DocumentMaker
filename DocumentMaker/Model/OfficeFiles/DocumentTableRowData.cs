@@ -12,6 +12,7 @@ namespace DocumentMaker.Model.OfficeFiles
         private readonly string backCountRegionsText;
         private readonly string gameName;
         private readonly bool isRework;
+        private readonly bool isSketch;
         private readonly string spentTimeText;
 
         public DocumentTableRowData(BackDataModel model, DocumentTemplateType templateType)
@@ -24,6 +25,7 @@ namespace DocumentMaker.Model.OfficeFiles
             backCountRegionsText = model.BackCountRegionsText;
             gameName = model.GameName;
             isRework = model.IsRework;
+            isSketch = model.IsSketch;
             spentTimeText = model.SpentTimeText;
         }
 
@@ -44,7 +46,7 @@ namespace DocumentMaker.Model.OfficeFiles
                 }
             }
 
-            return BackTaskStrings.Generate(type, templateType, backNumberText, backName, regs, gameName, isRework);
+            return BackTaskStrings.Generate(type, templateType, backNumberText, backName, regs, gameName, isRework, isSketch);
         }
 
         public string GetSpentTime()

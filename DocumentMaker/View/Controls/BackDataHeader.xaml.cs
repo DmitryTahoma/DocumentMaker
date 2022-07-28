@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using DocumentMaker.Model.Template;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace DocumentMaker.View.Controls
 {
@@ -10,6 +12,20 @@ namespace DocumentMaker.View.Controls
         public BackDataHeader()
         {
             InitializeComponent();
+        }
+
+        public void SetViewByTemplate(DocumentTemplateType templateType)
+        {
+            if (templateType == DocumentTemplateType.Painter)
+            {
+                IsSketchTextBlock.Visibility = Visibility.Visible;
+                IsSketchColumn.Width = new GridLength(1, GridUnitType.Star);
+            }
+            else
+            {
+                IsSketchTextBlock.Visibility = Visibility.Collapsed;
+                IsSketchColumn.Width = GridLength.Auto;
+            }
         }
     }
 }

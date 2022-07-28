@@ -9,6 +9,7 @@
         public string BackCountRegionsText { get; set; }
         public string GameName { get; set; }
         public bool IsRework { get; set; }
+        public bool IsSketch { get; set; }
         public string SpentTimeText { get; set; }
     }
 }

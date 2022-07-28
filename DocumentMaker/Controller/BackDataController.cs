@@ -34,6 +34,7 @@ namespace DocumentMaker.Controller
         public string BackCountRegionsText { get => model.BackCountRegionsText; set => model.BackCountRegionsText = value; }
         public string GameName { get => model.GameName; set => model.GameName = value; }
         public bool IsRework { get => model.IsRework; set => model.IsRework = value; }
+        public bool IsSketch { get => model.IsSketch; set => model.IsSketch = value; }
         public string SpentTimeText { get => model.SpentTimeText; set => model.SpentTimeText = value; }
 
         public BackDataModel GetModel()
