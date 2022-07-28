@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DocumentMaker.Model.Template;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace DocumentMaker.Model.OfficeFiles
@@ -7,13 +8,13 @@ namespace DocumentMaker.Model.OfficeFiles
     {
         private List<DocumentTableRowData> rows;
 
-        public DocumentTableData(IEnumerable<BackDataModel> backModels)
+        public DocumentTableData(IEnumerable<BackDataModel> backModels, DocumentTemplateType templateType)
         {
             rows = new List<DocumentTableRowData>();
 
             foreach (BackDataModel model in backModels)
             {
-                rows.Add(new DocumentTableRowData(model));
+                rows.Add(new DocumentTableRowData(model, templateType));
             }
         }
 

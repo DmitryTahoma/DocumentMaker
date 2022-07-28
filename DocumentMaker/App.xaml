@@ -9,6 +9,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ResourceDictionaries/BackDataDictionary.xaml" />
                 <ResourceDictionary Source="ResourceDictionaries/MainWindowDictionary.xaml" />
+                <ResourceDictionary Source="ResourceDictionaries/InputWithTextDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

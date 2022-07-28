@@ -17,10 +17,10 @@
     <ScrollViewer>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="78*" />
-                <ColumnDefinition Width="37*" />
-                <ColumnDefinition Width="41*" />
-                <ColumnDefinition Width="39*" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -29,16 +29,24 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
+            <StackPanel Orientation="Vertical">
+                <TextBlock Style="{StaticResource InputWithTextLabel}" Text="Шаблон:" />
+                <ComboBox
+                    x:Name="DocumentTemplateComboBox"
+                    ItemsSource="{Binding ElementName=WindowContext, Path=DocumentTemplatesList, UpdateSourceTrigger=PropertyChanged}"
+                    SelectionChanged="ChangedDocumentTemplate"
+                    Style="{StaticResource ChooseTemplateComboBox}" />
+            </StackPanel>
+
             <uc:InputWithText
                 x:Name="TechnicalTaskDateTextInput"
-                Grid.Column="0"
+                Grid.Column="1"
                 InputText="{Binding ElementName=WindowContext, Path=TechnicalTaskDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Style="{StaticResource InputWithTextNumberValidation}"
                 TextInfo="Технічне завдання від:" />
             <uc:InputWithText
                 x:Name="ActDateTextInput"
-                Grid.Column="1"
-                Grid.ColumnSpan="2"
+                Grid.Column="2"
                 InputText="{Binding ElementName=WindowContext, Path=ActDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Style="{StaticResource InputWithTextNumberValidation}"
                 TextInfo="Акт від:" />

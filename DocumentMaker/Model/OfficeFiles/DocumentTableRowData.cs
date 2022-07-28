@@ -1,7 +1,10 @@
-﻿namespace DocumentMaker.Model.OfficeFiles
+﻿using DocumentMaker.Model.Template;
+
+namespace DocumentMaker.Model.OfficeFiles
 {
     class DocumentTableRowData
     {
+        private readonly DocumentTemplateType templateType;
         private readonly uint id;
         private readonly BackType type;
         private readonly string backNumberText;
@@ -11,8 +14,9 @@
         private readonly bool isRework;
         private readonly string spentTimeText;
 
-        public DocumentTableRowData(BackDataModel model)
+        public DocumentTableRowData(BackDataModel model, DocumentTemplateType templateType)
         {
+            this.templateType = templateType;
             id = model.Id;
             type = model.Type;
             backNumberText = model.BackNumberText;
@@ -40,7 +44,7 @@
                 }
             }
 
-            return BackTaskStrings.Generate(type, backNumberText, backName, regs, gameName, isRework);
+            return BackTaskStrings.Generate(type, templateType, backNumberText, backName, regs, gameName, isRework);
         }
 
         public string GetSpentTime()

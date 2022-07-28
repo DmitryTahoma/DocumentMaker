@@ -58,16 +58,19 @@ namespace DocumentMaker.Model.Session
             PropertyInfo[] properties = obj.GetType().GetProperties();
             foreach (PropertyInfo prop in properties)
             {
-                object value = prop.GetValue(obj);
-                if (value != null)
+                if (prop.CanWrite)
                 {
-                    if (value.GetType().IsEnum)
+                    object value = prop.GetValue(obj);
+                    if (value != null)
                     {
-                        AppendTagWithValue(root, prop.Name, ((int)value).ToString(), value.ToString());
-                    }
-                    else
-                    {
-                        AppendTagWithValue(root, prop.Name, value.ToString());
+                        if (value.GetType().IsEnum)
+                        {
+                            AppendTagWithValue(root, prop.Name, ((int)value).ToString(), value.ToString());
+                        }
+                        else
+                        {
+                            AppendTagWithValue(root, prop.Name, value.ToString());
+                        }
                     }
                 }
             }

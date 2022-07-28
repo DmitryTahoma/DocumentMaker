@@ -1,5 +1,6 @@
 ﻿using DocumentMaker.Controller.Validation;
 using DocumentMaker.Model;
+using DocumentMaker.Model.Template;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -20,6 +21,7 @@ namespace DocumentMaker.Controller
             BackDataControllers = new List<BackDataController>();
         }
 
+        public DocumentTemplateType TemplateType { get => model.TemplateType; set => model.TemplateType = value; }
         public string TechnicalTaskDateText { get => model.TechnicalTaskDateText; set => model.TechnicalTaskDateText = value; }
         public string ActDateText { get => model.ActDateText; set => model.ActDateText = value; }
         public string AdditionNumText { get => model.AdditionNumText; set => model.AdditionNumText = value; }
@@ -32,6 +34,7 @@ namespace DocumentMaker.Controller
         public string ContractNumberText { get => model.ContractNumberText; set => model.ContractNumberText = value; }
         public string ContractDateText { get => model.ContractDateText; set => model.ContractDateText = value; }
         public List<BackDataController> BackDataControllers { get; set; }
+        public IList<DocumentTemplate> DocumentTemplatesList => model.DocumentTemplatesList;
         public bool HasNoMovedFiles => model.HasNoMovedFiles;
 
         public void Save()
@@ -74,7 +77,9 @@ namespace DocumentMaker.Controller
             errorText = "";
             bool isValidGeneralData = false;
 
-            if (!validator.IsDate(TechnicalTaskDateText))
+            if (TemplateType == DocumentTemplateType.Empty)
+                errorText = "Оберіть тип шаблону.";
+            else if (!validator.IsDate(TechnicalTaskDateText))
                 errorText = "Невірно заповнена дата тех.завдання.\nПриклад: 20.07.2021";
             else if (!validator.IsDate(ActDateText))
                 errorText = "Невірно заповнена дата акту.\nПриклад: 20.07.2021";

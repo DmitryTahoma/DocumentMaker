@@ -1,19 +1,30 @@
 ﻿using DocumentMaker.Model.OfficeFiles;
 using DocumentMaker.Model.Session;
+using DocumentMaker.Model.Template;
 using DocumentMaker.Resources;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace DocumentMaker.Model
 {
     public class DocumentMakerModel
     {
         private readonly OfficeExporter exporter;
+        private readonly ObservableCollection<DocumentTemplate> documentTemplates;
 
         public DocumentMakerModel()
         {
             exporter = new OfficeExporter();
+            documentTemplates = new ObservableCollection<DocumentTemplate>
+            {
+                new DocumentTemplate { Name = "Скриптувальник", Type = DocumentTemplateType.Scripter, },
+                new DocumentTemplate { Name = "Різник", Type = DocumentTemplateType.Cutter, },
+                new DocumentTemplate { Name = "Художник", Type = DocumentTemplateType.Painter, },
+                new DocumentTemplate { Name = "Моделлер", Type = DocumentTemplateType.Modeller, },
+            };
         }
 
+        public DocumentTemplateType TemplateType { get; set; }
         public string TechnicalTaskDateText { get; set; }
         public string ActDateText { get; set; }
         public string AdditionNumText { get; set; }
@@ -25,6 +36,7 @@ namespace DocumentMaker.Model
         public string MfoText { get; set; }
         public string ContractNumberText { get; set; }
         public string ContractDateText { get; set; }
+        public IList<DocumentTemplate> DocumentTemplatesList => documentTemplates;
         public bool HasNoMovedFiles => exporter.HasNoMovedFiles;
 
         public void Save(string path, IEnumerable<BackDataModel> backModels)
@@ -57,7 +69,7 @@ namespace DocumentMaker.Model
         public void Export(string path, IEnumerable<BackDataModel> backModels)
         {
             DocumentGeneralData generalData = new DocumentGeneralData(this);
-            DocumentTableData tableData = new DocumentTableData(backModels);
+            DocumentTableData tableData = new DocumentTableData(backModels, TemplateType);
 
             foreach (ResourceInfo resource in DocumentResourceManager.Items)
             {

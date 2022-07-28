@@ -1,5 +1,7 @@
 ﻿using DocumentMaker.Controller;
+using DocumentMaker.Model.Template;
 using DocumentMaker.View.Controls;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Forms;
@@ -46,9 +48,10 @@ namespace DocumentMaker
 
         public MainWindow()
         {
+            controller = new MainWindowController();
+
             InitializeComponent();
 
-            controller = new MainWindowController();
             DataFooter.SubscribeAddition((x) =>
             {
                 controller.BackDataControllers.Add(x.Controller);
@@ -64,6 +67,8 @@ namespace DocumentMaker
 
             folderBrowserDialog = new FolderBrowserDialog();
         }
+
+        public IList<DocumentTemplate> DocumentTemplatesList => controller.DocumentTemplatesList;
 
         public string TechnicalTaskDateText
         {
@@ -186,6 +191,7 @@ namespace DocumentMaker
             {
                 controller.Load();
 
+                DocumentTemplateComboBox.SelectedIndex = (int)controller.TemplateType;
                 TechnicalTaskDateTextInput.InputText = controller.TechnicalTaskDateText;
                 ActDateTextInput.InputText = controller.ActDateText;
                 AdditionNumTextInput.InputText = controller.AdditionNumText;
@@ -205,57 +211,67 @@ namespace DocumentMaker
             }
         }
 
-        private void ExportBtnClick(object sender, RoutedEventArgs e)
+        private void ChangedDocumentTemplate(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (controller.Validate(out string errorText))
-            {
-                if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    bool isShowResult = true;
-                    controller.Export(folderBrowserDialog.SelectedPath);
-
-                    if (controller.HasNoMovedFiles)
-                    {
-                        if (MessageBox.Show("Файли за заданними путями вже існують.\n\n" + controller.GetInfoNoMovedFiles() + "\nЗамінити?",
-                                            "DocumentMaker | Export",
-                                            MessageBoxButtons.YesNo,
-                                            MessageBoxIcon.Question)
-                                                == System.Windows.Forms.DialogResult.Yes)
-                        {
-                            controller.ReplaceCreatedFiles();
-
-                            if (controller.HasNoMovedFiles)
-                            {
-                                MessageBox.Show("Не вдалось перемістити наступні файли. Можливо вони відкриті в іншій програмі.\n\n" + controller.GetInfoNoMovedFiles(),
-                                                "DocumentMaker | Export",
-                                                MessageBoxButtons.OK,
-                                                MessageBoxIcon.Warning);
-
-                                controller.RemoveTemplates();
-                                isShowResult = false;
-                            }
-                        }
-                        else
-                        {
-                            controller.RemoveTemplates();
-                        }
-                    }
-
-                    if (isShowResult && MessageBox.Show("Файли збережені.\nВідкрити папку з файлами?",
-                                        "DocumentMaker | Export",
-                                        MessageBoxButtons.YesNo,
-                                        MessageBoxIcon.Information,
-                                        MessageBoxDefaultButton.Button2)
-                        == System.Windows.Forms.DialogResult.Yes)
-                    {
-                        Process.Start("explorer", folderBrowserDialog.SelectedPath);
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show(errorText, "DocumentMaker | Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if(controller != null 
+                && sender is System.Windows.Controls.ComboBox comboBox 
+                && comboBox.SelectedItem is DocumentTemplate documentTemplate)
+			{
+                controller.TemplateType = documentTemplate.Type;
             }
         }
-    }
+
+        private void ExportBtnClick(object sender, RoutedEventArgs e)
+        {
+			if (controller.Validate(out string errorText))
+			{
+				if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				{
+					bool isShowResult = true;
+					controller.Export(folderBrowserDialog.SelectedPath);
+
+					if (controller.HasNoMovedFiles)
+					{
+						if (MessageBox.Show("Файли за заданними путями вже існують.\n\n" + controller.GetInfoNoMovedFiles() + "\nЗамінити?",
+											"DocumentMaker | Export",
+											MessageBoxButtons.YesNo,
+											MessageBoxIcon.Question)
+												== System.Windows.Forms.DialogResult.Yes)
+						{
+							controller.ReplaceCreatedFiles();
+
+							if (controller.HasNoMovedFiles)
+							{
+								MessageBox.Show("Не вдалось перемістити наступні файли. Можливо вони відкриті в іншій програмі.\n\n" + controller.GetInfoNoMovedFiles(),
+												"DocumentMaker | Export",
+												MessageBoxButtons.OK,
+												MessageBoxIcon.Warning);
+
+								controller.RemoveTemplates();
+								isShowResult = false;
+							}
+						}
+						else
+						{
+							controller.RemoveTemplates();
+						}
+					}
+
+					if (isShowResult && MessageBox.Show("Файли збережені.\nВідкрити папку з файлами?",
+										"DocumentMaker | Export",
+										MessageBoxButtons.YesNo,
+										MessageBoxIcon.Information,
+										MessageBoxDefaultButton.Button2)
+						== System.Windows.Forms.DialogResult.Yes)
+					{
+						Process.Start("explorer", folderBrowserDialog.SelectedPath);
+					}
+				}
+			}
+			else
+			{
+				MessageBox.Show(errorText, "DocumentMaker | Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+	}
 }

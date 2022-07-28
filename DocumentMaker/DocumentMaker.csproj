@@ -66,6 +66,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ResourceDictionaries\InputWithTextDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ResourceDictionaries\MainWindowDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -100,6 +104,7 @@
     <Compile Include="Model\BackDataModel.cs" />
     <Compile Include="Model\BackType.cs" />
     <Compile Include="Model\DocumentMakerModel.cs" />
+    <Compile Include="Model\Template\DocumentTemplate.cs" />
     <Compile Include="Model\OfficeFiles\BackTaskStrings.cs" />
     <Compile Include="Model\OfficeFiles\DocumentGeneralData.cs" />
     <Compile Include="Model\OfficeFiles\DocumentTableData.cs" />
@@ -109,6 +114,7 @@
     <Compile Include="Model\Session\XmlConfNames.cs" />
     <Compile Include="Model\Session\XmlLoader.cs" />
     <Compile Include="Model\Session\XmlSaver.cs" />
+    <Compile Include="Model\Template\DocumentTemplateType.cs" />
     <Compile Include="Resources\ResourceInfo.cs" />
     <Compile Include="Resources\DocumentResourceManager.cs" />
     <Compile Include="Resources\ResourceType.cs" />
