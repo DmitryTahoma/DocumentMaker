@@ -82,6 +82,8 @@ namespace DocumentMaker.View.Controls
                     backData.GameName = lastData.GameName;
                     backData.IsRework = lastData.IsRework;
                     backData.TimeText = lastData.TimeText;
+                    backData.IsSketch = lastData.IsSketch;
+                    backData.OtherText = lastData.OtherText;
                     backData.SetBackType(lastData.GetBackType());
                 }
 

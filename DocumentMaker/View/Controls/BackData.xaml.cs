@@ -254,23 +254,15 @@ namespace DocumentMaker.View.Controls
         public void UpdateInputStates()
         {
             IsRegions = controller.Type == BackType.Regions || controller.Type == BackType.HogRegions;
-            if (!IsRegions)
+            if (!IsRegions && CountRegionsTextInput != null)
             {
-                CountRegionsText = "";
-                if(CountRegionsTextInput != null)
-				{
-                    CountRegionsTextInput.Text = controller.BackCountRegionsText;
-				}
+                CountRegionsTextInput.Text = controller.BackCountRegionsText;
             }
 
             HasBackNumber = controller.Type != BackType.Craft;
-            if (!HasBackNumber)
+            if (!HasBackNumber && BackNumberTextInput != null)
             {
-                BackNumberText = "";
-                if(BackNumberTextInput != null)
-				{
-                    BackNumberTextInput.Text = controller.BackNumberText;
-				}
+                BackNumberTextInput.Text = controller.BackNumberText;
             }
 
             IsOtherType = controller.Type == BackType.Other;
