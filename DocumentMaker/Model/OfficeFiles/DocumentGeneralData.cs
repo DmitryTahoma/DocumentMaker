@@ -22,6 +22,14 @@ namespace DocumentMaker.Model.OfficeFiles
             HumanMFO = model.MfoText;
             DogovorNum = model.ContractNumberText;
             DogovorFullDate = model.ContractDateText;
+
+            switch(model.TemplateType)
+			{
+                case Template.DocumentTemplateType.Scripter: AddictionInfo = "Мова програмування С++, скриптувальна мова"; break;
+                case Template.DocumentTemplateType.Cutter: AddictionInfo = "Використання графічного пакету Autodesk 3ds Max Commercial New Single-user ELD Annual Subscription Використання графічного пакету Photoshop CC ALL Multiple Platforms Multi European Languages Licensing Subscription."; break;
+                case Template.DocumentTemplateType.Painter: AddictionInfo = "Використання графічного пакету Autodesk 3ds Max  Commercial New Single-user ELD Annual Subscription"; break;
+                case Template.DocumentTemplateType.Modeller: AddictionInfo = "Використання графічного пакету Photoshop CC ALL Multiple Platforms Multi European Languages Licensing Subscription"; break;
+			}
         }
 
         public string DodatokNum { get; }
@@ -70,6 +78,8 @@ namespace DocumentMaker.Model.OfficeFiles
         public string HumanSecondName => HumanFullName.Split(' ')[0];
 
         public string ActDate2 => DateTime.Parse(ActDate).ToString("yyyy.MM.dd");
+
+        public string AddictionInfo { get; }
 
         private string Get2dNumber(string str)
         {
