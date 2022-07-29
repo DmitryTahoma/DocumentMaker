@@ -10,20 +10,20 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="7*" />
-            <ColumnDefinition x:Name="IsSketchColumn" />
-            <ColumnDefinition />
+            <ColumnDefinition x:Name="IsSketchColumn" MaxWidth="90" />
+            <ColumnDefinition MaxWidth="90" />
             <ColumnDefinition Width="50" />
         </Grid.ColumnDefinitions>
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.5*" />
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="0.5*" MaxWidth="30" />
+                <ColumnDefinition MaxWidth="120" />
+                <ColumnDefinition MaxWidth="90" />
                 <ColumnDefinition Width="1.5*" />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition MaxWidth="90" />
+                <ColumnDefinition Width="1.5*" />
+                <ColumnDefinition MaxWidth="90" />
             </Grid.ColumnDefinitions>
 
             <TextBlock
