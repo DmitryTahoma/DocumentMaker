@@ -10,8 +10,7 @@
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="7*" />
-            <ColumnDefinition x:Name="IsSketchColumn" MaxWidth="90" />
+            <ColumnDefinition Width="8*" />
             <ColumnDefinition MaxWidth="90" />
             <ColumnDefinition Width="50" />
         </Grid.ColumnDefinitions>
@@ -25,11 +24,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.5*" MaxWidth="30" />
                 <ColumnDefinition MaxWidth="120" />
-                <ColumnDefinition MaxWidth="90" />
-                <ColumnDefinition Width="1.5*" />
-                <ColumnDefinition MaxWidth="90" />
-                <ColumnDefinition Width="1.5*" />
-                <ColumnDefinition MaxWidth="90" />
+                <ColumnDefinition Width="6*" />
             </Grid.ColumnDefinitions>
 
             <TextBlock
@@ -41,70 +36,84 @@
             <ComboBox
                 x:Name="BackTypeComboBox"
                 Grid.Column="1"
+                ItemsSource="{Binding ElementName=BackDataContext, Path=BackDataTypesList, UpdateSourceTrigger=PropertyChanged}"
                 SelectedIndex="0"
                 SelectionChanged="TypeChanged"
-                Style="{StaticResource BackDataComboBox}">
-                <ComboBoxItem Content="Бек" Style="{StaticResource BackDataComboBoxItem}" />
-                <ComboBoxItem Content="Регіони" Style="{StaticResource BackDataComboBoxItem}" />
-                <ComboBoxItem Content="Діалог" Style="{StaticResource BackDataComboBoxItem}" />
-                <ComboBoxItem Content="Мініігра" Style="{StaticResource BackDataComboBoxItem}" />
-                <ComboBoxItem Content="Хог" Style="{StaticResource BackDataComboBoxItem}" />
-                <ComboBoxItem Content="Хог регіони" Style="{StaticResource BackDataComboBoxItem}" />
-                <ComboBoxItem Content="Крафт" Style="{StaticResource BackDataComboBoxItem}" />
-            </ComboBox>
+                Style="{StaticResource BackDataComboBox}" />
 
-            <TextBox
-                x:Name="BackNumberTextInput"
+            <Grid
+                x:Name="GridWithGeneralData"
                 Grid.Column="2"
-                IsEnabled="{Binding ElementName=BackDataContext, Path=HasBackNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Style="{StaticResource TextBoxFreeValidation}"
-                Text="{Binding ElementName=BackDataContext, Path=BackNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBox
-                x:Name="BackNameInput"
-                Grid.Column="3"
-                Style="{StaticResource TextBoxFreeValidation}"
-                Text="{Binding ElementName=BackDataContext, Path=BackName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBox
-                x:Name="CountRegionsTextInput"
-                Grid.Column="4"
-                IsEnabled="{Binding ElementName=BackDataContext, Path=IsRegions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Style="{StaticResource TextBoxNumberValidation}"
-                Text="{Binding ElementName=BackDataContext, Path=CountRegionsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                IsEnabled="{Binding ElementName=BackDataContext, Path=IsNotOtherType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MaxWidth="90" />
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition MaxWidth="90" />
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition MaxWidth="90" />
+                    <ColumnDefinition x:Name="IsSketchColumn" MaxWidth="90" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox
+                    x:Name="BackNumberTextInput"
+                    Grid.Column="0"
+                    IsEnabled="{Binding ElementName=BackDataContext, Path=HasBackNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource TextBoxFreeValidation}"
+                    Text="{Binding ElementName=BackDataContext, Path=BackNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox
+                    x:Name="BackNameInput"
+                    Grid.Column="1"
+                    Style="{StaticResource TextBoxFreeValidation}"
+                    Text="{Binding ElementName=BackDataContext, Path=BackName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox
+                    x:Name="CountRegionsTextInput"
+                    Grid.Column="2"
+                    IsEnabled="{Binding ElementName=BackDataContext, Path=IsRegions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource TextBoxNumberValidation}"
+                    Text="{Binding ElementName=BackDataContext, Path=CountRegionsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <TextBox
+                    x:Name="GameNameInput"
+                    Grid.Column="3"
+                    Style="{StaticResource TextBoxFreeValidation}"
+                    Text="{Binding ElementName=BackDataContext, Path=GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <CheckBox
+                    x:Name="IsReworkCheckBox"
+                    Grid.Column="4"
+                    IsChecked="{Binding ElementName=BackDataContext, Path=IsRework, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource BackDataCheckBox}" />
+
+                <CheckBox
+                    x:Name="IsSketchCheckBox"
+                    Grid.Column="5"
+                    IsChecked="{Binding ElementName=BackDataContext, Path=IsSketch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource BackDataCheckBox}" />
+            </Grid>
 
             <TextBox
-                x:Name="GameNameInput"
-                Grid.Column="5"
-                Style="{StaticResource TextBoxFreeValidation}"
-                Text="{Binding ElementName=BackDataContext, Path=GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-            <CheckBox
-                x:Name="IsReworkCheckBox"
-                Grid.Column="6"
-                IsChecked="{Binding ElementName=BackDataContext, Path=IsRework, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Style="{StaticResource BackDataCheckBox}" />
+                x:Name="OtherTextInput"
+                Grid.Column="2"
+                IsEnabled="{Binding ElementName=BackDataContext, Path=IsNotOtherType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource TextBoxOtherText}"
+                Text="{Binding ElementName=BackDataContext, Path=OtherText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
-
-        <CheckBox
-            x:Name="IsSketchCheckBox"
-            Grid.Column="1"
-            IsChecked="{Binding ElementName=BackDataContext, Path=IsSketch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-            Style="{StaticResource BackDataCheckBox}" />
 
         <TextBox
             x:Name="TimeTextInput"
-            Grid.Column="2"
+            Grid.Column="1"
             Style="{StaticResource TextBoxNumberValidation}"
             Text="{Binding ElementName=BackDataContext, Path=TimeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             TextChanged="TextChangedTextBoxTime" />
 
         <Button
-            Grid.Column="3"
+            Grid.Column="2"
             Click="DeleteBtnClick"
             Style="{StaticResource BtnRoundedCross}" />
 
         <TextBox
             Grid.Row="1"
-            Grid.ColumnSpan="9"
+            Grid.ColumnSpan="3"
             Style="{StaticResource BackDataSplitter}" />
 
     </Grid>

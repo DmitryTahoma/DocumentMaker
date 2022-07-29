@@ -1,7 +1,9 @@
 ﻿using DocumentMaker.Controller;
 using DocumentMaker.Model;
+using DocumentMaker.Model.Back;
 using DocumentMaker.Model.Template;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -24,6 +26,9 @@ namespace DocumentMaker.View.Controls
         public static readonly DependencyProperty IsReworkProperty;
         public static readonly DependencyProperty IsSketchProperty;
         public static readonly DependencyProperty TimeTextProperty;
+        public static readonly DependencyProperty IsOtherTypeProperty;
+        public static readonly DependencyProperty IsNotOtherTypeProperty;
+        public static readonly DependencyProperty OtherTextProperty;
 
         static BackData()
         {
@@ -37,6 +42,9 @@ namespace DocumentMaker.View.Controls
             IsReworkProperty = DependencyProperty.Register("IsRework", typeof(bool), typeof(BackDataController));
             IsSketchProperty = DependencyProperty.Register("IsSketch", typeof(bool), typeof(BackDataController));
             TimeTextProperty = DependencyProperty.Register("TimeText", typeof(string), typeof(BackDataController));
+            IsOtherTypeProperty = DependencyProperty.Register("IsOtherType", typeof(bool), typeof(BackDataController));
+            IsNotOtherTypeProperty = DependencyProperty.Register("IsNotOtherType", typeof(bool), typeof(BackDataController));
+            OtherTextProperty = DependencyProperty.Register("OtherText", typeof(string), typeof(BackDataController));
         }
 
         private BackDataController controller;
@@ -46,10 +54,10 @@ namespace DocumentMaker.View.Controls
 
         public BackData()
         {
+            controller = new BackDataController();
+
             InitializeComponent();
             DataContext = this;
-
-            controller = new BackDataController();
         }
 
         public uint BackDataId
@@ -61,6 +69,8 @@ namespace DocumentMaker.View.Controls
                 controller.Id = value;
             }
         }
+
+        public IList<BackDataType> BackDataTypesList => controller.BackDataTypesList;
 
         public string BackNumberText
         {
@@ -144,6 +154,28 @@ namespace DocumentMaker.View.Controls
             }
         }
 
+        public bool IsOtherType
+		{
+            get => (bool)GetValue(IsOtherTypeProperty);
+            set => SetValue(IsOtherTypeProperty, value);
+		}
+
+        public bool IsNotOtherType
+		{
+            get => (bool)GetValue(IsNotOtherTypeProperty);
+            set => SetValue(IsNotOtherTypeProperty, value);
+		}
+
+        public string OtherText
+		{
+            get => (string)GetValue(OtherTextProperty);
+            set 
+            {
+                SetValue(OtherTextProperty, value);
+                controller.OtherText = value;
+            }
+        }
+
         public BackDataController Controller
         {
             get => controller;
@@ -169,7 +201,14 @@ namespace DocumentMaker.View.Controls
         public void SetDataFromController()
         {
             BackDataIdLabel.Text = controller.Id.ToString();
-            BackTypeComboBox.SelectedIndex = (int)controller.Type;
+            foreach(BackDataType backData in BackDataTypesList)
+			{
+                if(backData.Type == controller.Type)
+				{
+                    BackTypeComboBox.SelectedItem = backData;
+                    break;
+				}
+			}
             BackNumberTextInput.Text = controller.BackNumberText;
             BackNameInput.Text = controller.BackName;
             CountRegionsTextInput.Text = controller.BackCountRegionsText;
@@ -177,15 +216,16 @@ namespace DocumentMaker.View.Controls
             IsReworkCheckBox.IsChecked = controller.IsRework;
 			IsSketchCheckBox.IsChecked = controller.IsSketch;
 			TimeTextInput.Text = controller.SpentTimeText;
+            OtherTextInput.Text = controller.OtherText;
 
             UpdateInputStates();
         }
 
         private void TypeChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (controller != null && sender is ComboBox comboBox)
+            if (controller != null && sender is ComboBox comboBox && comboBox.SelectedItem is BackDataType dataType)
             {
-                controller.Type = (BackType)comboBox.SelectedIndex;
+                controller.Type = dataType.Type;
                 UpdateInputStates();
             }
         }
@@ -217,15 +257,32 @@ namespace DocumentMaker.View.Controls
             if (!IsRegions)
             {
                 CountRegionsText = "";
-                CountRegionsTextInput.Text = controller.BackCountRegionsText;
+                if(CountRegionsTextInput != null)
+				{
+                    CountRegionsTextInput.Text = controller.BackCountRegionsText;
+				}
             }
 
             HasBackNumber = controller.Type != BackType.Craft;
             if (!HasBackNumber)
             {
                 BackNumberText = "";
-                BackNumberTextInput.Text = controller.BackNumberText;
+                if(BackNumberTextInput != null)
+				{
+                    BackNumberTextInput.Text = controller.BackNumberText;
+				}
             }
+
+            IsOtherType = controller.Type == BackType.Other;
+            if(OtherTextInput != null)
+			{
+                OtherTextInput.Visibility = IsOtherType ? Visibility.Visible : Visibility.Collapsed;
+			}
+            IsNotOtherType = !IsOtherType;
+            if(GridWithGeneralData != null)
+			{
+                GridWithGeneralData.Visibility = IsOtherType ? Visibility.Hidden : Visibility.Visible;
+			}
         }
 
         public void SetViewByTemplate(DocumentTemplateType templateType)

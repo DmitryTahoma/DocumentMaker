@@ -102,7 +102,8 @@
     <Compile Include="Controller\MainWindowController.cs" />
     <Compile Include="Controller\Validation\StringValidator.cs" />
     <Compile Include="Model\BackDataModel.cs" />
-    <Compile Include="Model\BackType.cs" />
+    <Compile Include="Model\Back\BackDataType.cs" />
+    <Compile Include="Model\Back\BackType.cs" />
     <Compile Include="Model\DocumentMakerModel.cs" />
     <Compile Include="Model\Template\DocumentTemplate.cs" />
     <Compile Include="Model\OfficeFiles\BackTaskStrings.cs" />

@@ -1,4 +1,5 @@
-﻿using DocumentMaker.Model.Template;
+﻿using DocumentMaker.Model.Back;
+using DocumentMaker.Model.Template;
 
 namespace DocumentMaker.Model.OfficeFiles
 {
@@ -14,6 +15,7 @@ namespace DocumentMaker.Model.OfficeFiles
         private readonly bool isRework;
         private readonly bool isSketch;
         private readonly string spentTimeText;
+        private readonly string otherText;
 
         public DocumentTableRowData(BackDataModel model, DocumentTemplateType templateType)
         {
@@ -27,6 +29,7 @@ namespace DocumentMaker.Model.OfficeFiles
             isRework = model.IsRework;
             isSketch = model.IsSketch;
             spentTimeText = model.SpentTimeText;
+            otherText = model.OtherText;
         }
 
         public string BackDataId => id.ToString();
@@ -34,6 +37,11 @@ namespace DocumentMaker.Model.OfficeFiles
 
         private string GenerateBackTask()
         {
+            if(type == BackType.Other)
+			{
+                return otherText;
+			}
+
             string regs = "";
             if ((type == BackType.Regions || type == BackType.HogRegions)
               && int.TryParse(backCountRegionsText, out int count))

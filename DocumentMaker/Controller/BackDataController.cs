@@ -1,5 +1,7 @@
 ﻿using DocumentMaker.Controller.Validation;
 using DocumentMaker.Model;
+using DocumentMaker.Model.Back;
+using System.Collections.Generic;
 
 namespace DocumentMaker.Controller
 {
@@ -36,6 +38,8 @@ namespace DocumentMaker.Controller
         public bool IsRework { get => model.IsRework; set => model.IsRework = value; }
         public bool IsSketch { get => model.IsSketch; set => model.IsSketch = value; }
         public string SpentTimeText { get => model.SpentTimeText; set => model.SpentTimeText = value; }
+        public string OtherText { get => model.OtherText; set => model.OtherText = value; }
+        public IList<BackDataType> BackDataTypesList => model.BackDataTypesList;
 
         public BackDataModel GetModel()
         {
@@ -46,16 +50,23 @@ namespace DocumentMaker.Controller
         {
             errorText = "Строка таблиці №" + Id.ToString() + ": ";
 
-            if (Type != BackType.Craft && !validator.IsFree(BackNumberText))
-                errorText += "Строка \"Номер беку\" не може бути пустою.";
-            else if (!validator.IsFree(BackName))
-                errorText += "Строка \"Ім’я беку\" не може бути пустою.";
-            else if ((Type == BackType.Regions || Type == BackType.HogRegions) && !validator.IsDigit(BackCountRegionsText))
-                errorText += "Кількість регіонів невірно введена.\nПриклад: 11";
-            else if (!validator.IsFree(GameName))
-                errorText += "Строка \"Назва гри\" не може бути пустою.";
-            else if (!validator.IsDigit(SpentTimeText))
-                errorText += "Затрачений час невірно введений.\nПриклад: 7";
+            if (Type == BackType.Other && !validator.IsFree(OtherText))
+                errorText += "Строка з текстом не може бути пустою.";
+            else if (Type != BackType.Other)
+            {
+                if (Type != BackType.Craft && !validator.IsFree(BackNumberText))
+                    errorText += "Строка \"Номер беку\" не може бути пустою.";
+                else if (!validator.IsFree(BackName))
+                    errorText += "Строка \"Ім’я беку\" не може бути пустою.";
+                else if ((Type == BackType.Regions || Type == BackType.HogRegions) && !validator.IsDigit(BackCountRegionsText))
+                    errorText += "Кількість регіонів невірно введена.\nПриклад: 11";
+                else if (!validator.IsFree(GameName))
+                    errorText += "Строка \"Назва гри\" не може бути пустою.";
+                else if (!validator.IsDigit(SpentTimeText))
+                    errorText += "Затрачений час невірно введений.\nПриклад: 7";
+                else
+                    return true;
+            }
             else
                 return true;
 
