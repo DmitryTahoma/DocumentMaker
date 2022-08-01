@@ -64,6 +64,7 @@
         <Setter Property="Background" Value="#ebffdb" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="MinLines" Value="1" />
+        <Setter Property="AcceptsReturn" Value="True" />
     </Style>
 
     <Style x:Key="BackDataCheckBox" TargetType="CheckBox">
