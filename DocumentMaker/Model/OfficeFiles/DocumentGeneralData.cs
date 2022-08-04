@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dml.Model.Template;
+using System;
 using System.Globalization;
 
 namespace DocumentMaker.Model.OfficeFiles
@@ -25,10 +26,10 @@ namespace DocumentMaker.Model.OfficeFiles
 
             switch(model.TemplateType)
 			{
-                case Template.DocumentTemplateType.Scripter: AddictionInfo = "Мова програмування С++, скриптувальна мова"; break;
-                case Template.DocumentTemplateType.Cutter: AddictionInfo = "Використання графічного пакету Autodesk 3ds Max Commercial New Single-user ELD Annual Subscription Використання графічного пакету Photoshop CC ALL Multiple Platforms Multi European Languages Licensing Subscription."; break;
-                case Template.DocumentTemplateType.Painter: AddictionInfo = "Використання графічного пакету Autodesk 3ds Max  Commercial New Single-user ELD Annual Subscription"; break;
-                case Template.DocumentTemplateType.Modeller: AddictionInfo = "Використання графічного пакету Photoshop CC ALL Multiple Platforms Multi European Languages Licensing Subscription"; break;
+                case DocumentTemplateType.Scripter: AddictionInfo = "Мова програмування С++, скриптувальна мова"; break;
+                case DocumentTemplateType.Cutter: AddictionInfo = "Використання графічного пакету Autodesk 3ds Max Commercial New Single-user ELD Annual Subscription Використання графічного пакету Photoshop CC ALL Multiple Platforms Multi European Languages Licensing Subscription."; break;
+                case DocumentTemplateType.Painter: AddictionInfo = "Використання графічного пакету Autodesk 3ds Max  Commercial New Single-user ELD Annual Subscription"; break;
+                case DocumentTemplateType.Modeller: AddictionInfo = "Використання графічного пакету Photoshop CC ALL Multiple Platforms Multi European Languages Licensing Subscription"; break;
 			}
         }
 

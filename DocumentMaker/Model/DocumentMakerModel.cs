@@ -1,6 +1,7 @@
-﻿using DocumentMaker.Model.OfficeFiles;
-using DocumentMaker.Model.Session;
-using DocumentMaker.Model.Template;
+﻿using Dml.Model;
+using Dml.Model.Session;
+using Dml.Model.Template;
+using DocumentMaker.Model.OfficeFiles;
 using DocumentMaker.Resources;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

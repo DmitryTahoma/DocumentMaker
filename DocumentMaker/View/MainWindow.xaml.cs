@@ -1,6 +1,7 @@
-﻿using DocumentMaker.Controller;
-using DocumentMaker.Model.Template;
-using DocumentMaker.View.Controls;
+﻿using Dml.Controller;
+using Dml.Controls;
+using Dml.Model.Template;
+using DocumentMaker.Controller;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;

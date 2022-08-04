@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:uc="clr-namespace:ActCreator.View.Controls"
+    xmlns:dml="clr-namespace:Dml.Controls;assembly=Dml"
     x:Name="WindowContext"
     Title="ActCreator"
     Width="1000"
@@ -41,11 +41,11 @@
                 Grid.Row="1"
                 Grid.ColumnSpan="4"
                 Orientation="Vertical">
-                <uc:BackDataHeader x:Name="DataHeader" />
+                <dml:BackDataHeader x:Name="DataHeader" />
 
                 <StackPanel x:Name="BacksData" Orientation="Vertical" />
 
-                <uc:BackDataFooter x:Name="DataFooter" Data="{Binding ElementName=BacksData}" />
+                <dml:BackDataFooter x:Name="DataFooter" Data="{Binding ElementName=BacksData}" />
             </StackPanel>
 
             <Grid Grid.Row="2" Grid.ColumnSpan="4">
@@ -54,11 +54,12 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                
-                <Button Grid.Column="2"
-                        Click="ExportBtnClick"
-                        Content="Зберегти"
-                        Style="{StaticResource ExportBtn}" />
+
+                <Button
+                    Grid.Column="2"
+                    Click="ExportBtnClick"
+                    Content="Зберегти"
+                    Style="{StaticResource ExportBtn}" />
             </Grid>
         </Grid>
     </ScrollViewer>

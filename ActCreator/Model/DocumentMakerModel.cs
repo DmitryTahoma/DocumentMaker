@@ -1,5 +1,6 @@
-﻿using ActCreator.Model.Session;
-using ActCreator.Model.Template;
+﻿using Dml.Model;
+using Dml.Model.Session;
+using Dml.Model.Template;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 

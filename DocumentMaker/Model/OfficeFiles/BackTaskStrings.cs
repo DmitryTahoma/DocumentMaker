@@ -1,5 +1,5 @@
-﻿using DocumentMaker.Model.Back;
-using DocumentMaker.Model.Template;
+﻿using Dml.Model.Back;
+using Dml.Model.Template;
 
 namespace DocumentMaker.Model.OfficeFiles
 {

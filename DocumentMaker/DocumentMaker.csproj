@@ -62,34 +62,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="ResourceDictionaries\BackDataDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ResourceDictionaries\InputWithTextDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ResourceDictionaries\MainWindowDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Controls\BackData.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Controls\BackDataFooter.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Controls\BackDataHeader.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Controls\InputWithText.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -98,40 +70,18 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Controller\BackDataController.cs" />
     <Compile Include="Controller\MainWindowController.cs" />
-    <Compile Include="Controller\Validation\StringValidator.cs" />
-    <Compile Include="Model\BackDataModel.cs" />
-    <Compile Include="Model\Back\BackDataType.cs" />
-    <Compile Include="Model\Back\BackType.cs" />
     <Compile Include="Model\DocumentMakerModel.cs" />
-    <Compile Include="Model\Template\DocumentTemplate.cs" />
     <Compile Include="Model\OfficeFiles\BackTaskStrings.cs" />
     <Compile Include="Model\OfficeFiles\DocumentGeneralData.cs" />
     <Compile Include="Model\OfficeFiles\DocumentTableData.cs" />
     <Compile Include="Model\OfficeFiles\DocumentTableRowData.cs" />
     <Compile Include="Model\OfficeFiles\OfficeExporter.cs" />
     <Compile Include="Model\OfficeFiles\OfficeStrings.cs" />
-    <Compile Include="Model\Session\XmlConfNames.cs" />
-    <Compile Include="Model\Session\XmlLoader.cs" />
-    <Compile Include="Model\Session\XmlSaver.cs" />
-    <Compile Include="Model\Template\DocumentTemplateType.cs" />
     <Compile Include="Resources\ResourceInfo.cs" />
     <Compile Include="Resources\DocumentResourceManager.cs" />
     <Compile Include="Resources\ResourceType.cs" />
     <Compile Include="Resources\ResourceUnloader.cs" />
-    <Compile Include="View\Controls\BackData.xaml.cs">
-      <DependentUpon>BackData.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Controls\BackDataFooter.xaml.cs">
-      <DependentUpon>BackDataFooter.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Controls\BackDataHeader.xaml.cs">
-      <DependentUpon>BackDataHeader.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Controls\InputWithText.xaml.cs">
-      <DependentUpon>InputWithText.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -171,11 +121,10 @@
     <Resource Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Cross.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\RoundCross.png" />
-    <Resource Include="Images\RoundCrossPressed.png" />
+    <ProjectReference Include="..\Dml\Dml.csproj">
+      <Project>{ac730979-6d09-406a-bfdf-e9f3f4d296e0}</Project>
+      <Name>Dml</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

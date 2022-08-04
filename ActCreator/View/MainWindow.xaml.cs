@@ -1,10 +1,11 @@
 ﻿using ActCreator.Controller;
-using ActCreator.Model.Template;
-using ActCreator.View.Controls;
+using Dml.Model.Template;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Forms;
 using MessageBox = System.Windows.Forms.MessageBox;
+using Dml.Controller;
+using Dml.Controls;
 
 namespace ActCreator
 {
