@@ -1,0 +1,133 @@
+﻿<Window
+    x:Class="ActCreator.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:ActCreator.View.Controls"
+    x:Name="WindowContext"
+    Title="ActCreator"
+    Width="1000"
+    Height="700"
+    MinWidth="700"
+    MinHeight="300"
+    Closing="WindowClosing"
+    Loaded="WindowLoaded"
+    mc:Ignorable="d">
+    <ScrollViewer>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Vertical">
+                <TextBlock Style="{StaticResource InputWithTextLabel}" Text="Шаблон:" />
+                <ComboBox
+                    x:Name="DocumentTemplateComboBox"
+                    ItemsSource="{Binding ElementName=WindowContext, Path=DocumentTemplatesList, UpdateSourceTrigger=PropertyChanged}"
+                    SelectionChanged="ChangedDocumentTemplate"
+                    Style="{StaticResource ChooseTemplateComboBox}" />
+            </StackPanel>
+
+            <uc:InputWithText
+                x:Name="TechnicalTaskDateTextInput"
+                Grid.Column="1"
+                InputText="{Binding ElementName=WindowContext, Path=TechnicalTaskDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource InputWithTextNumberValidation}"
+                TextInfo="Технічне завдання від:" />
+            <uc:InputWithText
+                x:Name="ActDateTextInput"
+                Grid.Column="2"
+                InputText="{Binding ElementName=WindowContext, Path=ActDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource InputWithTextNumberValidation}"
+                TextInfo="Акт від:" />
+            <uc:InputWithText
+                x:Name="AdditionNumTextInput"
+                Grid.Column="3"
+                InputText="{Binding ElementName=WindowContext, Path=AdditionNumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource InputWithTextNumberValidation}"
+                TextInfo="Номер додатку:" />
+
+            <StackPanel
+                Grid.Row="1"
+                Grid.ColumnSpan="4"
+                Orientation="Vertical">
+                <uc:BackDataHeader x:Name="DataHeader" />
+
+                <StackPanel x:Name="BacksData" Orientation="Vertical" />
+
+                <uc:BackDataFooter x:Name="DataFooter" Data="{Binding ElementName=BacksData}" />
+            </StackPanel>
+
+            <Grid Grid.Row="2" Grid.ColumnSpan="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+                    <uc:InputWithText
+                        x:Name="FullHumanNameInput"
+                        InputText="{Binding ElementName=WindowContext, Path=FullHumanName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextNumberValidation}"
+                        TextInfo="Повне ім'я (ПІБ):" />
+                    <uc:InputWithText
+                        x:Name="HumanIdTextInput"
+                        InputText="{Binding ElementName=WindowContext, Path=HumanIdText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextFreeValidation}"
+                        TextInfo="ІН:" />
+                    <uc:InputWithText
+                        x:Name="AddressTextInput"
+                        InputText="{Binding ElementName=WindowContext, Path=AddressText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextFreeValidation}"
+                        TextInfo="Адреса проживання:" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Vertical">
+                    <uc:InputWithText
+                        x:Name="PaymentAccountTextInput"
+                        InputText="{Binding ElementName=WindowContext, Path=PaymentAccountText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextFreeValidation}"
+                        TextInfo="р/р:" />
+                    <uc:InputWithText
+                        x:Name="BankNameInput"
+                        InputText="{Binding ElementName=WindowContext, Path=BankName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextFreeValidation}"
+                        TextInfo="Банк:" />
+                    <uc:InputWithText
+                        x:Name="MfoTextInput"
+                        InputText="{Binding ElementName=WindowContext, Path=MfoText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextFreeValidation}"
+                        TextInfo="МФО:" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Vertical">
+                    <uc:InputWithText
+                        x:Name="ContractNumberTextInput"
+                        InputText="{Binding ElementName=WindowContext, Path=ContractNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextFreeValidation}"
+                        TextInfo="Номер договору:" />
+                    <uc:InputWithText
+                        x:Name="ContractDateTextInput"
+                        InputText="{Binding ElementName=WindowContext, Path=ContractDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource InputWithTextFreeValidation}"
+                        TextInfo="Дата складання договору:" />
+                    <Button
+                        Click="ExportBtnClick"
+                        Content="Зберегти"
+                        Style="{StaticResource ExportBtn}" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</Window>

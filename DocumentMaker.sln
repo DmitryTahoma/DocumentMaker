@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentMaker", "DocumentMa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocxToXml", "DocxToXml\DocxToXml.csproj", "{788CE3E6-C09D-46B6-869D-52AB7AD84810}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActCreator", "ActCreator\ActCreator.csproj", "{953C7276-3587-4A36-BFE2-3E7AA8853784}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{788CE3E6-C09D-46B6-869D-52AB7AD84810}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{788CE3E6-C09D-46B6-869D-52AB7AD84810}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{788CE3E6-C09D-46B6-869D-52AB7AD84810}.Release|Any CPU.Build.0 = Release|Any CPU
+		{953C7276-3587-4A36-BFE2-3E7AA8853784}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{953C7276-3587-4A36-BFE2-3E7AA8853784}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{953C7276-3587-4A36-BFE2-3E7AA8853784}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{953C7276-3587-4A36-BFE2-3E7AA8853784}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
