@@ -16,6 +16,13 @@ namespace ActCreator
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		public static readonly DependencyProperty SelectedHumanProperty;
+
+		static MainWindow()
+		{
+			SelectedHumanProperty = DependencyProperty.Register("SelectedHuman", typeof(string), typeof(ComboBox));
+		}
+
 		private readonly MainWindowController controller;
 		private readonly FolderBrowserDialog folderBrowserDialog;
 
@@ -44,6 +51,18 @@ namespace ActCreator
 
 		public IList<DocumentTemplate> DocumentTemplatesList => controller.DocumentTemplatesList;
 
+		public string SelectedHuman
+		{
+			get => (string)GetValue(SelectedHumanProperty);
+			set
+			{
+				SetValue(SelectedHumanProperty, value);
+				controller.SelectedHuman = value;
+			}
+		}
+
+		public IList<string> HumanFullNameList => controller.HumanFullNameList;
+
 		private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			controller.Save();
@@ -56,6 +75,7 @@ namespace ActCreator
 				controller.Load();
 
 				DocumentTemplateComboBox.SelectedIndex = (int)controller.TemplateType;
+				HumanFullNameComboBox.Text = controller.SelectedHuman;
 
 				foreach (BackDataController backDataController in controller.BackDataControllers)
 				{

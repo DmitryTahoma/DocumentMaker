@@ -1,4 +1,5 @@
-﻿using Dml.Model;
+﻿using Dml;
+using Dml.Model;
 using Dml.Model.Session;
 using Dml.Model.Template;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ namespace ActCreator.Model
 	public class ActCreatorModel
 	{
 		private readonly ObservableCollection<DocumentTemplate> documentTemplates;
+		private ObservableRangeCollection<string> humanFullNameList;
 
 		public ActCreatorModel()
 		{
@@ -19,10 +21,13 @@ namespace ActCreator.Model
 				new DocumentTemplate { Name = "Художник", Type = DocumentTemplateType.Painter, },
 				new DocumentTemplate { Name = "Моделлер", Type = DocumentTemplateType.Modeller, },
 			};
+			humanFullNameList = new ObservableRangeCollection<string>();
 		}
 
 		public DocumentTemplateType TemplateType { get; set; }
+		public string SelectedHuman { get; set; }
 		public IList<DocumentTemplate> DocumentTemplatesList => documentTemplates;
+		public IList<string> HumanFullNameList => humanFullNameList;
 
 		public void Save(string path, IEnumerable<BackDataModel> backModels)
 		{
@@ -48,6 +53,15 @@ namespace ActCreator.Model
 			{
 				loader.SetLoadedProperties(this);
 				loader.SetLoadedBacksProperties(backModels);
+			}
+		}
+
+		public void LoadHumans(string path)
+		{
+			XmlLoader loader = new XmlLoader();
+			if(loader.TryLoad(path))
+			{
+				loader.SetLoadedHumans(humanFullNameList);
 			}
 		}
 	}

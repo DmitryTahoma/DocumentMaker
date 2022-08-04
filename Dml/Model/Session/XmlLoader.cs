@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Xml;
 
@@ -44,6 +45,21 @@ namespace Dml.Model.Session
 				SetLoadedProperties(elem, model);
 				backModels.Add(model);
 			}
+		}
+
+		public void SetLoadedHumans(ObservableRangeCollection<string> humans)
+		{
+			List<string> tempHumans = new List<string>();
+
+			XmlElement root = xml.DocumentElement;
+			XmlNodeList nodeList = root.GetElementsByTagName(XmlConfNames.HumanNodeName);
+			foreach(XmlElement elem in nodeList)
+			{
+				tempHumans.Add(elem.InnerText);
+			}
+
+			humans.Clear();
+			humans.AddRange(tempHumans.OrderBy(x => x));
 		}
 
 		private void SetLoadedProperties(XmlElement root, object model)

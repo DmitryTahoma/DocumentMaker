@@ -71,6 +71,7 @@
     <Compile Include="Model\Session\XmlSaver.cs" />
     <Compile Include="Model\Template\DocumentTemplate.cs" />
     <Compile Include="Model\Template\DocumentTemplateType.cs" />
+    <Compile Include="ObservableRangeCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

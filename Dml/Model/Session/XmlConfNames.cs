@@ -6,5 +6,6 @@
 		public static string BackNodeName { get => "BackData"; }
 		public static string NodeAttributeName { get => "Value"; }
 		public static string NodeAttributeDescriptionName { get => "Description"; }
+		public static string HumanNodeName { get => "Human"; }
 	}
 }
