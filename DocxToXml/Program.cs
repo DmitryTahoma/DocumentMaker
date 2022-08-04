@@ -7,10 +7,10 @@ using System.Xml;
 
 namespace DocxToXml
 {
-	class Program
+	internal class Program
 	{
 		[STAThread]
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
 			try
 			{

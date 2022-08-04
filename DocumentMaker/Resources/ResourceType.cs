@@ -1,9 +1,9 @@
 ﻿namespace DocumentMaker.Resources
 {
-    enum ResourceType
-    {
-        Other,
-        Docx,
-        Xlsx
-    }
+	internal enum ResourceType
+	{
+		Other,
+		Docx,
+		Xlsx
+	}
 }
