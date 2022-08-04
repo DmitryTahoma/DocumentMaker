@@ -71,7 +71,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Controller\MainWindowController.cs" />
-    <Compile Include="Model\DocumentMakerModel.cs" />
+    <Compile Include="Model\ActCreatorModel.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

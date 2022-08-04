@@ -12,11 +12,11 @@ namespace ActCreator.Controller
 	{
 		private const string saveFile = "session.xml";
 
-		private readonly DocumentMakerModel model;
+		private readonly ActCreatorModel model;
 
 		public MainWindowController()
 		{
-			model = new DocumentMakerModel();
+			model = new ActCreatorModel();
 			BackDataControllers = new List<BackDataController>();
 		}
 

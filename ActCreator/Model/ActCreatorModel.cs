@@ -6,11 +6,11 @@ using System.Collections.ObjectModel;
 
 namespace ActCreator.Model
 {
-	public class DocumentMakerModel
+	public class ActCreatorModel
 	{
 		private readonly ObservableCollection<DocumentTemplate> documentTemplates;
 
-		public DocumentMakerModel()
+		public ActCreatorModel()
 		{
 			documentTemplates = new ObservableCollection<DocumentTemplate>
 			{
