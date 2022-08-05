@@ -3,6 +3,7 @@ using Dml.Controller;
 using Dml.Controls;
 using Dml.Model.Template;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Forms;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -103,6 +104,26 @@ namespace ActCreator
 			{
 				if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 				{
+					bool existsFile = controller.DmxExists(folderBrowserDialog.SelectedPath);
+					if (!existsFile || (existsFile &&
+							MessageBox.Show("Файл вже існує. Ви впевнені, що хочете замінити його?",
+							"ActCreator | Export",
+							MessageBoxButtons.YesNo,
+							MessageBoxIcon.Question)
+								== System.Windows.Forms.DialogResult.Yes))
+					{
+						controller.ExportDmx(folderBrowserDialog.SelectedPath);
+
+						if (MessageBox.Show("Файл збережений.\nВідкрити папку з файлом?",
+											"ActCreator | Export",
+											MessageBoxButtons.YesNo,
+											MessageBoxIcon.Information,
+											MessageBoxDefaultButton.Button2)
+							== System.Windows.Forms.DialogResult.Yes)
+						{
+							Process.Start("explorer", folderBrowserDialog.SelectedPath);
+						}
+					}
 
 				}
 			}

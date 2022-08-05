@@ -4,6 +4,7 @@ using Dml.Model.Session;
 using Dml.Model.Template;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 
 namespace ActCreator.Model
 {
@@ -63,6 +64,36 @@ namespace ActCreator.Model
 			{
 				loader.SetLoadedHumans(humanFullNameList);
 			}
+		}
+
+		public string GetDmxFileName()
+		{
+			return SelectedHuman + ".dmx";
+		}
+
+		public string GetDmxFileName(string path)
+		{
+			return Path.Combine(path, GetDmxFileName());
+		}
+
+		public bool DmxExists(string path)
+		{
+			return File.Exists(GetDmxFileName(path));
+		}
+
+		public void ExportDmx(string path, IEnumerable<BackDataModel> backModels)
+		{
+			XmlSaver saver = new XmlSaver();
+			saver.AppendAllProperties(this);
+
+			foreach(BackDataModel backDataModel in backModels)
+			{
+				saver.CreateBackNode();
+				saver.AppendAllBackProperties(backDataModel);
+				saver.PushBackNode();
+			}
+
+			saver.Save(GetDmxFileName(path));
 		}
 	}
 }

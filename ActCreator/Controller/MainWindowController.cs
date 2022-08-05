@@ -57,6 +57,19 @@ namespace ActCreator.Controller
 			}
 		}
 
+		public bool DmxExists(string path) => model.DmxExists(path);
+
+		public void ExportDmx(string path)
+		{
+			List<BackDataModel> backDataModels = new List<BackDataModel>();
+			foreach(BackDataController controller in BackDataControllers)
+			{
+				backDataModels.Add(controller.GetModel());
+			}
+
+			model.ExportDmx(path, backDataModels);
+		}
+
 		public bool Validate(out string errorText)
 		{
 			errorText = "";
