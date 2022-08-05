@@ -26,10 +26,32 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Vertical">
+            <Grid Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Style="{StaticResource InputWithTextLabel}" Text="Файл:" />
+                <ComboBox
+                    x:Name="OpenedFilesComboBox"
+                    Grid.Column="1"
+                    ItemsSource="{Binding ElementName=WindowContext, Path=OpenedFilesList, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource ChooseTemplateComboBox}" />
+                <Button
+                    Grid.Column="2"
+                    Click="OpenFileClick"
+                    Content="Відкрити"
+                    Style="{StaticResource BackDataAddButton}" />
+
+            </Grid>
+
+            <StackPanel Grid.Row="1" Orientation="Vertical">
                 <TextBlock Style="{StaticResource InputWithTextLabel}" Text="Шаблон:" />
                 <ComboBox
                     x:Name="DocumentTemplateComboBox"
@@ -40,25 +62,28 @@
 
             <dml:InputWithText
                 x:Name="TechnicalTaskDateTextInput"
+                Grid.Row="1"
                 Grid.Column="1"
                 InputText="{Binding ElementName=WindowContext, Path=TechnicalTaskDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Style="{StaticResource InputWithTextNumberValidation}"
                 TextInfo="Технічне завдання від:" />
             <dml:InputWithText
                 x:Name="ActDateTextInput"
+                Grid.Row="1"
                 Grid.Column="2"
                 InputText="{Binding ElementName=WindowContext, Path=ActDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Style="{StaticResource InputWithTextNumberValidation}"
                 TextInfo="Акт від:" />
             <dml:InputWithText
                 x:Name="AdditionNumTextInput"
+                Grid.Row="1"
                 Grid.Column="3"
                 InputText="{Binding ElementName=WindowContext, Path=AdditionNumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Style="{StaticResource InputWithTextNumberValidation}"
                 TextInfo="Номер додатку:" />
 
             <StackPanel
-                Grid.Row="1"
+                Grid.Row="2"
                 Grid.ColumnSpan="4"
                 Orientation="Vertical">
                 <dml:BackDataHeader x:Name="DataHeader" />
@@ -68,7 +93,7 @@
                 <dml:BackDataFooter x:Name="DataFooter" Data="{Binding ElementName=BacksData}" />
             </StackPanel>
 
-            <Grid Grid.Row="2" Grid.ColumnSpan="4">
+            <Grid Grid.Row="3" Grid.ColumnSpan="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />

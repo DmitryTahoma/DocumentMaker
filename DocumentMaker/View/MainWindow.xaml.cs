@@ -1,5 +1,6 @@
 ﻿using Dml.Controller;
 using Dml.Controls;
+using Dml.Model.Files;
 using Dml.Model.Template;
 using DocumentMaker.Controller;
 using DocumentMaker.Model.OfficeFiles.Human;
@@ -47,6 +48,7 @@ namespace DocumentMaker
 
 		private readonly MainWindowController controller;
 		private readonly FolderBrowserDialog folderBrowserDialog;
+		private readonly OpenFileDialog openFileDialog;
 
 		public MainWindow()
 		{
@@ -69,7 +71,15 @@ namespace DocumentMaker
 			});
 
 			folderBrowserDialog = new FolderBrowserDialog();
+			openFileDialog = new OpenFileDialog() { Multiselect = true, Filter = "DocumentMaker files (*" + DmxFile.Extension + ")|*" + DmxFile.Extension };
 		}
+
+		public MainWindow(string[] args) : this()
+		{
+			OpenFiles(args);
+		}
+
+		public IList<DmxFile> OpenedFilesList => controller.OpenedFilesList;
 
 		public IList<DocumentTemplate> DocumentTemplatesList => controller.DocumentTemplatesList;
 
@@ -282,6 +292,14 @@ namespace DocumentMaker
 			}
 		}
 
+		private void OpenFileClick(object sender, RoutedEventArgs e)
+		{
+			if(openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				OpenFiles(openFileDialog.FileNames);
+			}
+		}
+
 		private void UpdateViewBackData()
 		{
 			foreach (UIElement control in BacksData.Children)
@@ -309,6 +327,19 @@ namespace DocumentMaker
 			MfoTextInput.InputText = controller.MfoText;
 			ContractNumberTextInput.InputText = controller.ContractNumberText;
 			ContractDateTextInput.InputText = controller.ContractDateText;
+		}
+
+		private void OpenFiles(string[] filenames)
+		{
+			controller.OpenFiles(filenames, out string skippedFiles);
+
+			if (!string.IsNullOrEmpty(skippedFiles))
+			{
+				MessageBox.Show("Формат файлів не підтримується:\n\n" + skippedFiles,
+					"DocumentMaker | Open Files",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
+			}
 		}
 	}
 }

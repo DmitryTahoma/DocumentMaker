@@ -1,5 +1,6 @@
 ﻿using Dml;
 using Dml.Model;
+using Dml.Model.Files;
 using Dml.Model.Session;
 using Dml.Model.Template;
 using DocumentMaker.Model.OfficeFiles;
@@ -7,6 +8,7 @@ using DocumentMaker.Model.OfficeFiles.Human;
 using DocumentMaker.Resources;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 
 namespace DocumentMaker.Model
 {
@@ -15,6 +17,7 @@ namespace DocumentMaker.Model
 		private readonly OfficeExporter exporter;
 		private readonly ObservableCollection<DocumentTemplate> documentTemplates;
 		private ObservableRangeCollection<HumanData> humanFullNameList;
+		private ObservableRangeCollection<DmxFile> openedFilesList;
 
 		public DocumentMakerModel()
 		{
@@ -27,8 +30,10 @@ namespace DocumentMaker.Model
 				new DocumentTemplate { Name = "Моделлер", Type = DocumentTemplateType.Modeller, },
 			};
 			humanFullNameList = new ObservableRangeCollection<HumanData>();
+			openedFilesList = new ObservableRangeCollection<DmxFile>();
 		}
 
+		public IList<DmxFile> OpenedFilesList => openedFilesList;
 		public DocumentTemplateType TemplateType { get; set; }
 		public string TechnicalTaskDateText { get; set; }
 		public string ActDateText { get; set; }
@@ -117,6 +122,27 @@ namespace DocumentMaker.Model
 		public void RemoveTemplates()
 		{
 			exporter.RemoveTemplates();
+		}
+
+		public void OpenFiles(string[] files, out List<string> skippedFiles)
+		{
+			skippedFiles = new List<string>();
+			if (files != null && files.Length > 0)
+			{
+				List<DmxFile> adding = new List<DmxFile>();
+				foreach (string file in files)
+				{
+					if (File.Exists(file) && file.EndsWith(DmxFile.Extension))
+					{
+						adding.Add(new DmxFile(file));
+					}
+					else
+					{
+						skippedFiles.Add(file);
+					}
+				}
+				openedFilesList.AddRange(adding);
+			}
 		}
 	}
 }

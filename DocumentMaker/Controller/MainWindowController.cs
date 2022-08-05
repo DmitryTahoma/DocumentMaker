@@ -1,6 +1,7 @@
 ﻿using Dml.Controller;
 using Dml.Controller.Validation;
 using Dml.Model;
+using Dml.Model.Files;
 using Dml.Model.Template;
 using DocumentMaker.Model;
 using DocumentMaker.Model.OfficeFiles.Human;
@@ -25,6 +26,7 @@ namespace DocumentMaker.Controller
 			BackDataControllers = new List<BackDataController>();
 		}
 
+		public IList<DmxFile> OpenedFilesList => model.OpenedFilesList;
 		public DocumentTemplateType TemplateType { get => model.TemplateType; set => model.TemplateType = value; }
 		public string TechnicalTaskDateText { get => model.TechnicalTaskDateText; set => model.TechnicalTaskDateText = value; }
 		public string ActDateText { get => model.ActDateText; set => model.ActDateText = value; }
@@ -161,6 +163,20 @@ namespace DocumentMaker.Controller
 			ContractDateText = humanData.ContractDateText;
 			AddressText = humanData.AddressText;
 			MfoText = humanData.MfoText;
+		}
+
+		public void OpenFiles(string[] files, out string skippedFiles)
+		{
+			model.OpenFiles(files, out List<string> skipped);
+			skippedFiles = string.Empty;
+			if(skipped.Count > 0)
+			{
+				foreach(string file in skipped)
+				{
+					skippedFiles += file + '\n';
+				}
+				skippedFiles = skippedFiles.Substring(0, skippedFiles.Length - 1);
+			}
 		}
 	}
 }

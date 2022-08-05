@@ -1,5 +1,6 @@
 ﻿using Dml;
 using Dml.Model;
+using Dml.Model.Files;
 using Dml.Model.Session;
 using Dml.Model.Template;
 using System.Collections.Generic;
@@ -68,7 +69,7 @@ namespace ActCreator.Model
 
 		public string GetDmxFileName()
 		{
-			return SelectedHuman + ".dmx";
+			return SelectedHuman + DmxFile.Extension;
 		}
 
 		public string GetDmxFileName(string path)
