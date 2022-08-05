@@ -2,6 +2,7 @@
 using Dml.Controls;
 using Dml.Model.Template;
 using DocumentMaker.Controller;
+using DocumentMaker.Model.OfficeFiles.Human;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
@@ -20,7 +21,7 @@ namespace DocumentMaker
 		public static readonly DependencyProperty TechnicalTaskDateTextProperty;
 		public static readonly DependencyProperty ActDateTextProperty;
 		public static readonly DependencyProperty AdditionNumTextProperty;
-		public static readonly DependencyProperty FullHumanNameProperty;
+		public static readonly DependencyProperty SelectedHumanProperty;
 		public static readonly DependencyProperty HumanIdTextProperty;
 		public static readonly DependencyProperty AddressTextProperty;
 		public static readonly DependencyProperty PaymentAccountTextProperty;
@@ -34,7 +35,7 @@ namespace DocumentMaker
 			TechnicalTaskDateTextProperty = DependencyProperty.Register("TechnicalTaskDateText", typeof(string), typeof(InputWithText));
 			ActDateTextProperty = DependencyProperty.Register("ActDateText", typeof(string), typeof(InputWithText));
 			AdditionNumTextProperty = DependencyProperty.Register("AdditionNumText", typeof(string), typeof(InputWithText));
-			FullHumanNameProperty = DependencyProperty.Register("FullHumanName", typeof(string), typeof(InputWithText));
+			SelectedHumanProperty = DependencyProperty.Register("FullHumanName", typeof(string), typeof(InputWithText));
 			HumanIdTextProperty = DependencyProperty.Register("HumanIdText", typeof(string), typeof(InputWithText));
 			AddressTextProperty = DependencyProperty.Register("AddressText", typeof(string), typeof(InputWithText));
 			PaymentAccountTextProperty = DependencyProperty.Register("PaymentAccountText", typeof(string), typeof(InputWithText));
@@ -102,15 +103,17 @@ namespace DocumentMaker
 			}
 		}
 
-		public string FullHumanName
+		public string SelectedHuman
 		{
-			get => (string)GetValue(FullHumanNameProperty);
+			get => (string)GetValue(SelectedHumanProperty);
 			set
 			{
-				SetValue(FullHumanNameProperty, value);
-				controller.FullHumanName = value;
+				SetValue(SelectedHumanProperty, value);
+				controller.SelectedHuman = value;
 			}
 		}
+
+		public IList<HumanData> HumanFullNameList => controller.HumanFullNameList;
 
 		public string HumanIdText
 		{
@@ -193,18 +196,7 @@ namespace DocumentMaker
 			{
 				controller.Load();
 
-				DocumentTemplateComboBox.SelectedIndex = (int)controller.TemplateType;
-				TechnicalTaskDateTextInput.InputText = controller.TechnicalTaskDateText;
-				ActDateTextInput.InputText = controller.ActDateText;
-				AdditionNumTextInput.InputText = controller.AdditionNumText;
-				FullHumanNameInput.InputText = controller.FullHumanName;
-				HumanIdTextInput.InputText = controller.HumanIdText;
-				AddressTextInput.InputText = controller.AddressText;
-				PaymentAccountTextInput.InputText = controller.PaymentAccountText;
-				BankNameInput.InputText = controller.BankName;
-				MfoTextInput.InputText = controller.MfoText;
-				ContractNumberTextInput.InputText = controller.ContractNumberText;
-				ContractDateTextInput.InputText = controller.ContractDateText;
+				SetDataFromController();
 
 				foreach (BackDataController backDataController in controller.BackDataControllers)
 				{
@@ -223,6 +215,17 @@ namespace DocumentMaker
 			{
 				controller.TemplateType = documentTemplate.Type;
 				UpdateViewBackData();
+			}
+		}
+
+		private void ChangedHuman(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+		{
+			if (controller != null
+				&& sender is System.Windows.Controls.ComboBox comboBox
+				&& comboBox.SelectedItem is HumanData humanData)
+			{
+				controller.SetHuman(humanData);
+				SetDataFromController();
 			}
 		}
 
@@ -290,6 +293,22 @@ namespace DocumentMaker
 			}
 			DataFooter.SetViewByTemplate(controller.TemplateType);
 			DataHeader.SetViewByTemplate(controller.TemplateType);
+		}
+
+		private void SetDataFromController()
+		{
+			DocumentTemplateComboBox.SelectedIndex = (int)controller.TemplateType;
+			TechnicalTaskDateTextInput.InputText = controller.TechnicalTaskDateText;
+			ActDateTextInput.InputText = controller.ActDateText;
+			AdditionNumTextInput.InputText = controller.AdditionNumText;
+			HumanFullNameComboBox.Text = controller.SelectedHuman;
+			HumanIdTextInput.InputText = controller.HumanIdText;
+			AddressTextInput.InputText = controller.AddressText;
+			PaymentAccountTextInput.InputText = controller.PaymentAccountText;
+			BankNameInput.InputText = controller.BankName;
+			MfoTextInput.InputText = controller.MfoText;
+			ContractNumberTextInput.InputText = controller.ContractNumberText;
+			ContractDateTextInput.InputText = controller.ContractDateText;
 		}
 	}
 }

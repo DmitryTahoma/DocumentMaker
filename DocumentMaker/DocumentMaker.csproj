@@ -76,8 +76,10 @@
     <Compile Include="Model\OfficeFiles\DocumentGeneralData.cs" />
     <Compile Include="Model\OfficeFiles\DocumentTableData.cs" />
     <Compile Include="Model\OfficeFiles\DocumentTableRowData.cs" />
+    <Compile Include="Model\OfficeFiles\Human\HumanData.cs" />
     <Compile Include="Model\OfficeFiles\OfficeExporter.cs" />
     <Compile Include="Model\OfficeFiles\OfficeStrings.cs" />
+    <Compile Include="Model\OfficeFiles\XlsxLoader.cs" />
     <Compile Include="Resources\ResourceInfo.cs" />
     <Compile Include="Resources\DocumentResourceManager.cs" />
     <Compile Include="Resources\ResourceType.cs" />

@@ -15,12 +15,12 @@ namespace DocumentMaker.Model.OfficeFiles
 			technicalTaskDateText = model.TechnicalTaskDateText;
 			ActDate = model.ActDateText;
 			DodatokNum = model.AdditionNumText;
-			HumanFullName = model.FullHumanName;
+			HumanFullName = model.SelectedHuman;
 			HumanID = model.HumanIdText;
 			HumanAddress = model.AddressText;
 			HumanPA = model.PaymentAccountText;
 			HumanBank = model.BankName;
-			HumanMFO = model.MfoText;
+			HumanMFO = "МФО " + model.MfoText;
 			DogovorNum = model.ContractNumberText;
 			DogovorFullDate = model.ContractDateText;
 

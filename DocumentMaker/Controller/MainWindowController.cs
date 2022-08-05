@@ -3,6 +3,7 @@ using Dml.Controller.Validation;
 using Dml.Model;
 using Dml.Model.Template;
 using DocumentMaker.Model;
+using DocumentMaker.Model.OfficeFiles.Human;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -12,6 +13,7 @@ namespace DocumentMaker.Controller
 	public class MainWindowController
 	{
 		private const string saveFile = "session.xml";
+		private const string humansFile = "HumanData.xlsx";
 
 		private readonly StringValidator validator;
 		private readonly DocumentMakerModel model;
@@ -27,7 +29,7 @@ namespace DocumentMaker.Controller
 		public string TechnicalTaskDateText { get => model.TechnicalTaskDateText; set => model.TechnicalTaskDateText = value; }
 		public string ActDateText { get => model.ActDateText; set => model.ActDateText = value; }
 		public string AdditionNumText { get => model.AdditionNumText; set => model.AdditionNumText = value; }
-		public string FullHumanName { get => model.FullHumanName; set => model.FullHumanName = value; }
+		public string SelectedHuman { get => model.SelectedHuman; set => model.SelectedHuman = value; }
 		public string HumanIdText { get => model.HumanIdText; set => model.HumanIdText = value; }
 		public string AddressText { get => model.AddressText; set => model.AddressText = value; }
 		public string PaymentAccountText { get => model.PaymentAccountText; set => model.PaymentAccountText = value; }
@@ -37,6 +39,7 @@ namespace DocumentMaker.Controller
 		public string ContractDateText { get => model.ContractDateText; set => model.ContractDateText = value; }
 		public List<BackDataController> BackDataControllers { get; set; }
 		public IList<DocumentTemplate> DocumentTemplatesList => model.DocumentTemplatesList;
+		public IList<HumanData> HumanFullNameList => model.HumanFullNameList;
 		public bool HasNoMovedFiles => model.HasNoMovedFiles;
 
 		public void Save()
@@ -54,13 +57,16 @@ namespace DocumentMaker.Controller
 
 		public void Load()
 		{
-			string fullpath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), saveFile);
+			string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			string saveFullpath = Path.Combine(path, saveFile);
+			string humansFullpath = Path.Combine(path, humansFile);
 
-			model.Load(fullpath, out List<BackDataModel> backModels);
+			model.Load(saveFullpath, out List<BackDataModel> backModels);
 			foreach (BackDataModel model in backModels)
 			{
 				BackDataControllers.Add(new BackDataController(model));
 			}
+			model.LoadHumans(humansFullpath);
 		}
 
 		public void Export(string path)
@@ -87,7 +93,7 @@ namespace DocumentMaker.Controller
 				errorText = "Невірно заповнена дата акту.\nПриклад: 20.07.2021";
 			else if (!validator.IsDigit(AdditionNumText))
 				errorText = "Невірно заповнений номер додатку.\nПриклад: 1";
-			else if (!validator.IsFullName(FullHumanName))
+			else if (!validator.IsFullName(SelectedHuman))
 				errorText = "Невірно заповнена строка з повним ім’ям.\nПриклад: Іванов Іван Іванович";
 			else if (!validator.IsFree(HumanIdText))
 				errorText = "Строка \"ІН\" не може бути пустою.";
@@ -143,6 +149,18 @@ namespace DocumentMaker.Controller
 		public void RemoveTemplates()
 		{
 			model.RemoveTemplates();
+		}
+
+		public void SetHuman(HumanData humanData)
+		{
+			SelectedHuman = humanData.Name;
+			HumanIdText = humanData.HumanIdText;
+			BankName = humanData.BankName;
+			PaymentAccountText = humanData.PaymentAccountText;
+			ContractNumberText = humanData.ContractNumberText;
+			ContractDateText = humanData.ContractDateText;
+			AddressText = humanData.AddressText;
+			MfoText = humanData.MfoText;
 		}
 	}
 }

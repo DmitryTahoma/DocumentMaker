@@ -283,7 +283,7 @@ namespace DocumentMaker.Model.OfficeFiles
 			}
 		}
 
-		private static XmlElement GetXmlElementById(XmlNodeList nodes, string argName, string id)
+		public static XmlElement GetXmlElementById(XmlNodeList nodes, string argName, string id)
 		{
 			foreach (XmlElement element in nodes)
 			{
@@ -296,7 +296,7 @@ namespace DocumentMaker.Model.OfficeFiles
 			return null;
 		}
 
-		private static XmlElement GetFirstXmlElement(XmlNodeList nodes)
+		public static XmlElement GetFirstXmlElement(XmlNodeList nodes)
 		{
 			if (nodes.Count > 0)
 				return (XmlElement)nodes[0];

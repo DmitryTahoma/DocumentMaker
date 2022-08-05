@@ -76,11 +76,16 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" Orientation="Vertical">
-                    <dml:InputWithText
-                        x:Name="FullHumanNameInput"
-                        InputText="{Binding ElementName=WindowContext, Path=FullHumanName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource InputWithTextNumberValidation}"
-                        TextInfo="Повне ім'я (ПІБ):" />
+                    <TextBlock Style="{StaticResource InputWithTextLabel}" Text="Повне ім'я (ПІБ):" />
+                    <ComboBox
+                        Name="HumanFullNameComboBox"
+                        IsEditable="True"
+                        IsTextSearchEnabled="True"
+                        ItemsSource="{Binding ElementName=WindowContext, Path=HumanFullNameList, UpdateSourceTrigger=PropertyChanged}"
+                        SelectionChanged="ChangedHuman"
+                        Style="{StaticResource ChooseTemplateComboBox}"
+                        Text="{Binding ElementName=WindowContext, Path=SelectedHuman, UpdateSourceTrigger=PropertyChanged}" />
+
                     <dml:InputWithText
                         x:Name="HumanIdTextInput"
                         InputText="{Binding ElementName=WindowContext, Path=HumanIdText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
