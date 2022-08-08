@@ -51,5 +51,10 @@ namespace Dml.Controller.Validation
 			}
 			return false;
 		}
+
+		public static string Trim(string str)
+		{
+			return Regex.Replace(str.Trim(), @"\s+", " ");
+		}
 	}
 }

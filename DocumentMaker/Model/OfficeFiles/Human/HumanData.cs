@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using Dml.Controller.Validation;
+using System.Collections.Generic;
 
 namespace DocumentMaker.Model.OfficeFiles.Human
 {
@@ -18,7 +18,7 @@ namespace DocumentMaker.Model.OfficeFiles.Human
 		{
 			if (value != null)
 			{
-				value = Regex.Replace(value.Trim(), @"\s+", " ");
+				value = StringValidator.Trim(value);
 
 				switch (type)
 				{

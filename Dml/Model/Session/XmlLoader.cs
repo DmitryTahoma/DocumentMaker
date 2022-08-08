@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dml.Controller.Validation;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -55,7 +56,7 @@ namespace Dml.Model.Session
 			XmlNodeList nodeList = root.GetElementsByTagName(XmlConfNames.HumanNodeName);
 			foreach(XmlElement elem in nodeList)
 			{
-				tempHumans.Add(elem.InnerText);
+				tempHumans.Add(StringValidator.Trim(elem.InnerText));
 			}
 
 			humans.Clear();
