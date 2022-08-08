@@ -7,6 +7,7 @@ using DocumentMaker.Model.OfficeFiles.Human;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -208,13 +209,9 @@ namespace DocumentMaker
 				controller.Load();
 
 				SetDataFromController();
-
-				foreach (BackDataController backDataController in controller.BackDataControllers)
-				{
-					DataFooter.AddLoadedBackData(backDataController);
-				}
-
+				AddLoadedBackData();
 				UpdateViewBackData();
+				LoadFiles();
 			}
 		}
 
@@ -297,7 +294,9 @@ namespace DocumentMaker
 		{
 			if(openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
-				OpenFiles(openFileDialog.FileNames);
+				OpenFiles(openFileDialog.FileNames); 
+				LoadFiles();
+				SetSelectedFile(openFileDialog.FileNames.Last());
 			}
 		}
 
@@ -343,10 +342,17 @@ namespace DocumentMaker
 			}
 		}
 
+		private void LoadFiles()
+		{
+			controller.LoadFiles();
+		}
+
 		private void WindowPreviewDrop(object sender, System.Windows.DragEventArgs e)
 		{
 			string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
 			OpenFiles(filenames);
+			LoadFiles();
+			SetSelectedFile(filenames.Last(filename => filename.EndsWith(DmxFile.Extension)));
 			e.Handled = true;
 		}
 
@@ -377,6 +383,37 @@ namespace DocumentMaker
 			else
 				e.Effects = System.Windows.DragDropEffects.None;
 			e.Handled = true;
+		}
+
+		private void OpenedFilesSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+		{
+			if(sender is System.Windows.Controls.ComboBox comboBox && comboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
+			{
+				DataFooter.ClearBackData();
+				controller.SetDataFromFile(selectedFile);
+				SetDataFromController();
+				AddLoadedBackData();
+			}
+		}
+
+		private void AddLoadedBackData()
+		{
+			foreach (BackDataController backDataController in controller.BackDataControllers)
+			{
+				DataFooter.AddLoadedBackData(backDataController);
+			}
+		}
+
+		private void SetSelectedFile(string filename)
+		{
+			foreach(DmxFile file in OpenedFilesList)
+			{
+				if(file.FullName == filename || file.Name == filename)
+				{
+					OpenedFilesComboBox.SelectedItem = file;
+					break;
+				}
+			}
 		}
 	}
 }

@@ -46,6 +46,7 @@
                     x:Name="OpenedFilesComboBox"
                     Grid.Column="1"
                     ItemsSource="{Binding ElementName=WindowContext, Path=OpenedFilesList, UpdateSourceTrigger=PropertyChanged}"
+                    SelectionChanged="OpenedFilesSelectionChanged"
                     Style="{StaticResource ChooseTemplateComboBox}" />
                 <Button
                     Grid.Column="2"

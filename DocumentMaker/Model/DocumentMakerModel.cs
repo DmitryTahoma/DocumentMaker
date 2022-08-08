@@ -144,5 +144,16 @@ namespace DocumentMaker.Model
 				openedFilesList.AddRange(adding);
 			}
 		}
+
+		public void LoadFiles()
+		{
+			foreach(DmxFile file in openedFilesList)
+			{
+				if(!file.Loaded)
+				{
+					file.Load();
+				}
+			}
+		}
 	}
 }

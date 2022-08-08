@@ -103,9 +103,7 @@ namespace Dml.Controls
 				MessageBoxResult.No)
 					== MessageBoxResult.Yes)
 			{
-				Data.Children.Clear();
-				OnChangedSomeTime();
-				onCleared?.Invoke();
+				ClearBackData();
 			}
 		}
 
@@ -171,6 +169,16 @@ namespace Dml.Controls
 			else
 			{
 				IsSketchColumn.Width = GridLength.Auto;
+			}
+		}
+
+		public void ClearBackData()
+		{
+			if(Data != null)
+			{
+				Data.Children.Clear();
+				OnChangedSomeTime();
+				onCleared?.Invoke();
 			}
 		}
 	}

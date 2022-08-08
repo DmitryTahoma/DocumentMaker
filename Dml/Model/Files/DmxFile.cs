@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using Dml.Model.Session;
+using Dml.Model.Template;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Dml.Model.Files
 {
@@ -6,17 +9,47 @@ namespace Dml.Model.Files
 	{
 		public static string Extension => ".dmx";
 
+		private List<BackDataModel> backDataModels;
+
 		public DmxFile(string path)
 		{
 			FullName = path;
+			Loaded = false;
+
+			TemplateType = DocumentTemplateType.Empty;
+			SelectedHuman = null;
+			backDataModels = null;
 		}
 
 		public string FullName { get; private set; }
 		public string Name => Path.GetFileName(FullName);
+		public bool Loaded { get; private set; }
+
+		#region Loaded data
+
+		public DocumentTemplateType TemplateType { get; private set; }
+		public string SelectedHuman { get; private set; }
+		public IList<BackDataModel> BackDataModels { get => backDataModels; }
+
+		#endregion
 
 		public override string ToString()
 		{
 			return Name;
+		}
+
+		public void Load()
+		{
+			XmlLoader loader = new XmlLoader();
+			if(loader.TryLoad(FullName))
+			{
+				loader.SetLoadedProperties(this);
+
+				backDataModels = new List<BackDataModel>();
+				loader.SetLoadedBacksProperties(backDataModels);
+
+				Loaded = true;
+			}
 		}
 	}
 }

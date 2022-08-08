@@ -7,6 +7,8 @@ using DocumentMaker.Model;
 using DocumentMaker.Model.OfficeFiles.Human;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace DocumentMaker.Controller
@@ -176,6 +178,22 @@ namespace DocumentMaker.Controller
 					skippedFiles += file + '\n';
 				}
 				skippedFiles = skippedFiles.Substring(0, skippedFiles.Length - 1);
+			}
+		}
+
+		public void LoadFiles()
+		{
+			model.LoadFiles();
+		}
+
+		public void SetDataFromFile(DmxFile file)
+		{
+			TemplateType = file.TemplateType;
+			SelectedHuman = file.SelectedHuman;
+			BackDataControllers.Clear();
+			foreach(BackDataModel model in file.BackDataModels)
+			{
+				BackDataControllers.Add(new BackDataController(model));
 			}
 		}
 	}
