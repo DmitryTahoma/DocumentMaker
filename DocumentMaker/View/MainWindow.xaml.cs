@@ -300,6 +300,16 @@ namespace DocumentMaker
 			}
 		}
 
+		private void CloseFileClick(object sender, RoutedEventArgs e)
+		{
+			int index = OpenedFilesComboBox.SelectedIndex;
+			if (index != -1 && OpenedFilesComboBox.SelectedItem is DmxFile file)
+			{
+				controller.CloseFile(file);
+				OpenedFilesComboBox.SelectedIndex = OpenedFilesComboBox.Items.Count <= index ? index - 1 : index;
+			}
+		}
+
 		private void UpdateViewBackData()
 		{
 			foreach (UIElement control in BacksData.Children)

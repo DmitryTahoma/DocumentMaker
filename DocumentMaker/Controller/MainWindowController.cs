@@ -196,5 +196,10 @@ namespace DocumentMaker.Controller
 				BackDataControllers.Add(new BackDataController(model));
 			}
 		}
+
+		public void CloseFile(DmxFile file)
+		{
+			model.CloseFile(file);
+		}
 	}
 }

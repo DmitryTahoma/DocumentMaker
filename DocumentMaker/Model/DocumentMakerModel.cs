@@ -180,5 +180,10 @@ namespace DocumentMaker.Model
 				}
 			}
 		}
+
+		public void CloseFile(DmxFile file)
+		{
+			openedFilesList.Remove(file);
+		}
 	}
 }
