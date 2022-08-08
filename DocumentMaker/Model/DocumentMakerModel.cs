@@ -9,6 +9,7 @@ using DocumentMaker.Resources;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 
 namespace DocumentMaker.Model
 {
@@ -132,9 +133,33 @@ namespace DocumentMaker.Model
 				List<DmxFile> adding = new List<DmxFile>();
 				foreach (string file in files)
 				{
+					if (openedFilesList.Where(f => f.FullName == file).Count() > 0) continue;
+
 					if (File.Exists(file) && file.EndsWith(DmxFile.Extension))
 					{
-						adding.Add(new DmxFile(file));
+						bool isAdd = true;
+						DmxFile dmxFile = new DmxFile(file);
+
+						IList<DmxFile> fileList = openedFilesList.Where(f => f.Name == dmxFile.Name).ToList();
+						foreach(DmxFile f in fileList)
+						{
+							if(f.FullName == dmxFile.FullName)
+							{
+								isAdd = false;
+								break;
+							}
+						}
+
+						if(isAdd)
+						{
+							adding.Add(dmxFile);
+							dmxFile.ShowFullName = fileList.Count > 0;
+							
+							foreach(DmxFile f in fileList)
+							{
+								f.ShowFullName = true;
+							}
+						}
 					}
 					else
 					{

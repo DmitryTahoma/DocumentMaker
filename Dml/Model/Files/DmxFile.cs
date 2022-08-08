@@ -24,6 +24,7 @@ namespace Dml.Model.Files
 		public string FullName { get; private set; }
 		public string Name => Path.GetFileName(FullName);
 		public bool Loaded { get; private set; }
+		public bool ShowFullName { get; set; }
 
 		#region Loaded data
 
@@ -35,7 +36,7 @@ namespace Dml.Model.Files
 
 		public override string ToString()
 		{
-			return Name;
+			return ShowFullName ? FullName : Name;
 		}
 
 		public void Load()
