@@ -6,6 +6,7 @@ using DocumentMaker.Controller;
 using DocumentMaker.Model.OfficeFiles.Human;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Forms;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -340,6 +341,42 @@ namespace DocumentMaker
 					MessageBoxButtons.OK,
 					MessageBoxIcon.Error);
 			}
+		}
+
+		private void WindowPreviewDrop(object sender, System.Windows.DragEventArgs e)
+		{
+			string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
+			OpenFiles(filenames);
+			e.Handled = true;
+		}
+
+		private void WindowDragEnter(object sender, System.Windows.DragEventArgs e)
+		{
+			bool isCorrect = true;
+
+			if(e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop, true))
+			{
+				string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
+				foreach(string filename in filenames)
+				{
+					if(!File.Exists(filename))
+					{
+						isCorrect = false;
+						break;
+					}
+					FileInfo info = new FileInfo(filename);
+					if(info.Extension != DmxFile.Extension)
+					{
+						isCorrect = false;
+						break;
+					}
+				}
+			}
+			if (isCorrect == true)
+				e.Effects = System.Windows.DragDropEffects.All;
+			else
+				e.Effects = System.Windows.DragDropEffects.None;
+			e.Handled = true;
 		}
 	}
 }

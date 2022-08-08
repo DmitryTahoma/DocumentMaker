@@ -11,8 +11,12 @@
     Height="700"
     MinWidth="700"
     MinHeight="300"
+    AllowDrop="True"
     Closing="WindowClosing"
+    DragEnter="WindowDragEnter"
     Loaded="WindowLoaded"
+    PreviewDragOver="WindowDragEnter"
+    PreviewDrop="WindowPreviewDrop"
     mc:Ignorable="d">
     <ScrollViewer>
         <Grid>
