@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 
 namespace DocumentMaker.Model
 {
@@ -33,6 +34,16 @@ namespace DocumentMaker.Model
 			humanFullNameList = new ObservableRangeCollection<HumanData>();
 			openedFilesList = new ObservableRangeCollection<DmxFile>();
 		}
+
+		#region Window settings
+
+		public double WindowTop { get; set; } = 0;
+		public double WindowLeft { get; set; } = 0;
+		public double WindowHeight { get; set; } = 700;
+		public double WindowWidth { get; set; } = 1000;
+		public WindowState WindowState { get; set; } = WindowState.Maximized;
+
+		#endregion
 
 		public IList<DmxFile> OpenedFilesList => openedFilesList;
 		public DocumentTemplateType TemplateType { get; set; }

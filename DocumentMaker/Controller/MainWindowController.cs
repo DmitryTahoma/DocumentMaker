@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Windows;
 
 namespace DocumentMaker.Controller
 {
@@ -31,6 +32,16 @@ namespace DocumentMaker.Controller
 
 			openFilesLater = args;
 		}
+
+		#region Window settings
+
+		public double WindowTop { get => model.WindowTop; set => model.WindowTop = value; }
+		public double WindowLeft { get => model.WindowLeft; set => model.WindowLeft = value; }
+		public double WindowHeight { get => model.WindowHeight; set => model.WindowHeight = value; }
+		public double WindowWidth { get => model.WindowWidth; set => model.WindowWidth = value; }
+		public WindowState WindowState { get => model.WindowState; set => model.WindowState = value; }
+
+		#endregion
 
 		public IList<DmxFile> OpenedFilesList => model.OpenedFilesList;
 		public DocumentTemplateType TemplateType { get => model.TemplateType; set => model.TemplateType = value; }

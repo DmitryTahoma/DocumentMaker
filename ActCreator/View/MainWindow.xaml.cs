@@ -30,6 +30,8 @@ namespace ActCreator
 		public MainWindow()
 		{
 			controller = new MainWindowController();
+			controller.Load();
+			SetWindowSettingsFromController();
 
 			InitializeComponent();
 
@@ -66,6 +68,12 @@ namespace ActCreator
 
 		private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
+			controller.WindowTop = Top;
+			controller.WindowLeft = Left;
+			controller.WindowHeight = Height;
+			controller.WindowWidth = Width;
+			controller.WindowState = WindowState == WindowState.Minimized ? WindowState.Normal : WindowState;
+
 			controller.Save();
 		}
 
@@ -73,8 +81,6 @@ namespace ActCreator
 		{
 			if (controller != null)
 			{
-				controller.Load();
-
 				DocumentTemplateComboBox.SelectedIndex = (int)controller.TemplateType;
 				HumanFullNameComboBox.Text = controller.SelectedHuman;
 
@@ -144,6 +150,15 @@ namespace ActCreator
 			}
 			DataFooter.SetViewByTemplate(controller.TemplateType);
 			DataHeader.SetViewByTemplate(controller.TemplateType);
+		}
+
+		private void SetWindowSettingsFromController()
+		{
+			Top = controller.WindowTop;
+			Left = controller.WindowLeft;
+			Height = controller.WindowHeight;
+			Width = controller.WindowWidth;
+			WindowState = controller.WindowState;
 		}
 	}
 }

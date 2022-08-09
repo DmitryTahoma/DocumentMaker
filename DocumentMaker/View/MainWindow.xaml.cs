@@ -55,6 +55,8 @@ namespace DocumentMaker
 		public MainWindow(string[] args)
 		{
 			controller = new MainWindowController(args);
+			controller.Load();
+			SetWindowSettingsFromController();
 
 			InitializeComponent();
 
@@ -194,6 +196,12 @@ namespace DocumentMaker
 
 		private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
+			controller.WindowTop = Top;
+			controller.WindowLeft = Left;
+			controller.WindowHeight = Height;
+			controller.WindowWidth = Width;
+			controller.WindowState = WindowState == WindowState.Minimized ? WindowState.Normal : WindowState;
+
 			controller.Save();
 		}
 
@@ -201,8 +209,6 @@ namespace DocumentMaker
 		{
 			if (controller != null)
 			{
-				controller.Load();
-
 				SetDataFromController();
 				AddLoadedBackData();
 				UpdateViewBackData();
@@ -440,6 +446,15 @@ namespace DocumentMaker
 					break;
 				}
 			}
+		}
+
+		private void SetWindowSettingsFromController()
+		{
+			Top = controller.WindowTop;
+			Left = controller.WindowLeft;
+			Height = controller.WindowHeight;
+			Width = controller.WindowWidth;
+			WindowState = controller.WindowState;
 		}
 	}
 }

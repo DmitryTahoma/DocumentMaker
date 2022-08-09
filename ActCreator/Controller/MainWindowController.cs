@@ -6,6 +6,7 @@ using Dml.Model.Template;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Windows;
 
 namespace ActCreator.Controller
 {
@@ -23,6 +24,16 @@ namespace ActCreator.Controller
 			validator = new StringValidator();
 			BackDataControllers = new List<BackDataController>();
 		}
+
+		#region Window settings
+
+		public double WindowTop { get => model.WindowTop; set => model.WindowTop = value; }
+		public double WindowLeft { get => model.WindowLeft; set => model.WindowLeft = value; }
+		public double WindowHeight { get => model.WindowHeight; set => model.WindowHeight = value; }
+		public double WindowWidth { get => model.WindowWidth; set => model.WindowWidth = value; }
+		public WindowState WindowState { get => model.WindowState; set => model.WindowState = value; }
+
+		#endregion
 
 		public DocumentTemplateType TemplateType { get => model.TemplateType; set => model.TemplateType = value; }
 		public string SelectedHuman { get => model.SelectedHuman; set => model.SelectedHuman = value; }

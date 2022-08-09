@@ -6,6 +6,7 @@ using Dml.Model.Template;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows;
 
 namespace ActCreator.Model
 {
@@ -25,6 +26,16 @@ namespace ActCreator.Model
 			};
 			humanFullNameList = new ObservableRangeCollection<string>();
 		}
+
+		#region Window settings
+
+		public double WindowTop { get; set; } = 0;
+		public double WindowLeft { get; set; } = 0;
+		public double WindowHeight { get; set; } = 700;
+		public double WindowWidth { get; set; } = 1000;
+		public WindowState WindowState { get; set; } = WindowState.Maximized;
+
+		#endregion
 
 		public DocumentTemplateType TemplateType { get; set; }
 		public string SelectedHuman { get; set; }

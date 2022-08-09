@@ -7,8 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="WindowContext"
     Title="DocumentMaker"
-    Width="1000"
-    Height="700"
     MinWidth="700"
     MinHeight="300"
     AllowDrop="True"
