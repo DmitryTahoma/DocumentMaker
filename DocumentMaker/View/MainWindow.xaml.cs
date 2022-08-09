@@ -355,6 +355,7 @@ namespace DocumentMaker
 		private void LoadFiles()
 		{
 			controller.LoadFiles();
+			SetSelectedFile(controller.GetSelectedFileName());
 		}
 
 		private void WindowPreviewDrop(object sender, System.Windows.DragEventArgs e)
@@ -403,6 +404,7 @@ namespace DocumentMaker
 				controller.SetDataFromFile(selectedFile);
 				SetDataFromController();
 				AddLoadedBackData();
+				controller.SetSelectedFile(selectedFile);
 			}
 		}
 

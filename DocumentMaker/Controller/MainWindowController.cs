@@ -201,5 +201,15 @@ namespace DocumentMaker.Controller
 		{
 			model.CloseFile(file);
 		}
+
+		public void SetSelectedFile(DmxFile file)
+		{
+			model.SetSelectedFile(file);
+		}
+
+		public string GetSelectedFileName()
+		{
+			return model.GetSelectedFileName();
+		}
 	}
 }

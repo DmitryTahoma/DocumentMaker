@@ -7,5 +7,8 @@
 		public static string NodeAttributeName { get => "Value"; }
 		public static string NodeAttributeDescriptionName { get => "Description"; }
 		public static string HumanNodeName { get => "Human"; }
+		public static string DmxFileNodeName { get => "DmxFile"; }
+		public static string DmxFileFullNameNodeName { get => "FullName"; }
+		public static string DmxFileBackNodeName { get => "DmxBackData"; }
 	}
 }

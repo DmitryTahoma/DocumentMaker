@@ -62,6 +62,12 @@ namespace DocumentMaker.Model
 				saver.AppendAllBackProperties(backDataModel);
 				saver.PushBackNode();
 			}
+			foreach(DmxFile file in openedFilesList)
+			{
+				saver.CreateDmxFileNode();
+				saver.AppendAllDmxFileProperties(file);
+				saver.PushDmxFileNode();
+			}
 
 			saver.Save(path);
 		}
@@ -75,6 +81,7 @@ namespace DocumentMaker.Model
 			{
 				loader.SetLoadedProperties(this);
 				loader.SetLoadedBacksProperties(backModels);
+				loader.SetLoadedDmxFiles(openedFilesList);
 			}
 		}
 
@@ -184,6 +191,30 @@ namespace DocumentMaker.Model
 		public void CloseFile(DmxFile file)
 		{
 			openedFilesList.Remove(file);
+		}
+
+		public void SetSelectedFile(DmxFile file)
+		{
+			foreach(DmxFile dmxFile in openedFilesList)
+			{
+				dmxFile.Selected = dmxFile == file;
+			}
+		}
+
+		public string GetSelectedFileName()
+		{
+			if (openedFilesList.Count > 0)
+			{
+				foreach (DmxFile dmxFile in openedFilesList)
+				{
+					if (dmxFile.Selected)
+					{
+						return dmxFile.FullName;
+					}
+				}
+				return openedFilesList[0].FullName;
+			}
+			return null;
 		}
 	}
 }

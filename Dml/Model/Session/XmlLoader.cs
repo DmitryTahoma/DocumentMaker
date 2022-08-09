@@ -1,4 +1,5 @@
 ﻿using Dml.Controller.Validation;
+using Dml.Model.Files;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,11 +36,14 @@ namespace Dml.Model.Session
 
 		public void SetLoadedBacksProperties(List<BackDataModel> backModels)
 		{
+			SetLoadedBacksProperties(xml.DocumentElement, XmlConfNames.BackNodeName, backModels);
+		}
+
+		private void SetLoadedBacksProperties(XmlElement root, string backNodeName, List<BackDataModel> backModels)
+		{
 			backModels.Clear();
 
-			XmlElement root = xml.DocumentElement;
-
-			XmlNodeList nodeList = root.GetElementsByTagName(XmlConfNames.BackNodeName);
+			XmlNodeList nodeList = root.GetElementsByTagName(backNodeName);
 			foreach (XmlElement elem in nodeList)
 			{
 				BackDataModel model = new BackDataModel();
@@ -63,6 +67,31 @@ namespace Dml.Model.Session
 			humans.AddRange(tempHumans.OrderBy(x => x));
 		}
 
+		public void SetLoadedDmxFiles(ObservableRangeCollection<DmxFile> dmxFiles)
+		{
+			List<DmxFile> tempDmxFiles = new List<DmxFile>();
+			XmlElement root = xml.DocumentElement;
+			XmlNodeList nodeList = root.GetElementsByTagName(XmlConfNames.DmxFileNodeName);
+			foreach(XmlElement elem in nodeList)
+			{
+				XmlNodeList fullnames = elem.GetElementsByTagName(XmlConfNames.DmxFileFullNameNodeName);
+				if(fullnames.Count > 0)
+				{
+					XmlElement fullNameNode = fullnames[0] as XmlElement;
+					if(fullNameNode != null && fullNameNode.HasAttribute(XmlConfNames.NodeAttributeName))
+					{
+						DmxFile dmxFile = new DmxFile(fullNameNode.GetAttribute(XmlConfNames.NodeAttributeName));
+						SetLoadedProperties(elem, dmxFile);
+						List<BackDataModel> backDataModels = new List<BackDataModel>();
+						SetLoadedBacksProperties(elem, XmlConfNames.DmxFileBackNodeName, backDataModels);
+						dmxFile.SetLoadedBackData(backDataModels);
+						tempDmxFiles.Add(dmxFile);
+					}
+				}
+			}
+			dmxFiles.AddRange(tempDmxFiles);
+		}
+
 		private void SetLoadedProperties(XmlElement root, object model)
 		{
 			PropertyInfo[] properties = model.GetType().GetProperties();
@@ -73,7 +102,7 @@ namespace Dml.Model.Session
 				{
 					string value = (nodeList[0] as XmlElement).GetAttribute(XmlConfNames.NodeAttributeName);
 
-					if (property.CanWrite)
+					if (property.CanWrite && (property.SetMethod.Attributes & MethodAttributes.Public) == MethodAttributes.Public)
 					{
 						if (property.PropertyType == typeof(string))
 						{

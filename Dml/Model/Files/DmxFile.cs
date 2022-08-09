@@ -23,13 +23,14 @@ namespace Dml.Model.Files
 
 		public string FullName { get; private set; }
 		public string Name => Path.GetFileName(FullName);
+		public bool Selected { get; set; }
 		public bool Loaded { get; private set; }
 		public bool ShowFullName { get; set; }
 
 		#region Loaded data
 
-		public DocumentTemplateType TemplateType { get; private set; }
-		public string SelectedHuman { get; private set; }
+		public DocumentTemplateType TemplateType { get; set; }
+		public string SelectedHuman { get; set; }
 		public IList<BackDataModel> BackDataModels { get => backDataModels; }
 
 		#endregion
@@ -51,6 +52,12 @@ namespace Dml.Model.Files
 
 				Loaded = true;
 			}
+		}
+
+		public void SetLoadedBackData(IList<BackDataModel> backDataModels)
+		{
+			this.backDataModels = new List<BackDataModel>(backDataModels);
+			Loaded = true;
 		}
 	}
 }
