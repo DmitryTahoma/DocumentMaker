@@ -191,6 +191,13 @@ namespace DocumentMaker.Model
 		public void CloseFile(DmxFile file)
 		{
 			openedFilesList.Remove(file);
+
+			IEnumerable<DmxFile> fileList = openedFilesList.Where(x => x.Name == file.Name);
+			bool showFullName = fileList.Count() != 1;
+			foreach(DmxFile dmxFile in fileList)
+			{
+				dmxFile.ShowFullName = showFullName;
+			}
 		}
 
 		public void SetSelectedFile(DmxFile file)
