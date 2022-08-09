@@ -380,11 +380,14 @@ namespace DocumentMaker
 
 		private void WindowPreviewDrop(object sender, System.Windows.DragEventArgs e)
 		{
-			string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
-			OpenFiles(filenames);
-			LoadFiles();
-			SetSelectedFile(filenames.Last(filename => filename.EndsWith(DmxFile.Extension)));
-			e.Handled = true;
+			if (e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop, true))
+			{
+				string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
+				OpenFiles(filenames);
+				LoadFiles();
+				SetSelectedFile(filenames.Last(filename => filename.EndsWith(DmxFile.Extension)));
+				e.Handled = true;
+			}
 		}
 
 		private void WindowDragEnter(object sender, System.Windows.DragEventArgs e)
