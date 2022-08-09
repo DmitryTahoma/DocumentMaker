@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentMaker.Model.OfficeFiles.Human;
+using System.IO;
 using System.Linq;
 using System.Xml;
 
@@ -11,6 +12,8 @@ namespace DocumentMaker.Model.OfficeFiles
 	{
 		public void LoadHumans(string path, ObservableRangeCollection<HumanData> humansData)
 		{
+			if (!File.Exists(path)) return;
+
 			humansData.Clear();
 
 			const char startColId = 'A';
