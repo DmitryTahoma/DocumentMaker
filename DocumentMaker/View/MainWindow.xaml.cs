@@ -223,6 +223,12 @@ namespace DocumentMaker
 			{
 				controller.TemplateType = documentTemplate.Type;
 				UpdateViewBackData();
+
+				if(OpenedFilesComboBox != null
+					&& OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+				{
+					selectedFile.TemplateType = documentTemplate.Type;
+				}
 			}
 		}
 
@@ -234,6 +240,12 @@ namespace DocumentMaker
 			{
 				controller.SetHuman(humanData);
 				SetDataFromController();
+
+				if (OpenedFilesComboBox != null
+					&& OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+				{
+					selectedFile.SelectedHuman = humanData.Name;
+				}
 			}
 		}
 
@@ -404,7 +416,8 @@ namespace DocumentMaker
 				controller.SetDataFromFile(selectedFile);
 				SetDataFromController();
 				AddLoadedBackData();
-				controller.SetSelectedFile(selectedFile);
+				controller.SetSelectedFile(selectedFile); 
+				UpdateViewBackData();
 			}
 		}
 
