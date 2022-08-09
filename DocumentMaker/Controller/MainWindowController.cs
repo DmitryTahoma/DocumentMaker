@@ -21,11 +21,15 @@ namespace DocumentMaker.Controller
 		private readonly StringValidator validator;
 		private readonly DocumentMakerModel model;
 
-		public MainWindowController()
+		private string[] openFilesLater;
+
+		public MainWindowController(string[] args)
 		{
 			validator = new StringValidator();
 			model = new DocumentMakerModel();
 			BackDataControllers = new List<BackDataController>();
+
+			openFilesLater = args;
 		}
 
 		public IList<DmxFile> OpenedFilesList => model.OpenedFilesList;
@@ -210,6 +214,13 @@ namespace DocumentMaker.Controller
 		public string GetSelectedFileName()
 		{
 			return model.GetSelectedFileName();
+		}
+
+		public string[] GetOpenLaterFiles()
+		{
+			string[] res = openFilesLater;
+			openFilesLater = null;
+			return res;
 		}
 	}
 }

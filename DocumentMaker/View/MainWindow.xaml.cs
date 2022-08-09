@@ -52,9 +52,9 @@ namespace DocumentMaker
 		private readonly FolderBrowserDialog folderBrowserDialog;
 		private readonly OpenFileDialog openFileDialog;
 
-		public MainWindow()
+		public MainWindow(string[] args)
 		{
-			controller = new MainWindowController();
+			controller = new MainWindowController(args);
 
 			InitializeComponent();
 
@@ -74,11 +74,6 @@ namespace DocumentMaker
 
 			folderBrowserDialog = new FolderBrowserDialog();
 			openFileDialog = new OpenFileDialog() { Multiselect = true, Filter = "DocumentMaker files (*" + DmxFile.Extension + ")|*" + DmxFile.Extension };
-		}
-
-		public MainWindow(string[] args) : this()
-		{
-			OpenFiles(args);
 		}
 
 		public IList<DmxFile> OpenedFilesList => controller.OpenedFilesList;
@@ -211,7 +206,13 @@ namespace DocumentMaker
 				SetDataFromController();
 				AddLoadedBackData();
 				UpdateViewBackData();
+				string[] files = controller.GetOpenLaterFiles();
+				OpenFiles(files);
 				LoadFiles();
+				if(files != null && files.Length > 0)
+				{
+					SetSelectedFile(files.Last());
+				}
 			}
 		}
 
