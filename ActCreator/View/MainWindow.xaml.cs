@@ -1,5 +1,6 @@
 ﻿using ActCreator.Controller;
 using Dml.Controller;
+using Dml.Controller.Validation;
 using Dml.Controls;
 using Dml.Model.Template;
 using System.Collections.Generic;
@@ -159,6 +160,7 @@ namespace ActCreator
 			Height = controller.WindowHeight;
 			Width = controller.WindowWidth;
 			WindowState = controller.WindowState;
+			WindowValidator.MoveToValidPosition(this);
 		}
 	}
 }

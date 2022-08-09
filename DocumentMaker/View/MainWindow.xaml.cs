@@ -1,4 +1,5 @@
 ﻿using Dml.Controller;
+using Dml.Controller.Validation;
 using Dml.Controls;
 using Dml.Model.Files;
 using Dml.Model.Template;
@@ -455,6 +456,7 @@ namespace DocumentMaker
 			Height = controller.WindowHeight;
 			Width = controller.WindowWidth;
 			WindowState = controller.WindowState;
+			WindowValidator.MoveToValidPosition(this);
 		}
 	}
 }

@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Controller\BackDataController.cs" />
     <Compile Include="Controller\Validation\StringValidator.cs" />
+    <Compile Include="Controller\Validation\WindowValidator.cs" />
     <Compile Include="Controls\BackData.xaml.cs">
       <DependentUpon>BackData.xaml</DependentUpon>
     </Compile>
