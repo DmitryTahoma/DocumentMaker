@@ -73,10 +73,13 @@
                     Style="{StaticResource TextBoxNumberValidation}"
                     Text="{Binding ElementName=BackDataContext, Path=CountRegionsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <TextBox
-                    x:Name="GameNameInput"
+                <ComboBox
+                    x:Name="GameNameComboBox"
                     Grid.Column="3"
-                    Style="{StaticResource TextBoxFreeValidation}"
+                    IsEditable="True"
+                    IsTextSearchEnabled="True"
+                    ItemsSource="{Binding ElementName=BackDataContext, Path=GameNameList, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource ChooseTemplateComboBox}"
                     Text="{Binding ElementName=BackDataContext, Path=GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                 <CheckBox

@@ -1,4 +1,5 @@
 ﻿using Dml.Model.Back;
+using Dml.Model.Session;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -7,6 +8,7 @@ namespace Dml.Model
 	public class BackDataModel
 	{
 		private readonly ObservableCollection<BackDataType> dataTypesList;
+		private ObservableRangeCollection<string> gameNameList;
 
 		public BackDataModel()
 		{
@@ -21,6 +23,7 @@ namespace Dml.Model
 				new BackDataType { Name = "Крафт", Type = BackType.Craft },
 				new BackDataType { Name = "Інше", Type = BackType.Other },
 			};
+			gameNameList = new ObservableRangeCollection<string>();
 		}
 
 		public uint Id { get; set; }
@@ -28,11 +31,21 @@ namespace Dml.Model
 		public string BackNumberText { get; set; }
 		public string BackName { get; set; }
 		public string BackCountRegionsText { get; set; }
+		public IList<string> GameNameList => gameNameList;
 		public string GameName { get; set; }
 		public bool IsRework { get; set; }
 		public bool IsSketch { get; set; }
 		public string SpentTimeText { get; set; }
 		public string OtherText { get; set; }
 		public IList<BackDataType> BackDataTypesList => dataTypesList;
+
+		public void LoadGameNames(string path)
+		{
+			XmlLoader loader = new XmlLoader();
+			if(loader.TryLoad(path))
+			{
+				loader.SetLoadedGameNames(gameNameList);
+			}
+		}
 	}
 }

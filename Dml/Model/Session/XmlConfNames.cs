@@ -10,5 +10,6 @@
 		public static string DmxFileNodeName { get => "DmxFile"; }
 		public static string DmxFileFullNameNodeName { get => "FullName"; }
 		public static string DmxFileBackNodeName { get => "DmxBackData"; }
+		public static string ProjectNameNodeName { get => "ProjectName"; }
 	}
 }

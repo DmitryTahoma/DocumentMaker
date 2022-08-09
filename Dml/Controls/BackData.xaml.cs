@@ -99,6 +99,8 @@ namespace Dml.Controls
 			}
 		}
 
+		public IList<string> GameNameList => controller.GameNameList;
+
 		public string GameName
 		{
 			get => (string)GetValue(GameNameProperty);
@@ -209,7 +211,7 @@ namespace Dml.Controls
 			BackNumberTextInput.Text = controller.BackNumberText;
 			BackNameInput.Text = controller.BackName;
 			CountRegionsTextInput.Text = controller.BackCountRegionsText;
-			GameNameInput.Text = controller.GameName;
+			GameNameComboBox.Text = controller.GameName;
 			IsReworkCheckBox.IsChecked = controller.IsRework;
 			IsSketchCheckBox.IsChecked = controller.IsSketch;
 			TimeTextInput.Text = controller.SpentTimeText;

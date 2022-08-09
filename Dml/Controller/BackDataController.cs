@@ -2,11 +2,15 @@
 using Dml.Model;
 using Dml.Model.Back;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 namespace Dml.Controller
 {
 	public class BackDataController
 	{
+		private const string gameNamesFile = "projectnames.xml";
+
 		private readonly StringValidator validator;
 		private readonly BackDataModel model;
 
@@ -14,6 +18,7 @@ namespace Dml.Controller
 		{
 			validator = new StringValidator();
 			model = new BackDataModel();
+			Load();
 		}
 
 		public BackDataController(BackDataModel _model)
@@ -27,6 +32,7 @@ namespace Dml.Controller
 			{
 				model = new BackDataModel();
 			}
+			Load();
 		}
 
 		public uint Id { get => model.Id; set => model.Id = value; }
@@ -34,6 +40,7 @@ namespace Dml.Controller
 		public string BackNumberText { get => model.BackNumberText; set => model.BackNumberText = value; }
 		public string BackName { get => model.BackName; set => model.BackName = value; }
 		public string BackCountRegionsText { get => model.BackCountRegionsText; set => model.BackCountRegionsText = value; }
+		public IList<string> GameNameList => model.GameNameList;
 		public string GameName { get => model.GameName; set => model.GameName = value; }
 		public bool IsRework { get => model.IsRework; set => model.IsRework = value; }
 		public bool IsSketch { get => model.IsSketch; set => model.IsSketch = value; }
@@ -71,6 +78,12 @@ namespace Dml.Controller
 				return true;
 
 			return false;
+		}
+
+		public void Load()
+		{
+			string gameNamesFullpath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), gameNamesFile);
+			model.LoadGameNames(gameNamesFullpath);
 		}
 	}
 }

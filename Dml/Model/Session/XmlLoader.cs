@@ -67,6 +67,21 @@ namespace Dml.Model.Session
 			humans.AddRange(tempHumans.OrderBy(x => x));
 		}
 
+		public void SetLoadedGameNames(ObservableRangeCollection<string> gameNameList)
+		{
+			List<string> tempGameNames = new List<string>();
+
+			XmlElement root = xml.DocumentElement;
+			XmlNodeList nodeList = root.GetElementsByTagName(XmlConfNames.ProjectNameNodeName);
+			foreach(XmlElement elem in nodeList)
+			{
+				tempGameNames.Add(StringValidator.Trim(elem.InnerText));
+			}
+
+			gameNameList.Clear();
+			gameNameList.AddRange(tempGameNames.OrderBy(x => x));
+		}
+
 		public void SetLoadedDmxFiles(ObservableRangeCollection<DmxFile> dmxFiles)
 		{
 			List<DmxFile> tempDmxFiles = new List<DmxFile>();
