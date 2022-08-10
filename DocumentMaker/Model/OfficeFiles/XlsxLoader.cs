@@ -42,11 +42,11 @@ namespace DocumentMaker.Model.OfficeFiles
 							string text;
 							if (c.DataType != null && c.DataType == CellValues.SharedString && int.TryParse(c.CellValue.Text, out int strId))
 							{
-								text = sharedStringTable.ChildElements[strId].InnerText;
+								text = sharedStringTable.ChildElements[strId]?.InnerText;
 							}
 							else
 							{
-								text = c.CellValue.Text;
+								text = c.CellValue?.Text;
 							}
 							humanData.SetData(curColId, text);
 							++curColId;

@@ -156,14 +156,14 @@
                         x:Name="ContractReworkNumberTextInput"
                         Grid.Column="0"
                         InputReadOnly="True"
-                        InputText="{Binding ElementName=WindowInfo, Path=ContractNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        InputText="{Binding ElementName=WindowInfo, Path=ContractReworkNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource InputWithTextFreeValidation}"
                         TextInfo="Номер договору:" />
                     <dml:InputWithText
                         x:Name="ContractReworkDateTextInput"
                         Grid.Column="1"
                         InputReadOnly="True"
-                        InputText="{Binding ElementName=WindowInfo, Path=ContractDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        InputText="{Binding ElementName=WindowInfo, Path=ContractReworkDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource InputWithTextFreeValidation}"
                         TextInfo="Дата складання договору:" />
                 </Grid>
