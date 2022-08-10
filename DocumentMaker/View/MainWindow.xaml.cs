@@ -5,6 +5,7 @@ using Dml.Model.Files;
 using Dml.Model.Template;
 using DocumentMaker.Controller;
 using DocumentMaker.Model.OfficeFiles.Human;
+using DocumentMaker.View;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -26,28 +27,12 @@ namespace DocumentMaker
 		public static readonly DependencyProperty TechnicalTaskDateTextProperty;
 		public static readonly DependencyProperty ActDateTextProperty;
 		public static readonly DependencyProperty AdditionNumTextProperty;
-		public static readonly DependencyProperty SelectedHumanProperty;
-		public static readonly DependencyProperty HumanIdTextProperty;
-		public static readonly DependencyProperty AddressTextProperty;
-		public static readonly DependencyProperty PaymentAccountTextProperty;
-		public static readonly DependencyProperty BankNameProperty;
-		public static readonly DependencyProperty MfoTextProperty;
-		public static readonly DependencyProperty ContractNumberTextProperty;
-		public static readonly DependencyProperty ContractDateTextProperty;
 
 		static MainWindow()
 		{
-			TechnicalTaskDateTextProperty = DependencyProperty.Register("TechnicalTaskDateText", typeof(string), typeof(InputWithText));
-			ActDateTextProperty = DependencyProperty.Register("ActDateText", typeof(string), typeof(InputWithText));
-			AdditionNumTextProperty = DependencyProperty.Register("AdditionNumText", typeof(string), typeof(InputWithText));
-			SelectedHumanProperty = DependencyProperty.Register("FullHumanName", typeof(string), typeof(InputWithText));
-			HumanIdTextProperty = DependencyProperty.Register("HumanIdText", typeof(string), typeof(InputWithText));
-			AddressTextProperty = DependencyProperty.Register("AddressText", typeof(string), typeof(InputWithText));
-			PaymentAccountTextProperty = DependencyProperty.Register("PaymentAccountText", typeof(string), typeof(InputWithText));
-			BankNameProperty = DependencyProperty.Register("BankName", typeof(string), typeof(InputWithText));
-			MfoTextProperty = DependencyProperty.Register("MfoText", typeof(string), typeof(InputWithText));
-			ContractNumberTextProperty = DependencyProperty.Register("ContractNumberText", typeof(string), typeof(InputWithText));
-			ContractDateTextProperty = DependencyProperty.Register("ContractDateText", typeof(string), typeof(InputWithText));
+			TechnicalTaskDateTextProperty = DependencyProperty.Register("TechnicalTaskDateText", typeof(string), typeof(MainWindow));
+			ActDateTextProperty = DependencyProperty.Register("ActDateText", typeof(string), typeof(MainWindow));
+			AdditionNumTextProperty = DependencyProperty.Register("AdditionNumText", typeof(string), typeof(MainWindow));
 		}
 
 		private readonly MainWindowController controller;
@@ -111,88 +96,6 @@ namespace DocumentMaker
 			{
 				SetValue(AdditionNumTextProperty, value);
 				controller.AdditionNumText = value;
-			}
-		}
-
-		public string SelectedHuman
-		{
-			get => (string)GetValue(SelectedHumanProperty);
-			set
-			{
-				SetValue(SelectedHumanProperty, value);
-				controller.SelectedHuman = value;
-			}
-		}
-
-		public IList<HumanData> HumanFullNameList => controller.HumanFullNameList;
-
-		public string HumanIdText
-		{
-			get => (string)GetValue(HumanIdTextProperty);
-			set
-			{
-				SetValue(HumanIdTextProperty, value);
-				controller.HumanIdText = value;
-			}
-		}
-
-		public string AddressText
-		{
-			get => (string)GetValue(AddressTextProperty);
-			set
-			{
-				SetValue(AddressTextProperty, value);
-				controller.AddressText = value;
-			}
-		}
-
-		public string PaymentAccountText
-		{
-			get => (string)GetValue(PaymentAccountTextProperty);
-			set
-			{
-				SetValue(PaymentAccountTextProperty, value);
-				controller.PaymentAccountText = value;
-			}
-		}
-
-		public string BankName
-		{
-			get => (string)GetValue(BankNameProperty);
-			set
-			{
-				SetValue(BankNameProperty, value);
-				controller.BankName = value;
-			}
-		}
-
-		public string MfoText
-		{
-			get => (string)GetValue(MfoTextProperty);
-			set
-			{
-				SetValue(MfoTextProperty, value);
-				controller.MfoText = value;
-			}
-		}
-
-		public string ContractNumberText
-		{
-			get => (string)GetValue(ContractNumberTextProperty);
-			set
-			{
-				SetValue(ContractNumberTextProperty, value);
-				controller.ContractNumberText = value;
-			}
-		}
-
-		public string ContractDateText
-		{
-			get => (string)GetValue(ContractDateTextProperty);
-			set
-			{
-				SetValue(ContractDateTextProperty, value);
-				controller.ContractDateText = value;
 			}
 		}
 
@@ -363,14 +266,6 @@ namespace DocumentMaker
 			TechnicalTaskDateTextInput.InputText = controller.TechnicalTaskDateText;
 			ActDateTextInput.InputText = controller.ActDateText;
 			AdditionNumTextInput.InputText = controller.AdditionNumText;
-			HumanFullNameComboBox.Text = controller.SelectedHuman;
-			HumanIdTextInput.InputText = controller.HumanIdText;
-			AddressTextInput.InputText = controller.AddressText;
-			PaymentAccountTextInput.InputText = controller.PaymentAccountText;
-			BankNameInput.InputText = controller.BankName;
-			MfoTextInput.InputText = controller.MfoText;
-			ContractNumberTextInput.InputText = controller.ContractNumberText;
-			ContractDateTextInput.InputText = controller.ContractDateText;
 		}
 
 		private void OpenFiles(string[] filenames)
@@ -474,6 +369,15 @@ namespace DocumentMaker
 			Width = controller.WindowWidth;
 			WindowState = controller.WindowState;
 			WindowValidator.MoveToValidPosition(this);
+		}
+
+		private void WindowKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if(e.Key == System.Windows.Input.Key.F1)
+			{
+				if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
+					new WindowInformation(selectedFile).ShowDialog();
+			}
 		}
 	}
 }

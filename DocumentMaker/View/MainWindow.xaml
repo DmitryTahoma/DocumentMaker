@@ -12,6 +12,7 @@
     AllowDrop="True"
     Closing="WindowClosing"
     DragEnter="WindowDragEnter"
+    KeyDown="WindowKeyDown"
     Loaded="WindowLoaded"
     PreviewDragOver="WindowDragEnter"
     PreviewDrop="WindowPreviewDrop"
@@ -109,58 +110,7 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Orientation="Vertical">
-                    <TextBlock Style="{StaticResource InputWithTextLabel}" Text="Повне ім'я (ПІБ):" />
-                    <ComboBox
-                        Name="HumanFullNameComboBox"
-                        IsEditable="True"
-                        IsTextSearchEnabled="True"
-                        ItemsSource="{Binding ElementName=WindowContext, Path=HumanFullNameList, UpdateSourceTrigger=PropertyChanged}"
-                        SelectionChanged="ChangedHuman"
-                        Style="{StaticResource ChooseTemplateComboBox}"
-                        Text="{Binding ElementName=WindowContext, Path=SelectedHuman, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <dml:InputWithText
-                        x:Name="HumanIdTextInput"
-                        InputText="{Binding ElementName=WindowContext, Path=HumanIdText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource InputWithTextFreeValidation}"
-                        TextInfo="ІН:" />
-                    <dml:InputWithText
-                        x:Name="AddressTextInput"
-                        InputText="{Binding ElementName=WindowContext, Path=AddressText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource InputWithTextFreeValidation}"
-                        TextInfo="Адреса проживання:" />
-                </StackPanel>
-
-                <StackPanel Grid.Column="1" Orientation="Vertical">
-                    <dml:InputWithText
-                        x:Name="PaymentAccountTextInput"
-                        InputText="{Binding ElementName=WindowContext, Path=PaymentAccountText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource InputWithTextFreeValidation}"
-                        TextInfo="р/р:" />
-                    <dml:InputWithText
-                        x:Name="BankNameInput"
-                        InputText="{Binding ElementName=WindowContext, Path=BankName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource InputWithTextFreeValidation}"
-                        TextInfo="Банк:" />
-                    <dml:InputWithText
-                        x:Name="MfoTextInput"
-                        InputText="{Binding ElementName=WindowContext, Path=MfoText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource InputWithTextFreeValidation}"
-                        TextInfo="МФО:" />
-                </StackPanel>
-
                 <StackPanel Grid.Column="2" Orientation="Vertical">
-                    <dml:InputWithText
-                        x:Name="ContractNumberTextInput"
-                        InputText="{Binding ElementName=WindowContext, Path=ContractNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource InputWithTextFreeValidation}"
-                        TextInfo="Номер договору:" />
-                    <dml:InputWithText
-                        x:Name="ContractDateTextInput"
-                        InputText="{Binding ElementName=WindowContext, Path=ContractDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource InputWithTextFreeValidation}"
-                        TextInfo="Дата складання договору:" />
                     <Button
                         Click="ExportBtnClick"
                         Content="Зберегти"

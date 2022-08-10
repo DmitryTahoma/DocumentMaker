@@ -21,6 +21,7 @@
         <TextBlock Style="{StaticResource InputWithTextLabel}" Text="{Binding TextInfo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBox
             Background="{Binding InputBackground, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            IsReadOnly="{Binding InputReadOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             Style="{StaticResource InputWithTextInput}"
             Text="{Binding InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </StackPanel>
