@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
+using UpdaterAPI;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace DocumentMaker
@@ -220,6 +221,19 @@ namespace DocumentMaker
 				{
 					SetSelectedFile(files.Last());
 				}
+
+#if INCLUDED_UPDATER_API
+				try
+				{
+					bool _ = false;
+					UpdateInformer informer = new UpdateInformer();
+					informer.Notify(ref _);
+				}
+				catch
+				{
+					MessageBox.Show("Невозможно подключиться к шаре!", "ActCreator Update", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+				}
+#endif
 			}
 		}
 

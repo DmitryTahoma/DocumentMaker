@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Forms;
+using UpdaterAPI;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ActCreator
@@ -91,6 +92,19 @@ namespace ActCreator
 				}
 
 				UpdateViewBackData();
+
+#if INCLUDED_UPDATER_API
+				try
+				{
+					bool _ = false;
+					UpdateInformer informer = new UpdateInformer();
+					informer.Notify(ref _);
+				}
+				catch
+				{
+					MessageBox.Show("Невозможно подключиться к шаре!", "ActCreator Update", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+				}
+#endif
 			}
 		}
 
