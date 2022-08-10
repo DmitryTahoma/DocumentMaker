@@ -32,7 +32,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <Grid Grid.ColumnSpan="2">
+            <Grid Grid.ColumnSpan="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition />
@@ -57,7 +57,7 @@
                     Click="CloseFileClick"
                     Content="Закрити"
                     Style="{StaticResource BackDataAddButton}" />
-                
+
             </Grid>
 
             <StackPanel Grid.Row="1" Orientation="Vertical">
