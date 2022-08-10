@@ -11,6 +11,8 @@ namespace DocumentMaker.Model.OfficeFiles.Human
 		public string PaymentAccountText { get; set; }
 		public string ContractNumberText { get; set; }
 		public string ContractDateText { get; set; }
+		public string ContractReworkNumberText { get; set; }
+		public string ContractReworkDateText { get; set; }
 		public string AddressText { get; set; }
 		public string MfoText { get; set; }
 
@@ -28,8 +30,10 @@ namespace DocumentMaker.Model.OfficeFiles.Human
 					case 'D': PaymentAccountText = value; break;
 					case 'E': ContractNumberText = value; break;
 					case 'F': ContractDateText = value; break;
-					case 'G': AddressText = value; break;
-					case 'H': MfoText = value; break;
+					case 'G': ContractReworkNumberText = value; break;
+					case 'H': ContractReworkDateText = value; break;
+					case 'I': AddressText = value; break;
+					case 'J': MfoText = value; break;
 				}
 			}
 		}
@@ -49,6 +53,8 @@ namespace DocumentMaker.Model.OfficeFiles.Human
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PaymentAccountText);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContractNumberText);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContractDateText);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContractReworkNumberText);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContractReworkDateText);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AddressText);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(MfoText);
 			return hashCode;

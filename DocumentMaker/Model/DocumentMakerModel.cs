@@ -58,6 +58,8 @@ namespace DocumentMaker.Model
 		public string MfoText { get; set; }
 		public string ContractNumberText { get; set; }
 		public string ContractDateText { get; set; }
+		public string ContractReworkNumberText { get; set; }
+		public string ContractReworkDateText { get; set; }
 		public IList<DocumentTemplate> DocumentTemplatesList => documentTemplates;
 		public IList<HumanData> HumanFullNameList => humanFullNameList;
 		public bool HasNoMovedFiles => exporter.HasNoMovedFiles;

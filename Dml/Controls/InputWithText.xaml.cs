@@ -11,11 +11,13 @@ namespace Dml.Controls
 	{
 		public static readonly DependencyProperty InputTextProperty;
 		public static readonly DependencyProperty InputBackgroundProperty;
+		public static readonly DependencyProperty InputReadOnlyProperty;
 
 		static InputWithText()
 		{
 			InputTextProperty = DependencyProperty.Register("InputText", typeof(string), typeof(InputWithText));
 			InputBackgroundProperty = DependencyProperty.Register("InputBackground", typeof(Brush), typeof(InputWithText));
+			InputReadOnlyProperty = DependencyProperty.Register("InputReadOnly", typeof(bool), typeof(InputWithText));
 		}
 
 		public InputWithText()
@@ -36,6 +38,12 @@ namespace Dml.Controls
 		{
 			get => (Brush)GetValue(InputBackgroundProperty);
 			set => SetValue(InputBackgroundProperty, value);
+		}
+
+		public bool InputReadOnly
+		{
+			get => (bool)GetValue(InputReadOnlyProperty);
+			set => SetValue(InputReadOnlyProperty, value);
 		}
 	}
 }
