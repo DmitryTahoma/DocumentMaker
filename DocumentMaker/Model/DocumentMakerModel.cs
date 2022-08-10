@@ -46,7 +46,7 @@ namespace DocumentMaker.Model
 		#endregion
 
 		public IList<DmxFile> OpenedFilesList => openedFilesList;
-		public DocumentTemplateType TemplateType { get; set; }
+		public DocumentTemplateType TemplateType { get; set; } = DocumentTemplateType.Empty;
 		public string TechnicalTaskDateText { get; set; }
 		public string ActDateText { get; set; }
 		public string AdditionNumText { get; set; }

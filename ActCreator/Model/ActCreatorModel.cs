@@ -37,7 +37,7 @@ namespace ActCreator.Model
 
 		#endregion
 
-		public DocumentTemplateType TemplateType { get; set; }
+		public DocumentTemplateType TemplateType { get; set; } = DocumentTemplateType.Empty;
 		public string SelectedHuman { get; set; }
 		public IList<DocumentTemplate> DocumentTemplatesList => documentTemplates;
 		public IList<string> HumanFullNameList => humanFullNameList;
