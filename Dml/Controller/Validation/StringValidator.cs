@@ -40,7 +40,7 @@ namespace Dml.Controller.Validation
 				{
 					foreach (string part in parts)
 					{
-						if (string.IsNullOrWhiteSpace(part) || part.Length < 3 || !nameRegex.IsMatch(part))
+						if (string.IsNullOrWhiteSpace(part) || part.Length < 2 || !nameRegex.IsMatch(part))
 						{
 							return false;
 						}
