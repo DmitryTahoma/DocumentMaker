@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Forms;
 using UpdaterAPI;
+using UpdaterAPI.Resources;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ActCreator
@@ -94,6 +95,7 @@ namespace ActCreator
 				UpdateViewBackData();
 
 #if INCLUDED_UPDATER_API
+				AssemblyLoader.LoadWinScp();
 				try
 				{
 					bool _ = false;

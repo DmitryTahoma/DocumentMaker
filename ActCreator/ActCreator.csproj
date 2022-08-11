@@ -122,10 +122,6 @@
       <Project>{ac730979-6d09-406a-bfdf-e9f3f4d296e0}</Project>
       <Name>Dml</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DocumentMaker\DocumentMaker.csproj">
-      <Project>{B34D6BA6-7106-48F6-95D1-AB20BD880F37}</Project>
-      <Name>DocumentMaker</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
