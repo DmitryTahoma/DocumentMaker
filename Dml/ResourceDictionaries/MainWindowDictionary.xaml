@@ -21,4 +21,10 @@
         <Setter Property="FontSize" Value="15" />
     </Style>
 
+    <Style x:Key="LabelRight" TargetType="TextBlock">
+        <Setter Property="Margin" Value="10,10,10,0" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
 </ResourceDictionary>
