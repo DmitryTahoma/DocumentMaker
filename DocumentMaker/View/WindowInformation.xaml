@@ -7,14 +7,12 @@
     xmlns:local="clr-namespace:DocumentMaker.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="WindowInfo"
-    Title="WindowInformation"
+    Title="DocumentMaker | Картка людини"
     Width="800"
     Height="520"
     MinWidth="680"
     MinHeight="500"
     KeyDown="WindowKeyDown"
-    Loaded="WindowLoaded"
-    WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -22,152 +20,120 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.ColumnSpan="2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <dml:InputWithText
+            Grid.ColumnSpan="2"
+            InputReadOnly="True"
+            InputText="{Binding ElementName=WindowInfo, Path=HumanName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Style="{StaticResource InputWithTextFreeValidation}"
+            TextInfo="Повне ім'я (ПІБ):" />
+
+        <dml:InputWithText
+            x:Name="HumanIdTextInput"
+            Grid.Row="1"
+            InputReadOnly="True"
+            InputText="{Binding HumanIdText, ElementName=WindowInfo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Style="{StaticResource InputWithTextFreeValidation}"
+            TextInfo="ІНН:" />
+        <dml:InputWithText
+            x:Name="AddressTextInput"
+            Grid.Row="1"
+            Grid.Column="1"
+            InputText="{Binding AddressText, ElementName=WindowInfo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Style="{StaticResource InputWithTextFreeValidation}"
+            TextInfo="Адреса проживання:" />
+
+        <TextBlock
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            Style="{StaticResource InputWithTextLabel}"
+            Text="Банківські реквізити" />
+
+        <Grid Grid.Row="3" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5*" />
-                <ColumnDefinition Width="5*" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.5*" />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <StackPanel
-                Grid.Row="0"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Orientation="Vertical">
-                <TextBlock Style="{StaticResource InputWithTextLabel}" Text="Повне ім'я (ПІБ):" />
-                <ComboBox
-                    Name="HumanFullNameComboBox"
-                    IsTextSearchEnabled="True"
-                    ItemsSource="{Binding ElementName=WindowInfo, Path=HumanFullNameList, UpdateSourceTrigger=PropertyChanged}"
-                    SelectionChanged="ChangedHuman"
-                    Style="{StaticResource ChooseTemplateComboBox}"
-                    Text="{Binding ElementName=WindowInfo, Path=SelectedHuman, UpdateSourceTrigger=PropertyChanged}" />
-            </StackPanel>
-
             <dml:InputWithText
-                x:Name="HumanIdTextInput"
-                Grid.Row="1"
-                Grid.Column="0"
-                Grid.ColumnSpan="1"
+                x:Name="BankNameInput"
                 InputReadOnly="True"
-                InputText="{Binding HumanIdText, ElementName=WindowInfo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                InputText="{Binding ElementName=WindowInfo, Path=BankName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Style="{StaticResource InputWithTextFreeValidation}"
-                TextInfo="ІНН:" />
+                TextInfo="Банк:" />
             <dml:InputWithText
-                x:Name="AddressTextInput"
-                Grid.Row="1"
-                Grid.Column="2"
-                Grid.ColumnSpan="3"
-                InputText="{Binding AddressText, ElementName=WindowInfo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                x:Name="MfoTextInput"
+                Grid.Column="1"
+                InputReadOnly="True"
+                InputText="{Binding ElementName=WindowInfo, Path=MfoText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Style="{StaticResource InputWithTextFreeValidation}"
-                TextInfo="Адреса проживання:" />
+                TextInfo="МФО:" />
+            <dml:InputWithText
+                x:Name="PaymentAccountTextInput"
+                Grid.Column="2"
+                InputText="{Binding ElementName=WindowInfo, Path=PaymentAccountText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource InputWithTextFreeValidation}"
+                TextInfo="р/р:" />
 
-            <StackPanel
-                Grid.Row="2"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Orientation="Vertical">
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    Style="{StaticResource InputWithTextLabel}"
-                    Text="Банківські реквізити" />
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="0.5*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <dml:InputWithText
-                        x:Name="BankNameInput"
-                        Grid.Column="0"
-                        InputReadOnly="True"
-                        InputText="{Binding ElementName=WindowInfo, Path=BankName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource InputWithTextFreeValidation}"
-                        TextInfo="Банк:" />
-                    <dml:InputWithText
-                        x:Name="MfoTextInput"
-                        Grid.Column="1"
-                        InputReadOnly="True"
-                        InputText="{Binding ElementName=WindowInfo, Path=MfoText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource InputWithTextFreeValidation}"
-                        TextInfo="МФО:" />
-                    <dml:InputWithText
-                        x:Name="PaymentAccountTextInput"
-                        Grid.Column="2"
-                        InputText="{Binding ElementName=WindowInfo, Path=PaymentAccountText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource InputWithTextFreeValidation}"
-                        TextInfo="р/р:" />
-                </Grid>
-            </StackPanel>
-
-            <StackPanel
-                Grid.Row="3"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Orientation="Vertical">
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    Style="{StaticResource InputWithTextLabel}"
-                    Text="Розробка" />
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <dml:InputWithText
-                        x:Name="ContractNumberTextInput"
-                        Grid.Column="0"
-                        InputReadOnly="True"
-                        InputText="{Binding ElementName=WindowInfo, Path=ContractNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource InputWithTextFreeValidation}"
-                        TextInfo="Номер договору:" />
-                    <dml:InputWithText
-                        x:Name="ContractDateTextInput"
-                        Grid.Column="1"
-                        InputReadOnly="True"
-                        InputText="{Binding ElementName=WindowInfo, Path=ContractDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource InputWithTextFreeValidation}"
-                        TextInfo="Дата складання договору:" />
-                </Grid>
-            </StackPanel>
-
-            <StackPanel
-                Grid.Row="4"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Orientation="Vertical">
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    Style="{StaticResource InputWithTextLabel}"
-                    Text="Підтримка" />
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <dml:InputWithText
-                        x:Name="ContractReworkNumberTextInput"
-                        Grid.Column="0"
-                        InputReadOnly="True"
-                        InputText="{Binding ElementName=WindowInfo, Path=ContractReworkNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource InputWithTextFreeValidation}"
-                        TextInfo="Номер договору:" />
-                    <dml:InputWithText
-                        x:Name="ContractReworkDateTextInput"
-                        Grid.Column="1"
-                        InputReadOnly="True"
-                        InputText="{Binding ElementName=WindowInfo, Path=ContractReworkDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource InputWithTextFreeValidation}"
-                        TextInfo="Дата складання договору:" />
-                </Grid>
-            </StackPanel>
         </Grid>
+
+        <TextBlock
+            Grid.Row="4"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            Style="{StaticResource InputWithTextLabel}"
+            Text="Розробка" />
+
+        <dml:InputWithText
+            x:Name="ContractNumberTextInput"
+            Grid.Row="5"
+            InputReadOnly="True"
+            InputText="{Binding ElementName=WindowInfo, Path=ContractNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Style="{StaticResource InputWithTextFreeValidation}"
+            TextInfo="Номер договору:" />
+        <dml:InputWithText
+            x:Name="ContractDateTextInput"
+            Grid.Row="5"
+            Grid.Column="1"
+            InputReadOnly="True"
+            InputText="{Binding ElementName=WindowInfo, Path=ContractDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Style="{StaticResource InputWithTextFreeValidation}"
+            TextInfo="Дата складання договору:" />
+
+        <TextBlock
+            Grid.Row="6"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            Style="{StaticResource InputWithTextLabel}"
+            Text="Підтримка" />
+
+        <dml:InputWithText
+            x:Name="ContractReworkNumberTextInput"
+            Grid.Row="7"
+            InputReadOnly="True"
+            InputText="{Binding ElementName=WindowInfo, Path=ContractReworkNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Style="{StaticResource InputWithTextFreeValidation}"
+            TextInfo="Номер договору:" />
+        <dml:InputWithText
+            x:Name="ContractReworkDateTextInput"
+            Grid.Row="7"
+            Grid.Column="1"
+            InputReadOnly="True"
+            InputText="{Binding ElementName=WindowInfo, Path=ContractReworkDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Style="{StaticResource InputWithTextFreeValidation}"
+            TextInfo="Дата складання договору:" />
+
     </Grid>
 </Window>

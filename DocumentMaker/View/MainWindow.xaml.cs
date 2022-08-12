@@ -72,35 +72,24 @@ namespace DocumentMaker
 		public string TechnicalTaskDateText
 		{
 			get => (string)GetValue(TechnicalTaskDateTextProperty);
-			set
-			{
-				SetValue(TechnicalTaskDateTextProperty, value);
-				controller.TechnicalTaskDateText = value;
-			}
+			set => SetValue(TechnicalTaskDateTextProperty, value);
 		}
 
 		public string ActDateText
 		{
 			get => (string)GetValue(ActDateTextProperty);
-			set
-			{
-				SetValue(ActDateTextProperty, value);
-				controller.ActDateText = value;
-			}
+			set => SetValue(ActDateTextProperty, value);
 		}
 
 		public string AdditionNumText
 		{
 			get => (string)GetValue(AdditionNumTextProperty);
-			set
-			{
-				SetValue(AdditionNumTextProperty, value);
-				controller.AdditionNumText = value;
-			}
+			set => SetValue(AdditionNumTextProperty, value);
 		}
 
 		private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
+			SetDataToController();
 			controller.WindowTop = Top;
 			controller.WindowLeft = Left;
 			controller.WindowHeight = Height;
@@ -176,6 +165,7 @@ namespace DocumentMaker
 
 		private void ExportBtnClick(object sender, RoutedEventArgs e)
 		{
+			SetDataToController();
 			if (controller.Validate(out string errorText))
 			{
 				if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -266,6 +256,13 @@ namespace DocumentMaker
 			TechnicalTaskDateTextInput.InputText = controller.TechnicalTaskDateText;
 			ActDateTextInput.InputText = controller.ActDateText;
 			AdditionNumTextInput.InputText = controller.AdditionNumText;
+		}
+
+		private void SetDataToController()
+		{
+			controller.TechnicalTaskDateText = TechnicalTaskDateText;
+			controller.ActDateText = ActDateText;
+			controller.AdditionNumText = AdditionNumText;
 		}
 
 		private void OpenFiles(string[] filenames)
@@ -376,7 +373,7 @@ namespace DocumentMaker
 			if(e.Key == System.Windows.Input.Key.F1)
 			{
 				if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
-					new WindowInformation(selectedFile).ShowDialog();
+					new WindowInformation(controller.GetSelectedHuman()).ShowDialog();
 			}
 		}
 	}

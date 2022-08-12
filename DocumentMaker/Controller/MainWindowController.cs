@@ -112,24 +112,32 @@ namespace DocumentMaker.Controller
 				errorText = "Невірно заповнена дата акту.\nПриклад: 20.07.2021";
 			else if (!validator.IsDigit(AdditionNumText))
 				errorText = "Невірно заповнений номер додатку.\nПриклад: 1";
-			else if (!validator.IsFullName(SelectedHuman))
-				errorText = "Невірно заповнена строка з повним ім’ям.\nПриклад: Іванов Іван Іванович";
-			else if (!validator.IsFree(HumanIdText))
-				errorText = "Строка \"ІН\" не може бути пустою.";
-			else if (!validator.IsFree(AddressText))
-				errorText = "Строка \"Адреса проживання\" не може бути пустою.";
-			else if (!validator.IsFree(PaymentAccountText))
-				errorText = "Строка \"р/р\" не може бути пустою.";
-			else if (!validator.IsFree(BankName))
-				errorText = "Строка \"Банк\" не може бути пустою.";
-			else if (!validator.IsFree(MfoText))
-				errorText = "Строка \"МФО\" не може бути пустою.";
-			else if (!validator.IsFree(ContractNumberText))
-				errorText = "Строка \"Номер договору\" не може бути пустою.";
-			else if (!validator.IsFree(ContractDateText))
-				errorText = "Строка \"Дата складання договору\" не може бути пустою.";
 			else
-				isValidGeneralData = true;
+			{
+				HumanData human = GetSelectedHuman();
+				SetHuman(human);
+
+				if (human == null)
+					errorText = "Людина необрана!";
+				else if (!validator.IsFullName(SelectedHuman))
+					errorText = "Невірно заповнена строка з повним ім’ям.\nПриклад: Іванов Іван Іванович";
+				else if (!validator.IsFree(HumanIdText))
+					errorText = "Строка \"ІН\" не може бути пустою.";
+				else if (!validator.IsFree(AddressText))
+					errorText = "Строка \"Адреса проживання\" не може бути пустою.";
+				else if (!validator.IsFree(PaymentAccountText))
+					errorText = "Строка \"р/р\" не може бути пустою.";
+				else if (!validator.IsFree(BankName))
+					errorText = "Строка \"Банк\" не може бути пустою.";
+				else if (!validator.IsFree(MfoText))
+					errorText = "Строка \"МФО\" не може бути пустою.";
+				else if (!validator.IsFree(ContractNumberText))
+					errorText = "Строка \"Номер договору\" не може бути пустою.";
+				else if (!validator.IsFree(ContractDateText))
+					errorText = "Строка \"Дата складання договору\" не може бути пустою.";
+				else
+					isValidGeneralData = true;
+			}
 
 			if (isValidGeneralData)
 			{
@@ -232,6 +240,11 @@ namespace DocumentMaker.Controller
 			string[] res = openFilesLater;
 			openFilesLater = null;
 			return res;
+		}
+
+		public HumanData GetSelectedHuman()
+		{
+			return model.HumanFullNameList.FirstOrDefault(x => x.Name == SelectedHuman);
 		}
 	}
 }

@@ -76,7 +76,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controller\WindowInformationController.cs" />
     <Compile Include="View\WindowInformation.xaml.cs">
       <DependentUpon>WindowInformation.xaml</DependentUpon>
     </Compile>

@@ -1,8 +1,4 @@
-﻿using Dml.Controls;
-using Dml.Model.Files;
-using DocumentMaker.Controller;
-using DocumentMaker.Model.OfficeFiles.Human;
-using System.Collections.Generic;
+﻿using DocumentMaker.Model.OfficeFiles.Human;
 using System.Windows;
 
 namespace DocumentMaker.View
@@ -12,11 +8,7 @@ namespace DocumentMaker.View
 	/// </summary>
 	public partial class WindowInformation : Window
 	{
-		private readonly WindowInformationController controller;
-
-		public IList<HumanData> HumanFullNameList => controller.HumanFullNameList;
-
-		public static readonly DependencyProperty SelectedHumanProperty;
+		public static readonly DependencyProperty HumanNameProperty;
 		public static readonly DependencyProperty HumanIdTextProperty;
 		public static readonly DependencyProperty AddressTextProperty;
 		public static readonly DependencyProperty PaymentAccountTextProperty;
@@ -29,7 +21,7 @@ namespace DocumentMaker.View
 
 		static WindowInformation()
 		{
-			SelectedHumanProperty = DependencyProperty.Register("FullHumanName", typeof(string), typeof(WindowInformation));
+			HumanNameProperty = DependencyProperty.Register("HumanName", typeof(string), typeof(WindowInformation));
 			HumanIdTextProperty = DependencyProperty.Register("HumanIdText", typeof(string), typeof(WindowInformation));
 			AddressTextProperty = DependencyProperty.Register("AddressText", typeof(string), typeof(WindowInformation));
 			PaymentAccountTextProperty = DependencyProperty.Register("PaymentAccountText", typeof(string), typeof(WindowInformation));
@@ -41,155 +33,90 @@ namespace DocumentMaker.View
 			ContractReworkDateTextProperty = DependencyProperty.Register("ContractReworkDateText", typeof(string), typeof(WindowInformation));
 		}
 
-		public string SelectedHuman
+		public WindowInformation()
 		{
-			get => (string)GetValue(SelectedHumanProperty);
-			set
+			InitializeComponent();
+		}
+
+		public WindowInformation(HumanData humanData) : this()
+		{
+			if (humanData != null)
 			{
-				SetValue(SelectedHumanProperty, value);
-				controller.SelectedHuman = value;
+				HumanName = humanData.Name;
+				HumanIdText = humanData.HumanIdText;
+				BankName = humanData.BankName;
+				PaymentAccountText = humanData.PaymentAccountText;
+				ContractNumberText = humanData.ContractNumberText;
+				ContractDateText = humanData.ContractDateText;
+				ContractReworkNumberText = humanData.ContractReworkNumberText;
+				ContractReworkDateText = humanData.ContractReworkDateText;
+				AddressText = humanData.AddressText;
+				MfoText = humanData.MfoText;
 			}
+			else
+			{
+				HumanName = HumanIdText = BankName = PaymentAccountText = ContractNumberText = ContractDateText = ContractReworkNumberText = ContractReworkDateText = AddressText = MfoText = "<error-human>";
+			}
+		}
+
+		public string HumanName
+		{
+			get => (string)GetValue(HumanNameProperty);
+			set => SetValue(HumanNameProperty, value);
 		}
 
 		public string HumanIdText
 		{
 			get => (string)GetValue(HumanIdTextProperty);
-			set
-			{
-				SetValue(HumanIdTextProperty, value);
-				controller.HumanIdText = value;
-			}
+			set => SetValue(HumanIdTextProperty, value);
 		}
 
 		public string AddressText
 		{
 			get => (string)GetValue(AddressTextProperty);
-			set
-			{
-				SetValue(AddressTextProperty, value);
-				controller.AddressText = value;
-			}
+			set => SetValue(AddressTextProperty, value);
 		}
 
 		public string PaymentAccountText
 		{
 			get => (string)GetValue(PaymentAccountTextProperty);
-			set
-			{
-				SetValue(PaymentAccountTextProperty, value);
-				controller.PaymentAccountText = value;
-			}
+			set => SetValue(PaymentAccountTextProperty, value);
 		}
 
 		public string BankName
 		{
 			get => (string)GetValue(BankNameProperty);
-			set
-			{
-				SetValue(BankNameProperty, value);
-				controller.BankName = value;
-			}
+			set => SetValue(BankNameProperty, value);
 		}
 
 		public string MfoText
 		{
 			get => (string)GetValue(MfoTextProperty);
-			set
-			{
-				SetValue(MfoTextProperty, value);
-				controller.MfoText = value;
-			}
+			set => SetValue(MfoTextProperty, value);
 		}
 
 		public string ContractNumberText
 		{
 			get => (string)GetValue(ContractNumberTextProperty);
-			set
-			{
-				SetValue(ContractNumberTextProperty, value);
-				controller.ContractNumberText = value;
-			}
+			set => SetValue(ContractNumberTextProperty, value);
 		}
 
 		public string ContractDateText
 		{
 			get => (string)GetValue(ContractDateTextProperty);
-			set
-			{
-				SetValue(ContractDateTextProperty, value);
-				controller.ContractDateText = value;
-			}
+			set => SetValue(ContractDateTextProperty, value);
 		}
 
 		public string ContractReworkNumberText
 		{
 			get => (string)GetValue(ContractReworkNumberTextProperty);
-			set
-			{
-				SetValue(ContractReworkNumberTextProperty, value);
-				controller.ContractReworkNumberText = value;
-			}
+			set => SetValue(ContractReworkNumberTextProperty, value);
 		}
 
 		public string ContractReworkDateText
 		{
 			get => (string)GetValue(ContractReworkDateTextProperty);
-			set
-			{
-				SetValue(ContractReworkDateTextProperty, value);
-				controller.ContractReworkDateText = value;
-			}
-		}
-
-		public WindowInformation()
-		{
-			controller = new WindowInformationController();
-			controller.Load();
-
-			InitializeComponent();
-		}
-
-		public WindowInformation(DmxFile file)
-		{
-			controller = new WindowInformationController();
-			controller.Load();
-
-			InitializeComponent();
-
-			SelectedHuman = file.SelectedHuman;
-		}
-
-		private void WindowLoaded(object sender, RoutedEventArgs e)
-		{
-			if (controller != null)
-			{
-				SetDataFromController();
-			}
-		}
-
-		private void ChangedHuman(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-		{
-			if (controller != null
-				&& sender is System.Windows.Controls.ComboBox comboBox
-				&& comboBox.SelectedItem is HumanData humanData)
-			{
-				controller.SetHuman(humanData);
-				SetDataFromController();
-			}
-		}
-
-		private void SetDataFromController()
-		{
-			HumanFullNameComboBox.Text = controller.SelectedHuman;
-			HumanIdTextInput.InputText = controller.HumanIdText;
-			AddressTextInput.InputText = controller.AddressText;
-			PaymentAccountTextInput.InputText = controller.PaymentAccountText;
-			BankNameInput.InputText = controller.BankName;
-			MfoTextInput.InputText = controller.MfoText;
-			ContractNumberTextInput.InputText = controller.ContractNumberText;
-			ContractDateTextInput.InputText = controller.ContractDateText;
-			ContractReworkNumberTextInput.InputText = controller.ContractReworkNumberText;
-			ContractReworkDateTextInput.InputText = controller.ContractReworkDateText;
+			set => SetValue(ContractReworkDateTextProperty, value);
 		}
 
 		private void WindowKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
