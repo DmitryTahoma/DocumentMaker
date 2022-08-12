@@ -12,7 +12,6 @@
     AllowDrop="True"
     Closing="WindowClosing"
     DragEnter="WindowDragEnter"
-    KeyDown="WindowKeyDown"
     Loaded="WindowLoaded"
     PreviewDragOver="WindowDragEnter"
     PreviewDrop="WindowPreviewDrop"
@@ -39,6 +38,7 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Style="{StaticResource InputWithTextLabel}" Text="Файл:" />
@@ -57,6 +57,11 @@
                     Grid.Column="3"
                     Click="CloseFileClick"
                     Content="Закрити"
+                    Style="{StaticResource BackDataAddButton}" />
+                <Button
+                    Grid.Column="4"
+                    Click="InfoBtnClick"
+                    Content="Інформація"
                     Style="{StaticResource BackDataAddButton}" />
 
             </Grid>

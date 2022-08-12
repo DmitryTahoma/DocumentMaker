@@ -237,6 +237,17 @@ namespace DocumentMaker
 			}
 		}
 
+		private void InfoBtnClick(object sender, RoutedEventArgs e)
+		{
+			if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
+				new WindowInformation(controller.GetSelectedHuman()).ShowDialog();
+			else 
+				MessageBox.Show("Спочатку необхідно відкрити файл.",
+								"DocumentMaker | Картка людини",
+								MessageBoxButtons.OK, 
+								MessageBoxIcon.Information);
+		}
+
 		private void UpdateViewBackData()
 		{
 			foreach (UIElement control in BacksData.Children)
@@ -366,15 +377,6 @@ namespace DocumentMaker
 			Width = controller.WindowWidth;
 			WindowState = controller.WindowState;
 			WindowValidator.MoveToValidPosition(this);
-		}
-
-		private void WindowKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-		{
-			if(e.Key == System.Windows.Input.Key.F1)
-			{
-				if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
-					new WindowInformation(controller.GetSelectedHuman()).ShowDialog();
-			}
 		}
 	}
 }
