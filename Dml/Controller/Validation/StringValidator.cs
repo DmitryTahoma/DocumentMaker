@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Dml.Controller.Validation
@@ -50,6 +51,31 @@ namespace Dml.Controller.Validation
 				}
 			}
 			return false;
+		}
+
+		public bool IsEndMinus(string str)
+		{
+			return str.Replace(" ", "").Last() == '-';
+		}
+
+		public bool IsOrderRegions(string str)
+		{
+			string[] parts = str.Split(',');
+			foreach(string part in parts)
+			{
+				if(part.Contains('-'))
+				{
+					string[] subparts = part.Split('-');
+					if(subparts.Length > 1
+						&& int.TryParse(subparts[0], out int st)
+						&& int.TryParse(subparts[1], out int end)
+						&& st > end)
+					{
+						return false;
+					}
+				}
+			}
+			return true;
 		}
 
 		public static string Trim(string str)

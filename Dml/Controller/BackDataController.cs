@@ -65,8 +65,12 @@ namespace Dml.Controller
 					errorText += "Строка \"Номер беку\" не може бути пустою.";
 				else if (!validator.IsFree(BackName))
 					errorText += "Строка \"Ім’я беку\" не може бути пустою.";
-				else if ((Type == BackType.Regions || Type == BackType.HogRegions) && !validator.IsDigit(BackCountRegionsText))
-					errorText += "Кількість регіонів невірно введена.\nПриклад: 11";
+				else if ((Type == BackType.Regions || Type == BackType.HogRegions) && !validator.IsFree(BackCountRegionsText))
+					errorText += "Кількість регіонів не може бути пустою.\nПриклад: 11";
+				else if ((Type == BackType.Regions || Type == BackType.HogRegions) && validator.IsEndMinus(BackCountRegionsText))
+					errorText += "Регіони записані некорректно. Незавершена послідовність.\nПриклад: 1-2, 3-4, 8-15";
+				else if ((Type == BackType.Regions || Type == BackType.HogRegions) && !validator.IsOrderRegions(BackCountRegionsText))
+					errorText += "Регіони записані некорректно. Кінець послідовності менший за початок.\nПриклад: 1-2, 3-4, 8-15";
 				else if (!validator.IsFree(GameName))
 					errorText += "Строка \"Назва гри\" не може бути пустою.";
 				else if (!validator.IsDigit(SpentTimeText))

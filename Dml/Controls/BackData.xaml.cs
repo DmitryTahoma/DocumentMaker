@@ -3,8 +3,10 @@ using Dml.Model.Back;
 using Dml.Model.Template;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Dml.Controls
 {
@@ -247,6 +249,44 @@ namespace Dml.Controls
 			if (sender is TextBox)
 			{
 				onChangedTime?.Invoke();
+			}
+		}
+
+		private void RegionsValidatingPreviewTextInput(object sender, TextCompositionEventArgs e)
+		{
+			if (e.Text.Length == 1 && sender is TextBox textBox)
+			{
+				char k = e.Text[0];
+				if ((k < '0' || k > '9') && k != '-' && k != ',' && k != ' ')
+				{
+					e.Handled = true;
+				}
+				else
+				{
+					string text = textBox.Text.Replace(" ", "");
+					if (k == ',' || k == '-')
+					{
+						if (text.Length <= 0)
+						{
+							e.Handled = true;
+							return;
+						}
+						char last = text.Last();
+						if (last == ',' || last == '-')
+						{
+							e.Handled = true;
+							return;
+						}
+					}
+
+					if (k == '-')
+					{
+						if (text.LastIndexOf('-') > text.LastIndexOf(','))
+						{
+							e.Handled = true;
+						}
+					}
+				}
 			}
 		}
 

@@ -70,6 +70,7 @@
                     x:Name="CountRegionsTextInput"
                     Grid.Column="2"
                     IsEnabled="{Binding ElementName=BackDataContext, Path=IsRegions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    PreviewTextInput="RegionsValidatingPreviewTextInput"
                     Style="{StaticResource TextBoxNumberValidation}"
                     Text="{Binding ElementName=BackDataContext, Path=CountRegionsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
