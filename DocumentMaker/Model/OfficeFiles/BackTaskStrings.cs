@@ -1,5 +1,8 @@
 ﻿using Dml.Model.Back;
 using Dml.Model.Template;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace DocumentMaker.Model.OfficeFiles
 {
@@ -56,6 +59,71 @@ namespace DocumentMaker.Model.OfficeFiles
 			}
 
 			return res;
+		}
+
+		public static string GetRegionString(BackType backType, string countRegs)
+		{
+			if (countRegs.Contains(",") || countRegs.Contains("-"))
+			{
+				List<int> regs = new List<int>();
+
+				countRegs = Regex.Replace(countRegs, @"\s+", "");
+				string[] parts = countRegs.Split(',');
+
+				foreach(string part in parts)
+				{
+					if (!string.IsNullOrEmpty(part))
+					{
+						if (part.Contains("-"))
+						{
+							string[] subparts = part.Split('-');
+							if (subparts.Length > 1
+								&& int.TryParse(subparts[0], out int st)
+								&& int.TryParse(subparts[1], out int end))
+							{
+								for (int i = st; i <= end; ++i)
+								{
+									regs.Add(i);
+								}
+							}
+						}
+						else if (int.TryParse(part, out int r))
+						{
+							regs.Add(r);
+						}
+					}
+				}
+
+				regs = regs.OrderBy(x => x).Distinct().ToList();
+
+				string res = "";
+				foreach(int reg in regs)
+				{
+					if(res != "")
+					{
+						res += ", ";
+					}
+					res += reg.ToString();
+				}
+				return res;
+			}
+			else
+			{
+				string regs = "";
+
+				if ((backType == BackType.Regions || backType == BackType.HogRegions)
+				  && int.TryParse(countRegs, out int count))
+				{
+					regs = "1";
+
+					for (int i = 2; i <= count; ++i)
+					{
+						regs += ", " + i.ToString();
+					}
+				}
+
+				return regs;
+			}
 		}
 	}
 }

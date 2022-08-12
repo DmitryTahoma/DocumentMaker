@@ -43,18 +43,7 @@ namespace DocumentMaker.Model.OfficeFiles
 				return otherText;
 			}
 
-			string regs = "";
-			if ((type == BackType.Regions || type == BackType.HogRegions)
-			  && int.TryParse(backCountRegionsText, out int count))
-			{
-				regs = "1";
-
-				for (int i = 2; i <= count; ++i)
-				{
-					regs += ", " + i.ToString();
-				}
-			}
-
+			string regs = BackTaskStrings.GetRegionString(type, backCountRegionsText);
 			return BackTaskStrings.Generate(type, templateType, backNumberText, backName, regs, gameName, isRework, isSketch);
 		}
 
