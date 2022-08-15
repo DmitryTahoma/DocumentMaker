@@ -12,12 +12,12 @@ namespace DocumentMaker.View.Controls
 	public partial class FullBackDataFooter : UserControl
 	{
 		public static readonly DependencyProperty DataProperty;
-		public static readonly DependencyProperty AllTimeProperty;
+		public static readonly DependencyProperty AllSumProperty;
 
 		static FullBackDataFooter()
 		{
 			DataProperty = DependencyProperty.Register("Data", typeof(StackPanel), typeof(FullBackDataFooter));
-			AllTimeProperty = DependencyProperty.Register("AllTime", typeof(string), typeof(FullBackDataFooter));
+			AllSumProperty = DependencyProperty.Register("AllSum", typeof(string), typeof(FullBackDataFooter));
 		}
 
 		private event ActionWithFullBackData onAdded;
@@ -28,7 +28,6 @@ namespace DocumentMaker.View.Controls
 		{
 			InitializeComponent();
 			DataContext = this;
-			AllTime = "0";
 		}
 
 		public StackPanel Data
@@ -37,10 +36,10 @@ namespace DocumentMaker.View.Controls
 			set => SetValue(DataProperty, value);
 		}
 
-		public string AllTime
+		public string AllSum
 		{
-			get => GetValue(AllTimeProperty).ToString();
-			set => SetValue(AllTimeProperty, value);
+			get => GetValue(AllSumProperty).ToString();
+			set => SetValue(AllSumProperty, value);
 		}
 
 		public void SubscribeAddition(ActionWithFullBackData action)
@@ -81,7 +80,6 @@ namespace DocumentMaker.View.Controls
 					backData.CountRegionsText = lastData.CountRegionsText;
 					backData.GameName = lastData.GameName;
 					backData.IsRework = lastData.IsRework;
-					backData.TimeText = lastData.TimeText;
 					backData.IsSketch = lastData.IsSketch;
 					backData.OtherText = lastData.OtherText;
 					backData.SetBackType(lastData.GetBackType());
@@ -89,7 +87,7 @@ namespace DocumentMaker.View.Controls
 
 				AddBackData(backData);
 				onAdded?.Invoke(backData);
-				OnChangedSomeTime();
+				OnChangedSomeSum();
 			}
 		}
 
@@ -125,28 +123,25 @@ namespace DocumentMaker.View.Controls
 			}
 
 			onRemoved?.Invoke(sender);
-			OnChangedSomeTime();
+			OnChangedSomeSum();
 		}
 
-		private void OnChangedSomeTime()
+		private void OnChangedSomeSum()
 		{
-			uint time = 0;
-
-			if (Data != null)
+			if(Data != null)
 			{
-				foreach (FrameworkElement elem in Data.Children)
+				uint sums = 0;
+
+				foreach(UIElement elem in Data.Children)
 				{
-					if (elem is FullBackData backData)
+					if(elem is FullBackData backData && uint.TryParse(backData.SumText, out uint sum))
 					{
-						if (uint.TryParse(backData.TimeText, out uint backTime))
-						{
-							time += backTime;
-						}
+						sums += sum;
 					}
 				}
-			}
 
-			AllTime = time.ToString();
+				AllSum = sums.ToString();
+			}
 		}
 
 		private void AddBackData(FullBackData backData)
@@ -155,7 +150,7 @@ namespace DocumentMaker.View.Controls
 			{
 				OnRemoveBackData(backData);
 			});
-			backData.SubscribeChangedTime(OnChangedSomeTime);
+			backData.SubscribeChangedSum(OnChangedSomeSum);
 			Data.Children.Add(backData);
 			backData.UpdateInputStates();
 		}
@@ -177,7 +172,7 @@ namespace DocumentMaker.View.Controls
 			if (Data != null)
 			{
 				Data.Children.Clear();
-				OnChangedSomeTime();
+				OnChangedSomeSum();
 				onCleared?.Invoke();
 			}
 		}

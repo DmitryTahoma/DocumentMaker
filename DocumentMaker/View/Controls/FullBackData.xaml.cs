@@ -26,10 +26,11 @@ namespace DocumentMaker.View.Controls
 		public static readonly DependencyProperty GameNameProperty;
 		public static readonly DependencyProperty IsReworkProperty;
 		public static readonly DependencyProperty IsSketchProperty;
-		public static readonly DependencyProperty TimeTextProperty;
 		public static readonly DependencyProperty IsOtherTypeProperty;
 		public static readonly DependencyProperty IsNotOtherTypeProperty;
 		public static readonly DependencyProperty OtherTextProperty;
+		public static readonly DependencyProperty WeightTextProperty;
+		public static readonly DependencyProperty SumTextProperty;
 
 		static FullBackData()
 		{
@@ -42,16 +43,17 @@ namespace DocumentMaker.View.Controls
 			GameNameProperty = DependencyProperty.Register("GameName", typeof(string), typeof(FullBackDataController));
 			IsReworkProperty = DependencyProperty.Register("IsRework", typeof(bool), typeof(FullBackDataController));
 			IsSketchProperty = DependencyProperty.Register("IsSketch", typeof(bool), typeof(FullBackDataController));
-			TimeTextProperty = DependencyProperty.Register("TimeText", typeof(string), typeof(FullBackDataController));
 			IsOtherTypeProperty = DependencyProperty.Register("IsOtherType", typeof(bool), typeof(FullBackDataController));
 			IsNotOtherTypeProperty = DependencyProperty.Register("IsNotOtherType", typeof(bool), typeof(FullBackDataController));
 			OtherTextProperty = DependencyProperty.Register("OtherText", typeof(string), typeof(FullBackDataController));
+			WeightTextProperty = DependencyProperty.Register("WeightText", typeof(string), typeof(FullBackDataController));
+			SumTextProperty = DependencyProperty.Register("SumText", typeof(string), typeof(FullBackDataController));
 		}
 
 		private FullBackDataController controller;
 
 		private event Action onDeletion;
-		private event Action onChangedTime;
+		private event Action onChangedSum;
 
 		public FullBackData()
 		{
@@ -147,16 +149,6 @@ namespace DocumentMaker.View.Controls
 			}
 		}
 
-		public string TimeText
-		{
-			get => (string)GetValue(TimeTextProperty);
-			set
-			{
-				SetValue(TimeTextProperty, value);
-				controller.SpentTimeText = value;
-			}
-		}
-
 		public bool IsOtherType
 		{
 			get => (bool)GetValue(IsOtherTypeProperty);
@@ -179,6 +171,26 @@ namespace DocumentMaker.View.Controls
 			}
 		}
 
+		public string WeightText
+		{
+			get => (string)GetValue(WeightTextProperty);
+			set
+			{
+				SetValue(WeightTextProperty, value);
+				controller.WeightText = value;
+			}
+		}
+
+		public string SumText
+		{
+			get => (string)GetValue(SumTextProperty);
+			set
+			{
+				SetValue(SumTextProperty, value);
+				controller.SumText = value;
+			}
+		}
+
 		public FullBackDataController Controller
 		{
 			get => controller;
@@ -196,9 +208,9 @@ namespace DocumentMaker.View.Controls
 			onDeletion += action;
 		}
 
-		public void SubscribeChangedTime(Action action)
+		public void SubscribeChangedSum(Action action)
 		{
-			onChangedTime += action;
+			onChangedSum += action;
 		}
 
 		public void SetDataFromController()
@@ -218,8 +230,9 @@ namespace DocumentMaker.View.Controls
 			GameNameComboBox.Text = controller.GameName;
 			IsReworkCheckBox.IsChecked = controller.IsRework;
 			IsSketchCheckBox.IsChecked = controller.IsSketch;
-			TimeTextInput.Text = controller.SpentTimeText;
 			OtherTextInput.Text = controller.OtherText;
+			WeightTextLabel.Text = controller.WeightText;
+			SumTextInput.Text = controller.SumText;
 
 			UpdateInputStates();
 		}
@@ -246,11 +259,11 @@ namespace DocumentMaker.View.Controls
 			}
 		}
 
-		private void TextChangedTextBoxTime(object sender, TextChangedEventArgs e)
+		private void SumTextInputTextChanged(object sender, TextChangedEventArgs e)
 		{
 			if (sender is TextBox)
 			{
-				onChangedTime?.Invoke();
+				onChangedSum?.Invoke();
 			}
 		}
 

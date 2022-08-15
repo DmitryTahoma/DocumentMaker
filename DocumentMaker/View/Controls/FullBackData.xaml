@@ -12,6 +12,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="8*" />
+            <ColumnDefinition MaxWidth="45" />
             <ColumnDefinition MaxWidth="90" />
             <ColumnDefinition Width="50" />
         </Grid.ColumnDefinitions>
@@ -104,15 +105,21 @@
                 Text="{Binding ElementName=FullBackDataContext, Path=OtherText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
 
+        <TextBlock
+            x:Name="WeightTextLabel"
+            Grid.Column="1" 
+            Style="{StaticResource MiddleLabel}"
+            Text="{Binding ElementName=FullBackDataContext, Path=WeightText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
         <TextBox
-            x:Name="TimeTextInput"
-            Grid.Column="1"
+            x:Name="SumTextInput"
+            Grid.Column="2"
             Style="{StaticResource TextBoxNumberValidation}"
-            Text="{Binding ElementName=FullBackDataContext, Path=TimeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-            TextChanged="TextChangedTextBoxTime" />
+            Text="{Binding ElementName=FullBackDataContext, Path=SumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            TextChanged="SumTextInputTextChanged" />
 
         <Button
-            Grid.Column="2"
+            Grid.Column="3"
             Click="DeleteBtnClick"
             Style="{StaticResource BtnRoundedCross}" />
 

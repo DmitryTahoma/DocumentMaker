@@ -120,4 +120,10 @@
         <Setter Property="IsEnabled" Value="False" />
     </Style>
 
+    <Style x:Key="MiddleLabel" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
 </ResourceDictionary>

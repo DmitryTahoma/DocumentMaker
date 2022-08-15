@@ -24,6 +24,9 @@ namespace DocumentMaker.Controller.Controls
 			}
 		}
 
+		public string WeightText { get => model.WeightText; set => model.WeightText = value; }
+		public string SumText { get => model.SumText; set => model.SumText = value; }
+
 		public new FullBackDataModel GetModel()
 		{
 			return model;
