@@ -2,14 +2,14 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Dml.Controls
+namespace DocumentMaker.View.Controls
 {
 	/// <summary>
-	/// Interaction logic for BackDataHeader.xaml
+	/// Interaction logic for FullBackDataHeader.xaml
 	/// </summary>
-	public partial class BackDataHeader : UserControl
+	public partial class FullBackDataHeader : UserControl
 	{
-		public BackDataHeader()
+		public FullBackDataHeader()
 		{
 			InitializeComponent();
 		}

@@ -11,7 +11,7 @@ namespace Dml.Model.Session
 {
 	public class XmlLoader
 	{
-		private readonly XmlDocument xml;
+		protected readonly XmlDocument xml;
 
 		public XmlLoader()
 		{
@@ -34,21 +34,21 @@ namespace Dml.Model.Session
 			SetLoadedProperties(xml.DocumentElement, model);
 		}
 
-		public void SetLoadedBacksProperties(List<BackDataModel> backModels)
+		public void SetLoadedListProperties<T>(List<T> models) where T : class, new()
 		{
-			SetLoadedBacksProperties(xml.DocumentElement, XmlConfNames.BackNodeName, backModels);
+			SetLoadedListProperties<T>(xml.DocumentElement, XmlConfNames.BackNodeName, models);
 		}
 
-		private void SetLoadedBacksProperties(XmlElement root, string backNodeName, List<BackDataModel> backModels)
+		protected void SetLoadedListProperties<T>(XmlElement root, string backNodeName, List<T> models) where T : class, new()
 		{
-			backModels.Clear();
+			models.Clear();
 
 			XmlNodeList nodeList = root.GetElementsByTagName(backNodeName);
-			foreach (XmlElement elem in nodeList)
+			foreach(XmlElement elem in nodeList)
 			{
-				BackDataModel model = new BackDataModel();
+				T model = new T();
 				SetLoadedProperties(elem, model);
-				backModels.Add(model);
+				models.Add(model);
 			}
 		}
 
@@ -82,32 +82,7 @@ namespace Dml.Model.Session
 			gameNameList.AddRange(tempGameNames.OrderBy(x => x));
 		}
 
-		public void SetLoadedDmxFiles(ObservableRangeCollection<DmxFile> dmxFiles)
-		{
-			List<DmxFile> tempDmxFiles = new List<DmxFile>();
-			XmlElement root = xml.DocumentElement;
-			XmlNodeList nodeList = root.GetElementsByTagName(XmlConfNames.DmxFileNodeName);
-			foreach(XmlElement elem in nodeList)
-			{
-				XmlNodeList fullnames = elem.GetElementsByTagName(XmlConfNames.DmxFileFullNameNodeName);
-				if(fullnames.Count > 0)
-				{
-					XmlElement fullNameNode = fullnames[0] as XmlElement;
-					if(fullNameNode != null && fullNameNode.HasAttribute(XmlConfNames.NodeAttributeName))
-					{
-						DmxFile dmxFile = new DmxFile(fullNameNode.GetAttribute(XmlConfNames.NodeAttributeName));
-						SetLoadedProperties(elem, dmxFile);
-						List<BackDataModel> backDataModels = new List<BackDataModel>();
-						SetLoadedBacksProperties(elem, XmlConfNames.DmxFileBackNodeName, backDataModels);
-						dmxFile.SetLoadedBackData(backDataModels);
-						tempDmxFiles.Add(dmxFile);
-					}
-				}
-			}
-			dmxFiles.AddRange(tempDmxFiles);
-		}
-
-		private void SetLoadedProperties(XmlElement root, object model)
+		protected void SetLoadedProperties(XmlElement root, object model)
 		{
 			PropertyInfo[] properties = model.GetType().GetProperties();
 			foreach (PropertyInfo property in properties)

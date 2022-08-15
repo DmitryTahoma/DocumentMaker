@@ -1,30 +1,30 @@
-﻿using Dml.Controller;
-using Dml.Model.Template;
+﻿using Dml.Model.Template;
+using DocumentMaker.Controller.Controls;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Dml.Controls
+namespace DocumentMaker.View.Controls
 {
 	/// <summary>
-	/// Interaction logic for BackDataFooter.xaml
+	/// Interaction logic for FullBackDataFooter.xaml
 	/// </summary>
-	public partial class BackDataFooter : UserControl
+	public partial class FullBackDataFooter : UserControl
 	{
 		public static readonly DependencyProperty DataProperty;
 		public static readonly DependencyProperty AllTimeProperty;
 
-		static BackDataFooter()
+		static FullBackDataFooter()
 		{
-			DataProperty = DependencyProperty.Register("Data", typeof(StackPanel), typeof(BackDataFooter));
-			AllTimeProperty = DependencyProperty.Register("AllTime", typeof(string), typeof(BackDataFooter));
+			DataProperty = DependencyProperty.Register("Data", typeof(StackPanel), typeof(FullBackDataFooter));
+			AllTimeProperty = DependencyProperty.Register("AllTime", typeof(string), typeof(FullBackDataFooter));
 		}
 
-		private event ActionWithBackData onAdded;
-		private event ActionWithBackData onRemoved;
+		private event ActionWithFullBackData onAdded;
+		private event ActionWithFullBackData onRemoved;
 		private event Action onCleared;
 
-		public BackDataFooter()
+		public FullBackDataFooter()
 		{
 			InitializeComponent();
 			DataContext = this;
@@ -43,12 +43,12 @@ namespace Dml.Controls
 			set => SetValue(AllTimeProperty, value);
 		}
 
-		public void SubscribeAddition(ActionWithBackData action)
+		public void SubscribeAddition(ActionWithFullBackData action)
 		{
 			onAdded += action;
 		}
 
-		public void SubscribeRemoving(ActionWithBackData action)
+		public void SubscribeRemoving(ActionWithFullBackData action)
 		{
 			onRemoved += action;
 		}
@@ -58,11 +58,11 @@ namespace Dml.Controls
 			onCleared += action;
 		}
 
-		public void AddLoadedBackData(BackDataController controller)
+		public void AddLoadedBackData(FullBackDataController controller)
 		{
 			if (Data != null)
 			{
-				BackData backData = new BackData() { Controller = controller };
+				FullBackData backData = new FullBackData() { Controller = controller };
 				AddBackData(backData);
 				backData.SetDataFromController();
 			}
@@ -72,9 +72,9 @@ namespace Dml.Controls
 		{
 			if (Data != null)
 			{
-				BackData backData = new BackData { BackDataId = (uint)(Data.Children.Count + 1) };
+				FullBackData backData = new FullBackData { BackDataId = (uint)(Data.Children.Count + 1) };
 
-				if (Data.Children.Count > 0 && Data.Children[Data.Children.Count - 1] is BackData lastData)
+				if (Data.Children.Count > 0 && Data.Children[Data.Children.Count - 1] is FullBackData lastData)
 				{
 					backData.BackNumberText = lastData.BackNumberText;
 					backData.BackName = lastData.BackName;
@@ -107,7 +107,7 @@ namespace Dml.Controls
 			}
 		}
 
-		private void OnRemoveBackData(BackData sender)
+		private void OnRemoveBackData(FullBackData sender)
 		{
 			if (Data != null)
 			{
@@ -116,7 +116,7 @@ namespace Dml.Controls
 				uint id = 1;
 				foreach (FrameworkElement elem in Data.Children)
 				{
-					if (elem is BackData backData)
+					if (elem is FullBackData backData)
 					{
 						backData.BackDataId = id;
 						id++;
@@ -136,7 +136,7 @@ namespace Dml.Controls
 			{
 				foreach (FrameworkElement elem in Data.Children)
 				{
-					if (elem is BackData backData)
+					if (elem is FullBackData backData)
 					{
 						if (uint.TryParse(backData.TimeText, out uint backTime))
 						{
@@ -149,7 +149,7 @@ namespace Dml.Controls
 			AllTime = time.ToString();
 		}
 
-		private void AddBackData(BackData backData)
+		private void AddBackData(FullBackData backData)
 		{
 			backData.SubscribeDeletion(() =>
 			{
@@ -174,7 +174,7 @@ namespace Dml.Controls
 
 		public void ClearBackData()
 		{
-			if(Data != null)
+			if (Data != null)
 			{
 				Data.Children.Clear();
 				OnChangedSomeTime();

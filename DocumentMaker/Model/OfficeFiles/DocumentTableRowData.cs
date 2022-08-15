@@ -1,6 +1,6 @@
-﻿using Dml.Model;
-using Dml.Model.Back;
+﻿using Dml.Model.Back;
 using Dml.Model.Template;
+using DocumentMaker.Model.Controls;
 
 namespace DocumentMaker.Model.OfficeFiles
 {
@@ -18,7 +18,7 @@ namespace DocumentMaker.Model.OfficeFiles
 		private readonly string spentTimeText;
 		private readonly string otherText;
 
-		public DocumentTableRowData(BackDataModel model, DocumentTemplateType templateType)
+		public DocumentTableRowData(FullBackDataModel model, DocumentTemplateType templateType)
 		{
 			this.templateType = templateType;
 			id = model.Id;

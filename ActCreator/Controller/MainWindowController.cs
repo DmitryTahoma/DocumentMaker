@@ -1,4 +1,5 @@
-﻿using ActCreator.Model;
+﻿using ActCreator.Controller.Controls;
+using ActCreator.Model;
 using Dml.Controller;
 using Dml.Controller.Validation;
 using Dml.Model;
@@ -22,7 +23,7 @@ namespace ActCreator.Controller
 		{
 			model = new ActCreatorModel();
 			validator = new StringValidator();
-			BackDataControllers = new List<BackDataController>();
+			BackDataControllers = new List<ShortBackDataController>();
 		}
 
 		#region Window settings
@@ -37,7 +38,7 @@ namespace ActCreator.Controller
 
 		public DocumentTemplateType TemplateType { get => model.TemplateType; set => model.TemplateType = value; }
 		public string SelectedHuman { get => model.SelectedHuman; set => model.SelectedHuman = value; }
-		public List<BackDataController> BackDataControllers { get; set; }
+		public List<ShortBackDataController> BackDataControllers { get; set; }
 		public IList<DocumentTemplate> DocumentTemplatesList => model.DocumentTemplatesList;
 		public IList<string> HumanFullNameList => model.HumanFullNameList;
 
@@ -45,8 +46,8 @@ namespace ActCreator.Controller
 		{
 			string fullpath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), saveFile);
 
-			List<BackDataModel> backDataModels = new List<BackDataModel>();
-			foreach (BackDataController controller in BackDataControllers)
+			List<ShortBackDataModel> backDataModels = new List<ShortBackDataModel>();
+			foreach (ShortBackDataController controller in BackDataControllers)
 			{
 				backDataModels.Add(controller.GetModel());
 			}
@@ -60,11 +61,11 @@ namespace ActCreator.Controller
 			string saveFullpath = Path.Combine(path, saveFile);
 			string humansFullpath = Path.Combine(path, humansFile);
 
-			model.Load(saveFullpath, out List<BackDataModel> backModels);
+			model.Load(saveFullpath, out List<ShortBackDataModel> backModels);
 			model.LoadHumans(humansFullpath);
-			foreach (BackDataModel model in backModels)
+			foreach (ShortBackDataModel model in backModels)
 			{
-				BackDataControllers.Add(new BackDataController(model));
+				BackDataControllers.Add(new ShortBackDataController(model));
 			}
 		}
 
@@ -72,8 +73,8 @@ namespace ActCreator.Controller
 
 		public void ExportDmx(string path)
 		{
-			List<BackDataModel> backDataModels = new List<BackDataModel>();
-			foreach(BackDataController controller in BackDataControllers)
+			List<ShortBackDataModel> backDataModels = new List<ShortBackDataModel>();
+			foreach(ShortBackDataController controller in BackDataControllers)
 			{
 				backDataModels.Add(controller.GetModel());
 			}
@@ -95,7 +96,7 @@ namespace ActCreator.Controller
 
 			if (isValidGeneralData)
 			{
-				foreach (BackDataController backDataController in BackDataControllers)
+				foreach (ShortBackDataController backDataController in BackDataControllers)
 				{
 					if (!backDataController.Validate(ref errorText))
 					{

@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dml="clr-namespace:Dml.Controls;assembly=Dml"
+    xmlns:uc="clr-namespace:ActCreator.View.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="WindowContext"
     Title="ActCreator"
@@ -51,11 +52,11 @@
             </Grid>
 
             <StackPanel Grid.Row="1" Orientation="Vertical">
-                <dml:BackDataHeader x:Name="DataHeader" />
+                <uc:ShortBackDataHeader x:Name="DataHeader" />
 
                 <StackPanel x:Name="BacksData" Orientation="Vertical" />
 
-                <dml:BackDataFooter x:Name="DataFooter" Data="{Binding ElementName=BacksData}" />
+                <uc:ShortBackDataFooter x:Name="DataFooter" Data="{Binding ElementName=BacksData}" />
             </StackPanel>
 
             <Grid Grid.Row="2" Grid.ColumnSpan="4">

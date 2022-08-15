@@ -42,12 +42,12 @@ namespace ActCreator.Model
 		public IList<DocumentTemplate> DocumentTemplatesList => documentTemplates;
 		public IList<string> HumanFullNameList => humanFullNameList;
 
-		public void Save(string path, IEnumerable<BackDataModel> backModels)
+		public void Save(string path, IEnumerable<ShortBackDataModel> backModels)
 		{
 			XmlSaver saver = new XmlSaver();
 			saver.AppendAllProperties(this);
 
-			foreach (BackDataModel backDataModel in backModels)
+			foreach (ShortBackDataModel backDataModel in backModels)
 			{
 				saver.CreateBackNode();
 				saver.AppendAllBackProperties(backDataModel);
@@ -57,15 +57,15 @@ namespace ActCreator.Model
 			saver.Save(path);
 		}
 
-		public void Load(string path, out List<BackDataModel> backModels)
+		public void Load(string path, out List<ShortBackDataModel> backModels)
 		{
-			backModels = new List<BackDataModel>();
+			backModels = new List<ShortBackDataModel>();
 
 			XmlLoader loader = new XmlLoader();
 			if (loader.TryLoad(path))
 			{
 				loader.SetLoadedProperties(this);
-				loader.SetLoadedBacksProperties(backModels);
+				loader.SetLoadedListProperties(backModels);
 			}
 		}
 
@@ -80,7 +80,7 @@ namespace ActCreator.Model
 
 		public string GetDmxFileName()
 		{
-			return SelectedHuman + DmxFile.Extension;
+			return SelectedHuman + BaseDmxFile.Extension;
 		}
 
 		public string GetDmxFileName(string path)
@@ -93,12 +93,12 @@ namespace ActCreator.Model
 			return File.Exists(GetDmxFileName(path));
 		}
 
-		public void ExportDmx(string path, IEnumerable<BackDataModel> backModels)
+		public void ExportDmx(string path, IEnumerable<ShortBackDataModel> backModels)
 		{
 			XmlSaver saver = new XmlSaver();
 			saver.AppendAllProperties(this);
 
-			foreach(BackDataModel backDataModel in backModels)
+			foreach(ShortBackDataModel backDataModel in backModels)
 			{
 				saver.CreateBackNode();
 				saver.AppendAllBackProperties(backDataModel);

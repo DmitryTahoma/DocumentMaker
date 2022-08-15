@@ -73,6 +73,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="View\Controls\ShortBackData.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Controls\ShortBackDataFooter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Controls\ShortBackDataHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -81,8 +93,19 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controller\Controls\ShortBackDataController.cs" />
     <Compile Include="Controller\MainWindowController.cs" />
     <Compile Include="Model\ActCreatorModel.cs" />
+    <Compile Include="Model\ShortBackDataModel.cs" />
+    <Compile Include="View\Controls\ShortBackData.xaml.cs">
+      <DependentUpon>ShortBackData.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Controls\ShortBackDataFooter.xaml.cs">
+      <DependentUpon>ShortBackDataFooter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Controls\ShortBackDataHeader.xaml.cs">
+      <DependentUpon>ShortBackDataHeader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

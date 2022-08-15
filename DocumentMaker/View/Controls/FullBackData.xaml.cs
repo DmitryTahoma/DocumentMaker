@@ -1,6 +1,6 @@
-﻿using Dml.Controller;
-using Dml.Model.Back;
+﻿using Dml.Model.Back;
 using Dml.Model.Template;
+using DocumentMaker.Controller.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +8,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Dml.Controls
+namespace DocumentMaker.View.Controls
 {
+	public delegate void ActionWithFullBackData(FullBackData backData);
+
 	/// <summary>
-	/// Interaction logic for BackData.xaml
+	/// Interaction logic for FullBackData.xaml
 	/// </summary>
-	public partial class BackData : UserControl
+	public partial class FullBackData : UserControl
 	{
 		public static readonly DependencyProperty IsRegionsProperty;
 		public static readonly DependencyProperty HasBackNumberProperty;
@@ -29,31 +31,31 @@ namespace Dml.Controls
 		public static readonly DependencyProperty IsNotOtherTypeProperty;
 		public static readonly DependencyProperty OtherTextProperty;
 
-		static BackData()
+		static FullBackData()
 		{
-			IsRegionsProperty = DependencyProperty.Register("IsRegions", typeof(bool), typeof(BackData));
-			HasBackNumberProperty = DependencyProperty.Register("HasBackNumber", typeof(bool), typeof(BackData));
-			BackDataIdProperty = DependencyProperty.Register("BackDataId", typeof(uint), typeof(BackData));
-			BackNumberTextProperty = DependencyProperty.Register("BackNumberText", typeof(string), typeof(BackDataController));
-			BackNameProperty = DependencyProperty.Register("BackName", typeof(string), typeof(BackDataController));
-			CountRegionsTextProperty = DependencyProperty.Register("CountRegionsText", typeof(string), typeof(BackDataController));
-			GameNameProperty = DependencyProperty.Register("GameName", typeof(string), typeof(BackDataController));
-			IsReworkProperty = DependencyProperty.Register("IsRework", typeof(bool), typeof(BackDataController));
-			IsSketchProperty = DependencyProperty.Register("IsSketch", typeof(bool), typeof(BackDataController));
-			TimeTextProperty = DependencyProperty.Register("TimeText", typeof(string), typeof(BackDataController));
-			IsOtherTypeProperty = DependencyProperty.Register("IsOtherType", typeof(bool), typeof(BackDataController));
-			IsNotOtherTypeProperty = DependencyProperty.Register("IsNotOtherType", typeof(bool), typeof(BackDataController));
-			OtherTextProperty = DependencyProperty.Register("OtherText", typeof(string), typeof(BackDataController));
+			IsRegionsProperty = DependencyProperty.Register("IsRegions", typeof(bool), typeof(FullBackData));
+			HasBackNumberProperty = DependencyProperty.Register("HasBackNumber", typeof(bool), typeof(FullBackData));
+			BackDataIdProperty = DependencyProperty.Register("BackDataId", typeof(uint), typeof(FullBackDataController));
+			BackNumberTextProperty = DependencyProperty.Register("BackNumberText", typeof(string), typeof(FullBackDataController));
+			BackNameProperty = DependencyProperty.Register("BackName", typeof(string), typeof(FullBackDataController));
+			CountRegionsTextProperty = DependencyProperty.Register("CountRegionsText", typeof(string), typeof(FullBackDataController));
+			GameNameProperty = DependencyProperty.Register("GameName", typeof(string), typeof(FullBackDataController));
+			IsReworkProperty = DependencyProperty.Register("IsRework", typeof(bool), typeof(FullBackDataController));
+			IsSketchProperty = DependencyProperty.Register("IsSketch", typeof(bool), typeof(FullBackDataController));
+			TimeTextProperty = DependencyProperty.Register("TimeText", typeof(string), typeof(FullBackDataController));
+			IsOtherTypeProperty = DependencyProperty.Register("IsOtherType", typeof(bool), typeof(FullBackDataController));
+			IsNotOtherTypeProperty = DependencyProperty.Register("IsNotOtherType", typeof(bool), typeof(FullBackDataController));
+			OtherTextProperty = DependencyProperty.Register("OtherText", typeof(string), typeof(FullBackDataController));
 		}
 
-		private BackDataController controller;
+		private FullBackDataController controller;
 
 		private event Action onDeletion;
 		private event Action onChangedTime;
 
-		public BackData()
+		public FullBackData()
 		{
-			controller = new BackDataController();
+			controller = new FullBackDataController();
 
 			InitializeComponent();
 			DataContext = this;
@@ -177,7 +179,7 @@ namespace Dml.Controls
 			}
 		}
 
-		public BackDataController Controller
+		public FullBackDataController Controller
 		{
 			get => controller;
 			set

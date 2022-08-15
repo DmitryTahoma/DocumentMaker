@@ -4,8 +4,11 @@ using Dml.Controls;
 using Dml.Model.Files;
 using Dml.Model.Template;
 using DocumentMaker.Controller;
+using DocumentMaker.Controller.Controls;
+using DocumentMaker.Model.Files;
 using DocumentMaker.Model.OfficeFiles.Human;
 using DocumentMaker.View;
+using DocumentMaker.View.Controls;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -17,8 +20,6 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace DocumentMaker
 {
-	public delegate void ActionWithBackData(BackData backData);
-
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
@@ -252,7 +253,7 @@ namespace DocumentMaker
 		{
 			foreach (UIElement control in BacksData.Children)
 			{
-				if (control is BackData backData)
+				if (control is FullBackData backData)
 				{
 					backData.SetViewByTemplate(controller.TemplateType);
 				}
@@ -351,7 +352,7 @@ namespace DocumentMaker
 
 		private void AddLoadedBackData()
 		{
-			foreach (BackDataController backDataController in controller.BackDataControllers)
+			foreach (FullBackDataController backDataController in controller.BackDataControllers)
 			{
 				DataFooter.AddLoadedBackData(backDataController);
 			}

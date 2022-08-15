@@ -57,23 +57,13 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller\BackDataController.cs" />
+    <Compile Include="Controller\BaseBackDataController.cs" />
     <Compile Include="Controller\Validation\StringValidator.cs" />
     <Compile Include="Controller\Validation\WindowValidator.cs" />
-    <Compile Include="Controls\BackData.xaml.cs">
-      <DependentUpon>BackData.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\BackDataFooter.xaml.cs">
-      <DependentUpon>BackDataFooter.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\BackDataHeader.xaml.cs">
-      <DependentUpon>BackDataHeader.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\InputWithText.xaml.cs">
       <DependentUpon>InputWithText.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dml.cs" />
-    <Compile Include="Model\BackDataModel.cs" />
+    <Compile Include="Model\BaseBackDataModel.cs" />
     <Compile Include="Model\Back\BackDataType.cs" />
     <Compile Include="Model\Back\BackType.cs" />
     <Compile Include="Model\Files\DmxFile.cs" />
@@ -106,18 +96,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\BackData.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\BackDataFooter.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\BackDataHeader.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\InputWithText.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

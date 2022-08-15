@@ -7,31 +7,17 @@ using System.Reflection;
 
 namespace Dml.Controller
 {
-	public class BackDataController
+	public abstract class BaseBackDataController
 	{
 		private const string gameNamesFile = "projectnames.xml";
 
-		private readonly StringValidator validator;
-		private readonly BackDataModel model;
+		protected readonly StringValidator validator;
+		private readonly BaseBackDataModel model;
 
-		public BackDataController()
+		public BaseBackDataController(BaseBackDataModel _model)
 		{
 			validator = new StringValidator();
-			model = new BackDataModel();
-			Load();
-		}
-
-		public BackDataController(BackDataModel _model)
-		{
-			validator = new StringValidator();
-			if (_model != null)
-			{
-				model = _model;
-			}
-			else
-			{
-				model = new BackDataModel();
-			}
+			model = _model;
 			Load();
 		}
 
@@ -48,12 +34,12 @@ namespace Dml.Controller
 		public string OtherText { get => model.OtherText; set => model.OtherText = value; }
 		public IList<BackDataType> BackDataTypesList => model.BackDataTypesList;
 
-		public BackDataModel GetModel()
+		public virtual BaseBackDataModel GetModel()
 		{
 			return model;
 		}
 
-		public bool Validate(ref string errorText)
+		public virtual bool Validate(ref string errorText)
 		{
 			errorText = "Строка таблиці №" + Id.ToString() + ": ";
 
@@ -84,7 +70,7 @@ namespace Dml.Controller
 			return false;
 		}
 
-		public void Load()
+		public virtual void Load()
 		{
 			string gameNamesFullpath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), gameNamesFile);
 			model.LoadGameNames(gameNamesFullpath);

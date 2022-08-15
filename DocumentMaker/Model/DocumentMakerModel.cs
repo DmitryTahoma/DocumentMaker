@@ -3,8 +3,11 @@ using Dml.Model;
 using Dml.Model.Files;
 using Dml.Model.Session;
 using Dml.Model.Template;
+using DocumentMaker.Model.Controls;
+using DocumentMaker.Model.Files;
 using DocumentMaker.Model.OfficeFiles;
 using DocumentMaker.Model.OfficeFiles.Human;
+using DocumentMaker.Model.Session;
 using DocumentMaker.Resources;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -64,12 +67,12 @@ namespace DocumentMaker.Model
 		public IList<HumanData> HumanFullNameList => humanFullNameList;
 		public bool HasNoMovedFiles => exporter.HasNoMovedFiles;
 
-		public void Save(string path, IEnumerable<BackDataModel> backModels)
+		public void Save(string path, IEnumerable<FullBackDataModel> backModels)
 		{
-			XmlSaver saver = new XmlSaver();
+			DmxSaver saver = new DmxSaver();
 			saver.AppendAllProperties(this);
 
-			foreach (BackDataModel backDataModel in backModels)
+			foreach (FullBackDataModel backDataModel in backModels)
 			{
 				saver.CreateBackNode();
 				saver.AppendAllBackProperties(backDataModel);
@@ -85,15 +88,15 @@ namespace DocumentMaker.Model
 			saver.Save(path);
 		}
 
-		public void Load(string path, out List<BackDataModel> backModels)
+		public void Load(string path, out List<FullBackDataModel> backModels)
 		{
-			backModels = new List<BackDataModel>();
+			backModels = new List<FullBackDataModel>();
 
-			XmlLoader loader = new XmlLoader();
+			DmxLoader loader = new DmxLoader();
 			if (loader.TryLoad(path))
 			{
 				loader.SetLoadedProperties(this);
-				loader.SetLoadedBacksProperties(backModels);
+				loader.SetLoadedListProperties(backModels);
 				loader.SetLoadedDmxFiles(openedFilesList);
 			}
 		}
@@ -104,7 +107,7 @@ namespace DocumentMaker.Model
 			loader.LoadHumans(path, humanFullNameList);
 		}
 
-		public void Export(string path, IEnumerable<BackDataModel> backModels)
+		public void Export(string path, IEnumerable<FullBackDataModel> backModels)
 		{
 			DocumentGeneralData generalData = new DocumentGeneralData(this);
 			DocumentTableData tableData = new DocumentTableData(backModels, TemplateType);

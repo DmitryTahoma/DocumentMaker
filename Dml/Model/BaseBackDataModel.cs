@@ -5,12 +5,12 @@ using System.Collections.ObjectModel;
 
 namespace Dml.Model
 {
-	public class BackDataModel
+	public abstract class BaseBackDataModel
 	{
 		private readonly ObservableCollection<BackDataType> dataTypesList;
 		private ObservableRangeCollection<string> gameNameList;
 
-		public BackDataModel()
+		public BaseBackDataModel()
 		{
 			dataTypesList = new ObservableCollection<BackDataType>
 			{
@@ -39,7 +39,7 @@ namespace Dml.Model
 		public string OtherText { get; set; }
 		public IList<BackDataType> BackDataTypesList => dataTypesList;
 
-		public void LoadGameNames(string path)
+		public virtual void LoadGameNames(string path)
 		{
 			XmlLoader loader = new XmlLoader();
 			if(loader.TryLoad(path))

@@ -1,15 +1,13 @@
-﻿using Dml.Model.Files;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Xml;
 
 namespace Dml.Model.Session
 {
 	public class XmlSaver
 	{
-		private readonly XmlDocument xml;
-		private readonly XmlNode rootNode;
-		private XmlNode backNode;
-		private XmlNode dmxFileNode;
+		protected readonly XmlDocument xml;
+		protected readonly XmlNode rootNode;
+		protected XmlNode backNode;
 
 		public XmlSaver()
 		{
@@ -17,7 +15,6 @@ namespace Dml.Model.Session
 			rootNode = xml.CreateElement(XmlConfNames.RootNodeName);
 			xml.AppendChild(rootNode);
 			backNode = null;
-			dmxFileNode = null;
 		}
 
 		public void AppendTagWithValue(string name, string value, string description = null)
@@ -41,17 +38,6 @@ namespace Dml.Model.Session
 			backNode = null;
 		}
 
-		public void CreateDmxFileNode()
-		{
-			dmxFileNode = xml.CreateElement(XmlConfNames.DmxFileNodeName);
-		}
-
-		public void PushDmxFileNode()
-		{
-			rootNode.AppendChild(dmxFileNode);
-			dmxFileNode = null;
-		}
-
 		public void Save(string path)
 		{
 			xml.Save(path);
@@ -67,21 +53,7 @@ namespace Dml.Model.Session
 			AppendAllProperties(backNode, obj);
 		}
 
-		public void AppendAllDmxFileProperties(DmxFile obj)
-		{
-			AppendTagWithValue(dmxFileNode, XmlConfNames.DmxFileFullNameNodeName, obj.FullName);
-			AppendAllProperties(dmxFileNode, obj);
-
-			foreach(BackDataModel backData in obj.BackDataModels)
-			{
-				backNode = xml.CreateElement(XmlConfNames.DmxFileBackNodeName);
-				AppendAllProperties(backNode, backData);
-				dmxFileNode.AppendChild(backNode);
-				backNode = null;
-			}
-		}
-
-		private void AppendAllProperties(XmlNode root, object obj)
+		protected void AppendAllProperties(XmlNode root, object obj)
 		{
 			PropertyInfo[] properties = obj.GetType().GetProperties();
 			foreach (PropertyInfo prop in properties)
@@ -104,7 +76,7 @@ namespace Dml.Model.Session
 			}
 		}
 
-		private void AppendTagWithValue(XmlNode root, string name, string value, string description = null)
+		protected void AppendTagWithValue(XmlNode root, string name, string value, string description = null)
 		{
 			XmlNode node = xml.CreateElement(name);
 

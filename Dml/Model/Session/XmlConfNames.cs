@@ -1,6 +1,6 @@
 ﻿namespace Dml.Model.Session
 {
-	internal static class XmlConfNames
+	public static class XmlConfNames
 	{
 		public static string RootNodeName { get => "Session"; }
 		public static string BackNodeName { get => "BackData"; }

@@ -1,4 +1,6 @@
 ﻿using ActCreator.Controller;
+using ActCreator.Controller.Controls;
+using ActCreator.View.Controls;
 using Dml.Controller;
 using Dml.Controller.Validation;
 using Dml.Controls;
@@ -13,8 +15,6 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ActCreator
 {
-	public delegate void ActionWithBackData(BackData backData);
-
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
@@ -87,7 +87,7 @@ namespace ActCreator
 				DocumentTemplateComboBox.SelectedIndex = (int)controller.TemplateType;
 				HumanFullNameComboBox.Text = controller.SelectedHuman;
 
-				foreach (BackDataController backDataController in controller.BackDataControllers)
+				foreach (ShortBackDataController backDataController in controller.BackDataControllers)
 				{
 					DataFooter.AddLoadedBackData(backDataController);
 				}
@@ -160,7 +160,7 @@ namespace ActCreator
 		{
 			foreach (UIElement control in BacksData.Children)
 			{
-				if (control is BackData backData)
+				if (control is ShortBackData backData)
 				{
 					backData.SetViewByTemplate(controller.TemplateType);
 				}

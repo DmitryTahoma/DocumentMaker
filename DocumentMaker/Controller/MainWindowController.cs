@@ -3,7 +3,10 @@ using Dml.Controller.Validation;
 using Dml.Model;
 using Dml.Model.Files;
 using Dml.Model.Template;
+using DocumentMaker.Controller.Controls;
 using DocumentMaker.Model;
+using DocumentMaker.Model.Controls;
+using DocumentMaker.Model.Files;
 using DocumentMaker.Model.OfficeFiles.Human;
 using System.Collections.Generic;
 using System.IO;
@@ -28,7 +31,7 @@ namespace DocumentMaker.Controller
 		{
 			validator = new StringValidator();
 			model = new DocumentMakerModel();
-			BackDataControllers = new List<BackDataController>();
+			BackDataControllers = new List<FullBackDataController>();
 
 			openFilesLater = args;
 		}
@@ -56,7 +59,7 @@ namespace DocumentMaker.Controller
 		public string MfoText { get => model.MfoText; set => model.MfoText = value; }
 		public string ContractNumberText { get => model.ContractNumberText; set => model.ContractNumberText = value; }
 		public string ContractDateText { get => model.ContractDateText; set => model.ContractDateText = value; }
-		public List<BackDataController> BackDataControllers { get; set; }
+		public List<FullBackDataController> BackDataControllers { get; set; }
 		public IList<DocumentTemplate> DocumentTemplatesList => model.DocumentTemplatesList;
 		public IList<HumanData> HumanFullNameList => model.HumanFullNameList;
 		public bool HasNoMovedFiles => model.HasNoMovedFiles;
@@ -65,8 +68,8 @@ namespace DocumentMaker.Controller
 		{
 			string fullpath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), saveFile);
 
-			List<BackDataModel> backDataModels = new List<BackDataModel>();
-			foreach (BackDataController controller in BackDataControllers)
+			List<FullBackDataModel> backDataModels = new List<FullBackDataModel>();
+			foreach (FullBackDataController controller in BackDataControllers)
 			{
 				backDataModels.Add(controller.GetModel());
 			}
@@ -80,18 +83,18 @@ namespace DocumentMaker.Controller
 			string saveFullpath = Path.Combine(path, saveFile);
 			string humansFullpath = Path.Combine(path, humansFile);
 
-			model.Load(saveFullpath, out List<BackDataModel> backModels);
-			foreach (BackDataModel model in backModels)
+			model.Load(saveFullpath, out List<FullBackDataModel> backModels);
+			foreach (FullBackDataModel model in backModels)
 			{
-				BackDataControllers.Add(new BackDataController(model));
+				BackDataControllers.Add(new FullBackDataController(model));
 			}
 			model.LoadHumans(humansFullpath);
 		}
 
 		public void Export(string path)
 		{
-			List<BackDataModel> backDataModels = new List<BackDataModel>();
-			foreach (BackDataController controller in BackDataControllers)
+			List<FullBackDataModel> backDataModels = new List<FullBackDataModel>();
+			foreach (FullBackDataController controller in BackDataControllers)
 			{
 				backDataModels.Add(controller.GetModel());
 			}
@@ -141,7 +144,7 @@ namespace DocumentMaker.Controller
 
 			if (isValidGeneralData)
 			{
-				foreach (BackDataController backDataController in BackDataControllers)
+				foreach (FullBackDataController backDataController in BackDataControllers)
 				{
 					if (!backDataController.Validate(ref errorText))
 					{
@@ -214,9 +217,9 @@ namespace DocumentMaker.Controller
 			TemplateType = file.TemplateType;
 			SelectedHuman = file.SelectedHuman;
 			BackDataControllers.Clear();
-			foreach(BackDataModel model in file.BackDataModels)
+			foreach(FullBackDataModel model in file.BackDataModels)
 			{
-				BackDataControllers.Add(new BackDataController(model));
+				BackDataControllers.Add(new FullBackDataController(model));
 			}
 		}
 

@@ -76,9 +76,35 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controller\Controls\FullBackDataController.cs" />
+    <Compile Include="Model\Controls\FullBackDataModel.cs" />
+    <Compile Include="Model\Files\DmxFile.cs" />
+    <Compile Include="Model\Session\DmxLoader.cs" />
+    <Compile Include="Model\Session\DmxSaver.cs" />
+    <Compile Include="View\Controls\FullBackData.xaml.cs">
+      <DependentUpon>FullBackData.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Controls\FullBackDataFooter.xaml.cs">
+      <DependentUpon>FullBackDataFooter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Controls\FullBackDataHeader.xaml.cs">
+      <DependentUpon>FullBackDataHeader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\WindowInformation.xaml.cs">
       <DependentUpon>WindowInformation.xaml</DependentUpon>
     </Compile>
+    <Page Include="View\Controls\FullBackData.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Controls\FullBackDataFooter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Controls\FullBackDataHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
