@@ -10,7 +10,7 @@
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="7*" />
+            <ColumnDefinition Width="6*" />
             <ColumnDefinition x:Name="IsSketchColumn" MaxWidth="90" />
             <ColumnDefinition MaxWidth="45" />
             <ColumnDefinition MaxWidth="90" />
@@ -25,7 +25,6 @@
                 <ColumnDefinition Width="1.5*" />
                 <ColumnDefinition MaxWidth="90" />
                 <ColumnDefinition Width="1.5*" />
-                <ColumnDefinition MaxWidth="90" />
             </Grid.ColumnDefinitions>
 
             <TextBlock
@@ -52,10 +51,6 @@
                 Grid.Column="5"
                 Style="{StaticResource BackDataTitle}"
                 Text="Назва гри" />
-            <TextBlock
-                Grid.Column="6"
-                Style="{StaticResource BackDataTitle}"
-                Text="Дообробка" />
         </Grid>
 
         <TextBlock

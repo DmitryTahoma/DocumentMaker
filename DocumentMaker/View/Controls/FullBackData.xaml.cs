@@ -228,7 +228,6 @@ namespace DocumentMaker.View.Controls
 			BackNameInput.Text = controller.BackName;
 			CountRegionsTextInput.Text = controller.BackCountRegionsText;
 			GameNameComboBox.Text = controller.GameName;
-			IsReworkCheckBox.IsChecked = controller.IsRework;
 			IsSketchCheckBox.IsChecked = controller.IsSketch;
 			OtherTextInput.Text = controller.OtherText;
 			WeightTextLabel.Text = controller.WeightText;

@@ -10,7 +10,7 @@
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="7*" />
+            <ColumnDefinition Width="6*" />
             <ColumnDefinition x:Name="IsSketchColumn" MaxWidth="90" />
             <ColumnDefinition MaxWidth="45" />
             <ColumnDefinition MaxWidth="90" />
