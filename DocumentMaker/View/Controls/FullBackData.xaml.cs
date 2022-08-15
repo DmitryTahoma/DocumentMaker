@@ -261,10 +261,8 @@ namespace DocumentMaker.View.Controls
 
 		private void SumTextInputTextChanged(object sender, TextChangedEventArgs e)
 		{
-			if (sender is TextBox)
-			{
-				onChangedSum?.Invoke();
-			}
+			onChangedSum?.Invoke();
+			UpdateWeight();
 		}
 
 		private void RegionsValidatingPreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -355,6 +353,30 @@ namespace DocumentMaker.View.Controls
 		public BackType GetBackType()
 		{
 			return controller.Type;
+		}
+
+		public void SetActSum(uint actSum)
+		{
+			controller.ActSum = actSum;
+			UpdateWeight();
+		}
+
+		public void UpdateWeight()
+		{
+			if(controller.ActSum != 0 && double.TryParse(SumText, out double sum))
+			{
+				WeightText = (sum / controller.ActSum).ToString();
+				if (WeightText.Length > 5)
+				{
+					WeightText = WeightText.Substring(0, 5) + "..";
+				}
+			}
+			else
+			{
+				WeightText = "0";
+			}
+
+			WeightTextLabel.Text = WeightText;
 		}
 	}
 }

@@ -13,12 +13,16 @@ namespace DocumentMaker.View.Controls
 	{
 		public static readonly DependencyProperty DataProperty;
 		public static readonly DependencyProperty AllSumProperty;
+		public static readonly DependencyProperty WeightAllTextProperty;
 
 		static FullBackDataFooter()
 		{
 			DataProperty = DependencyProperty.Register("Data", typeof(StackPanel), typeof(FullBackDataFooter));
 			AllSumProperty = DependencyProperty.Register("AllSum", typeof(string), typeof(FullBackDataFooter));
+			WeightAllTextProperty = DependencyProperty.Register("WeightAllText", typeof(string), typeof(FullBackDataFooter));
 		}
+
+		private FullBackDataFooterController controller;
 
 		private event ActionWithFullBackData onAdded;
 		private event ActionWithFullBackData onRemoved;
@@ -26,6 +30,7 @@ namespace DocumentMaker.View.Controls
 
 		public FullBackDataFooter()
 		{
+			controller = new FullBackDataFooterController();
 			InitializeComponent();
 			DataContext = this;
 		}
@@ -38,8 +43,14 @@ namespace DocumentMaker.View.Controls
 
 		public string AllSum
 		{
-			get => GetValue(AllSumProperty).ToString();
+			get => (string)GetValue(AllSumProperty);
 			set => SetValue(AllSumProperty, value);
+		}
+
+		public string WeightAllText
+		{
+			get => GetValue(WeightAllTextProperty).ToString();
+			set => SetValue(WeightAllTextProperty, value);
 		}
 
 		public void SubscribeAddition(ActionWithFullBackData action)
@@ -142,6 +153,7 @@ namespace DocumentMaker.View.Controls
 
 				AllSum = sums.ToString();
 			}
+			UpdateWeight();
 		}
 
 		private void AddBackData(FullBackData backData)
@@ -174,6 +186,28 @@ namespace DocumentMaker.View.Controls
 				Data.Children.Clear();
 				OnChangedSomeSum();
 				onCleared?.Invoke();
+			}
+		}
+
+		public void SetActSum(uint actSum)
+		{
+			controller.ActSum = actSum;
+			UpdateWeight();
+		}
+
+		public void UpdateWeight()
+		{
+			if (controller.ActSum != 0 && double.TryParse(AllSum, out double sum))
+			{
+				WeightAllText = (sum / controller.ActSum).ToString();
+				if(WeightAllText.Length > 5)
+				{
+					WeightAllText = WeightAllText.Substring(0, 5) + "..";
+				}
+			}
+			else
+			{
+				WeightAllText = "0";
 			}
 		}
 	}

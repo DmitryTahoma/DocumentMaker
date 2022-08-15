@@ -63,6 +63,8 @@ namespace DocumentMaker.Model
 		public string ContractDateText { get; set; }
 		public string ContractReworkNumberText { get; set; }
 		public string ContractReworkDateText { get; set; }
+		public string ActSum { get; set; }
+		public string ActSaldo { get; set; }
 		public IList<DocumentTemplate> DocumentTemplatesList => documentTemplates;
 		public IList<HumanData> HumanFullNameList => humanFullNameList;
 		public bool HasNoMovedFiles => exporter.HasNoMovedFiles;

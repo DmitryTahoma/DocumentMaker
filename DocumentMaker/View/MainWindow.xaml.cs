@@ -28,12 +28,16 @@ namespace DocumentMaker
 		public static readonly DependencyProperty TechnicalTaskDateTextProperty;
 		public static readonly DependencyProperty ActDateTextProperty;
 		public static readonly DependencyProperty AdditionNumTextProperty;
+		public static readonly DependencyProperty ActSumProperty;
+		public static readonly DependencyProperty ActSaldoProperty;
 
 		static MainWindow()
 		{
 			TechnicalTaskDateTextProperty = DependencyProperty.Register("TechnicalTaskDateText", typeof(string), typeof(MainWindow));
 			ActDateTextProperty = DependencyProperty.Register("ActDateText", typeof(string), typeof(MainWindow));
 			AdditionNumTextProperty = DependencyProperty.Register("AdditionNumText", typeof(string), typeof(MainWindow));
+			ActSumProperty = DependencyProperty.Register("ActSum", typeof(string), typeof(MainWindowController));
+			ActSaldoProperty = DependencyProperty.Register("ActSaldo", typeof(string), typeof(MainWindowController));
 		}
 
 		private readonly MainWindowController controller;
@@ -88,6 +92,18 @@ namespace DocumentMaker
 			set => SetValue(AdditionNumTextProperty, value);
 		}
 
+		public string ActSum
+		{
+			get => (string)GetValue(ActSumProperty);
+			set => SetValue(ActSumProperty, value);
+		}
+
+		public string ActSaldo
+		{
+			get => (string)GetValue(ActSaldoProperty);
+			set => SetValue(ActSaldoProperty, value);
+		}
+
 		private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			SetDataToController();
@@ -114,6 +130,7 @@ namespace DocumentMaker
 				{
 					SetSelectedFile(files.Last());
 				}
+				UpdateActSum();
 
 #if INCLUDED_UPDATER_API
 				try
@@ -268,6 +285,8 @@ namespace DocumentMaker
 			TechnicalTaskDateTextInput.InputText = controller.TechnicalTaskDateText;
 			ActDateTextInput.InputText = controller.ActDateText;
 			AdditionNumTextInput.InputText = controller.AdditionNumText;
+			ActSumInput.Text = controller.ActSum;
+			ActSaldoInput.Text = controller.ActSaldo;
 		}
 
 		private void SetDataToController()
@@ -275,6 +294,8 @@ namespace DocumentMaker
 			controller.TechnicalTaskDateText = TechnicalTaskDateText;
 			controller.ActDateText = ActDateText;
 			controller.AdditionNumText = AdditionNumText;
+			controller.ActSum = ActSum;
+			controller.ActSaldo = ActSaldo;
 		}
 
 		private void OpenFiles(string[] filenames)
@@ -350,6 +371,11 @@ namespace DocumentMaker
 			}
 		}
 
+		private void ActSumTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+		{
+			UpdateActSum();
+		}
+
 		private void AddLoadedBackData()
 		{
 			foreach (FullBackDataController backDataController in controller.BackDataControllers)
@@ -378,6 +404,27 @@ namespace DocumentMaker
 			Width = controller.WindowWidth;
 			WindowState = controller.WindowState;
 			WindowValidator.MoveToValidPosition(this);
+		}
+
+		private void UpdateActSum()
+		{
+			if (uint.TryParse(ActSum, out uint sum))
+			{
+				if (BacksData != null)
+				{
+					foreach (UIElement elem in BacksData.Children)
+					{
+						if (elem is FullBackData backData)
+						{
+							backData.SetActSum(sum);
+						}
+					}
+				}
+				if (DataFooter != null)
+				{
+					DataFooter.SetActSum(sum);
+				}
+			}
 		}
 	}
 }

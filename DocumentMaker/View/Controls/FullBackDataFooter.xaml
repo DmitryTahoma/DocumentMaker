@@ -23,6 +23,11 @@
             Content="Добавити"
             Style="{StaticResource BackDataAddButton}" />
 
+        <TextBlock
+            Grid.Column="2"
+            Style="{StaticResource MiddleLabel}"
+            Text="{Binding WeightAllText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
         <TextBox
             Grid.Column="3"
             Style="{StaticResource BackDataAllTimeTextBox}"

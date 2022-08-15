@@ -59,6 +59,8 @@ namespace DocumentMaker.Controller
 		public string MfoText { get => model.MfoText; set => model.MfoText = value; }
 		public string ContractNumberText { get => model.ContractNumberText; set => model.ContractNumberText = value; }
 		public string ContractDateText { get => model.ContractDateText; set => model.ContractDateText = value; }
+		public string ActSum { get => model.ActSum; set => model.ActSum = value; }
+		public string ActSaldo { get => model.ActSaldo; set => model.ActSaldo = value; }
 		public List<FullBackDataController> BackDataControllers { get; set; }
 		public IList<DocumentTemplate> DocumentTemplatesList => model.DocumentTemplatesList;
 		public IList<HumanData> HumanFullNameList => model.HumanFullNameList;

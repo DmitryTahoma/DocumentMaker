@@ -125,7 +125,7 @@
 
         <TextBox
             Grid.Row="1"
-            Grid.ColumnSpan="3"
+            Grid.ColumnSpan="4"
             Style="{StaticResource BackDataSplitter}" />
 
     </Grid>
