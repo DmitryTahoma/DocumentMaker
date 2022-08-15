@@ -100,7 +100,7 @@
 
         <TextBlock
             x:Name="WeightTextLabel"
-            Grid.Column="1" 
+            Grid.Column="1"
             Style="{StaticResource MiddleLabel}"
             Text="{Binding ElementName=FullBackDataContext, Path=WeightText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 

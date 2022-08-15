@@ -27,6 +27,7 @@ namespace DocumentMaker.View.Controls
 		private event ActionWithFullBackData onAdded;
 		private event ActionWithFullBackData onRemoved;
 		private event Action onCleared;
+		private event Action onChangedSum;
 
 		public FullBackDataFooter()
 		{
@@ -66,6 +67,11 @@ namespace DocumentMaker.View.Controls
 		public void SubscribeClearing(Action action)
 		{
 			onCleared += action;
+		}
+
+		public void SubscribeChangingSum(Action action)
+		{
+			onChangedSum += action;
 		}
 
 		public void AddLoadedBackData(FullBackDataController controller)
@@ -154,6 +160,7 @@ namespace DocumentMaker.View.Controls
 				AllSum = sums.ToString();
 			}
 			UpdateWeight();
+			onChangedSum?.Invoke();
 		}
 
 		private void AddBackData(FullBackData backData)

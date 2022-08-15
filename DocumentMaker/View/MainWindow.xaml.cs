@@ -65,6 +65,7 @@ namespace DocumentMaker
 			{
 				controller.BackDataControllers.Clear();
 			});
+			DataFooter.SubscribeChangingSum(UpdateSaldo);
 
 			folderBrowserDialog = new FolderBrowserDialog();
 			openFileDialog = new OpenFileDialog() { Multiselect = true, Filter = "DocumentMaker files (*" + DmxFile.Extension + ")|*" + DmxFile.Extension };
@@ -424,6 +425,16 @@ namespace DocumentMaker
 				{
 					DataFooter.SetActSum(sum);
 				}
+			}
+			UpdateSaldo();
+		}
+
+		private void UpdateSaldo()
+		{
+			if(uint.TryParse(ActSum, out uint sum) && uint.TryParse(DataFooter.AllSum, out uint curSum))
+			{
+				ActSaldo = ((int)sum - (int)curSum).ToString();
+				ActSaldoInput.Text = ActSaldo;
 			}
 		}
 	}

@@ -133,7 +133,7 @@
                     x:Name="ActSaldoInput"
                     Grid.Row="1"
                     Grid.Column="1"
-                    Style="{StaticResource TextBoxNumberValidation}"
+                    Style="{StaticResource TextBoxNumberValidationDisabled}"
                     Text="{Binding ElementName=WindowContext, Path=ActSaldo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Button
                     Grid.Row="1"
