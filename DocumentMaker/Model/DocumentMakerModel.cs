@@ -52,6 +52,17 @@ namespace DocumentMaker.Model
 		[IsNotDmxContent]
 		public WindowState WindowState { get; set; } = WindowState.Maximized;
 
+		[IsNotDmxContent]
+		public double WindowInformation_WindowTop { get; set; } = 0;
+		[IsNotDmxContent]
+		public double WindowInformation_WindowLeft { get; set; } = 0;
+		[IsNotDmxContent]
+		public double WindowInformation_WindowHeight { get; set; } = 800;
+		[IsNotDmxContent]
+		public double WindowInformation_WindowWidth { get; set; } = 520;
+		[IsNotDmxContent]
+		public WindowState WindowInformation_WindowState { get; set; } = WindowState.Normal;
+
 		#endregion
 
 		public IList<DmxFile> OpenedFilesList => openedFilesList;

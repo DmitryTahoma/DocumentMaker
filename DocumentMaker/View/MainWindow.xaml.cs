@@ -290,11 +290,28 @@ namespace DocumentMaker
 		private void InfoBtnClick(object sender, RoutedEventArgs e)
 		{
 			if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
-				new WindowInformation(controller.GetSelectedHuman()).ShowDialog();
-			else 
+			{
+				WindowInformation window = new WindowInformation(controller.GetSelectedHuman())
+				{
+					Top = controller.WindowInformation_WindowTop,
+					Left = controller.WindowInformation_WindowLeft,
+					Height = controller.WindowInformation_WindowHeight,
+					Width = controller.WindowInformation_WindowWidth,
+					WindowState = controller.WindowInformation_WindowState,
+				};
+				WindowValidator.MoveToValidPosition(window);
+				window.ShowDialog();
+				
+				controller.WindowInformation_WindowTop = window.Top;
+				controller.WindowInformation_WindowLeft = window.Left;
+				controller.WindowInformation_WindowHeight = window.Height;
+				controller.WindowInformation_WindowWidth = window.Width;
+				controller.WindowInformation_WindowState = window.WindowState;
+			}
+			else
 				MessageBox.Show("Спочатку необхідно відкрити файл.",
 								"DocumentMaker | Картка людини",
-								MessageBoxButtons.OK, 
+								MessageBoxButtons.OK,
 								MessageBoxIcon.Information);
 		}
 

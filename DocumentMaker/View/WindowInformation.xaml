@@ -8,8 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="WindowInfo"
     Title="DocumentMaker | Картка людини"
-    Width="800"
-    Height="520"
     MinWidth="680"
     MinHeight="500"
     KeyDown="WindowKeyDown"

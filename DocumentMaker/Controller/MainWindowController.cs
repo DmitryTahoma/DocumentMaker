@@ -44,6 +44,12 @@ namespace DocumentMaker.Controller
 		public double WindowWidth { get => model.WindowWidth; set => model.WindowWidth = value; }
 		public WindowState WindowState { get => model.WindowState; set => model.WindowState = value; }
 
+		public double WindowInformation_WindowTop { get => model.WindowInformation_WindowTop; set => model.WindowInformation_WindowTop  = value; }
+		public double WindowInformation_WindowLeft { get => model.WindowInformation_WindowLeft; set => model.WindowInformation_WindowLeft  = value; }
+		public double WindowInformation_WindowHeight { get => model.WindowInformation_WindowHeight; set => model.WindowInformation_WindowHeight  = value; }
+		public double WindowInformation_WindowWidth { get => model.WindowInformation_WindowWidth; set => model.WindowInformation_WindowWidth  = value; }
+		public WindowState WindowInformation_WindowState { get => model.WindowInformation_WindowState; set => model.WindowInformation_WindowState = value; }
+
 		#endregion
 
 		public IList<DmxFile> OpenedFilesList => model.OpenedFilesList;
