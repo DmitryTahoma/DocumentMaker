@@ -2,6 +2,7 @@
 using Dml.Model;
 using Dml.Model.Files;
 using Dml.Model.Session;
+using Dml.Model.Session.Attributes;
 using Dml.Model.Template;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -29,10 +30,15 @@ namespace ActCreator.Model
 
 		#region Window settings
 
+		[IsNotDmxContent]
 		public double WindowTop { get; set; } = 0;
+		[IsNotDmxContent]
 		public double WindowLeft { get; set; } = 0;
+		[IsNotDmxContent]
 		public double WindowHeight { get; set; } = 700;
+		[IsNotDmxContent]
 		public double WindowWidth { get; set; } = 1000;
+		[IsNotDmxContent]
 		public WindowState WindowState { get; set; } = WindowState.Maximized;
 
 		#endregion
@@ -96,7 +102,7 @@ namespace ActCreator.Model
 		public void ExportDmx(string path, IEnumerable<ShortBackDataModel> backModels)
 		{
 			XmlSaver saver = new XmlSaver();
-			saver.AppendAllProperties(this);
+			saver.AppendAllProperties(this, true);
 
 			foreach(ShortBackDataModel backDataModel in backModels)
 			{

@@ -2,6 +2,7 @@
 using Dml.Model;
 using Dml.Model.Files;
 using Dml.Model.Session;
+using Dml.Model.Session.Attributes;
 using Dml.Model.Template;
 using DocumentMaker.Model.Controls;
 using DocumentMaker.Model.Files;
@@ -40,10 +41,15 @@ namespace DocumentMaker.Model
 
 		#region Window settings
 
+		[IsNotDmxContent]
 		public double WindowTop { get; set; } = 0;
+		[IsNotDmxContent]
 		public double WindowLeft { get; set; } = 0;
+		[IsNotDmxContent]
 		public double WindowHeight { get; set; } = 700;
+		[IsNotDmxContent]
 		public double WindowWidth { get; set; } = 1000;
+		[IsNotDmxContent]
 		public WindowState WindowState { get; set; } = WindowState.Maximized;
 
 		#endregion

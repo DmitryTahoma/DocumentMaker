@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using Dml.Model.Session.Attributes;
+using System;
+using System.Reflection;
 using System.Xml;
 
 namespace Dml.Model.Session
@@ -43,9 +45,9 @@ namespace Dml.Model.Session
 			xml.Save(path);
 		}
 
-		public void AppendAllProperties(object obj)
+		public void AppendAllProperties(object obj, bool isOnlyDmxContent = false)
 		{
-			AppendAllProperties(rootNode, obj);
+			AppendAllProperties(rootNode, obj, isOnlyDmxContent);
 		}
 
 		public void AppendAllBackProperties(object obj)
@@ -53,12 +55,14 @@ namespace Dml.Model.Session
 			AppendAllProperties(backNode, obj);
 		}
 
-		protected void AppendAllProperties(XmlNode root, object obj)
+		protected void AppendAllProperties(XmlNode root, object obj, bool isOnlyDmxContent = false)
 		{
 			PropertyInfo[] properties = obj.GetType().GetProperties();
 			foreach (PropertyInfo prop in properties)
 			{
-				if (prop.CanWrite && (prop.SetMethod.Attributes & MethodAttributes.Public) == MethodAttributes.Public)
+				if (prop.CanWrite
+					&& (prop.SetMethod.Attributes & MethodAttributes.Public) == MethodAttributes.Public
+					&& (!isOnlyDmxContent || (Attribute.GetCustomAttribute(prop, typeof(IsNotDmxContentAttribute)) == null)))
 				{
 					object value = prop.GetValue(obj);
 					if (value != null)
