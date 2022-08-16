@@ -55,6 +55,11 @@ namespace DocumentMaker.Controller
 		public string CorrectDevelopmentWindow_NumberText { get => model.CorrectDevelopmentWindow_NumberText; set => model.CorrectDevelopmentWindow_NumberText  = value; }
 		public bool CorrectDevelopmentWindow_TakeSumFromSupport { get => model.CorrectDevelopmentWindow_TakeSumFromSupport; set => model.CorrectDevelopmentWindow_TakeSumFromSupport  = value; }
 
+		public double CorrectSupportWindow_WindowTop { get => model.CorrectSupportWindow_WindowTop; set => model.CorrectSupportWindow_WindowTop = value; }
+		public double CorrectSupportWindow_WindowLeft { get => model.CorrectSupportWindow_WindowLeft; set => model.CorrectSupportWindow_WindowLeft = value; }
+		public string CorrectSupportWindow_NumberText { get => model.CorrectSupportWindow_NumberText; set => model.CorrectSupportWindow_NumberText = value; }
+		public bool CorrectSupportWindow_TakeSumFromDevelopment { get => model.CorrectSupportWindow_TakeSumFromDevelopment; set => model.CorrectSupportWindow_TakeSumFromDevelopment = value; }
+
 		#endregion
 
 		public IList<DmxFile> OpenedFilesList => model.OpenedFilesList;

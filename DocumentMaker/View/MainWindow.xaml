@@ -189,7 +189,10 @@
                     Style="{StaticResource MiddleLabel}"
                     Text="Підтримка" />
                 <StackPanel Grid.Column="2">
-                    <Button Content="Корегування" Style="{StaticResource LeftButton}" />
+                    <Button
+                        Click="CorrectSupportClick"
+                        Content="Корегування"
+                        Style="{StaticResource LeftButton}" />
                 </StackPanel>
             </Grid>
 

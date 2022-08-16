@@ -72,6 +72,15 @@ namespace DocumentMaker.Model
 		[IsNotDmxContent]
 		public bool CorrectDevelopmentWindow_TakeSumFromSupport { get; set; } = false;
 
+		[IsNotDmxContent]
+		public double CorrectSupportWindow_WindowTop { get; set; } = 0;
+		[IsNotDmxContent]
+		public double CorrectSupportWindow_WindowLeft { get; set; } = 0;
+		[IsNotDmxContent]
+		public string CorrectSupportWindow_NumberText { get; set; } = "2100";
+		[IsNotDmxContent]
+		public bool CorrectSupportWindow_TakeSumFromDevelopment { get; set; } = false;
+
 		#endregion
 
 		public IList<DmxFile> OpenedFilesList => openedFilesList;

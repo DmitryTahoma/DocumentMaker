@@ -347,6 +347,29 @@ namespace DocumentMaker
 			}
 		}
 
+		private void CorrectSupportClick(object sender, RoutedEventArgs e)
+		{
+			CorrectSupportWindow window = new CorrectSupportWindow
+			{
+				Top = controller.CorrectSupportWindow_WindowTop,
+				Left = controller.CorrectSupportWindow_WindowLeft,
+				NumberText = controller.CorrectSupportWindow_NumberText,
+				TakeSumFromDevelopment = controller.CorrectSupportWindow_TakeSumFromDevelopment,
+			};
+			WindowValidator.MoveToValidPosition(window);
+			window.ShowDialog();
+
+			controller.CorrectSupportWindow_WindowTop = window.Top;
+			controller.CorrectSupportWindow_WindowLeft = window.Left;
+			controller.CorrectSupportWindow_NumberText = window.NumberText;
+			controller.CorrectSupportWindow_TakeSumFromDevelopment = window.TakeSumFromDevelopment;
+
+			if(window.IsCorrection)
+			{
+				//run algorithm
+			}
+		}
+
 		private void SetDataFromControllerBackDatas(StackPanel stackPanel)
 		{
 			if(stackPanel != null)
