@@ -433,6 +433,7 @@ namespace DocumentMaker
 				AddLoadedBackData();
 				controller.SetSelectedFile(selectedFile); 
 				UpdateViewBackData();
+				UpdateActSum();
 			}
 		}
 

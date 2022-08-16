@@ -25,6 +25,7 @@ namespace DocumentMaker.Model.Files
 
 				backDataModels = new List<FullBackDataModel>();
 				loader.SetLoadedListProperties(backDataModels);
+				SetDefaultSums();
 
 				Loaded = true;
 			}
@@ -39,6 +40,17 @@ namespace DocumentMaker.Model.Files
 		public void AddBackModel(FullBackDataModel backDataModel)
 		{
 			backDataModels.Add(backDataModel);
+		}
+
+		private void SetDefaultSums()
+		{
+			foreach(FullBackDataModel model in backDataModels)
+			{
+				if(model.SumText == null)
+				{
+					model.SumText = model.SpentTimeText + "00";
+				}
+			}
 		}
 	}
 }
