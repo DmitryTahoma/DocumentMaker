@@ -58,6 +58,12 @@ namespace DocumentMaker
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
 				UpdateActSum();
+
+				DmxFile selectedFile = controller.GetSelectedFile();
+				if(selectedFile != null)
+				{
+					selectedFile.AddBackModel(x.Controller.GetModel());
+				}
 			});
 			DataFooter.SubscribeRemoving((x) =>
 			{
@@ -75,6 +81,12 @@ namespace DocumentMaker
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
 				UpdateActSum();
+
+				DmxFile selectedFile = controller.GetSelectedFile();
+				if (selectedFile != null)
+				{
+					selectedFile.AddBackModel(x.Controller.GetModel());
+				}
 			});
 			ReworkDataFooter.SubscribeRemoving((x) =>
 			{
@@ -366,7 +378,7 @@ namespace DocumentMaker
 		private void LoadFiles()
 		{
 			controller.LoadFiles();
-			SetSelectedFile(controller.GetSelectedFileName());
+			SetSelectedFile(controller.GetSelectedFile().FullName);
 		}
 
 		private void WindowPreviewDrop(object sender, System.Windows.DragEventArgs e)

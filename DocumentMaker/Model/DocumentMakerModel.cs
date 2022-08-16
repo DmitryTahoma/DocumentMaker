@@ -226,7 +226,7 @@ namespace DocumentMaker.Model
 			}
 		}
 
-		public string GetSelectedFileName()
+		public DmxFile GetSelectedFile()
 		{
 			if (openedFilesList.Count > 0)
 			{
@@ -234,10 +234,10 @@ namespace DocumentMaker.Model
 				{
 					if (dmxFile.Selected)
 					{
-						return dmxFile.FullName;
+						return dmxFile;
 					}
 				}
-				return openedFilesList[0].FullName;
+				return openedFilesList[0];
 			}
 			return null;
 		}

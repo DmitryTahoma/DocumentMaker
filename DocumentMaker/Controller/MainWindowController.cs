@@ -223,9 +223,9 @@ namespace DocumentMaker.Controller
 			model.SetSelectedFile(file);
 		}
 
-		public string GetSelectedFileName()
+		public DmxFile GetSelectedFile()
 		{
-			return model.GetSelectedFileName();
+			return model.GetSelectedFile();
 		}
 
 		public string[] GetOpenLaterFiles()

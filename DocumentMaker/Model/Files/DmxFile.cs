@@ -35,5 +35,10 @@ namespace DocumentMaker.Model.Files
 			this.backDataModels = new List<FullBackDataModel>(backDataModels);
 			Loaded = true;
 		}
+
+		public void AddBackModel(FullBackDataModel backDataModel)
+		{
+			backDataModels.Add(backDataModel);
+		}
 	}
 }
