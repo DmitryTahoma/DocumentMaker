@@ -217,5 +217,21 @@ namespace DocumentMaker.View.Controls
 				WeightAllText = "0";
 			}
 		}
+
+		public void UpdateBackDataIds()
+		{
+			if(Data != null)
+			{
+				uint counter = 1;
+				foreach(UIElement elem in Data.Children)
+				{
+					if(elem is FullBackData backData)
+					{
+						backData.BackDataId = counter++;
+						backData.SetDataFromController();
+					}
+				}
+			}
+		}
 	}
 }

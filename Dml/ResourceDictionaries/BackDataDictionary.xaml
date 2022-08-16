@@ -63,7 +63,7 @@
         BasedOn="{StaticResource BackDataTextBox}"
         TargetType="TextBox">
         <Setter Property="Background" Value="AliceBlue" />
-        <Setter Property="IsEnabled" Value="False"/>
+        <Setter Property="IsEnabled" Value="False" />
     </Style>
 
     <Style

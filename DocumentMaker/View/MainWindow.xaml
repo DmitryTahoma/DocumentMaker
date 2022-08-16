@@ -32,6 +32,9 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
             <Grid Grid.ColumnSpan="4">
@@ -144,18 +147,61 @@
 
             </Grid>
 
+            <Grid Grid.Row="3" Grid.ColumnSpan="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    Grid.Column="1"
+                    Style="{StaticResource MiddleLabel}"
+                    Text="Розробка" />
+                <StackPanel Grid.Column="2">
+                    <Button Content="Корегування" Style="{StaticResource LeftButton}" />
+                </StackPanel>
+            </Grid>
+
             <StackPanel
-                Grid.Row="3"
+                Grid.Row="4"
                 Grid.ColumnSpan="4"
                 Orientation="Vertical">
+
                 <uc:FullBackDataHeader x:Name="DataHeader" />
-
                 <StackPanel x:Name="BacksData" Orientation="Vertical" />
-
                 <uc:FullBackDataFooter x:Name="DataFooter" Data="{Binding ElementName=BacksData}" />
+
             </StackPanel>
 
-            <Grid Grid.Row="4" Grid.ColumnSpan="4">
+            <Grid Grid.Row="5" Grid.ColumnSpan="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    Grid.Column="1"
+                    Style="{StaticResource MiddleLabel}"
+                    Text="Підтримка" />
+                <StackPanel Grid.Column="2">
+                    <Button Content="Корегування" Style="{StaticResource LeftButton}" />
+                </StackPanel>
+            </Grid>
+
+            <StackPanel
+                Grid.Row="6"
+                Grid.ColumnSpan="4"
+                Orientation="Vertical">
+
+                <uc:FullBackDataHeader x:Name="ReworkDataHeader" />
+                <StackPanel x:Name="ReworkBacksData" Orientation="Vertical" />
+                <uc:FullBackDataFooter x:Name="ReworkDataFooter" Data="{Binding ElementName=ReworkBacksData}" />
+
+            </StackPanel>
+
+            <Grid Grid.Row="7" Grid.ColumnSpan="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />

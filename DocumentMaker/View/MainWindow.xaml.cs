@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using UpdaterAPI;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -67,6 +68,23 @@ namespace DocumentMaker
 				controller.BackDataControllers.Clear();
 			});
 			DataFooter.SubscribeChangingSum(UpdateSaldo);
+
+			ReworkDataFooter.SubscribeAddition((x) =>
+			{
+				x.Controller.IsRework = true;
+				controller.BackDataControllers.Add(x.Controller);
+				x.SetViewByTemplate(controller.TemplateType);
+				UpdateActSum();
+			});
+			ReworkDataFooter.SubscribeRemoving((x) =>
+			{
+				controller.BackDataControllers.Remove(x.Controller);
+			});
+			ReworkDataFooter.SubscribeClearing(() =>
+			{
+				controller.BackDataControllers.Clear();
+			});
+			ReworkDataFooter.SubscribeChangingSum(UpdateSaldo);
 
 			folderBrowserDialog = new FolderBrowserDialog();
 			openFileDialog = new OpenFileDialog() { Multiselect = true, Filter = "DocumentMaker files (*" + DmxFile.Extension + ")|*" + DmxFile.Extension };
@@ -273,11 +291,17 @@ namespace DocumentMaker
 			SetDataToController();
 			controller.CorrectSaldo();
 
-			if(BacksData != null)
+			SetDataFromControllerBackDatas(BacksData);
+			SetDataFromControllerBackDatas(ReworkBacksData);
+		}
+
+		private void SetDataFromControllerBackDatas(StackPanel stackPanel)
+		{
+			if(stackPanel != null)
 			{
-				foreach(UIElement elem in BacksData.Children)
+				foreach (UIElement elem in stackPanel.Children)
 				{
-					if(elem is FullBackData backData)
+					if (elem is FullBackData backData)
 					{
 						backData.SetDataFromController();
 					}
@@ -294,8 +318,17 @@ namespace DocumentMaker
 					backData.SetViewByTemplate(controller.TemplateType);
 				}
 			}
-			DataFooter.SetViewByTemplate(controller.TemplateType);
+			foreach(UIElement control in ReworkBacksData.Children)
+			{
+				if(control is FullBackData backData)
+				{
+					backData.SetViewByTemplate(controller.TemplateType);
+				}
+			}
 			DataHeader.SetViewByTemplate(controller.TemplateType);
+			ReworkDataHeader.SetViewByTemplate(controller.TemplateType);
+			DataFooter.SetViewByTemplate(controller.TemplateType);
+			ReworkDataFooter.SetViewByTemplate(controller.TemplateType);
 		}
 
 		private void SetDataFromController()
@@ -382,6 +415,7 @@ namespace DocumentMaker
 			if(sender is System.Windows.Controls.ComboBox comboBox && comboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
 			{
 				DataFooter.ClearBackData();
+				ReworkDataFooter.ClearBackData();
 				controller.SetDataFromFile(selectedFile);
 				SetDataFromController();
 				AddLoadedBackData();
@@ -399,8 +433,17 @@ namespace DocumentMaker
 		{
 			foreach (FullBackDataController backDataController in controller.BackDataControllers)
 			{
-				DataFooter.AddLoadedBackData(backDataController);
+				if(backDataController.IsRework)
+				{
+					ReworkDataFooter.AddLoadedBackData(backDataController);
+				}
+				else
+				{
+					DataFooter.AddLoadedBackData(backDataController);
+				}
 			}
+			DataFooter.UpdateBackDataIds();
+			ReworkDataFooter.UpdateBackDataIds();
 		}
 
 		private void SetSelectedFile(string filename)
@@ -429,29 +472,33 @@ namespace DocumentMaker
 		{
 			if (uint.TryParse(ActSum, out uint sum))
 			{
-				if (BacksData != null)
-				{
-					foreach (UIElement elem in BacksData.Children)
-					{
-						if (elem is FullBackData backData)
-						{
-							backData.SetActSum(sum);
-						}
-					}
-				}
-				if (DataFooter != null)
-				{
-					DataFooter.SetActSum(sum);
-				}
+				UpdateActSumBackDataPanel(BacksData, sum);
+				UpdateActSumBackDataPanel(ReworkBacksData, sum);
+				DataFooter?.SetActSum(sum);
+				ReworkDataFooter?.SetActSum(sum);
 			}
 			UpdateSaldo();
 		}
 
+		private void UpdateActSumBackDataPanel(StackPanel stackPanel, uint sum)
+		{
+			if (stackPanel != null)
+			{
+				foreach (UIElement elem in stackPanel.Children)
+				{
+					if (elem is FullBackData backData)
+					{
+						backData.SetActSum(sum);
+					}
+				}
+			}
+		}
+
 		private void UpdateSaldo()
 		{
-			if(uint.TryParse(ActSum, out uint sum) && uint.TryParse(DataFooter.AllSum, out uint curSum))
+			if(uint.TryParse(ActSum, out uint sum) && uint.TryParse(DataFooter.AllSum, out uint curSum) && uint.TryParse(ReworkDataFooter.AllSum, out uint curSumRework))
 			{
-				ActSaldo = ((int)sum - (int)curSum).ToString();
+				ActSaldo = ((int)sum - (int)(curSum + curSumRework)).ToString();
 				ActSaldoInput.Text = ActSaldo;
 			}
 		}
