@@ -324,6 +324,29 @@ namespace DocumentMaker
 			SetDataFromControllerBackDatas(ReworkBacksData);
 		}
 
+		private void CorrectDevelopClick(object sender, RoutedEventArgs e)
+		{
+			CorrectDevelopmentWindow window = new CorrectDevelopmentWindow
+			{
+				Top = controller.CorrectDevelopmentWindow_WindowTop,
+				Left = controller.CorrectDevelopmentWindow_WindowLeft,
+				NumberText = controller.CorrectDevelopmentWindow_NumberText,
+				TakeSumFromSupport = controller.CorrectDevelopmentWindow_TakeSumFromSupport,
+			};
+			WindowValidator.MoveToValidPosition(window);
+			window.ShowDialog();
+
+			controller.CorrectDevelopmentWindow_WindowTop = window.Top;
+			controller.CorrectDevelopmentWindow_WindowLeft = window.Left;
+			controller.CorrectDevelopmentWindow_NumberText = window.NumberText;
+			controller.CorrectDevelopmentWindow_TakeSumFromSupport = window.TakeSumFromSupport;
+
+			if(window.IsCorrection)
+			{
+				//run algorithm
+			}
+		}
+
 		private void SetDataFromControllerBackDatas(StackPanel stackPanel)
 		{
 			if(stackPanel != null)

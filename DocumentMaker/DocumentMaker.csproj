@@ -91,6 +91,9 @@
     <Compile Include="View\Controls\FullBackDataHeader.xaml.cs">
       <DependentUpon>FullBackDataHeader.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\CorrectDevelopmentWindow.xaml.cs">
+      <DependentUpon>CorrectDevelopmentWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\WindowInformation.xaml.cs">
       <DependentUpon>WindowInformation.xaml</DependentUpon>
     </Compile>
@@ -103,6 +106,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Controls\FullBackDataHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CorrectDevelopmentWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

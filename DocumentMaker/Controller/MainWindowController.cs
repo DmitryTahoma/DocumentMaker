@@ -50,6 +50,11 @@ namespace DocumentMaker.Controller
 		public double WindowInformation_WindowWidth { get => model.WindowInformation_WindowWidth; set => model.WindowInformation_WindowWidth  = value; }
 		public WindowState WindowInformation_WindowState { get => model.WindowInformation_WindowState; set => model.WindowInformation_WindowState = value; }
 
+		public double CorrectDevelopmentWindow_WindowTop { get => model.CorrectDevelopmentWindow_WindowTop; set => model.CorrectDevelopmentWindow_WindowTop = value; }
+		public double CorrectDevelopmentWindow_WindowLeft { get => model.CorrectDevelopmentWindow_WindowLeft; set => model.CorrectDevelopmentWindow_WindowLeft  = value; }
+		public string CorrectDevelopmentWindow_NumberText { get => model.CorrectDevelopmentWindow_NumberText; set => model.CorrectDevelopmentWindow_NumberText  = value; }
+		public bool CorrectDevelopmentWindow_TakeSumFromSupport { get => model.CorrectDevelopmentWindow_TakeSumFromSupport; set => model.CorrectDevelopmentWindow_TakeSumFromSupport  = value; }
+
 		#endregion
 
 		public IList<DmxFile> OpenedFilesList => model.OpenedFilesList;

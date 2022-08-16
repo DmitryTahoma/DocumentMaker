@@ -63,6 +63,15 @@ namespace DocumentMaker.Model
 		[IsNotDmxContent]
 		public WindowState WindowInformation_WindowState { get; set; } = WindowState.Normal;
 
+		[IsNotDmxContent]
+		public double CorrectDevelopmentWindow_WindowTop { get; set; } = 0;
+		[IsNotDmxContent]
+		public double CorrectDevelopmentWindow_WindowLeft { get; set; } = 0;
+		[IsNotDmxContent]
+		public string CorrectDevelopmentWindow_NumberText { get; set; } = "2500";
+		[IsNotDmxContent]
+		public bool CorrectDevelopmentWindow_TakeSumFromSupport { get; set; } = false;
+
 		#endregion
 
 		public IList<DmxFile> OpenedFilesList => openedFilesList;
