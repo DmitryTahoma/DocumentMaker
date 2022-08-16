@@ -364,8 +364,13 @@ namespace DocumentMaker.View.Controls
 		{
 			if(controller.ActSum != 0 && double.TryParse(SumText, out double sum))
 			{
-				WeightText = (sum / controller.ActSum).ToString();
-				if (WeightText.Length > 5)
+				double weight = sum / controller.ActSum;
+				WeightText = weight.ToString();
+				if (weight < 0.001 && weight > 0)
+				{
+					WeightText = "0.000..";
+				}
+				else if (WeightText.Length > 5)
 				{
 					WeightText = WeightText.Substring(0, 5) + "..";
 				}
