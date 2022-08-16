@@ -270,5 +270,41 @@ namespace DocumentMaker.Controller
 			}
 			return backDataModels;
 		}
+
+		public void CorrectDevelopment(int minSum, bool takeSumFromSupport)
+		{
+			List<FullBackDataModel> developmentModels = new List<FullBackDataModel>(), supportModels = new List<FullBackDataModel>();
+			foreach(FullBackDataController controller in BackDataControllers)
+			{
+				if(controller.IsRework)
+				{
+					supportModels.Add(controller.GetModel());
+				}
+				else
+				{
+					developmentModels.Add(controller.GetModel());
+				}
+			}
+
+			model.CorrectDevelopment(minSum, takeSumFromSupport, developmentModels, supportModels);
+		}
+
+		public void CorrectSupport(int minSum, bool takeSumFromDevelopment)
+		{
+			List<FullBackDataModel> developmentModels = new List<FullBackDataModel>(), supportModels = new List<FullBackDataModel>();
+			foreach (FullBackDataController controller in BackDataControllers)
+			{
+				if (controller.IsRework)
+				{
+					supportModels.Add(controller.GetModel());
+				}
+				else
+				{
+					developmentModels.Add(controller.GetModel());
+				}
+			}
+
+			model.CorrectSupport(minSum, takeSumFromDevelopment, developmentModels, supportModels);
+		}
 	}
 }

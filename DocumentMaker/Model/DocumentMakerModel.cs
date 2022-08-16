@@ -4,6 +4,7 @@ using Dml.Model.Files;
 using Dml.Model.Session;
 using Dml.Model.Session.Attributes;
 using Dml.Model.Template;
+using DocumentMaker.Model.Algorithm;
 using DocumentMaker.Model.Controls;
 using DocumentMaker.Model.Files;
 using DocumentMaker.Model.OfficeFiles;
@@ -312,6 +313,53 @@ namespace DocumentMaker.Model
 			if(firstModel != null && int.TryParse(firstModel.SumText, out int s))
 			{
 				firstModel.SumText = (s + curTotalSum).ToString();
+			}
+		}
+
+		public void CorrectDevelopment(int minSum, bool takeSumFromSupport, List<FullBackDataModel> developmentModels, List<FullBackDataModel> supportModels)
+		{
+			List<int> developmentInput = new List<int>(GetSumsFromModels(developmentModels)),
+				supportInput = new List<int>(GetSumsFromModels(supportModels));
+
+			MixingSumAlgorithm.MoreNumber(ref developmentInput, ref supportInput, minSum, takeSumFromSupport, true, false);
+
+			SetSumsToModels(developmentModels, developmentInput);
+			SetSumsToModels(supportModels, supportInput);
+		}
+
+		public void CorrectSupport(int minSum, bool takeSumFromSupport, List<FullBackDataModel> developmentModels, List<FullBackDataModel> supportModels)
+		{
+			List<int> developmentInput = new List<int>(GetSumsFromModels(developmentModels)),
+				supportInput = new List<int>(GetSumsFromModels(supportModels));
+
+			MixingSumAlgorithm.LessNumber(ref developmentInput, ref supportInput, minSum, takeSumFromSupport, true, false);
+
+			SetSumsToModels(developmentModels, developmentInput);
+			SetSumsToModels(supportModels, supportInput);
+		}
+
+		private IEnumerable<int> GetSumsFromModels(List<FullBackDataModel> backData)
+		{
+			foreach (FullBackDataModel model in backData)
+			{
+				if (int.TryParse(model.SumText, out int sum))
+				{
+					yield return sum;
+				}
+				else
+				{
+					yield return 0;
+				}
+			}
+		}
+
+		private void SetSumsToModels(List<FullBackDataModel> backData, List<int> sums)
+		{
+			IEnumerator<int> sumsEnum = sums.GetEnumerator();
+			IEnumerator<FullBackDataModel> backDataEnum = backData.GetEnumerator();
+			while (sumsEnum.MoveNext() && backDataEnum.MoveNext())
+			{
+				backDataEnum.Current.SumText = sumsEnum.Current.ToString();
 			}
 		}
 	}

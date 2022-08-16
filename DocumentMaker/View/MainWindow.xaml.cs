@@ -320,8 +320,7 @@ namespace DocumentMaker
 			SetDataToController();
 			controller.CorrectSaldo();
 
-			SetDataFromControllerBackDatas(BacksData);
-			SetDataFromControllerBackDatas(ReworkBacksData);
+			SetDataFromControllerBackDatas();
 		}
 
 		private void CorrectDevelopClick(object sender, RoutedEventArgs e)
@@ -341,9 +340,10 @@ namespace DocumentMaker
 			controller.CorrectDevelopmentWindow_NumberText = window.NumberText;
 			controller.CorrectDevelopmentWindow_TakeSumFromSupport = window.TakeSumFromSupport;
 
-			if(window.IsCorrection)
+			if(window.IsCorrection && int.TryParse(window.NumberText, out int sum))
 			{
-				//run algorithm
+				controller.CorrectDevelopment(sum, window.TakeSumFromSupport);
+				SetDataFromControllerBackDatas();
 			}
 		}
 
@@ -364,10 +364,17 @@ namespace DocumentMaker
 			controller.CorrectSupportWindow_NumberText = window.NumberText;
 			controller.CorrectSupportWindow_TakeSumFromDevelopment = window.TakeSumFromDevelopment;
 
-			if(window.IsCorrection)
+			if(window.IsCorrection && int.TryParse(window.NumberText, out int sum))
 			{
-				//run algorithm
+				controller.CorrectSupport(sum, window.TakeSumFromDevelopment);
+				SetDataFromControllerBackDatas();
 			}
+		}
+
+		private void SetDataFromControllerBackDatas()
+		{
+			SetDataFromControllerBackDatas(BacksData);
+			SetDataFromControllerBackDatas(ReworkBacksData);
 		}
 
 		private void SetDataFromControllerBackDatas(StackPanel stackPanel)
