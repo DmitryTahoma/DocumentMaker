@@ -56,6 +56,7 @@ namespace DocumentMaker
 			{
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
+				UpdateActSum();
 			});
 			DataFooter.SubscribeRemoving((x) =>
 			{
@@ -265,6 +266,23 @@ namespace DocumentMaker
 								"DocumentMaker | Картка людини",
 								MessageBoxButtons.OK, 
 								MessageBoxIcon.Information);
+		}
+
+		private void CorrectSaldoClick(object sender, RoutedEventArgs e)
+		{
+			SetDataToController();
+			controller.CorrectSaldo();
+
+			if(BacksData != null)
+			{
+				foreach(UIElement elem in BacksData.Children)
+				{
+					if(elem is FullBackData backData)
+					{
+						backData.SetDataFromController();
+					}
+				}
+			}
 		}
 
 		private void UpdateViewBackData()

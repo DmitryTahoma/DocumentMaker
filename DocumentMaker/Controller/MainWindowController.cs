@@ -70,13 +70,7 @@ namespace DocumentMaker.Controller
 		{
 			string fullpath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), saveFile);
 
-			List<FullBackDataModel> backDataModels = new List<FullBackDataModel>();
-			foreach (FullBackDataController controller in BackDataControllers)
-			{
-				backDataModels.Add(controller.GetModel());
-			}
-
-			model.Save(fullpath, backDataModels);
+			model.Save(fullpath, GetModels());
 		}
 
 		public void Load()
@@ -95,13 +89,7 @@ namespace DocumentMaker.Controller
 
 		public void Export(string path)
 		{
-			List<FullBackDataModel> backDataModels = new List<FullBackDataModel>();
-			foreach (FullBackDataController controller in BackDataControllers)
-			{
-				backDataModels.Add(controller.GetModel());
-			}
-
-			model.Export(path, backDataModels);
+			model.Export(path, GetModels());
 		}
 
 		public bool Validate(out string errorText)
@@ -250,6 +238,21 @@ namespace DocumentMaker.Controller
 		public HumanData GetSelectedHuman()
 		{
 			return model.HumanFullNameList.FirstOrDefault(x => x.Name == SelectedHuman);
+		}
+
+		public void CorrectSaldo()
+		{
+			model.CorrectSaldo(GetModels());
+		}
+
+		private List<FullBackDataModel> GetModels()
+		{
+			List<FullBackDataModel> backDataModels = new List<FullBackDataModel>();
+			foreach (FullBackDataController controller in BackDataControllers)
+			{
+				backDataModels.Add(controller.GetModel());
+			}
+			return backDataModels;
 		}
 	}
 }

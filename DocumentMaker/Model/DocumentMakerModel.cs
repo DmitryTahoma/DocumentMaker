@@ -241,5 +241,43 @@ namespace DocumentMaker.Model
 			}
 			return null;
 		}
+
+		public void CorrectSaldo(IEnumerable<FullBackDataModel> backDataModels)
+		{
+			double baseSum = 0;
+			if(int.TryParse(ActSum, out int sum))
+			{
+				baseSum = sum;
+			}
+
+			double totalWeight = 0;
+			foreach(FullBackDataModel backModel in backDataModels)
+			{
+				if(uint.TryParse(backModel.SumText, out uint curSum))
+				{
+					totalWeight += curSum / baseSum;
+				}
+			}
+
+			int curTotalSum = (int)baseSum;
+			foreach(FullBackDataModel backModel in backDataModels)
+			{
+				double curWeight = 0;
+				if(uint.TryParse(backModel.SumText, out uint curSum))
+				{
+					curWeight = curSum / baseSum;
+					curWeight /= totalWeight;
+				}
+				int newCurSum = (int)(baseSum * curWeight);
+				backModel.SumText = newCurSum.ToString();
+				curTotalSum -= newCurSum;
+			}
+
+			FullBackDataModel firstModel = backDataModels.FirstOrDefault();
+			if(firstModel != null && int.TryParse(firstModel.SumText, out int s))
+			{
+				firstModel.SumText = (s + curTotalSum).ToString();
+			}
+		}
 	}
 }
