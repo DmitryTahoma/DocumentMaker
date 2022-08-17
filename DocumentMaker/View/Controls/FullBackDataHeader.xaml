@@ -21,7 +21,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.5*" MaxWidth="30" />
                 <ColumnDefinition MaxWidth="120" />
-                <ColumnDefinition Width="1.5*" />
+                <ColumnDefinition x:Name="ColWithWorkTypeComboBox" Width="1.5*" />
                 <ColumnDefinition MaxWidth="90" />
                 <ColumnDefinition Width="1.5*" />
                 <ColumnDefinition MaxWidth="90" />
@@ -37,6 +37,7 @@
                 Style="{StaticResource BackDataTitle}"
                 Text="Тип" />
             <TextBlock
+                x:Name="WorkTypeLabel"
                 Grid.Column="2"
                 Style="{StaticResource BackDataTitle}"
                 Text="Тип робіт" />

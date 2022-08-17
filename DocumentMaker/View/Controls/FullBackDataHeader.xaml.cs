@@ -27,5 +27,17 @@ namespace DocumentMaker.View.Controls
 				IsSketchColumn.Width = GridLength.Auto;
 			}
 		}
+
+		public void HideWorkTypeLabel()
+		{
+			if(ColWithWorkTypeComboBox != null)
+			{
+				ColWithWorkTypeComboBox.Width = GridLength.Auto;
+			}
+			if(WorkTypeLabel != null)
+			{
+				WorkTypeLabel.Visibility = Visibility.Collapsed;
+			}
+		}
 	}
 }

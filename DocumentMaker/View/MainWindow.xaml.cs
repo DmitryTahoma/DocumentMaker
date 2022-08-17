@@ -53,12 +53,12 @@ namespace DocumentMaker
 			SetWindowSettingsFromController();
 
 			InitializeComponent();
+			DataHeader.HideWorkTypeLabel();
 
 			DataFooter.SubscribeAddition((x) =>
 			{
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
-				x.SetWorkTypesList(controller.CurrentWorkTypesList);
 				UpdateActSum();
 
 				DmxFile selectedFile = controller.GetSelectedFile();
@@ -401,7 +401,6 @@ namespace DocumentMaker
 				if (control is FullBackData backData)
 				{
 					backData.SetViewByTemplate(controller.TemplateType);
-					backData.SetWorkTypesList(controller.CurrentWorkTypesList);
 				}
 			}
 			foreach(UIElement control in ReworkBacksData.Children)
