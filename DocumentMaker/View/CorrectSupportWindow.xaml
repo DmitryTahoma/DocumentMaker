@@ -33,7 +33,7 @@
         <CheckBox
             Grid.Row="1"
             Grid.ColumnSpan="2"
-            Content="брати суму з розробки"
+            Content="перекидати надлишки в розробку"
             IsChecked="{Binding TakeSumFromDevelopment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             Style="{StaticResource CorrectionCheckBox}" />
 

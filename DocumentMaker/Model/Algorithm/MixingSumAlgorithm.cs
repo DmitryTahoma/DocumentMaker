@@ -14,7 +14,7 @@ namespace DocumentMaker.Model.Algorithm
 		/// <param name="_isRemoveLinePidtrimka">Если пункт меньше чем "minNumber" то чтобы сумма перекидывал в максимальную, а пункт удалялся</param>
 		public static void MoreNumber(ref List<int> _rozrobka, ref List<int> _pidtrimka, int _minNumber, bool _isTossOutPidtrimka, bool _isRemoveIdenticalNumbers, bool _isRemoveLinePidtrimka)
 		{
-			Console.WriteLine("ПЕРЕКИДЫВАЕТ суммы розробкы чтобы они были БОЛЬШЕ чем " + _minNumber);
+			//ПЕРЕКИДЫВАЕТ суммы розробкы чтобы они были БОЛЬШЕ чем _minNumber
 			Random rnd = new Random();
 			int percent = 10; // Какой процент от суммы перекидывать
 			int minNumber = 400;
@@ -63,7 +63,7 @@ namespace DocumentMaker.Model.Algorithm
 					{
 						int maxSum = _rozrobka[maxIndexNumberRozrobka];
 
-						if (maxSum > _minNumber && minSum != maxSum)
+						if (maxSum > _minNumber)
 						{
 							maxSumFlip = (int)(maxSum * randomPrecent / 100);
 							if (maxSum - maxSumFlip < _minNumber)
@@ -97,6 +97,8 @@ namespace DocumentMaker.Model.Algorithm
 									_rozrobka[minIndexNumberRozrobka] += _rozrobka[maxIndexNumberRozrobka];
 									_rozrobka[maxIndexNumberRozrobka] = 0;
 								}
+
+								isFlip = true;
 							}
 						}
 					}
@@ -149,7 +151,7 @@ namespace DocumentMaker.Model.Algorithm
 						counterFlip--;
 					}
 
-					if (counterFlip == 0)
+					if (counterFlip <= 0)
 						break;
 				}
 			}
@@ -164,7 +166,7 @@ namespace DocumentMaker.Model.Algorithm
 		/// <param name="_isAddNewPidtrimka">Чтобы излишки не перекидывались в розробку, а добавлялся пункт в дообробке</param>
 		public static void LessNumber(ref List<int> _rozrobka, ref List<int> _pidtrimka, int _maxNumber, bool _isTossInRozrobka, bool _isRemoveIdenticalNumbers, bool _isAddNewPidtrimka)
 		{
-			Console.WriteLine("ПЕРЕКИДЫВАЕТ суммы пидтрымки чтобы они были МЕНЬШЕ чем " + _maxNumber);
+			//ПЕРЕКИДЫВАЕТ суммы пидтрымки чтобы они были МЕНЬШЕ чем _maxNumber
 			Random rnd = new Random();
 			int percent = 10; // Какой процент от суммы перекидывать
 
@@ -215,7 +217,7 @@ namespace DocumentMaker.Model.Algorithm
 						int minSum = _pidtrimka[minIndexNumberPidtrimka];
 
 						// Если минимальная сумма меньше чем ограничение то не нужно перекидывать
-						if (minSum < _maxNumber && minSum != maxSum)
+						if (minSum < _maxNumber)
 						{
 							minSumFlip = (int)(maxSum * randomPrecent / 100);
 
@@ -302,7 +304,7 @@ namespace DocumentMaker.Model.Algorithm
 						counterFlip--;
 					}
 
-					if (counterFlip == 0)
+					if (counterFlip <= 0)
 						break;
 				}
 			}
@@ -311,10 +313,9 @@ namespace DocumentMaker.Model.Algorithm
 		/// <summary>
 		/// Если разница между суммами меньше чем "sumSpread" то перебрасывает эту разницу и процент от неё для рандома 0..1
 		/// </summary>
-		private static bool RemoveIdenticalNumbers(ref List<int> _array)
+		private static void RemoveIdenticalNumbers(ref List<int> _array)
 		{
 			Random rnd = new Random();
-			bool isRemove = false;
 			bool isFlip = false;
 			int sumSpread = 75; // Разница между пунктами
 			int percent = 100; // Какой процент от суммы перекидывать 
@@ -326,7 +327,7 @@ namespace DocumentMaker.Model.Algorithm
 				minPercent = -percent;
 
 			// Ограничение перебросов чтобы не зациклилось
-			int counterFlip = _array.Count * _array.Count * 4;
+			int counterFlip = _array.Count * _array.Count;
 
 			for (int i = 0; i < _array.Count && !isFlip; i++)
 			{
@@ -337,6 +338,9 @@ namespace DocumentMaker.Model.Algorithm
 				{
 					if (i != j)
 					{
+						if (_array[j] == 0)
+							continue;
+
 						// Если разница в суммах меньше чем "sumSpread" то перекидывает "sumSpread + рандомную сумму от sumSpread"
 						int sumDiff = Math.Abs(_array[j] - _array[i]);
 						if (sumDiff <= sumSpread)
@@ -348,7 +352,6 @@ namespace DocumentMaker.Model.Algorithm
 							{
 								_array[i] -= sumFlip;
 								_array[j] += sumFlip;
-								isRemove = true;
 								isFlip = true;
 								counterFlip--;
 								break;
@@ -357,15 +360,15 @@ namespace DocumentMaker.Model.Algorithm
 							{
 								_array[j] += _array[i];
 								_array[i] = 0;
-								isRemove = true;
 								isFlip = true;
 								counterFlip--;
+								break;
 							}
 						}
 					}
 				}
 
-				if (counterFlip == 0)
+				if (counterFlip <= 0)
 					break;
 
 				if (isFlip)
@@ -374,8 +377,6 @@ namespace DocumentMaker.Model.Algorithm
 					isFlip = false;
 				}
 			}
-
-			return isRemove;
 		}
 
 		private static void FindMaxIndex(List<int> _array, ref int _maxIndexNumber)
