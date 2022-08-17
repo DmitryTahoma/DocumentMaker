@@ -1,8 +1,10 @@
 ﻿using Dml.Model.Back;
 using Dml.Model.Template;
 using DocumentMaker.Controller.Controls;
+using DocumentMaker.Model.Back;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,7 +17,7 @@ namespace DocumentMaker.View.Controls
 	/// <summary>
 	/// Interaction logic for FullBackData.xaml
 	/// </summary>
-	public partial class FullBackData : UserControl
+	public partial class FullBackData : UserControl, INotifyPropertyChanged
 	{
 		public static readonly DependencyProperty IsRegionsProperty;
 		public static readonly DependencyProperty HasBackNumberProperty;
@@ -55,6 +57,8 @@ namespace DocumentMaker.View.Controls
 		private event Action onDeletion;
 		private event Action onChangedSum;
 
+		public event PropertyChangedEventHandler PropertyChanged;
+
 		public FullBackData()
 		{
 			controller = new FullBackDataController();
@@ -74,6 +78,8 @@ namespace DocumentMaker.View.Controls
 		}
 
 		public IList<BackDataType> BackDataTypesList => controller.BackDataTypesList;
+
+		public IList<WorkObject> WorkTypesList => controller.WorkTypesList;
 
 		public string BackNumberText
 		{
@@ -245,6 +251,14 @@ namespace DocumentMaker.View.Controls
 			}
 		}
 
+		private void WorkTypeChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if(controller != null && sender is ComboBox comboBox && comboBox.SelectedItem is WorkObject workObject)
+			{
+				controller.WorkObjectId = workObject.Id;
+			}
+		}
+
 		private void DeleteBtnClick(object sender, RoutedEventArgs e)
 		{
 			if (MessageBox.Show("Ви впевнені, що хочете видалити пункт №" + BackDataId.ToString(),
@@ -342,6 +356,14 @@ namespace DocumentMaker.View.Controls
 			}
 		}
 
+		public void SetWorkTypesList(IList<WorkObject> workObjects)
+		{
+			controller.WorkTypesList.Clear();
+			controller.WorkTypesList.AddRange(workObjects);
+			NotifyPropertyChanged(nameof(WorkTypesList));
+			WorkTypeComboBox.SelectedItem = WorkTypesList.FirstOrDefault(x => x.Id == controller.WorkObjectId % WorkTypesList.Count);
+		}
+
 		public void SetBackType(BackType type)
 		{
 			controller.Type = type;
@@ -381,6 +403,11 @@ namespace DocumentMaker.View.Controls
 			}
 
 			WeightTextLabel.Text = WeightText;
+		}
+
+		public void NotifyPropertyChanged(string name)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 		}
 	}
 }

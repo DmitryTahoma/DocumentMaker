@@ -10,7 +10,7 @@
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="6*" />
+            <ColumnDefinition Width="7.5*" />
             <ColumnDefinition x:Name="IsSketchColumn" MaxWidth="90" />
             <ColumnDefinition MaxWidth="45" />
             <ColumnDefinition MaxWidth="90" />
@@ -21,6 +21,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.5*" MaxWidth="30" />
                 <ColumnDefinition MaxWidth="120" />
+                <ColumnDefinition Width="1.5*" />
                 <ColumnDefinition MaxWidth="90" />
                 <ColumnDefinition Width="1.5*" />
                 <ColumnDefinition MaxWidth="90" />
@@ -38,17 +39,21 @@
             <TextBlock
                 Grid.Column="2"
                 Style="{StaticResource BackDataTitle}"
-                Text="Номер беку" />
+                Text="Тип робіт" />
             <TextBlock
                 Grid.Column="3"
                 Style="{StaticResource BackDataTitle}"
-                Text="Ім'я беку" />
+                Text="Номер беку" />
             <TextBlock
                 Grid.Column="4"
                 Style="{StaticResource BackDataTitle}"
-                Text="Кіл. рег." />
+                Text="Ім'я беку" />
             <TextBlock
                 Grid.Column="5"
+                Style="{StaticResource BackDataTitle}"
+                Text="Кіл. рег." />
+            <TextBlock
+                Grid.Column="6"
                 Style="{StaticResource BackDataTitle}"
                 Text="Назва гри" />
         </Grid>

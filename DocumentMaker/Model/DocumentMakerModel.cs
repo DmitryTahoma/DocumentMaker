@@ -22,19 +22,19 @@ namespace DocumentMaker.Model
 	public class DocumentMakerModel
 	{
 		private readonly OfficeExporter exporter;
-		private readonly ObservableCollection<DocumentTemplate> documentTemplates;
+		private readonly ObservableCollection<FullDocumentTemplate> documentTemplates;
 		private ObservableRangeCollection<HumanData> humanFullNameList;
 		private ObservableRangeCollection<DmxFile> openedFilesList;
 
 		public DocumentMakerModel()
 		{
 			exporter = new OfficeExporter();
-			documentTemplates = new ObservableCollection<DocumentTemplate>
+			documentTemplates = new ObservableCollection<FullDocumentTemplate>
 			{
-				new DocumentTemplate { Name = "Скриптувальник", Type = DocumentTemplateType.Scripter, },
-				new DocumentTemplate { Name = "Різник", Type = DocumentTemplateType.Cutter, },
-				new DocumentTemplate { Name = "Художник", Type = DocumentTemplateType.Painter, },
-				new DocumentTemplate { Name = "Моделлер", Type = DocumentTemplateType.Modeller, },
+				new FullDocumentTemplate { Name = "Скриптувальник", Type = DocumentTemplateType.Scripter, },
+				new FullDocumentTemplate { Name = "Різник", Type = DocumentTemplateType.Cutter, },
+				new FullDocumentTemplate { Name = "Художник", Type = DocumentTemplateType.Painter, },
+				new FullDocumentTemplate { Name = "Моделлер", Type = DocumentTemplateType.Modeller, },
 			};
 			humanFullNameList = new ObservableRangeCollection<HumanData>();
 			openedFilesList = new ObservableRangeCollection<DmxFile>();
@@ -101,7 +101,7 @@ namespace DocumentMaker.Model
 		public string ContractReworkDateText { get; set; }
 		public string ActSum { get; set; }
 		public string ActSaldo { get; set; }
-		public IList<DocumentTemplate> DocumentTemplatesList => documentTemplates;
+		public IList<FullDocumentTemplate> DocumentTemplatesList => documentTemplates;
 		public IList<HumanData> HumanFullNameList => humanFullNameList;
 		public bool HasNoMovedFiles => exporter.HasNoMovedFiles;
 
@@ -143,6 +143,14 @@ namespace DocumentMaker.Model
 		{
 			XlsxLoader loader = new XlsxLoader();
 			loader.LoadHumans(path, humanFullNameList);
+		}
+
+		public void LoadWorkTypes(string path)
+		{
+			foreach(FullDocumentTemplate template in documentTemplates)
+			{
+				template.LoadWorkTypesList(path);
+			}
 		}
 
 		public void Export(string path, IEnumerable<FullBackDataModel> backModels)

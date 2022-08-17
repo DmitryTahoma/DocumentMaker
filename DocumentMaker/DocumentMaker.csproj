@@ -79,8 +79,10 @@
     <Compile Include="Controller\Controls\FullBackDataController.cs" />
     <Compile Include="Controller\Controls\FullBackDataFooterController.cs" />
     <Compile Include="Model\Algorithm\MixingSumAlgorithm.cs" />
+    <Compile Include="Model\Back\WorkObject.cs" />
     <Compile Include="Model\Controls\FullBackDataModel.cs" />
     <Compile Include="Model\Files\DmxFile.cs" />
+    <Compile Include="Model\FullDocumentTemplate.cs" />
     <Compile Include="Model\Session\DmxLoader.cs" />
     <Compile Include="Model\Session\DmxSaver.cs" />
     <Compile Include="View\Controls\FullBackData.xaml.cs">

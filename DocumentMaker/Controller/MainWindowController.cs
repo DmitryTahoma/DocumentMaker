@@ -5,6 +5,7 @@ using Dml.Model.Files;
 using Dml.Model.Template;
 using DocumentMaker.Controller.Controls;
 using DocumentMaker.Model;
+using DocumentMaker.Model.Back;
 using DocumentMaker.Model.Controls;
 using DocumentMaker.Model.Files;
 using DocumentMaker.Model.OfficeFiles.Human;
@@ -21,6 +22,7 @@ namespace DocumentMaker.Controller
 	{
 		private const string saveFile = "session.xml";
 		private const string humansFile = "HumanData.xlsx";
+		private const string supportTypesFile = "SupportTypes.xlsx";
 
 		private readonly StringValidator validator;
 		private readonly DocumentMakerModel model;
@@ -78,9 +80,10 @@ namespace DocumentMaker.Controller
 		public string ActSum { get => model.ActSum; set => model.ActSum = value; }
 		public string ActSaldo { get => model.ActSaldo; set => model.ActSaldo = value; }
 		public List<FullBackDataController> BackDataControllers { get; set; }
-		public IList<DocumentTemplate> DocumentTemplatesList => model.DocumentTemplatesList;
+		public IList<FullDocumentTemplate> DocumentTemplatesList => model.DocumentTemplatesList;
 		public IList<HumanData> HumanFullNameList => model.HumanFullNameList;
 		public bool HasNoMovedFiles => model.HasNoMovedFiles;
+		public IList<WorkObject> CurrentWorkTypesList => DocumentTemplatesList.FirstOrDefault(x => x.Type == TemplateType)?.WorkTypesList;
 
 		public void Save()
 		{
@@ -94,6 +97,7 @@ namespace DocumentMaker.Controller
 			string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			string saveFullpath = Path.Combine(path, saveFile);
 			string humansFullpath = Path.Combine(path, humansFile);
+			string supportTypesFullpath = Path.Combine(path, supportTypesFile);
 
 			model.Load(saveFullpath, out List<FullBackDataModel> backModels);
 			foreach (FullBackDataModel model in backModels)
@@ -101,6 +105,7 @@ namespace DocumentMaker.Controller
 				BackDataControllers.Add(new FullBackDataController(model));
 			}
 			model.LoadHumans(humansFullpath);
+			model.LoadWorkTypes(supportTypesFullpath);
 		}
 
 		public void Export(string path)

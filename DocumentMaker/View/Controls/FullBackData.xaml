@@ -48,6 +48,7 @@
                 Grid.Column="2"
                 IsEnabled="{Binding ElementName=FullBackDataContext, Path=IsNotOtherType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*" />
                     <ColumnDefinition MaxWidth="90" />
                     <ColumnDefinition Width="1.5*" />
                     <ColumnDefinition MaxWidth="90" />
@@ -55,20 +56,26 @@
                     <ColumnDefinition x:Name="IsSketchColumn" MaxWidth="90" />
                 </Grid.ColumnDefinitions>
 
+                <ComboBox
+                    x:Name="WorkTypeComboBox"
+                    ItemsSource="{Binding ElementName=FullBackDataContext, Path=WorkTypesList, UpdateSourceTrigger=PropertyChanged}"
+                    SelectionChanged="WorkTypeChanged"
+                    Style="{StaticResource BackDataComboBox}" />
+
                 <TextBox
                     x:Name="BackNumberTextInput"
-                    Grid.Column="0"
+                    Grid.Column="1"
                     IsEnabled="{Binding ElementName=FullBackDataContext, Path=HasBackNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource TextBoxFreeValidation}"
                     Text="{Binding ElementName=FullBackDataContext, Path=BackNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="BackNameInput"
-                    Grid.Column="1"
+                    Grid.Column="2"
                     Style="{StaticResource TextBoxFreeValidation}"
                     Text="{Binding ElementName=FullBackDataContext, Path=BackName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="CountRegionsTextInput"
-                    Grid.Column="2"
+                    Grid.Column="3"
                     IsEnabled="{Binding ElementName=FullBackDataContext, Path=IsRegions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     PreviewTextInput="RegionsValidatingPreviewTextInput"
                     Style="{StaticResource TextBoxNumberValidation}"
@@ -76,7 +83,7 @@
 
                 <ComboBox
                     x:Name="GameNameComboBox"
-                    Grid.Column="3"
+                    Grid.Column="4"
                     IsEditable="True"
                     IsTextSearchEnabled="True"
                     ItemsSource="{Binding ElementName=FullBackDataContext, Path=GameNameList, UpdateSourceTrigger=PropertyChanged}"
@@ -85,7 +92,7 @@
 
                 <CheckBox
                     x:Name="IsSketchCheckBox"
-                    Grid.Column="4"
+                    Grid.Column="5"
                     IsChecked="{Binding ElementName=FullBackDataContext, Path=IsSketch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource BackDataCheckBox}" />
             </Grid>

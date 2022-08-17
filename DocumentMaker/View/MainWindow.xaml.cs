@@ -5,6 +5,7 @@ using Dml.Model.Files;
 using Dml.Model.Template;
 using DocumentMaker.Controller;
 using DocumentMaker.Controller.Controls;
+using DocumentMaker.Model;
 using DocumentMaker.Model.Files;
 using DocumentMaker.Model.OfficeFiles.Human;
 using DocumentMaker.View;
@@ -57,6 +58,7 @@ namespace DocumentMaker
 			{
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
+				x.SetWorkTypesList(controller.CurrentWorkTypesList);
 				UpdateActSum();
 
 				DmxFile selectedFile = controller.GetSelectedFile();
@@ -80,6 +82,7 @@ namespace DocumentMaker
 				x.Controller.IsRework = true;
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
+				x.SetWorkTypesList(controller.CurrentWorkTypesList);
 				UpdateActSum();
 
 				DmxFile selectedFile = controller.GetSelectedFile();
@@ -104,7 +107,7 @@ namespace DocumentMaker
 
 		public IList<DmxFile> OpenedFilesList => controller.OpenedFilesList;
 
-		public IList<DocumentTemplate> DocumentTemplatesList => controller.DocumentTemplatesList;
+		public IList<FullDocumentTemplate> DocumentTemplatesList => controller.DocumentTemplatesList;
 
 		public string TechnicalTaskDateText
 		{
@@ -398,6 +401,7 @@ namespace DocumentMaker
 				if (control is FullBackData backData)
 				{
 					backData.SetViewByTemplate(controller.TemplateType);
+					backData.SetWorkTypesList(controller.CurrentWorkTypesList);
 				}
 			}
 			foreach(UIElement control in ReworkBacksData.Children)
@@ -405,6 +409,7 @@ namespace DocumentMaker
 				if(control is FullBackData backData)
 				{
 					backData.SetViewByTemplate(controller.TemplateType);
+					backData.SetWorkTypesList(controller.CurrentWorkTypesList);
 				}
 			}
 			DataHeader.SetViewByTemplate(controller.TemplateType);
