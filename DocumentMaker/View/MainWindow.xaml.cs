@@ -130,7 +130,17 @@ namespace DocumentMaker
 		public string ActSum
 		{
 			get => (string)GetValue(ActSumProperty);
-			set => SetValue(ActSumProperty, value);
+			set 
+			{
+				SetValue(ActSumProperty, value);
+				controller.ActSum = value;
+				
+				if (OpenedFilesComboBox != null
+					 && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+				{
+					selectedFile.ActSum = value;
+				}
+			}
 		}
 
 		public string ActSaldo

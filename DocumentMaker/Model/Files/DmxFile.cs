@@ -14,6 +14,7 @@ namespace DocumentMaker.Model.Files
 			backDataModels = null;
 		}
 
+		public string ActSum { get; set; }
 		public IList<FullBackDataModel> BackDataModels { get => backDataModels; }
 
 		public override void Load()

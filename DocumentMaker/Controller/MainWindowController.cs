@@ -227,6 +227,7 @@ namespace DocumentMaker.Controller
 		{
 			TemplateType = file.TemplateType;
 			SelectedHuman = file.SelectedHuman;
+			ActSum = file.ActSum;
 			BackDataControllers.Clear();
 			foreach(FullBackDataModel model in file.BackDataModels)
 			{
