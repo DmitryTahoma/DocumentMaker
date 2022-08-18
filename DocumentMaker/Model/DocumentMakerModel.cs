@@ -170,7 +170,7 @@ namespace DocumentMaker.Model
 
 				DocumentGeneralData generalData = new DocumentGeneralData(this, isExportRework, actSum);
 				DocumentTableData tableData = new DocumentTableData(backModels, TemplateType, isExportRework);
-
+				if (tableData.Count() <= 0) continue;
 				foreach (ResourceInfo resource in DocumentResourceManager.GetItems(isExportRework))
 				{
 					exporter.Clear();
