@@ -362,10 +362,20 @@ namespace DocumentMaker
 
 		private void CorrectSaldoClick(object sender, RoutedEventArgs e)
 		{
-			SetDataToController();
-			controller.CorrectSaldo();
+			if (uint.TryParse(ActSum, out uint actSum) && actSum != 0)
+			{
+				SetDataToController();
+				controller.CorrectSaldo();
 
-			SetDataFromControllerBackDatas();
+				SetDataFromControllerBackDatas();
+			}
+			else
+			{
+				MessageBox.Show("Сума для корегування не може бути нульовою.",
+					"Корегування | Помилка",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
+			}
 		}
 
 		private void CorrectDevelopClick(object sender, RoutedEventArgs e)
