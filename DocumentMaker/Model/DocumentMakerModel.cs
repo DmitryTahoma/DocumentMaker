@@ -295,7 +295,6 @@ namespace DocumentMaker.Model
 						return dmxFile;
 					}
 				}
-				return openedFilesList[0];
 			}
 			return null;
 		}

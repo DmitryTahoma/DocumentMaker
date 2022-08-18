@@ -1,6 +1,7 @@
 ﻿using Dml.Model.Files;
 using Dml.Model.Session;
 using DocumentMaker.Model.Controls;
+using System;
 using System.Collections.Generic;
 
 namespace DocumentMaker.Model.Files
@@ -52,6 +53,16 @@ namespace DocumentMaker.Model.Files
 					model.SumText = model.SpentTimeText + "00";
 				}
 			}
+		}
+
+		public void RemoveBackModel(FullBackDataModel model)
+		{
+			backDataModels.Remove(model);
+		}
+
+		public void RemoveAllBackModel(Predicate<FullBackDataModel> match)
+		{
+			backDataModels.RemoveAll(match);
 		}
 	}
 }

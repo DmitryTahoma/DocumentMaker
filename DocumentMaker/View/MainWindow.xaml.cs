@@ -57,6 +57,7 @@ namespace DocumentMaker
 
 			DataFooter.SubscribeAddition((x) =>
 			{
+				x.Controller.IsRework = false;
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
 				UpdateActSum();
@@ -70,10 +71,25 @@ namespace DocumentMaker
 			DataFooter.SubscribeRemoving((x) =>
 			{
 				controller.BackDataControllers.Remove(x.Controller);
+
+				DmxFile selectedFile = controller.GetSelectedFile();
+				if(selectedFile != null)
+				{
+					selectedFile.RemoveBackModel(x.Controller.GetModel());
+				}
 			});
-			DataFooter.SubscribeClearing(() =>
+			DataFooter.SubscribeClearing((b) =>
 			{
-				controller.BackDataControllers.Clear();
+				controller.BackDataControllers.RemoveAll(x => !x.IsRework);
+
+				if (b)
+				{
+					DmxFile selectedFile = controller.GetSelectedFile();
+					if (selectedFile != null)
+					{
+						selectedFile.RemoveAllBackModel(x => !x.IsRework);
+					}
+				}
 			});
 			DataFooter.SubscribeChangingSum(UpdateSaldo);
 
@@ -94,10 +110,25 @@ namespace DocumentMaker
 			ReworkDataFooter.SubscribeRemoving((x) =>
 			{
 				controller.BackDataControllers.Remove(x.Controller);
+
+				DmxFile selectedFile = controller.GetSelectedFile();
+				if (selectedFile != null)
+				{
+					selectedFile.RemoveBackModel(x.Controller.GetModel());
+				}
 			});
-			ReworkDataFooter.SubscribeClearing(() =>
+			ReworkDataFooter.SubscribeClearing((b) =>
 			{
-				controller.BackDataControllers.Clear();
+				controller.BackDataControllers.RemoveAll(x => x.IsRework);
+
+				if (b)
+				{
+					DmxFile selectedFile = controller.GetSelectedFile();
+					if (selectedFile != null)
+					{
+						selectedFile.RemoveAllBackModel(x => x.IsRework);
+					}
+				}
 			});
 			ReworkDataFooter.SubscribeChangingSum(UpdateSaldo);
 

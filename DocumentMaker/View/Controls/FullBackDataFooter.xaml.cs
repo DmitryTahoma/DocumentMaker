@@ -6,6 +6,8 @@ using System.Windows.Controls;
 
 namespace DocumentMaker.View.Controls
 {
+	public delegate void ActionWithBool(bool b);
+
 	/// <summary>
 	/// Interaction logic for FullBackDataFooter.xaml
 	/// </summary>
@@ -26,7 +28,7 @@ namespace DocumentMaker.View.Controls
 
 		private event ActionWithFullBackData onAdded;
 		private event ActionWithFullBackData onRemoved;
-		private event Action onCleared;
+		private event ActionWithBool onCleared;
 		private event Action onChangedSum;
 
 		public FullBackDataFooter()
@@ -64,7 +66,7 @@ namespace DocumentMaker.View.Controls
 			onRemoved += action;
 		}
 
-		public void SubscribeClearing(Action action)
+		public void SubscribeClearing(ActionWithBool action)
 		{
 			onCleared += action;
 		}
@@ -118,7 +120,7 @@ namespace DocumentMaker.View.Controls
 				MessageBoxResult.No)
 					== MessageBoxResult.Yes)
 			{
-				ClearBackData();
+				ClearBackData(true);
 			}
 		}
 
@@ -186,13 +188,13 @@ namespace DocumentMaker.View.Controls
 			}
 		}
 
-		public void ClearBackData()
+		public void ClearBackData(bool _isClearInSelectedFile = false)
 		{
 			if (Data != null)
 			{
 				Data.Children.Clear();
 				OnChangedSomeSum();
-				onCleared?.Invoke();
+				onCleared?.Invoke(_isClearInSelectedFile);
 			}
 		}
 
