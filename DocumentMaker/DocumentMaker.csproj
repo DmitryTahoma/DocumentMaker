@@ -179,7 +179,6 @@
     </None>
     <EmbeddedResource Include="Resources\DocumentMakerTemplate01.docx" />
     <EmbeddedResource Include="Resources\DocumentMakerTemplate02.docx" />
-    <EmbeddedResource Include="Resources\DocumentMakerTemplate03.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

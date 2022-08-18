@@ -155,27 +155,40 @@ namespace DocumentMaker.Model
 
 		public void Export(string path, IEnumerable<FullBackDataModel> backModels)
 		{
-			DocumentGeneralData generalData = new DocumentGeneralData(this);
-			DocumentTableData tableData = new DocumentTableData(backModels, TemplateType);
-
-			foreach (ResourceInfo resource in DocumentResourceManager.Items)
+			for (int i = 0; i < 2; ++i)
 			{
-				exporter.Clear();
-
-				if (resource.Type == ResourceType.Docx)
+				bool isExportRework = i == 1;
+				uint actSum = 0;
+				foreach(FullBackDataModel backModel in backModels)
 				{
-					exporter.ExportWordTemplate(resource.ProjectName);
-					exporter.FillWordGeneralData(generalData);
-					exporter.FillWordTableData(tableData);
-					exporter.SaveWordContent(resource.ProjectName);
-				}
-				else if (resource.Type == ResourceType.Xlsx)
-				{
-					exporter.ExportExcelTemplate(resource.ProjectName);
-					exporter.FillExcelTableData(resource.ProjectName, tableData);
+					if(backModel.IsRework == isExportRework && uint.TryParse(backModel.SumText, out uint sum))
+					{
+						actSum += sum;
+					}
 				}
 
-				exporter.SaveTemplate(generalData, path, resource.ProjectName, resource.TemplateName);
+				DocumentGeneralData generalData = new DocumentGeneralData(this, isExportRework, actSum.ToString());
+				DocumentTableData tableData = new DocumentTableData(backModels, TemplateType, isExportRework);
+
+				foreach (ResourceInfo resource in DocumentResourceManager.GetItems(isExportRework))
+				{
+					exporter.Clear();
+
+					if (resource.Type == ResourceType.Docx)
+					{
+						exporter.ExportWordTemplate(resource.ProjectName, isExportRework);
+						exporter.FillWordGeneralData(generalData);
+						exporter.FillWordTableData(tableData);
+						exporter.SaveWordContent(resource.ProjectName, isExportRework);
+					}
+					else if (resource.Type == ResourceType.Xlsx)
+					{
+						exporter.ExportExcelTemplate(resource.ProjectName);
+						exporter.FillExcelTableData(resource.ProjectName, tableData);
+					}
+
+					exporter.SaveTemplate(generalData, path, resource.ProjectName, isExportRework, resource.TemplateName);
+				}
 			}
 		}
 

@@ -59,8 +59,6 @@ namespace Dml.Controller
 					errorText += "Регіони записані некорректно. Кінець послідовності менший за початок.\nПриклад: 1-2, 3-4, 8-15";
 				else if (!validator.IsFree(GameName))
 					errorText += "Строка \"Назва гри\" не може бути пустою.";
-				else if (!validator.IsDigit(SpentTimeText))
-					errorText += "Затрачений час невірно введений.\nПриклад: 7";
 				else
 					return true;
 			}

@@ -10,7 +10,7 @@ namespace DocumentMaker.Model.OfficeFiles
 
 		private readonly string technicalTaskDateText;
 
-		public DocumentGeneralData(DocumentMakerModel model)
+		public DocumentGeneralData(DocumentMakerModel model, bool isExportRework, string actSum)
 		{
 			technicalTaskDateText = model.TechnicalTaskDateText;
 			ActDate = model.ActDateText;
@@ -21,8 +21,17 @@ namespace DocumentMaker.Model.OfficeFiles
 			HumanPA = model.PaymentAccountText;
 			HumanBank = model.BankName;
 			HumanMFO = "МФО " + model.MfoText;
-			DogovorNum = model.ContractNumberText;
-			DogovorFullDate = model.ContractDateText;
+			if(!isExportRework)
+			{
+				DogovorNum = model.ContractNumberText;
+				DogovorFullDate = model.ContractDateText;
+			}
+			else
+			{
+				DogovorNum = model.ContractReworkNumberText;
+				DogovorFullDate = model.ContractReworkDateText;
+			}
+			ActSum = actSum;
 
 			switch (model.TemplateType)
 			{
@@ -81,6 +90,8 @@ namespace DocumentMaker.Model.OfficeFiles
 		public string ActDate2 => DateTime.Parse(ActDate).ToString("yyyy.MM.dd");
 
 		public string AddictionInfo { get; }
+
+		public string ActSum { get; }
 
 		private string Get2dNumber(string str)
 		{

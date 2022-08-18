@@ -37,11 +37,11 @@ namespace DocumentMaker.Model.OfficeFiles
 			TemplateLoaded = false;
 		}
 
-		public void ExportWordTemplate(string name)
+		public void ExportWordTemplate(string name, bool isExportRework)
 		{
 			if (!TemplateLoaded)
 			{
-				ExportTemplate(name, out string nearFullname);
+				ExportTemplate(name, isExportRework, out string nearFullname);
 
 				xml.LoadXml(GetXmlFromWordFile(nearFullname));
 				if (FindRowPart())
@@ -91,15 +91,15 @@ namespace DocumentMaker.Model.OfficeFiles
 			}
 		}
 
-		public void SaveWordContent(string projectName)
+		public void SaveWordContent(string projectName, bool isExportRework)
 		{
-			string nearFullname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), projectName);
+			string nearFullname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), BackTaskStrings.GetAddictionName(isExportRework) + projectName);
 			SetXmlToWordFile(nearFullname);
 		}
 
-		public void SaveTemplate(DocumentGeneralData data, string path, string projectName, string templateName)
+		public void SaveTemplate(DocumentGeneralData data, string path, string projectName, bool isExportRework, string templateName)
 		{
-			string nearFullname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), projectName);
+			string nearFullname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), BackTaskStrings.GetAddictionName(isExportRework) + projectName);
 			FillPropertiesData(data, ref templateName);
 
 			string fullpath = Path.Combine(path, templateName);
@@ -149,7 +149,7 @@ namespace DocumentMaker.Model.OfficeFiles
 
 		public void ExportExcelTemplate(string name)
 		{
-			ExportTemplate(name, out _);
+			ExportTemplate(name, false, out _);
 		}
 
 		public void FillExcelTableData(string name, DocumentTableData data)
@@ -223,16 +223,17 @@ namespace DocumentMaker.Model.OfficeFiles
 			}
 		}
 
-		private void ExportTemplate(string name, out string nearFullname)
+		private void ExportTemplate(string name, bool isExportRework, out string nearFullname)
 		{
+			string addictionStr = BackTaskStrings.GetAddictionName(isExportRework);
 			string nearPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-			nearFullname = Path.Combine(nearPath, name);
+			nearFullname = Path.Combine(nearPath, addictionStr + name);
 			if (File.Exists(nearFullname))
 			{
 				File.Delete(nearFullname);
 			}
 
-			ResourceUnloader.Unload(name, nearPath);
+			ResourceUnloader.Unload(name, nearFullname);
 		}
 
 		private void FillExcelData(DocumentTableData data)

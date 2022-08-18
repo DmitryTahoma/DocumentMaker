@@ -6,12 +6,10 @@ namespace DocumentMaker.Resources
 {
 	public static class ResourceUnloader
 	{
-		public static void Unload(string resourceName, string path)
+		public static void Unload(string resourceName, string nearFullname)
 		{
-			string fullname = Path.Combine(path, resourceName);
-
 			byte[] resource = LoadResource(Assembly.GetEntryAssembly().GetName().Name + ".Resources." + resourceName);
-			using (FileStream fStream = new FileStream(fullname, FileMode.OpenOrCreate))
+			using (FileStream fStream = new FileStream(nearFullname, FileMode.OpenOrCreate))
 			{
 				using (BinaryWriter writer = new BinaryWriter(fStream))
 				{

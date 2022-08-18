@@ -9,13 +9,16 @@ namespace DocumentMaker.Model.OfficeFiles
 	{
 		private readonly List<DocumentTableRowData> rows;
 
-		public DocumentTableData(IEnumerable<FullBackDataModel> backModels, DocumentTemplateType templateType)
+		public DocumentTableData(IEnumerable<FullBackDataModel> backModels, DocumentTemplateType templateType, bool isExportRework)
 		{
 			rows = new List<DocumentTableRowData>();
 
 			foreach (FullBackDataModel model in backModels)
 			{
-				rows.Add(new DocumentTableRowData(model, templateType));
+				if(model.IsRework == isExportRework)
+				{
+					rows.Add(new DocumentTableRowData(model, templateType));
+				}
 			}
 		}
 

@@ -8,9 +8,9 @@ namespace DocumentMaker.Model.OfficeFiles
 {
 	public static class BackTaskStrings
 	{
-		public static string Generate(BackType backType, DocumentTemplateType templateType, string backNumberStr, string backName, string backRegsStr, string gameName, bool isRework, bool isSketch)
+		public static string Generate(BackType backType, DocumentTemplateType templateType, string workText, string backNumberStr, string backName, string backRegsStr, string gameName, bool isRework, bool isSketch)
 		{
-			string str = GetBaseString(backType, templateType, isRework, isSketch);
+			string str = GetBaseString(backType, templateType, workText, isRework, isSketch);
 
 			str = str.Replace("[BackNumber]", backNumberStr);
 			str = str.Replace("[BackName]", backName);
@@ -20,21 +20,22 @@ namespace DocumentMaker.Model.OfficeFiles
 			return str;
 		}
 
-		private static string GetBaseString(BackType backType, DocumentTemplateType templateType, bool isRework, bool isSketch)
+		private static string GetBaseString(BackType backType, DocumentTemplateType templateType, string workText, bool isRework, bool isSketch)
 		{
 			string res;
-			switch (templateType)
+			if (isRework) res = workText + (isSketch ? " ескізу " : " ");
+			else switch (templateType)
 			{
-				case DocumentTemplateType.Scripter: res = isRework ? "Актуалізація логіки поведінки об’єктів " : "Послуги з розробки логіки та візуальних ефектів "; break;
-				case DocumentTemplateType.Cutter: res = isRework ? "Коригування об’єктів анімацій пошарової 3D моделі та візуальних ефектів " : "Послуги з розробки пошарової 3D моделі та візуальних ефектів "; break;
+				case DocumentTemplateType.Scripter: res = "Послуги з розробки логіки та візуальних ефектів "; break;
+				case DocumentTemplateType.Cutter: res = "Послуги з розробки пошарової 3D моделі та візуальних ефектів "; break;
 				case DocumentTemplateType.Painter:
 					{
-						res = isRework ? "Графічні роботи з коригування кольорової гами " : "Послуги з розробки графічних матеріалів ";
+						res = "Послуги з розробки графічних матеріалів ";
 						if (isSketch)
 							res += "ескізу ";
 					}
 					break;
-				case DocumentTemplateType.Modeller: res = isRework ? "Коригування текстур 3D - моделі " : "Послуги з розробки 3D - моделі "; break;
+				case DocumentTemplateType.Modeller: res = "Послуги з розробки 3D - моделі "; break;
 				default: res = string.Empty; break;
 			}
 
@@ -63,6 +64,9 @@ namespace DocumentMaker.Model.OfficeFiles
 
 		public static string GetRegionString(BackType backType, string countRegs)
 		{
+			if (backType != BackType.Regions && backType != BackType.HogRegions)
+				return string.Empty;
+
 			if (countRegs.Contains(",") || countRegs.Contains("-"))
 			{
 				List<int> regs = new List<int>();
@@ -111,8 +115,7 @@ namespace DocumentMaker.Model.OfficeFiles
 			{
 				string regs = "";
 
-				if ((backType == BackType.Regions || backType == BackType.HogRegions)
-				  && int.TryParse(countRegs, out int count))
+				if (int.TryParse(countRegs, out int count))
 				{
 					regs = "1";
 
@@ -125,5 +128,7 @@ namespace DocumentMaker.Model.OfficeFiles
 				return regs;
 			}
 		}
+
+		public static string GetAddictionName(bool isExportRework) => isExportRework ? "Підтримка_" : "Розробка_";
 	}
 }

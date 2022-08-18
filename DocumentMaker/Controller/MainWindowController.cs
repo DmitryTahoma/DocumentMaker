@@ -77,6 +77,8 @@ namespace DocumentMaker.Controller
 		public string MfoText { get => model.MfoText; set => model.MfoText = value; }
 		public string ContractNumberText { get => model.ContractNumberText; set => model.ContractNumberText = value; }
 		public string ContractDateText { get => model.ContractDateText; set => model.ContractDateText = value; }
+		public string ContractReworkNumberText { get => model.ContractReworkNumberText; set => model.ContractReworkNumberText = value; }
+		public string ContractReworkDateText { get => model.ContractReworkDateText; set => model.ContractReworkDateText = value; }
 		public string ActSum { get => model.ActSum; set => model.ActSum = value; }
 		public string ActSaldo { get => model.ActSaldo; set => model.ActSaldo = value; }
 		public List<FullBackDataController> BackDataControllers { get; set; }
@@ -200,6 +202,8 @@ namespace DocumentMaker.Controller
 			PaymentAccountText = humanData.PaymentAccountText;
 			ContractNumberText = humanData.ContractNumberText;
 			ContractDateText = humanData.ContractDateText;
+			ContractReworkNumberText = humanData.ContractReworkNumberText;
+			ContractReworkDateText = humanData.ContractReworkDateText;
 			AddressText = humanData.AddressText;
 			MfoText = humanData.MfoText;
 		}

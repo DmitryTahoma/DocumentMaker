@@ -17,6 +17,7 @@ namespace DocumentMaker.Model.OfficeFiles
 		private readonly bool isSketch;
 		private readonly string spentTimeText;
 		private readonly string otherText;
+		private readonly string workText;
 
 		public DocumentTableRowData(FullBackDataModel model, DocumentTemplateType templateType)
 		{
@@ -31,10 +32,13 @@ namespace DocumentMaker.Model.OfficeFiles
 			isSketch = model.IsSketch;
 			spentTimeText = model.SpentTimeText;
 			otherText = model.OtherText;
+			workText = model.WorkTypesList.Count > 0 ? model.WorkTypesList[(int)(model.WorkObjectId % model.WorkTypesList.Count)]?.Name : null;
+			SumText = model.SumText;
 		}
 
 		public string BackDataId => id.ToString();
 		public string BackDataText => GenerateBackTask();
+		public string SumText { get; }
 
 		private string GenerateBackTask()
 		{
@@ -44,7 +48,7 @@ namespace DocumentMaker.Model.OfficeFiles
 			}
 
 			string regs = BackTaskStrings.GetRegionString(type, backCountRegionsText);
-			return BackTaskStrings.Generate(type, templateType, backNumberText, backName, regs, gameName, isRework, isSketch);
+			return BackTaskStrings.Generate(type, templateType, workText, backNumberText, backName, regs, gameName, isRework, isSketch);
 		}
 
 		public string GetSpentTime()

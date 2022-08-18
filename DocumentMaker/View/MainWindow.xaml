@@ -217,7 +217,7 @@
                 <StackPanel Grid.Column="2" Orientation="Vertical">
                     <Button
                         Click="ExportBtnClick"
-                        Content="Зберегти"
+                        Content="Экспорт"
                         Style="{StaticResource ExportBtn}" />
                 </StackPanel>
             </Grid>

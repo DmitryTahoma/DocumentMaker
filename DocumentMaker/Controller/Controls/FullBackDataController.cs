@@ -41,5 +41,14 @@ namespace DocumentMaker.Controller.Controls
 		{
 			return model;
 		}
+
+		public override bool Validate(ref string errorText)
+		{
+			if(base.Validate(ref errorText))
+			{
+				return true;
+			}
+			return false;
+		}
 	}
 }

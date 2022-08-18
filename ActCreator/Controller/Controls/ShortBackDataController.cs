@@ -30,5 +30,17 @@ namespace ActCreator.Controller.Controls
 		{
 			return model;
 		}
+
+		public override bool Validate(ref string errorText)
+		{
+			if (base.Validate(ref errorText))
+			{
+				if (!validator.IsDigit(SpentTimeText))
+					errorText += "Затрачений час невірно введений.\nПриклад: 7";
+				else
+					return true;
+			}
+			return false;
+		}
 	}
 }
