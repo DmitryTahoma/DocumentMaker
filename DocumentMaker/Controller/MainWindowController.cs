@@ -79,6 +79,7 @@ namespace DocumentMaker.Controller
 		public string ContractDateText { get => model.ContractDateText; set => model.ContractDateText = value; }
 		public string ContractReworkNumberText { get => model.ContractReworkNumberText; set => model.ContractReworkNumberText = value; }
 		public string ContractReworkDateText { get => model.ContractReworkDateText; set => model.ContractReworkDateText = value; }
+		public string CityName { get => model.CityName; set => model.CityName = value; }
 		public string ActSum { get => model.ActSum; set => model.ActSum = value; }
 		public string ActSaldo { get => model.ActSaldo; set => model.ActSaldo = value; }
 		public List<FullBackDataController> BackDataControllers { get; set; }
@@ -206,6 +207,7 @@ namespace DocumentMaker.Controller
 			ContractReworkDateText = humanData.ContractReworkDateText;
 			AddressText = humanData.AddressText;
 			MfoText = humanData.MfoText;
+			CityName = humanData.CityName;
 		}
 
 		public void OpenFiles(string[] files, out string skippedFiles)

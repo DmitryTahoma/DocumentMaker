@@ -99,6 +99,7 @@ namespace DocumentMaker.Model
 		public string ContractDateText { get; set; }
 		public string ContractReworkNumberText { get; set; }
 		public string ContractReworkDateText { get; set; }
+		public string CityName { get; set; }
 		public string ActSum { get; set; }
 		public string ActSaldo { get; set; }
 		public IList<FullDocumentTemplate> DocumentTemplatesList => documentTemplates;

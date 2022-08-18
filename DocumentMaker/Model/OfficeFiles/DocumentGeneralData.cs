@@ -32,6 +32,7 @@ namespace DocumentMaker.Model.OfficeFiles
 				DogovorFullDate = model.ContractReworkDateText;
 			}
 			ActSum = actSum;
+			CityName = model.CityName;
 
 			switch (model.TemplateType)
 			{
@@ -59,6 +60,8 @@ namespace DocumentMaker.Model.OfficeFiles
 		public string DodatokNum2d => Get2dNumber(DodatokNum);
 
 		public string ActDate { get; }
+
+		public string CityName { get; }
 
 		public string HumanName
 		{

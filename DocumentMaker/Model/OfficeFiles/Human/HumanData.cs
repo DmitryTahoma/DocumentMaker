@@ -14,6 +14,7 @@ namespace DocumentMaker.Model.OfficeFiles.Human
 		public string ContractReworkNumberText { get; set; }
 		public string ContractReworkDateText { get; set; }
 		public string AddressText { get; set; }
+		public string CityName { get; set; }
 		public string MfoText { get; set; }
 
 		public void SetData(char type, string value)
@@ -32,8 +33,9 @@ namespace DocumentMaker.Model.OfficeFiles.Human
 					case 'F': ContractDateText = value; break;
 					case 'G': ContractReworkNumberText = value; break;
 					case 'H': ContractReworkDateText = value; break;
-					case 'I': AddressText = value; break;
-					case 'J': MfoText = value; break;
+					case 'I': CityName = value; break;
+					case 'J': AddressText = value; break;
+					case 'K': MfoText = value; break;
 				}
 			}
 		}

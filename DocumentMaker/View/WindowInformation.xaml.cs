@@ -50,7 +50,7 @@ namespace DocumentMaker.View
 				ContractDateText = humanData.ContractDateText;
 				ContractReworkNumberText = humanData.ContractReworkNumberText;
 				ContractReworkDateText = humanData.ContractReworkDateText;
-				AddressText = humanData.AddressText;
+				AddressText = humanData.CityName + ' ' + humanData.AddressText;
 				MfoText = humanData.MfoText;
 			}
 			else
