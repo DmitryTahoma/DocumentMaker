@@ -195,6 +195,7 @@ namespace DocumentMaker
 
 		private void WindowLoaded(object sender, RoutedEventArgs e)
 		{
+			CheckFiles();
 			if (controller != null)
 			{
 				SetDataFromController();
@@ -659,6 +660,30 @@ namespace DocumentMaker
 			{
 				ActSaldo = ((int)sum - (int)(curSum + curSumRework)).ToString();
 				ActSaldoInput.Text = ActSaldo;
+			}
+		}
+
+		private void CheckFiles()
+		{
+			List<string> files = new List<string>()
+			{
+				"HumanData.xlsx",
+				"projectnames.xml",
+				"SupportTypes.xlsx",
+			};
+
+			if(!ProgramValidator.ValidateExistsFiles(files))
+			{
+				string notFindedFiles = "";
+				foreach(string file in files)
+				{
+					notFindedFiles += '\n' + file;
+				}
+
+				MessageBox.Show("Не знайдені необхідні файли (програма може працювати з помилками):\n" + notFindedFiles,
+					"DocumentMaker | Відсутні файли",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
 			}
 		}
 	}
