@@ -369,7 +369,14 @@ namespace DocumentMaker.View.Controls
 		public void SetWorkTypesList(IList<WorkObject> workObjects)
 		{
 			controller.WorkTypesList.Clear();
-			controller.WorkTypesList.AddRange(workObjects);
+			if(workObjects != null)
+			{
+				controller.WorkTypesList.AddRange(workObjects);
+			}
+			else
+			{
+				controller.WorkTypesList.Add(new WorkObject { Name = "<error-loading-work-type-list>" });
+			}
 			NotifyPropertyChanged(nameof(WorkTypesList));
 			WorkTypeComboBox.SelectedItem = WorkTypesList.FirstOrDefault(x => x.Id == controller.WorkObjectId % WorkTypesList.Count);
 		}

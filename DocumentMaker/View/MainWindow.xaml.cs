@@ -514,7 +514,7 @@ namespace DocumentMaker
 		private void LoadFiles()
 		{
 			controller.LoadFiles();
-			SetSelectedFile(controller.GetSelectedFile().FullName);
+			SetSelectedFile(controller.GetSelectedFile()?.FullName);
 		}
 
 		private void WindowPreviewDrop(object sender, System.Windows.DragEventArgs e)
