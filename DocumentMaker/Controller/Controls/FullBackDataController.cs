@@ -46,7 +46,10 @@ namespace DocumentMaker.Controller.Controls
 		{
 			if(base.Validate(ref errorText))
 			{
-				return true;
+				if (!uint.TryParse(SumText, out uint sumText) || sumText == 0)
+					errorText += "Сума не може бути нульовою.";
+				else
+					return true;
 			}
 			return false;
 		}

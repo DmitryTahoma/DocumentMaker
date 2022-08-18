@@ -370,49 +370,69 @@ namespace DocumentMaker
 
 		private void CorrectDevelopClick(object sender, RoutedEventArgs e)
 		{
-			CorrectDevelopmentWindow window = new CorrectDevelopmentWindow
+			if (uint.TryParse(ActSum, out uint actSum) && actSum != 0)
 			{
-				Top = controller.CorrectDevelopmentWindow_WindowTop,
-				Left = controller.CorrectDevelopmentWindow_WindowLeft,
-				NumberText = controller.CorrectDevelopmentWindow_NumberText,
-				TakeSumFromSupport = controller.CorrectDevelopmentWindow_TakeSumFromSupport,
-			};
-			WindowValidator.MoveToValidPosition(window);
-			window.ShowDialog();
+				CorrectDevelopmentWindow window = new CorrectDevelopmentWindow
+				{
+					Top = controller.CorrectDevelopmentWindow_WindowTop,
+					Left = controller.CorrectDevelopmentWindow_WindowLeft,
+					NumberText = controller.CorrectDevelopmentWindow_NumberText,
+					TakeSumFromSupport = controller.CorrectDevelopmentWindow_TakeSumFromSupport,
+				};
+				WindowValidator.MoveToValidPosition(window);
+				window.ShowDialog();
 
-			controller.CorrectDevelopmentWindow_WindowTop = window.Top;
-			controller.CorrectDevelopmentWindow_WindowLeft = window.Left;
-			controller.CorrectDevelopmentWindow_NumberText = window.NumberText;
-			controller.CorrectDevelopmentWindow_TakeSumFromSupport = window.TakeSumFromSupport;
+				controller.CorrectDevelopmentWindow_WindowTop = window.Top;
+				controller.CorrectDevelopmentWindow_WindowLeft = window.Left;
+				controller.CorrectDevelopmentWindow_NumberText = window.NumberText;
+				controller.CorrectDevelopmentWindow_TakeSumFromSupport = window.TakeSumFromSupport;
 
-			if(window.IsCorrection && int.TryParse(window.NumberText, out int sum))
+				if (window.IsCorrection && int.TryParse(window.NumberText, out int sum))
+				{
+					controller.CorrectDevelopment(sum, window.TakeSumFromSupport);
+					SetDataFromControllerBackDatas();
+				}
+			}
+			else
 			{
-				controller.CorrectDevelopment(sum, window.TakeSumFromSupport);
-				SetDataFromControllerBackDatas();
+				MessageBox.Show("Сума для корегування не може бути нульовою.",
+					"Корегування | Помилка",
+					MessageBoxButtons.OK, 
+					MessageBoxIcon.Error);
 			}
 		}
 
 		private void CorrectSupportClick(object sender, RoutedEventArgs e)
 		{
-			CorrectSupportWindow window = new CorrectSupportWindow
+			if (uint.TryParse(ActSum, out uint actSum) && actSum != 0)
 			{
-				Top = controller.CorrectSupportWindow_WindowTop,
-				Left = controller.CorrectSupportWindow_WindowLeft,
-				NumberText = controller.CorrectSupportWindow_NumberText,
-				TakeSumFromDevelopment = controller.CorrectSupportWindow_TakeSumFromDevelopment,
-			};
-			WindowValidator.MoveToValidPosition(window);
-			window.ShowDialog();
+				CorrectSupportWindow window = new CorrectSupportWindow
+				{
+					Top = controller.CorrectSupportWindow_WindowTop,
+					Left = controller.CorrectSupportWindow_WindowLeft,
+					NumberText = controller.CorrectSupportWindow_NumberText,
+					TakeSumFromDevelopment = controller.CorrectSupportWindow_TakeSumFromDevelopment,
+				};
+				WindowValidator.MoveToValidPosition(window);
+				window.ShowDialog();
 
-			controller.CorrectSupportWindow_WindowTop = window.Top;
-			controller.CorrectSupportWindow_WindowLeft = window.Left;
-			controller.CorrectSupportWindow_NumberText = window.NumberText;
-			controller.CorrectSupportWindow_TakeSumFromDevelopment = window.TakeSumFromDevelopment;
+				controller.CorrectSupportWindow_WindowTop = window.Top;
+				controller.CorrectSupportWindow_WindowLeft = window.Left;
+				controller.CorrectSupportWindow_NumberText = window.NumberText;
+				controller.CorrectSupportWindow_TakeSumFromDevelopment = window.TakeSumFromDevelopment;
 
-			if(window.IsCorrection && int.TryParse(window.NumberText, out int sum))
+				if (window.IsCorrection && int.TryParse(window.NumberText, out int sum))
+				{
+					controller.CorrectSupport(sum, window.TakeSumFromDevelopment);
+					SetDataFromControllerBackDatas();
+				}
+			}
+			else
 			{
-				controller.CorrectSupport(sum, window.TakeSumFromDevelopment);
-				SetDataFromControllerBackDatas();
+				MessageBox.Show("Сума для корегування не може бути нульовою.",
+					"Корегування | Помилка",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
 			}
 		}
 
