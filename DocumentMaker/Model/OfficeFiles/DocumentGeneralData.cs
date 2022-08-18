@@ -1,4 +1,5 @@
 ﻿using Dml.Model.Template;
+using DocumentMaker.Model.Algorithm;
 using System;
 using System.Globalization;
 
@@ -10,7 +11,7 @@ namespace DocumentMaker.Model.OfficeFiles
 
 		private readonly string technicalTaskDateText;
 
-		public DocumentGeneralData(DocumentMakerModel model, bool isExportRework, string actSum)
+		public DocumentGeneralData(DocumentMakerModel model, bool isExportRework, uint actSum)
 		{
 			technicalTaskDateText = model.TechnicalTaskDateText;
 			ActDate = model.ActDateText;
@@ -31,8 +32,9 @@ namespace DocumentMaker.Model.OfficeFiles
 				DogovorNum = model.ContractReworkNumberText;
 				DogovorFullDate = model.ContractReworkDateText;
 			}
-			ActSum = actSum;
+			ActSum = actSum.ToString();
 			CityName = model.CityName;
+			ActSumText = NumberToWords.Str(actSum);
 
 			switch (model.TemplateType)
 			{
@@ -95,6 +97,8 @@ namespace DocumentMaker.Model.OfficeFiles
 		public string AddictionInfo { get; }
 
 		public string ActSum { get; }
+
+		public string ActSumText { get; }
 
 		private string Get2dNumber(string str)
 		{

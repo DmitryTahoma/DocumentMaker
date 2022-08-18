@@ -168,7 +168,7 @@ namespace DocumentMaker.Model
 					}
 				}
 
-				DocumentGeneralData generalData = new DocumentGeneralData(this, isExportRework, actSum.ToString());
+				DocumentGeneralData generalData = new DocumentGeneralData(this, isExportRework, actSum);
 				DocumentTableData tableData = new DocumentTableData(backModels, TemplateType, isExportRework);
 
 				foreach (ResourceInfo resource in DocumentResourceManager.GetItems(isExportRework))
