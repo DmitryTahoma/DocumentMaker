@@ -106,6 +106,7 @@ namespace DocumentMaker
 				{
 					selectedFile.AddBackModel(x.Controller.GetModel());
 				}
+				x.UpdateInputStates();
 			});
 			ReworkDataFooter.SubscribeRemoving((x) =>
 			{
