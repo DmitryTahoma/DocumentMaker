@@ -26,7 +26,9 @@
 
         <TextBlock Style="{StaticResource BackDataTextBlock}" Text="Зробити суми не менше ніж: " />
         <TextBox
+            x:Name="SumInput"
             Grid.Column="1"
+            PreviewTextInput="UIntValidating"
             Style="{StaticResource InputWithTextInput}"
             Text="{Binding NumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 

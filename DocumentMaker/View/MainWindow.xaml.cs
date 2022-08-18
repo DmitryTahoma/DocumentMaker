@@ -17,6 +17,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Input;
 using UpdaterAPI;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -45,6 +46,7 @@ namespace DocumentMaker
 		private readonly MainWindowController controller;
 		private readonly FolderBrowserDialog folderBrowserDialog;
 		private readonly OpenFileDialog openFileDialog;
+		private readonly InputingValidator inputingValidator;
 
 		public MainWindow(string[] args)
 		{
@@ -135,6 +137,9 @@ namespace DocumentMaker
 
 			folderBrowserDialog = new FolderBrowserDialog();
 			openFileDialog = new OpenFileDialog() { Multiselect = true, Filter = "DocumentMaker files (*" + DmxFile.Extension + ")|*" + DmxFile.Extension };
+			inputingValidator = new InputingValidator();
+
+			ActSumInput.CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
 		}
 
 		public IList<DmxFile> OpenedFilesList => controller.OpenedFilesList;
@@ -587,6 +592,11 @@ namespace DocumentMaker
 		private void ActSumTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
 		{
 			UpdateActSum();
+		}
+
+		private void UIntValidating(object sender, System.Windows.Input.TextCompositionEventArgs e)
+		{
+			inputingValidator.UIntInputing_PreviewTextInput(sender, e);
 		}
 
 		private void AddLoadedBackData()

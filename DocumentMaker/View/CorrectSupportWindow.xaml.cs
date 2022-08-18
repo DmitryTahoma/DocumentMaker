@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Dml.Controller.Validation;
+using System.Windows;
 using System.Windows.Input;
 
 namespace DocumentMaker.View
@@ -8,10 +9,15 @@ namespace DocumentMaker.View
 	/// </summary>
 	public partial class CorrectSupportWindow : Window
 	{
+		private readonly InputingValidator inputingValidator;
+
 		public CorrectSupportWindow()
 		{
 			InitializeComponent();
 			DataContext = this;
+
+			inputingValidator = new InputingValidator();
+			SumInput.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
 		}
 
 		public bool IsCorrection { get; private set; }
@@ -30,6 +36,11 @@ namespace DocumentMaker.View
 		{
 			IsCorrection = true;
 			Close();
+		}
+
+		private void UIntValidating(object sender, System.Windows.Input.TextCompositionEventArgs e)
+		{
+			inputingValidator.UIntInputing_PreviewTextInput(sender, e);
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Dml.Model.Back;
+﻿using Dml.Controller.Validation;
+using Dml.Model.Back;
 using Dml.Model.Template;
 using DocumentMaker.Controller.Controls;
 using DocumentMaker.Model.Back;
@@ -53,6 +54,7 @@ namespace DocumentMaker.View.Controls
 		}
 
 		private FullBackDataController controller;
+		private readonly InputingValidator inputingValidator;
 
 		private event Action onDeletion;
 		private event Action onChangedSum;
@@ -65,6 +67,9 @@ namespace DocumentMaker.View.Controls
 
 			InitializeComponent();
 			DataContext = this;
+
+			inputingValidator = new InputingValidator();
+			SumTextInput.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
 		}
 
 		public uint BackDataId
@@ -314,6 +319,11 @@ namespace DocumentMaker.View.Controls
 					}
 				}
 			}
+		}
+
+		private void UIntValidating(object sender, System.Windows.Input.TextCompositionEventArgs e)
+		{
+			inputingValidator.UIntInputing_PreviewTextInput(sender, e);
 		}
 
 		public void UpdateInputStates()

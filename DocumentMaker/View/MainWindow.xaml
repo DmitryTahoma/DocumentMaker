@@ -124,6 +124,7 @@
                 <TextBox
                     x:Name="ActSumInput"
                     Grid.Column="1"
+                    PreviewTextInput="UIntValidating"
                     Style="{StaticResource TextBoxNumberValidation}"
                     Text="{Binding ElementName=WindowContext, Path=ActSum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     TextChanged="ActSumTextChanged" />

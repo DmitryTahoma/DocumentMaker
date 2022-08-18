@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller\BaseBackDataController.cs" />
+    <Compile Include="Controller\Validation\InputingValidator.cs" />
     <Compile Include="Controller\Validation\ProgramValidator.cs" />
     <Compile Include="Controller\Validation\StringValidator.cs" />
     <Compile Include="Controller\Validation\WindowValidator.cs" />
