@@ -129,6 +129,8 @@ namespace DocumentMaker.Controller
 				errorText = "Невірно заповнена дата акту.\nПриклад: 20.07.2021";
 			else if (!validator.IsDigit(AdditionNumText))
 				errorText = "Невірно заповнений номер додатку.\nПриклад: 1";
+			else if (ActSaldo != "0")
+				errorText = "Сальдо не нульове!";
 			else
 			{
 				HumanData human = GetSelectedHuman();
