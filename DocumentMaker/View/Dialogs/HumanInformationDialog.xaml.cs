@@ -1,12 +1,26 @@
-﻿using DocumentMaker.Model.OfficeFiles.Human;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using DocumentMaker.Model.OfficeFiles.Human;
+using MaterialDesignThemes.Wpf;
 
-namespace DocumentMaker.View
+namespace DocumentMaker.View.Dialogs
 {
 	/// <summary>
-	/// Логика взаимодействия для WindowInformation.xaml
+	/// Interaction logic for HumanInformationDialog.xaml
 	/// </summary>
-	public partial class WindowInformation : Window
+	public partial class HumanInformationDialog : UserControl
 	{
 		public static readonly DependencyProperty HumanNameProperty;
 		public static readonly DependencyProperty HumanIdTextProperty;
@@ -19,26 +33,26 @@ namespace DocumentMaker.View
 		public static readonly DependencyProperty ContractReworkNumberTextProperty;
 		public static readonly DependencyProperty ContractReworkDateTextProperty;
 
-		static WindowInformation()
+		static HumanInformationDialog()
 		{
-			HumanNameProperty = DependencyProperty.Register("HumanName", typeof(string), typeof(WindowInformation));
-			HumanIdTextProperty = DependencyProperty.Register("HumanIdText", typeof(string), typeof(WindowInformation));
-			AddressTextProperty = DependencyProperty.Register("AddressText", typeof(string), typeof(WindowInformation));
-			PaymentAccountTextProperty = DependencyProperty.Register("PaymentAccountText", typeof(string), typeof(WindowInformation));
-			BankNameProperty = DependencyProperty.Register("BankName", typeof(string), typeof(WindowInformation));
-			MfoTextProperty = DependencyProperty.Register("MfoText", typeof(string), typeof(WindowInformation));
-			ContractNumberTextProperty = DependencyProperty.Register("ContractNumberText", typeof(string), typeof(WindowInformation));
-			ContractDateTextProperty = DependencyProperty.Register("ContractDateText", typeof(string), typeof(WindowInformation));
-			ContractReworkNumberTextProperty = DependencyProperty.Register("ContractReworkNumberText", typeof(string), typeof(WindowInformation));
-			ContractReworkDateTextProperty = DependencyProperty.Register("ContractReworkDateText", typeof(string), typeof(WindowInformation));
+			HumanNameProperty = DependencyProperty.Register("HumanName", typeof(string), typeof(HumanInformationDialog));
+			HumanIdTextProperty = DependencyProperty.Register("HumanIdText", typeof(string), typeof(HumanInformationDialog));
+			AddressTextProperty = DependencyProperty.Register("AddressText", typeof(string), typeof(HumanInformationDialog));
+			PaymentAccountTextProperty = DependencyProperty.Register("PaymentAccountText", typeof(string), typeof(HumanInformationDialog));
+			BankNameProperty = DependencyProperty.Register("BankName", typeof(string), typeof(HumanInformationDialog));
+			MfoTextProperty = DependencyProperty.Register("MfoText", typeof(string), typeof(HumanInformationDialog));
+			ContractNumberTextProperty = DependencyProperty.Register("ContractNumberText", typeof(string), typeof(HumanInformationDialog));
+			ContractDateTextProperty = DependencyProperty.Register("ContractDateText", typeof(string), typeof(HumanInformationDialog));
+			ContractReworkNumberTextProperty = DependencyProperty.Register("ContractReworkNumberText", typeof(string), typeof(HumanInformationDialog));
+			ContractReworkDateTextProperty = DependencyProperty.Register("ContractReworkDateText", typeof(string), typeof(HumanInformationDialog));
 		}
-
-		public WindowInformation()
+		
+		public HumanInformationDialog()
 		{
 			InitializeComponent();
 		}
 
-		public WindowInformation(HumanData humanData) : this()
+		public HumanInformationDialog(HumanData humanData) : this()
 		{
 			if (humanData != null)
 			{
@@ -119,11 +133,11 @@ namespace DocumentMaker.View
 			set => SetValue(ContractReworkDateTextProperty, value);
 		}
 
-		private void WindowKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		private void ControlKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
 		{
 			if (e.Key == System.Windows.Input.Key.Escape)
 			{
-				Close();
+				DialogHost.CloseDialogCommand.Execute(null, null);
 			}
 		}
 	}

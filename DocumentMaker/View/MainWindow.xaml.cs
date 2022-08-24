@@ -10,6 +10,8 @@ using DocumentMaker.Model.Files;
 using DocumentMaker.Model.OfficeFiles.Human;
 using DocumentMaker.View;
 using DocumentMaker.View.Controls;
+using DocumentMaker.View.Dialogs;
+using MaterialDesignThemes.Wpf;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -18,6 +20,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Markup;
 using UpdaterAPI;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -55,6 +58,8 @@ namespace DocumentMaker
 			SetWindowSettingsFromController();
 
 			InitializeComponent();
+			TechnicalTaskDatePicker.Language = XmlLanguage.GetLanguage(System.Globalization.CultureInfo.CurrentCulture.IetfLanguageTag);
+			ActDatePicker.Language = XmlLanguage.GetLanguage(System.Globalization.CultureInfo.CurrentCulture.IetfLanguageTag);
 			DataHeader.HideWorkTypeLabel();
 
 			DataFooter.SubscribeAddition((x) =>
@@ -185,6 +190,8 @@ namespace DocumentMaker
 			get => (string)GetValue(ActSaldoProperty);
 			set => SetValue(ActSaldoProperty, value);
 		}
+
+		public double IconSize { get; } = 24;
 
 		private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
@@ -338,26 +345,29 @@ namespace DocumentMaker
 			}
 		}
 
-		private void InfoBtnClick(object sender, RoutedEventArgs e)
+		private async void InfoBtnClick(object sender, RoutedEventArgs e)
 		{
 			if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
 			{
-				WindowInformation window = new WindowInformation(controller.GetSelectedHuman())
-				{
-					Top = controller.WindowInformation_WindowTop,
-					Left = controller.WindowInformation_WindowLeft,
-					Height = controller.WindowInformation_WindowHeight,
-					Width = controller.WindowInformation_WindowWidth,
-					WindowState = controller.WindowInformation_WindowState,
-				};
-				WindowValidator.MoveToValidPosition(window);
-				window.ShowDialog();
+				await DialogHost.Show(new HumanInformationDialog(controller.GetSelectedHuman()));
+
+				//WindowInformation window = new WindowInformation(controller.GetSelectedHuman())
+				//{
+				//	Top = controller.WindowInformation_WindowTop,
+				//	Left = controller.WindowInformation_WindowLeft,
+				//	Height = controller.WindowInformation_WindowHeight,
+				//	Width = controller.WindowInformation_WindowWidth,
+				//	WindowState = controller.WindowInformation_WindowState,
+				//};
+				//WindowValidator.MoveToValidPosition(window);
+				//window.ShowDialog();
 				
-				controller.WindowInformation_WindowTop = window.Top;
-				controller.WindowInformation_WindowLeft = window.Left;
-				controller.WindowInformation_WindowHeight = window.Height;
-				controller.WindowInformation_WindowWidth = window.Width;
-				controller.WindowInformation_WindowState = window.WindowState;
+				//controller.WindowInformation_WindowTop = window.Top;
+				//controller.WindowInformation_WindowLeft = window.Left;
+				//controller.WindowInformation_WindowHeight = window.Height;
+				//controller.WindowInformation_WindowWidth = window.Width;
+				//controller.WindowInformation_WindowState = window.WindowState;
+
 			}
 			else
 				MessageBox.Show("Спочатку необхідно відкрити файл.",
@@ -384,28 +394,33 @@ namespace DocumentMaker
 			}
 		}
 
-		private void CorrectDevelopClick(object sender, RoutedEventArgs e)
+		private async void CorrectDevelopClick(object sender, RoutedEventArgs e)
 		{
 			if (uint.TryParse(ActSum, out uint actSum) && actSum != 0)
 			{
-				CorrectDevelopmentWindow window = new CorrectDevelopmentWindow
+				CorrectDevelopmentDialog dialog = new CorrectDevelopmentDialog
 				{
-					Top = controller.CorrectDevelopmentWindow_WindowTop,
-					Left = controller.CorrectDevelopmentWindow_WindowLeft,
 					NumberText = controller.CorrectDevelopmentWindow_NumberText,
 					TakeSumFromSupport = controller.CorrectDevelopmentWindow_TakeSumFromSupport,
 				};
-				WindowValidator.MoveToValidPosition(window);
-				window.ShowDialog();
+				await DialogHost.Show(dialog);
 
-				controller.CorrectDevelopmentWindow_WindowTop = window.Top;
-				controller.CorrectDevelopmentWindow_WindowLeft = window.Left;
-				controller.CorrectDevelopmentWindow_NumberText = window.NumberText;
-				controller.CorrectDevelopmentWindow_TakeSumFromSupport = window.TakeSumFromSupport;
+				//CorrectDevelopmentWindow window = new CorrectDevelopmentWindow
+				//{
+				//	Top = controller.CorrectDevelopmentWindow_WindowTop,
+				//	Left = controller.CorrectDevelopmentWindow_WindowLeft,
+				//};
+				//WindowValidator.MoveToValidPosition(window);
+				//window.ShowDialog();
 
-				if (window.IsCorrection && int.TryParse(window.NumberText, out int sum))
+				//controller.CorrectDevelopmentWindow_WindowTop = window.Top;
+				//controller.CorrectDevelopmentWindow_WindowLeft = window.Left;
+				controller.CorrectDevelopmentWindow_NumberText = dialog.NumberText;
+				controller.CorrectDevelopmentWindow_TakeSumFromSupport = dialog.TakeSumFromSupport;
+
+				if (dialog.IsCorrection && int.TryParse(dialog.NumberText, out int sum))
 				{
-					controller.CorrectDevelopment(sum, window.TakeSumFromSupport);
+					controller.CorrectDevelopment(sum, dialog.TakeSumFromSupport);
 					SetDataFromControllerBackDatas();
 				}
 			}
@@ -418,28 +433,38 @@ namespace DocumentMaker
 			}
 		}
 
-		private void CorrectSupportClick(object sender, RoutedEventArgs e)
+		private async void CorrectSupportClick(object sender, RoutedEventArgs e)
 		{
 			if (uint.TryParse(ActSum, out uint actSum) && actSum != 0)
 			{
-				CorrectSupportWindow window = new CorrectSupportWindow
+				CorrectSupportDialog dialog = new CorrectSupportDialog
 				{
-					Top = controller.CorrectSupportWindow_WindowTop,
-					Left = controller.CorrectSupportWindow_WindowLeft,
 					NumberText = controller.CorrectSupportWindow_NumberText,
-					TakeSumFromDevelopment = controller.CorrectSupportWindow_TakeSumFromDevelopment,
+					TakeSumFromDevelopment = controller.CorrectSupportWindow_TakeSumFromDevelopment
 				};
-				WindowValidator.MoveToValidPosition(window);
-				window.ShowDialog();
+				await DialogHost.Show(dialog);
 
-				controller.CorrectSupportWindow_WindowTop = window.Top;
-				controller.CorrectSupportWindow_WindowLeft = window.Left;
-				controller.CorrectSupportWindow_NumberText = window.NumberText;
-				controller.CorrectSupportWindow_TakeSumFromDevelopment = window.TakeSumFromDevelopment;
+				controller.CorrectSupportWindow_NumberText = dialog.NumberText;
+				controller.CorrectSupportWindow_TakeSumFromDevelopment = dialog.TakeSumFromDevelopment;
 
-				if (window.IsCorrection && int.TryParse(window.NumberText, out int sum))
+				//CorrectSupportWindow window = new CorrectSupportWindow
+				//{
+				//	Top = controller.CorrectSupportWindow_WindowTop,
+				//	Left = controller.CorrectSupportWindow_WindowLeft,
+				//	NumberText = controller.CorrectSupportWindow_NumberText,
+				//	TakeSumFromDevelopment = controller.CorrectSupportWindow_TakeSumFromDevelopment,
+				//};
+				//WindowValidator.MoveToValidPosition(window);
+				//window.ShowDialog();
+
+				//controller.CorrectSupportWindow_WindowTop = window.Top;
+				//controller.CorrectSupportWindow_WindowLeft = window.Left;
+				//controller.CorrectSupportWindow_NumberText = window.NumberText;
+				//controller.CorrectSupportWindow_TakeSumFromDevelopment = window.TakeSumFromDevelopment;
+
+				if (dialog.IsCorrection && int.TryParse(dialog.NumberText, out int sum))
 				{
-					controller.CorrectSupport(sum, window.TakeSumFromDevelopment);
+					controller.CorrectSupport(sum, dialog.TakeSumFromDevelopment);
 					SetDataFromControllerBackDatas();
 				}
 			}
@@ -498,9 +523,9 @@ namespace DocumentMaker
 		private void SetDataFromController()
 		{
 			DocumentTemplateComboBox.SelectedIndex = (int)controller.TemplateType;
-			TechnicalTaskDateTextInput.InputText = controller.TechnicalTaskDateText;
-			ActDateTextInput.InputText = controller.ActDateText;
-			AdditionNumTextInput.InputText = controller.AdditionNumText;
+			TechnicalTaskDatePicker.Text = controller.TechnicalTaskDateText;
+			ActDatePicker.Text = controller.ActDateText;
+			AdditionNumTextInput.Text = controller.AdditionNumText;
 			ActSumInput.Text = controller.ActSum;
 			ActSaldoInput.Text = controller.ActSaldo;
 		}

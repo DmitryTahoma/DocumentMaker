@@ -241,7 +241,6 @@ namespace DocumentMaker.View.Controls
 			GameNameComboBox.Text = controller.GameName;
 			IsSketchCheckBox.IsChecked = controller.IsSketch;
 			OtherTextInput.Text = controller.OtherText;
-			WeightTextLabel.Text = controller.WeightText;
 			SumTextInput.Text = controller.SumText;
 
 			UpdateInputStates();
@@ -411,25 +410,25 @@ namespace DocumentMaker.View.Controls
 
 		public void UpdateWeight()
 		{
-			if(controller.ActSum != 0 && double.TryParse(SumText, out double sum))
-			{
-				double weight = sum / controller.ActSum;
-				WeightText = weight.ToString();
-				if (weight < 0.001 && weight > 0)
-				{
-					WeightText = "0.000..";
-				}
-				else if (WeightText.Length > 5)
-				{
-					WeightText = WeightText.Substring(0, 5) + "..";
-				}
-			}
-			else
-			{
-				WeightText = "0";
-			}
+			//if(controller.ActSum != 0 && double.TryParse(SumText, out double sum))
+			//{
+			//	double weight = sum / controller.ActSum;
+			//	WeightText = weight.ToString();
+			//	if (weight < 0.001 && weight > 0)
+			//	{
+			//		WeightText = "0.000..";
+			//	}
+			//	else if (WeightText.Length > 5)
+			//	{
+			//		WeightText = WeightText.Substring(0, 5) + "..";
+			//	}
+			//}
+			//else
+			//{
+			//	WeightText = "0";
+			//}
 
-			WeightTextLabel.Text = WeightText;
+			//WeightTextLabel.Text = WeightText;
 		}
 
 		public void NotifyPropertyChanged(string name)

@@ -1,17 +1,30 @@
 ﻿using Dml.Controller.Validation;
+using MaterialDesignThemes.Wpf;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
-namespace DocumentMaker.View
+namespace DocumentMaker.View.Dialogs
 {
 	/// <summary>
-	/// Interaction logic for CorrectDevelopmentWindow.xaml
+	/// Interaction logic for CorrectDevelopmentDialog.xaml
 	/// </summary>
-	public partial class CorrectDevelopmentWindow : Window
+	public partial class CorrectDevelopmentDialog : UserControl
 	{
 		private readonly InputingValidator inputingValidator;
 
-		public CorrectDevelopmentWindow()
+		public CorrectDevelopmentDialog()
 		{
 			InitializeComponent();
 			DataContext = this;
@@ -24,18 +37,18 @@ namespace DocumentMaker.View
 		public string NumberText { get; set; }
 		public bool TakeSumFromSupport { get; set; }
 
-		private void WindowKeyDown(object sender, KeyEventArgs e)
+		private void ControlKeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Escape)
 			{
-				Close();
+				DialogHost.CloseDialogCommand.Execute(null, null);
 			}
 		}
 
 		private void CorrectionClick(object sender, RoutedEventArgs e)
 		{
 			IsCorrection = true;
-			Close();
+			DialogHost.CloseDialogCommand.Execute(null, null);
 		}
 
 		private void UIntValidating(object sender, System.Windows.Input.TextCompositionEventArgs e)

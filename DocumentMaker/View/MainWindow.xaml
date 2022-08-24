@@ -2,10 +2,14 @@
     x:Class="DocumentMaker.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:MaterialDesignThemes.Wpf.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dml="clr-namespace:Dml.Controls;assembly=Dml"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:uc="clr-namespace:DocumentMaker.View.Controls"
+    xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf"
     x:Name="WindowContext"
     Title="DocumentMaker"
     MinWidth="700"
@@ -13,11 +17,43 @@
     AllowDrop="True"
     Closing="WindowClosing"
     DragEnter="WindowDragEnter"
+    FontSize="15"
     Loaded="WindowLoaded"
     PreviewDragOver="WindowDragEnter"
     PreviewDrop="WindowPreviewDrop"
     mc:Ignorable="d">
-    <ScrollViewer>
+
+
+    <materialDesign:DialogHost CloseOnClickAway="True">
+        <materialDesign:DialogHost.DialogContent>
+            <StackPanel>
+                <!--  HERE GOES YOUR CONTENT  -->
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                    <Button
+                        Margin="0,8,8,0"
+                        Command="materialDesign:DialogHost.CloseDialogCommand"
+                        IsDefault="True"
+                        Style="{StaticResource MaterialDesignFlatButton}">
+                        <Button.CommandParameter>
+                            <system:Boolean>True</system:Boolean>
+                        </Button.CommandParameter>
+                        ACCEPT
+                    </Button>
+                    <Button
+                        Margin="0,8,8,0"
+                        Command="materialDesign:DialogHost.CloseDialogCommand"
+                        IsCancel="True"
+                        Style="{StaticResource MaterialDesignFlatButton}">
+                        <Button.CommandParameter>
+                            <system:Boolean>False</system:Boolean>
+                        </Button.CommandParameter>
+                        CANCEL
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </materialDesign:DialogHost.DialogContent>
+        <!--  START OF YOUR CONTEXT  -->
+
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*" />
@@ -30,78 +66,98 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <Grid Grid.ColumnSpan="4">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
                     <ColumnDefinition />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Style="{StaticResource InputWithTextLabel}" Text="Файл:" />
+                <Menu Grid.Column="1">
+                    <MenuItem Click="OpenFileClick" ToolTip="Файл">
+                        <MenuItem.Header>
+                            <materialDesign:PackIcon
+                                Width="{Binding ElementName=WindowContext, Path=IconSize}"
+                                Height="{Binding ElementName=WindowContext, Path=IconSize}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Kind="FileOutline" />
+                        </MenuItem.Header>
+
+                        <MenuItem
+                            Click="CloseFileClick"
+                            Header="Відкрити"
+                            Icon="{materialDesign:PackIcon Kind=FileOutline}" />
+                        <MenuItem
+                            Click="CloseFileClick"
+                            Header="Закрити"
+                            Icon="{materialDesign:PackIcon Kind=CloseBoxOutline}" />
+                        <MenuItem Header="Закрити всі файли" Icon="{materialDesign:PackIcon Kind=CloseBoxMultipleOutline}" />
+                        <Separator />
+                        <MenuItem Header="Зберегти" Icon="{materialDesign:PackIcon Kind=ContentSaveOutline}" />
+                        <MenuItem Header="Зберегти всі файли" Icon="{materialDesign:PackIcon Kind=ContentSaveAllOutline}" />
+                        <Separator />
+                        <MenuItem Header="Експорт" Icon="{materialDesign:PackIcon Kind=FileWordOutline}" />
+                        <MenuItem Header="Експорт всіх актів" Icon="{materialDesign:PackIcon Kind=FileMultipleOutline}" />
+                    </MenuItem>
+                    <MenuItem Click="InfoBtnClick" ToolTip="Інформація">
+                        <MenuItem.Header>
+                            <materialDesign:PackIcon
+                                Width="{Binding ElementName=WindowContext, Path=IconSize}"
+                                Height="{Binding ElementName=WindowContext, Path=IconSize}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Kind="InformationCircleOutline" />
+                        </MenuItem.Header>
+                    </MenuItem>
+                </Menu>
+
                 <ComboBox
                     x:Name="OpenedFilesComboBox"
-                    Grid.Column="1"
+                    materialDesign:HintAssist.Hint="Файл"
                     ItemsSource="{Binding ElementName=WindowContext, Path=OpenedFilesList, UpdateSourceTrigger=PropertyChanged}"
                     SelectionChanged="OpenedFilesSelectionChanged"
-                    Style="{StaticResource ChooseTemplateComboBox}" />
-                <Button
-                    Grid.Column="2"
-                    Click="OpenFileClick"
-                    Content="Відкрити"
-                    Style="{StaticResource BackDataAddButton}" />
-                <Button
-                    Grid.Column="3"
-                    Click="CloseFileClick"
-                    Content="Закрити"
-                    Style="{StaticResource BackDataAddButton}" />
-                <Button
-                    Grid.Column="4"
-                    Click="InfoBtnClick"
-                    Content="Інформація"
-                    Style="{StaticResource BackDataAddButton}" />
+                    Style="{StaticResource MaterialDesignFilledComboBox}" />
 
             </Grid>
 
             <!--  Grid.Row="1"  -->
-            <StackPanel Grid.Row="1" Orientation="Vertical">
-                <TextBlock Style="{StaticResource InputWithTextLabel}" Text="Шаблон:" />
-                <ComboBox
-                    x:Name="DocumentTemplateComboBox"
-                    ItemsSource="{Binding ElementName=WindowContext, Path=DocumentTemplatesList, UpdateSourceTrigger=PropertyChanged}"
-                    SelectionChanged="ChangedDocumentTemplate"
-                    Style="{StaticResource ChooseTemplateComboBox}" />
-            </StackPanel>
-
-            <dml:InputWithText
-                x:Name="TechnicalTaskDateTextInput"
+            <ComboBox
+                x:Name="DocumentTemplateComboBox"
+                Grid.Row="1"
+                Margin="10"
+                materialDesign:HintAssist.Hint="Оберіть тип шаблону"
+                ItemsSource="{Binding ElementName=WindowContext, Path=DocumentTemplatesList, UpdateSourceTrigger=PropertyChanged}"
+                SelectionChanged="ChangedDocumentTemplate"
+                Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+            <DatePicker
+                x:Name="TechnicalTaskDatePicker"
                 Grid.Row="1"
                 Grid.Column="1"
-                InputText="{Binding ElementName=WindowContext, Path=TechnicalTaskDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Style="{StaticResource InputWithTextNumberValidation}"
-                TextInfo="Технічне завдання від:" />
-            <dml:InputWithText
-                x:Name="ActDateTextInput"
+                Margin="0,10"
+                materialDesign:HintAssist.Hint="Технічне завдання від:"
+                Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                Text="{Binding ElementName=WindowContext, Path=TechnicalTaskDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <DatePicker
+                x:Name="ActDatePicker"
                 Grid.Row="1"
                 Grid.Column="2"
-                InputText="{Binding ElementName=WindowContext, Path=ActDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Style="{StaticResource InputWithTextNumberValidation}"
-                TextInfo="Акт від:" />
-            <dml:InputWithText
+                Margin="10"
+                materialDesign:HintAssist.Hint="Акт від:"
+                Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                Text="{Binding ElementName=WindowContext, Path=ActDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox
                 x:Name="AdditionNumTextInput"
                 Grid.Row="1"
                 Grid.Column="3"
-                InputText="{Binding ElementName=WindowContext, Path=AdditionNumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Style="{StaticResource InputWithTextNumberValidation}"
-                TextInfo="Номер додатку:" />
+                Margin="0,10,10,10"
+                VerticalAlignment="Top"
+                materialDesign:HintAssist.Hint="Номер додатку"
+                Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                Text="{Binding ElementName=WindowContext, Path=AdditionNumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                VerticalScrollBarVisibility="Auto" />
             <!--  Grid.Row="1"  -->
 
             <Grid
@@ -124,8 +180,10 @@
                 <TextBox
                     x:Name="ActSumInput"
                     Grid.Column="1"
+                    Margin="5"
+                    Padding="5"
                     PreviewTextInput="UIntValidating"
-                    Style="{StaticResource TextBoxNumberValidation}"
+                    Style="{StaticResource MaterialDesignOutlinedTextBox}"
                     Text="{Binding ElementName=WindowContext, Path=ActSum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     TextChanged="ActSumTextChanged" />
 
@@ -137,91 +195,224 @@
                     x:Name="ActSaldoInput"
                     Grid.Row="1"
                     Grid.Column="1"
-                    Style="{StaticResource TextBoxNumberValidationDisabled}"
+                    Margin="5"
+                    Padding="5"
+                    Style="{StaticResource MaterialDesignOutlinedTextBox}"
                     Text="{Binding ElementName=WindowContext, Path=ActSaldo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Button
                     Grid.Row="1"
                     Grid.Column="2"
+                    Margin="5,0,10,0"
                     Click="CorrectSaldoClick"
                     Content="Коригувати"
-                    Style="{StaticResource BackDataAddButton}" />
+                    Style="{StaticResource MaterialDesignOutlinedDarkButton}" />
 
             </Grid>
 
-            <Grid Grid.Row="3" Grid.ColumnSpan="4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-
-                <TextBlock
-                    Grid.Column="1"
-                    Style="{StaticResource MiddleLabel}"
-                    Text="Розробка" />
-                <StackPanel Grid.Column="2">
-                    <Button
-                        Click="CorrectDevelopClick"
-                        Content="Корегування"
-                        Style="{StaticResource LeftButton}" />
-                </StackPanel>
-            </Grid>
-
-            <StackPanel
-                Grid.Row="4"
+            <ScrollViewer
+                Grid.Row="3"
                 Grid.ColumnSpan="4"
-                Orientation="Vertical">
+                VerticalScrollBarVisibility="Auto">
+                <StackPanel Orientation="Vertical">
 
-                <uc:FullBackDataHeader x:Name="DataHeader" />
-                <StackPanel x:Name="BacksData" Orientation="Vertical" />
-                <uc:FullBackDataFooter x:Name="DataFooter" Data="{Binding ElementName=BacksData}" />
+                    <materialDesign:Card
+                        Margin="5,20,5,5"
+                        Padding="5"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth2">
+                        <StackPanel Orientation="Vertical">
 
-            </StackPanel>
+                            <TextBlock
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Style="{StaticResource MiddleLabel}"
+                                Text="Розробка" />
 
-            <Grid Grid.Row="5" Grid.ColumnSpan="4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+                            <Menu>
+                                <MenuItem Padding="7" ToolTip="Перекинути обрані елементи в підтримку">
+                                    <MenuItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon
+                                                Width="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                Height="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="ArrowExpandDown" />
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                                <MenuItem Padding="7" ToolTip="Видалити обрані елементи">
+                                    <MenuItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon
+                                                Width="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                Height="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="SortVariantRemove" />
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                                <MenuItem
+                                    Padding="7"
+                                    Click="CorrectDevelopClick"
+                                    ToolTip="Корегування сум розробки">
+                                    <MenuItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon
+                                                Width="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                Height="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="PencilOutline" />
+                                            <Label VerticalAlignment="Center" Content="_Корегування" />
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                            </Menu>
 
-                <TextBlock
-                    Grid.Column="1"
-                    Style="{StaticResource MiddleLabel}"
-                    Text="Підтримка" />
-                <StackPanel Grid.Column="2">
-                    <Button
-                        Click="CorrectSupportClick"
-                        Content="Корегування"
-                        Style="{StaticResource LeftButton}" />
+                            <uc:FullBackDataHeader x:Name="DataHeader" />
+                            <StackPanel x:Name="BacksData" Orientation="Vertical" />
+                            <uc:FullBackDataFooter x:Name="DataFooter" Data="{Binding ElementName=BacksData}" />
+
+                        </StackPanel>
+                    </materialDesign:Card>
+
+                    <materialDesign:Card
+                        Margin="5,20,5,5"
+                        Padding="5"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth2">
+                        <StackPanel Orientation="Vertical">
+
+                            <TextBlock
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Style="{StaticResource MiddleLabel}"
+                                Text="Підтримка" />
+
+                            <Menu>
+                                <MenuItem Padding="7" ToolTip="Перекинути обрані елементи в розробку">
+                                    <MenuItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon
+                                                Width="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                Height="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="ArrowExpandUp" />
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                                <MenuItem Padding="7" ToolTip="Видалити обрані елементи">
+                                    <MenuItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon
+                                                Width="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                Height="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="SortVariantRemove" />
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                                <MenuItem Padding="7" ToolTip="Заміксувати типи робіт">
+                                    <MenuItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon
+                                                Width="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                Height="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="DiceMultipleOutline" />
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                                <MenuItem
+                                    Padding="7"
+                                    Click="CorrectSupportClick"
+                                    ToolTip="Корегування сум підтримки">
+                                    <MenuItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon
+                                                Width="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                Height="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="PencilOutline" />
+                                            <Label VerticalAlignment="Center" Content="_Корегування" />
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                            </Menu>
+
+                            <uc:FullBackDataHeader x:Name="ReworkDataHeader" />
+                            <StackPanel x:Name="ReworkBacksData" Orientation="Vertical" />
+                            <uc:FullBackDataFooter x:Name="ReworkDataFooter" Data="{Binding ElementName=ReworkBacksData}" />
+
+                        </StackPanel>
+                    </materialDesign:Card>
+
+                    <materialDesign:Card
+                        Margin="5,20,5,5"
+                        Padding="5"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth2">
+                        <StackPanel Orientation="Vertical">
+
+                            <TextBlock
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Style="{StaticResource MiddleLabel}"
+                                Text="Інше" />
+
+                            <Menu>
+                                <MenuItem Padding="7" ToolTip="Перекинути обрані елементи в розробку">
+                                    <MenuItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon
+                                                Width="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                Height="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="ArrowExpandUp" />
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                                <MenuItem Padding="7" ToolTip="Перекинути обрані елементи в підтримку">
+                                    <MenuItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon
+                                                Width="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                Height="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="ArrowExpandDown" />
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                                <MenuItem Padding="7" ToolTip="Видалити обрані елементи">
+                                    <MenuItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon
+                                                Width="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                Height="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="SortVariantRemove" />
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                            </Menu>
+
+                            <uc:FullBackDataHeader x:Name="OtherDataHeader" />
+                            <StackPanel x:Name="OtherkBacksData" Orientation="Vertical" />
+                            <uc:FullBackDataFooter x:Name="OtherDataFooter" Data="{Binding ElementName=OtherkBacksData}" />
+
+                        </StackPanel>
+                    </materialDesign:Card>
+
                 </StackPanel>
-            </Grid>
-
-            <StackPanel
-                Grid.Row="6"
-                Grid.ColumnSpan="4"
-                Orientation="Vertical">
-
-                <uc:FullBackDataHeader x:Name="ReworkDataHeader" />
-                <StackPanel x:Name="ReworkBacksData" Orientation="Vertical" />
-                <uc:FullBackDataFooter x:Name="ReworkDataFooter" Data="{Binding ElementName=ReworkBacksData}" />
-
-            </StackPanel>
-
-            <Grid Grid.Row="7" Grid.ColumnSpan="4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="2" Orientation="Vertical">
-                    <Button
-                        Click="ExportBtnClick"
-                        Content="Экспорт"
-                        Style="{StaticResource ExportBtn}" />
-                </StackPanel>
-            </Grid>
+            </ScrollViewer>
         </Grid>
-    </ScrollViewer>
+
+        <!--  END OF YOUR CONTEXT  -->
+    </materialDesign:DialogHost>
 </Window>
