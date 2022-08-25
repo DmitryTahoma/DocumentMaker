@@ -21,7 +21,10 @@
                 <ColumnDefinition Width="5*" />
             </Grid.ColumnDefinitions>
 
-            <CheckBox>
+            <CheckBox
+                Checked="NumberCheckedChanged"
+                IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Unchecked="NumberCheckedChanged">
                 <TextBlock Style="{StaticResource BackDataTitle}" Text="№" />
             </CheckBox>
 

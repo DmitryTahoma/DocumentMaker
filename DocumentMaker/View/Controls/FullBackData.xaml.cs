@@ -20,6 +20,7 @@ namespace DocumentMaker.View.Controls
 	/// </summary>
 	public partial class FullBackData : UserControl, INotifyPropertyChanged
 	{
+		public static readonly DependencyProperty IsCheckedProperty;
 		public static readonly DependencyProperty IsRegionsProperty;
 		public static readonly DependencyProperty HasBackNumberProperty;
 		public static readonly DependencyProperty BackDataIdProperty;
@@ -38,6 +39,7 @@ namespace DocumentMaker.View.Controls
 
 		static FullBackData()
 		{
+			IsCheckedProperty = DependencyProperty.Register("IsChecked", typeof(bool?), typeof(FullBackData));
 			IsRegionsProperty = DependencyProperty.Register("IsRegions", typeof(bool), typeof(FullBackData));
 			HasBackNumberProperty = DependencyProperty.Register("HasBackNumber", typeof(bool), typeof(FullBackData));
 			BackDataIdProperty = DependencyProperty.Register("BackDataId", typeof(uint), typeof(FullBackDataController));
@@ -57,8 +59,10 @@ namespace DocumentMaker.View.Controls
 
 		private FullBackDataController controller;
 		private readonly InputingValidator inputingValidator;
+		private bool isCheckedChangedWithoutCallback;
 
 		private event Action onChangedSum;
+		private event Action onSelectionChanged;
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -68,10 +72,18 @@ namespace DocumentMaker.View.Controls
 
 			InitializeComponent();
 			DataContext = this;
+			IsChecked = false;
 
 			inputingValidator = new InputingValidator();
+			isCheckedChangedWithoutCallback = false;
 			SumTextInput.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
 			EpisodeNumberComboBox.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
+		}
+
+		public bool? IsChecked
+		{
+			get => (bool?)GetValue(IsCheckedProperty);
+			set => SetValue(IsCheckedProperty, value);
 		}
 
 		public uint BackDataId
@@ -425,6 +437,26 @@ namespace DocumentMaker.View.Controls
 		public void NotifyPropertyChanged(string name)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+		}
+
+		public void SubscribeSelectionChanged(Action action)
+		{
+			onSelectionChanged += action;
+		}
+
+		public void SetIsCheckedWithoutCallback(bool? value)
+		{
+			isCheckedChangedWithoutCallback = true;
+			IsChecked = value;
+			isCheckedChangedWithoutCallback = false;
+		}
+
+		private void NumberCheckedChanged(object sender, RoutedEventArgs e)
+		{
+			if (isCheckedChangedWithoutCallback)
+				isCheckedChangedWithoutCallback = false;
+			else if (sender is CheckBox checkBox)
+				onSelectionChanged?.Invoke();
 		}
 	}
 }

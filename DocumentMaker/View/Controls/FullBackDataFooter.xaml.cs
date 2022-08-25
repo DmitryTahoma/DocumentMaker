@@ -64,14 +64,16 @@ namespace DocumentMaker.View.Controls
 			onChangedSum += action;
 		}
 
-		public void AddLoadedBackData(FullBackDataController controller)
+		public FullBackData AddLoadedBackData(FullBackDataController controller)
 		{
 			if (Data != null)
 			{
 				FullBackData backData = new FullBackData() { Controller = controller };
 				AddBackData(backData);
 				backData.SetDataFromController();
+				return backData;
 			}
+			return null;
 		}
 
 		private void AddBtnClick(object sender, RoutedEventArgs e)

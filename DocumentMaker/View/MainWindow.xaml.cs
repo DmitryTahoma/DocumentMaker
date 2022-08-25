@@ -57,13 +57,28 @@ namespace DocumentMaker
 			ActDatePicker.Language = XmlLanguage.GetLanguage(System.Globalization.CultureInfo.CurrentCulture.IetfLanguageTag);
 			DataHeader.HideWorkTypeLabel();
 
+			DataHeader.SubscribeSelectionChanged((b) =>
+			{
+				if (b.HasValue)
+				{
+					foreach (UIElement elem in BacksData.Children)
+					{
+						if(elem is FullBackData backData)
+						{
+							backData.SetIsCheckedWithoutCallback(b.Value);
+						}
+					}
+				}
+			});
 			DataFooter.SubscribeAddition((x) =>
 			{
 				x.Controller.IsRework = false;
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
 				x.SetGameNameList(controller.GameNameList);
+				x.SubscribeSelectionChanged(DataHeader.UpdateIsCheckedState);
 				UpdateActSum();
+				DataHeader.UpdateIsCheckedState();
 
 				DmxFile selectedFile = controller.GetSelectedFile();
 				if (selectedFile != null)
@@ -73,6 +88,19 @@ namespace DocumentMaker
 			});
 			DataFooter.SubscribeChangingSum(UpdateSaldo);
 
+			ReworkDataHeader.SubscribeSelectionChanged((b) =>
+			{
+				if (b.HasValue)
+				{
+					foreach (UIElement elem in ReworkBacksData.Children)
+					{
+						if (elem is FullBackData backData)
+						{
+							backData.SetIsCheckedWithoutCallback(b.Value);
+						}
+					}
+				}
+			});
 			ReworkDataFooter.SubscribeAddition((x) =>
 			{
 				x.Controller.IsRework = true;
@@ -80,7 +108,9 @@ namespace DocumentMaker
 				x.SetViewByTemplate(controller.TemplateType);
 				x.SetWorkTypesList(controller.CurrentWorkTypesList);
 				x.SetGameNameList(controller.GameNameList);
+				x.SubscribeSelectionChanged(ReworkDataHeader.UpdateIsCheckedState);
 				UpdateActSum();
+				ReworkDataHeader.UpdateIsCheckedState();
 
 				DmxFile selectedFile = controller.GetSelectedFile();
 				if (selectedFile != null)
@@ -538,11 +568,19 @@ namespace DocumentMaker
 			{
 				if (backDataController.IsRework)
 				{
-					ReworkDataFooter.AddLoadedBackData(backDataController);
+					FullBackData backData = ReworkDataFooter.AddLoadedBackData(backDataController);
+					if(backData != null)
+					{
+						backData.SubscribeSelectionChanged(ReworkDataHeader.UpdateIsCheckedState);
+					}
 				}
 				else
 				{
-					DataFooter.AddLoadedBackData(backDataController);
+					FullBackData backData = DataFooter.AddLoadedBackData(backDataController);
+					if (backData != null)
+					{
+						backData.SubscribeSelectionChanged(DataHeader.UpdateIsCheckedState);
+					}
 				}
 			}
 			DataFooter.UpdateBackDataIds();

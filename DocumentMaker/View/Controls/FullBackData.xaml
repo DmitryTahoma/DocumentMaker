@@ -28,7 +28,10 @@
                 <ColumnDefinition Width="5*" />
             </Grid.ColumnDefinitions>
 
-            <CheckBox>
+            <CheckBox
+                Checked="NumberCheckedChanged"
+                IsChecked="{Binding ElementName=FullBackDataContext, Path=IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Unchecked="NumberCheckedChanged">
                 <TextBlock
                     x:Name="BackDataIdLabel"
                     Style="{StaticResource BackDataTextBlock}"

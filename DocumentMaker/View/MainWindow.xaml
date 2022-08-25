@@ -270,7 +270,7 @@
                                 </MenuItem>
                             </Menu>
 
-                            <uc:FullBackDataHeader x:Name="DataHeader" />
+                            <uc:FullBackDataHeader x:Name="DataHeader" Data="{Binding ElementName=BacksData}" />
                             <StackPanel x:Name="BacksData" Orientation="Vertical" />
                             <uc:FullBackDataFooter x:Name="DataFooter" Data="{Binding ElementName=BacksData}" />
 
@@ -344,7 +344,7 @@
                                 </MenuItem>
                             </Menu>
 
-                            <uc:FullBackDataHeader x:Name="ReworkDataHeader" />
+                            <uc:FullBackDataHeader x:Name="ReworkDataHeader" Data="{Binding ElementName=ReworkBacksData}"/>
                             <StackPanel x:Name="ReworkBacksData" Orientation="Vertical" />
                             <uc:FullBackDataFooter x:Name="ReworkDataFooter" Data="{Binding ElementName=ReworkBacksData}" />
 
@@ -402,7 +402,7 @@
                                 </MenuItem>
                             </Menu>
 
-                            <uc:FullBackDataHeader x:Name="OtherDataHeader" />
+                            <uc:FullBackDataHeader x:Name="OtherDataHeader" Data="{Binding ElementName=OtherkBacksData}" />
                             <StackPanel x:Name="OtherkBacksData" Orientation="Vertical" />
                             <uc:FullBackDataFooter x:Name="OtherDataFooter" Data="{Binding ElementName=OtherkBacksData}" />
 
