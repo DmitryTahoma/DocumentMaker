@@ -245,6 +245,7 @@ namespace DocumentMaker.View.Controls
 					break;
 				}
 			}
+			EpisodeNumberComboBox.Text = controller.EpisodeNumberText;
 			BackNumberTextInput.Text = controller.BackNumberText;
 			BackNameInput.Text = controller.BackName;
 			CountRegionsTextInput.Text = controller.BackCountRegionsText;
