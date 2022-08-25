@@ -1,8 +1,10 @@
 ﻿using ActCreator.Controller.Controls;
+using Dml.Controller.Validation;
 using Dml.Model.Back;
 using Dml.Model.Template;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,11 +17,12 @@ namespace ActCreator.View.Controls
 	/// <summary>
 	/// Interaction logic for ShortBackData.xaml
 	/// </summary>
-	public partial class ShortBackData : UserControl
+	public partial class ShortBackData : UserControl, INotifyPropertyChanged
 	{
 		public static readonly DependencyProperty IsRegionsProperty;
 		public static readonly DependencyProperty HasBackNumberProperty;
 		public static readonly DependencyProperty BackDataIdProperty;
+		public static readonly DependencyProperty EpisodeNumberTextProperty;
 		public static readonly DependencyProperty BackNumberTextProperty;
 		public static readonly DependencyProperty BackNameProperty;
 		public static readonly DependencyProperty CountRegionsTextProperty;
@@ -36,6 +39,7 @@ namespace ActCreator.View.Controls
 			IsRegionsProperty = DependencyProperty.Register("IsRegions", typeof(bool), typeof(ShortBackData));
 			HasBackNumberProperty = DependencyProperty.Register("HasBackNumber", typeof(bool), typeof(ShortBackData));
 			BackDataIdProperty = DependencyProperty.Register("BackDataId", typeof(uint), typeof(ShortBackDataController));
+			EpisodeNumberTextProperty = DependencyProperty.Register("EpisodeNumberText", typeof(string), typeof(ShortBackDataController));
 			BackNumberTextProperty = DependencyProperty.Register("BackNumberText", typeof(string), typeof(ShortBackDataController));
 			BackNameProperty = DependencyProperty.Register("BackName", typeof(string), typeof(ShortBackDataController));
 			CountRegionsTextProperty = DependencyProperty.Register("CountRegionsText", typeof(string), typeof(ShortBackDataController));
@@ -49,9 +53,12 @@ namespace ActCreator.View.Controls
 		}
 
 		private ShortBackDataController controller;
+		private readonly InputingValidator inputingValidator;
 
 		private event Action onDeletion;
 		private event Action onChangedTime;
+
+		public event PropertyChangedEventHandler PropertyChanged;
 
 		public ShortBackData()
 		{
@@ -59,6 +66,10 @@ namespace ActCreator.View.Controls
 
 			InitializeComponent();
 			DataContext = this;
+
+			inputingValidator = new InputingValidator();
+			EpisodeNumberComboBox.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
+			TimeTextInput.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
 		}
 
 		public uint BackDataId
@@ -72,6 +83,18 @@ namespace ActCreator.View.Controls
 		}
 
 		public IList<BackDataType> BackDataTypesList => controller.BackDataTypesList;
+
+		public IList<string> EpisodeNumberList => controller.GameNameList.FirstOrDefault(x => x.Name == GameName)?.Episodes;
+
+		public string EpisodeNumberText
+		{
+			get => (string)GetValue(EpisodeNumberTextProperty);
+			set
+			{
+				SetValue(EpisodeNumberTextProperty, value);
+				controller.EpisodeNumberText = value;
+			}
+		}
 
 		public string BackNumberText
 		{
@@ -112,6 +135,7 @@ namespace ActCreator.View.Controls
 			{
 				SetValue(GameNameProperty, value);
 				controller.GameName = value;
+				NotifyPropertyChanged(nameof(EpisodeNumberList));
 			}
 		}
 
@@ -292,6 +316,11 @@ namespace ActCreator.View.Controls
 			}
 		}
 
+		private void UIntValidating(object sender, TextCompositionEventArgs e)
+		{
+			inputingValidator.UIntInputing_PreviewTextInput(sender, e);
+		}
+
 		public void UpdateInputStates()
 		{
 			IsRegions = controller.Type == BackType.Regions || controller.Type == BackType.HogRegions;
@@ -332,6 +361,18 @@ namespace ActCreator.View.Controls
 			}
 		}
 
+		public void SetGameNameList(IList<GameObject> gameObjects)
+		{
+			controller.GameNameList.Clear();
+			if(gameObjects != null)
+			{
+				controller.GameNameList.AddRange(gameObjects);
+			}
+			NotifyPropertyChanged(nameof(GameNameList));
+			GameNameComboBox.SelectedItem = GameNameList.FirstOrDefault(x => x.Name == controller.GameName);
+			NotifyPropertyChanged(nameof(EpisodeNumberList));
+		}
+
 		public void SetBackType(BackType type)
 		{
 			controller.Type = type;
@@ -342,6 +383,11 @@ namespace ActCreator.View.Controls
 		public BackType GetBackType()
 		{
 			return controller.Type;
+		}
+
+		public void NotifyPropertyChanged(string name)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 		}
 	}
 }

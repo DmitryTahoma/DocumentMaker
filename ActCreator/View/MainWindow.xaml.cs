@@ -38,6 +38,7 @@ namespace ActCreator
 			{
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
+				x.SetGameNameList(controller.GameNameList);
 			});
 			DataFooter.SubscribeRemoving((x) =>
 			{
@@ -159,6 +160,7 @@ namespace ActCreator
 				if (control is ShortBackData backData)
 				{
 					backData.SetViewByTemplate(controller.TemplateType);
+					backData.SetGameNameList(controller.GameNameList);
 				}
 			}
 			DataFooter.SetViewByTemplate(controller.TemplateType);

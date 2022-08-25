@@ -20,6 +20,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.5*" MaxWidth="30" />
                 <ColumnDefinition MaxWidth="120" />
+                <ColumnDefinition Width="65" />
                 <ColumnDefinition MaxWidth="90" />
                 <ColumnDefinition Width="1.5*" />
                 <ColumnDefinition MaxWidth="90" />
@@ -38,21 +39,25 @@
             <TextBlock
                 Grid.Column="2"
                 Style="{StaticResource BackDataTitle}"
-                Text="Номер беку" />
+                Text="Епізод" />
             <TextBlock
                 Grid.Column="3"
                 Style="{StaticResource BackDataTitle}"
-                Text="Ім'я беку" />
+                Text="Номер беку" />
             <TextBlock
                 Grid.Column="4"
                 Style="{StaticResource BackDataTitle}"
-                Text="Кіл. рег." />
+                Text="Ім'я беку" />
             <TextBlock
                 Grid.Column="5"
                 Style="{StaticResource BackDataTitle}"
-                Text="Назва гри" />
+                Text="Кіл. рег." />
             <TextBlock
                 Grid.Column="6"
+                Style="{StaticResource BackDataTitle}"
+                Text="Назва гри" />
+            <TextBlock
+                Grid.Column="7"
                 Style="{StaticResource BackDataTitle}"
                 Text="Дообробка" />
         </Grid>

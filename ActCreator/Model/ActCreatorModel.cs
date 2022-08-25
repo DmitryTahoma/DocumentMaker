@@ -1,4 +1,5 @@
 ﻿using Dml;
+using Dml.Model.Back;
 using Dml.Model.Files;
 using Dml.Model.Session;
 using Dml.Model.Session.Attributes;
@@ -14,6 +15,7 @@ namespace ActCreator.Model
 	{
 		private readonly ObservableCollection<DocumentTemplate> documentTemplates;
 		private readonly ObservableRangeCollection<string> humanFullNameList;
+		private readonly List<GameObject> gameNameList;
 
 		public ActCreatorModel()
 		{
@@ -25,6 +27,7 @@ namespace ActCreator.Model
 				new DocumentTemplate { Name = "Моделлер", Type = DocumentTemplateType.Modeller, },
 			};
 			humanFullNameList = new ObservableRangeCollection<string>();
+			gameNameList = new List<GameObject>();
 		}
 
 		#region Window settings
@@ -46,6 +49,7 @@ namespace ActCreator.Model
 		public string SelectedHuman { get; set; }
 		public IList<DocumentTemplate> DocumentTemplatesList => documentTemplates;
 		public IList<string> HumanFullNameList => humanFullNameList;
+		public IList<GameObject> GameNameList => gameNameList;
 
 		public void Save(string path, IEnumerable<ShortBackDataModel> backModels)
 		{
@@ -80,6 +84,15 @@ namespace ActCreator.Model
 			if (loader.TryLoad(path))
 			{
 				loader.SetLoadedHumans(humanFullNameList);
+			}
+		}
+
+		public void LoadGameNames(string path)
+		{
+			XmlLoader loader = new XmlLoader();
+			if(loader.TryLoad(path))
+			{
+				loader.SetLoadedGameNames(gameNameList);
 			}
 		}
 

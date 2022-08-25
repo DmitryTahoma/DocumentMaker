@@ -1,6 +1,7 @@
 ﻿using ActCreator.Controller.Controls;
 using ActCreator.Model;
 using Dml.Controller.Validation;
+using Dml.Model.Back;
 using Dml.Model.Template;
 using System.Collections.Generic;
 using System.IO;
@@ -13,6 +14,7 @@ namespace ActCreator.Controller
 	{
 		private const string saveFile = "session.xml";
 		private const string humansFile = "employees.xml";
+		private const string gameNamesFile = "projectnames.xml";
 
 		private readonly ActCreatorModel model;
 		private readonly StringValidator validator;
@@ -39,6 +41,7 @@ namespace ActCreator.Controller
 		public List<ShortBackDataController> BackDataControllers { get; set; }
 		public IList<DocumentTemplate> DocumentTemplatesList => model.DocumentTemplatesList;
 		public IList<string> HumanFullNameList => model.HumanFullNameList;
+		public IList<GameObject> GameNameList => model.GameNameList;
 
 		public void Save()
 		{
@@ -58,6 +61,7 @@ namespace ActCreator.Controller
 			string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			string saveFullpath = Path.Combine(path, saveFile);
 			string humansFullpath = Path.Combine(path, humansFile);
+			string gameNamesFullpath = Path.Combine(path, gameNamesFile);
 
 			model.Load(saveFullpath, out List<ShortBackDataModel> backModels);
 			model.LoadHumans(humansFullpath);
@@ -65,6 +69,7 @@ namespace ActCreator.Controller
 			{
 				BackDataControllers.Add(new ShortBackDataController(model));
 			}
+			model.LoadGameNames(gameNamesFullpath);
 		}
 
 		public bool DmxExists(string path) => model.DmxExists(path);

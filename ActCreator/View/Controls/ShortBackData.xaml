@@ -47,6 +47,7 @@
                 Grid.Column="2"
                 IsEnabled="{Binding ElementName=ShortBackDataContext, Path=IsNotOtherType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="65" />
                     <ColumnDefinition MaxWidth="90" />
                     <ColumnDefinition Width="1.5*" />
                     <ColumnDefinition MaxWidth="90" />
@@ -55,20 +56,28 @@
                     <ColumnDefinition x:Name="IsSketchColumn" MaxWidth="90" />
                 </Grid.ColumnDefinitions>
 
+                <ComboBox
+                    x:Name="EpisodeNumberComboBox"
+                    IsEditable="True"
+                    IsTextSearchEnabled="True"
+                    ItemsSource="{Binding ElementName=ShortBackDataContext, Path=EpisodeNumberList, UpdateSourceTrigger=PropertyChanged}"
+                    PreviewTextInput="UIntValidating"
+                    Style="{StaticResource ChooseTemplateComboBox}"
+                    Text="{Binding ElementName=ShortBackDataContext, Path=EpisodeNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="BackNumberTextInput"
-                    Grid.Column="0"
+                    Grid.Column="1"
                     IsEnabled="{Binding ElementName=ShortBackDataContext, Path=HasBackNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource TextBoxFreeValidation}"
                     Text="{Binding ElementName=ShortBackDataContext, Path=BackNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="BackNameInput"
-                    Grid.Column="1"
+                    Grid.Column="2"
                     Style="{StaticResource TextBoxFreeValidation}"
                     Text="{Binding ElementName=ShortBackDataContext, Path=BackName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="CountRegionsTextInput"
-                    Grid.Column="2"
+                    Grid.Column="3"
                     IsEnabled="{Binding ElementName=ShortBackDataContext, Path=IsRegions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     PreviewTextInput="RegionsValidatingPreviewTextInput"
                     Style="{StaticResource TextBoxNumberValidation}"
@@ -76,7 +85,7 @@
 
                 <ComboBox
                     x:Name="GameNameComboBox"
-                    Grid.Column="3"
+                    Grid.Column="4"
                     IsEditable="True"
                     IsTextSearchEnabled="True"
                     ItemsSource="{Binding ElementName=ShortBackDataContext, Path=GameNameList, UpdateSourceTrigger=PropertyChanged}"
@@ -85,13 +94,13 @@
 
                 <CheckBox
                     x:Name="IsReworkCheckBox"
-                    Grid.Column="4"
+                    Grid.Column="5"
                     IsChecked="{Binding ElementName=ShortBackDataContext, Path=IsRework, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource BackDataCheckBox}" />
 
                 <CheckBox
                     x:Name="IsSketchCheckBox"
-                    Grid.Column="5"
+                    Grid.Column="6"
                     IsChecked="{Binding ElementName=ShortBackDataContext, Path=IsSketch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource BackDataCheckBox}" />
             </Grid>
@@ -107,6 +116,7 @@
         <TextBox
             x:Name="TimeTextInput"
             Grid.Column="1"
+            PreviewTextInput="UIntValidating"
             Style="{StaticResource TextBoxNumberValidation}"
             Text="{Binding ElementName=ShortBackDataContext, Path=TimeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             TextChanged="TextChangedTextBoxTime" />

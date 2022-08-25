@@ -71,6 +71,7 @@ namespace DocumentMaker.View.Controls
 
 			inputingValidator = new InputingValidator();
 			SumTextInput.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
+			EpisodeNumberComboBox.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
 		}
 
 		public uint BackDataId
