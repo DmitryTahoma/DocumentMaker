@@ -75,29 +75,6 @@ namespace DocumentMaker
 					selectedFile.AddBackModel(x.Controller.GetModel());
 				}
 			});
-			DataFooter.SubscribeRemoving((x) =>
-			{
-				controller.BackDataControllers.Remove(x.Controller);
-
-				DmxFile selectedFile = controller.GetSelectedFile();
-				if(selectedFile != null)
-				{
-					selectedFile.RemoveBackModel(x.Controller.GetModel());
-				}
-			});
-			DataFooter.SubscribeClearing((b) =>
-			{
-				controller.BackDataControllers.RemoveAll(x => !x.IsRework);
-
-				if (b)
-				{
-					DmxFile selectedFile = controller.GetSelectedFile();
-					if (selectedFile != null)
-					{
-						selectedFile.RemoveAllBackModel(x => !x.IsRework);
-					}
-				}
-			});
 			DataFooter.SubscribeChangingSum(UpdateSaldo);
 
 			ReworkDataFooter.SubscribeAddition((x) =>
@@ -114,29 +91,6 @@ namespace DocumentMaker
 					selectedFile.AddBackModel(x.Controller.GetModel());
 				}
 				x.UpdateInputStates();
-			});
-			ReworkDataFooter.SubscribeRemoving((x) =>
-			{
-				controller.BackDataControllers.Remove(x.Controller);
-
-				DmxFile selectedFile = controller.GetSelectedFile();
-				if (selectedFile != null)
-				{
-					selectedFile.RemoveBackModel(x.Controller.GetModel());
-				}
-			});
-			ReworkDataFooter.SubscribeClearing((b) =>
-			{
-				controller.BackDataControllers.RemoveAll(x => x.IsRework);
-
-				if (b)
-				{
-					DmxFile selectedFile = controller.GetSelectedFile();
-					if (selectedFile != null)
-					{
-						selectedFile.RemoveAllBackModel(x => x.IsRework);
-					}
-				}
 			});
 			ReworkDataFooter.SubscribeChangingSum(UpdateSaldo);
 
@@ -350,24 +304,6 @@ namespace DocumentMaker
 			if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
 			{
 				await DialogHost.Show(new HumanInformationDialog(controller.GetSelectedHuman()));
-
-				//WindowInformation window = new WindowInformation(controller.GetSelectedHuman())
-				//{
-				//	Top = controller.WindowInformation_WindowTop,
-				//	Left = controller.WindowInformation_WindowLeft,
-				//	Height = controller.WindowInformation_WindowHeight,
-				//	Width = controller.WindowInformation_WindowWidth,
-				//	WindowState = controller.WindowInformation_WindowState,
-				//};
-				//WindowValidator.MoveToValidPosition(window);
-				//window.ShowDialog();
-				
-				//controller.WindowInformation_WindowTop = window.Top;
-				//controller.WindowInformation_WindowLeft = window.Left;
-				//controller.WindowInformation_WindowHeight = window.Height;
-				//controller.WindowInformation_WindowWidth = window.Width;
-				//controller.WindowInformation_WindowState = window.WindowState;
-
 			}
 			else
 				MessageBox.Show("Спочатку необхідно відкрити файл.",
@@ -405,16 +341,6 @@ namespace DocumentMaker
 				};
 				await DialogHost.Show(dialog);
 
-				//CorrectDevelopmentWindow window = new CorrectDevelopmentWindow
-				//{
-				//	Top = controller.CorrectDevelopmentWindow_WindowTop,
-				//	Left = controller.CorrectDevelopmentWindow_WindowLeft,
-				//};
-				//WindowValidator.MoveToValidPosition(window);
-				//window.ShowDialog();
-
-				//controller.CorrectDevelopmentWindow_WindowTop = window.Top;
-				//controller.CorrectDevelopmentWindow_WindowLeft = window.Left;
 				controller.CorrectDevelopmentWindow_NumberText = dialog.NumberText;
 				controller.CorrectDevelopmentWindow_TakeSumFromSupport = dialog.TakeSumFromSupport;
 
@@ -446,21 +372,6 @@ namespace DocumentMaker
 
 				controller.CorrectSupportWindow_NumberText = dialog.NumberText;
 				controller.CorrectSupportWindow_TakeSumFromDevelopment = dialog.TakeSumFromDevelopment;
-
-				//CorrectSupportWindow window = new CorrectSupportWindow
-				//{
-				//	Top = controller.CorrectSupportWindow_WindowTop,
-				//	Left = controller.CorrectSupportWindow_WindowLeft,
-				//	NumberText = controller.CorrectSupportWindow_NumberText,
-				//	TakeSumFromDevelopment = controller.CorrectSupportWindow_TakeSumFromDevelopment,
-				//};
-				//WindowValidator.MoveToValidPosition(window);
-				//window.ShowDialog();
-
-				//controller.CorrectSupportWindow_WindowTop = window.Top;
-				//controller.CorrectSupportWindow_WindowLeft = window.Left;
-				//controller.CorrectSupportWindow_NumberText = window.NumberText;
-				//controller.CorrectSupportWindow_TakeSumFromDevelopment = window.TakeSumFromDevelopment;
 
 				if (dialog.IsCorrection && int.TryParse(dialog.NumberText, out int sum))
 				{
@@ -603,8 +514,6 @@ namespace DocumentMaker
 		{
 			if(sender is System.Windows.Controls.ComboBox comboBox && comboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
 			{
-				DataFooter.ClearBackData();
-				ReworkDataFooter.ClearBackData();
 				controller.SetDataFromFile(selectedFile);
 				SetDataFromController();
 				AddLoadedBackData();

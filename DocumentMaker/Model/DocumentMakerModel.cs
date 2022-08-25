@@ -54,29 +54,10 @@ namespace DocumentMaker.Model
 		public WindowState WindowState { get; set; } = WindowState.Maximized;
 
 		[IsNotDmxContent]
-		public double WindowInformation_WindowTop { get; set; } = 0;
-		[IsNotDmxContent]
-		public double WindowInformation_WindowLeft { get; set; } = 0;
-		[IsNotDmxContent]
-		public double WindowInformation_WindowHeight { get; set; } = 800;
-		[IsNotDmxContent]
-		public double WindowInformation_WindowWidth { get; set; } = 520;
-		[IsNotDmxContent]
-		public WindowState WindowInformation_WindowState { get; set; } = WindowState.Normal;
-
-		[IsNotDmxContent]
-		public double CorrectDevelopmentWindow_WindowTop { get; set; } = 0;
-		[IsNotDmxContent]
-		public double CorrectDevelopmentWindow_WindowLeft { get; set; } = 0;
-		[IsNotDmxContent]
 		public string CorrectDevelopmentWindow_NumberText { get; set; } = "2500";
 		[IsNotDmxContent]
 		public bool CorrectDevelopmentWindow_TakeSumFromSupport { get; set; } = false;
 
-		[IsNotDmxContent]
-		public double CorrectSupportWindow_WindowTop { get; set; } = 0;
-		[IsNotDmxContent]
-		public double CorrectSupportWindow_WindowLeft { get; set; } = 0;
 		[IsNotDmxContent]
 		public string CorrectSupportWindow_NumberText { get; set; } = "2100";
 		[IsNotDmxContent]

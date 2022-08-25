@@ -56,7 +56,6 @@ namespace DocumentMaker.View.Controls
 		private FullBackDataController controller;
 		private readonly InputingValidator inputingValidator;
 
-		private event Action onDeletion;
 		private event Action onChangedSum;
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -214,11 +213,6 @@ namespace DocumentMaker.View.Controls
 			}
 		}
 
-		public void SubscribeDeletion(Action action)
-		{
-			onDeletion += action;
-		}
-
 		public void SubscribeChangedSum(Action action)
 		{
 			onChangedSum += action;
@@ -260,19 +254,6 @@ namespace DocumentMaker.View.Controls
 			if(controller != null && sender is ComboBox comboBox && comboBox.SelectedItem is WorkObject workObject)
 			{
 				controller.WorkObjectId = workObject.Id;
-			}
-		}
-
-		private void DeleteBtnClick(object sender, RoutedEventArgs e)
-		{
-			if (MessageBox.Show("Ви впевнені, що хочете видалити пункт №" + BackDataId.ToString(),
-				"Підтвердіть видалення",
-				MessageBoxButton.YesNo,
-				MessageBoxImage.Question,
-				MessageBoxResult.No)
-					== MessageBoxResult.Yes)
-			{
-				onDeletion?.Invoke();
 			}
 		}
 
@@ -410,25 +391,6 @@ namespace DocumentMaker.View.Controls
 
 		public void UpdateWeight()
 		{
-			//if(controller.ActSum != 0 && double.TryParse(SumText, out double sum))
-			//{
-			//	double weight = sum / controller.ActSum;
-			//	WeightText = weight.ToString();
-			//	if (weight < 0.001 && weight > 0)
-			//	{
-			//		WeightText = "0.000..";
-			//	}
-			//	else if (WeightText.Length > 5)
-			//	{
-			//		WeightText = WeightText.Substring(0, 5) + "..";
-			//	}
-			//}
-			//else
-			//{
-			//	WeightText = "0";
-			//}
-
-			//WeightTextLabel.Text = WeightText;
 		}
 
 		public void NotifyPropertyChanged(string name)

@@ -46,19 +46,9 @@ namespace DocumentMaker.Controller
 		public double WindowWidth { get => model.WindowWidth; set => model.WindowWidth = value; }
 		public WindowState WindowState { get => model.WindowState; set => model.WindowState = value; }
 
-		public double WindowInformation_WindowTop { get => model.WindowInformation_WindowTop; set => model.WindowInformation_WindowTop  = value; }
-		public double WindowInformation_WindowLeft { get => model.WindowInformation_WindowLeft; set => model.WindowInformation_WindowLeft  = value; }
-		public double WindowInformation_WindowHeight { get => model.WindowInformation_WindowHeight; set => model.WindowInformation_WindowHeight  = value; }
-		public double WindowInformation_WindowWidth { get => model.WindowInformation_WindowWidth; set => model.WindowInformation_WindowWidth  = value; }
-		public WindowState WindowInformation_WindowState { get => model.WindowInformation_WindowState; set => model.WindowInformation_WindowState = value; }
-
-		public double CorrectDevelopmentWindow_WindowTop { get => model.CorrectDevelopmentWindow_WindowTop; set => model.CorrectDevelopmentWindow_WindowTop = value; }
-		public double CorrectDevelopmentWindow_WindowLeft { get => model.CorrectDevelopmentWindow_WindowLeft; set => model.CorrectDevelopmentWindow_WindowLeft  = value; }
 		public string CorrectDevelopmentWindow_NumberText { get => model.CorrectDevelopmentWindow_NumberText; set => model.CorrectDevelopmentWindow_NumberText  = value; }
 		public bool CorrectDevelopmentWindow_TakeSumFromSupport { get => model.CorrectDevelopmentWindow_TakeSumFromSupport; set => model.CorrectDevelopmentWindow_TakeSumFromSupport  = value; }
 
-		public double CorrectSupportWindow_WindowTop { get => model.CorrectSupportWindow_WindowTop; set => model.CorrectSupportWindow_WindowTop = value; }
-		public double CorrectSupportWindow_WindowLeft { get => model.CorrectSupportWindow_WindowLeft; set => model.CorrectSupportWindow_WindowLeft = value; }
 		public string CorrectSupportWindow_NumberText { get => model.CorrectSupportWindow_NumberText; set => model.CorrectSupportWindow_NumberText = value; }
 		public bool CorrectSupportWindow_TakeSumFromDevelopment { get => model.CorrectSupportWindow_TakeSumFromDevelopment; set => model.CorrectSupportWindow_TakeSumFromDevelopment = value; }
 

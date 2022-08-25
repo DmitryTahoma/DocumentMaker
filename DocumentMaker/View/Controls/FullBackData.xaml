@@ -134,16 +134,5 @@
             Style="{StaticResource MaterialDesignOutlinedTextBox}"
             Text="{Binding ElementName=FullBackDataContext, Path=SumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             TextChanged="SumTextInputTextChanged" />
-
-        <!--<Button
-            Grid.Column="3"
-            Click="DeleteBtnClick"
-            Style="{StaticResource BtnRoundedCross}" />
-
-        <TextBox
-            Grid.Row="1"
-            Grid.ColumnSpan="4"
-            Style="{StaticResource BackDataSplitter}" />-->
-
     </Grid>
 </UserControl>

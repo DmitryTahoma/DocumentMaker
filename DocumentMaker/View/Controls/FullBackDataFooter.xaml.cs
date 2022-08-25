@@ -27,8 +27,6 @@ namespace DocumentMaker.View.Controls
 		private FullBackDataFooterController controller;
 
 		private event ActionWithFullBackData onAdded;
-		private event ActionWithFullBackData onRemoved;
-		private event ActionWithBool onCleared;
 		private event Action onChangedSum;
 
 		public FullBackDataFooter()
@@ -59,16 +57,6 @@ namespace DocumentMaker.View.Controls
 		public void SubscribeAddition(ActionWithFullBackData action)
 		{
 			onAdded += action;
-		}
-
-		public void SubscribeRemoving(ActionWithFullBackData action)
-		{
-			onRemoved += action;
-		}
-
-		public void SubscribeClearing(ActionWithBool action)
-		{
-			onCleared += action;
 		}
 
 		public void SubscribeChangingSum(Action action)
@@ -110,41 +98,6 @@ namespace DocumentMaker.View.Controls
 			}
 		}
 
-		private void DeleteBtnClick(object sender, RoutedEventArgs e)
-		{
-			if (Data != null &&
-				MessageBox.Show("Ви впевнені, що хочете видалити всі пункти?",
-				"Підтвердіть видалення",
-				MessageBoxButton.YesNo,
-				MessageBoxImage.Question,
-				MessageBoxResult.No)
-					== MessageBoxResult.Yes)
-			{
-				ClearBackData(true);
-			}
-		}
-
-		private void OnRemoveBackData(FullBackData sender)
-		{
-			if (Data != null)
-			{
-				Data.Children.Remove(sender);
-
-				uint id = 1;
-				foreach (FrameworkElement elem in Data.Children)
-				{
-					if (elem is FullBackData backData)
-					{
-						backData.BackDataId = id;
-						id++;
-					}
-				}
-			}
-
-			onRemoved?.Invoke(sender);
-			OnChangedSomeSum();
-		}
-
 		private void OnChangedSomeSum()
 		{
 			if(Data != null)
@@ -167,10 +120,6 @@ namespace DocumentMaker.View.Controls
 
 		private void AddBackData(FullBackData backData)
 		{
-			backData.SubscribeDeletion(() =>
-			{
-				OnRemoveBackData(backData);
-			});
 			backData.SubscribeChangedSum(OnChangedSomeSum);
 			Data.Children.Add(backData);
 			backData.UpdateInputStates();
@@ -178,24 +127,6 @@ namespace DocumentMaker.View.Controls
 
 		public void SetViewByTemplate(DocumentTemplateType templateType)
 		{
-			//if (templateType == DocumentTemplateType.Painter)
-			//{
-			//	IsSketchColumn.Width = new GridLength(1, GridUnitType.Star);
-			//}
-			//else
-			//{
-			//	IsSketchColumn.Width = GridLength.Auto;
-			//}
-		}
-
-		public void ClearBackData(bool _isClearInSelectedFile = false)
-		{
-			if (Data != null)
-			{
-				Data.Children.Clear();
-				OnChangedSomeSum();
-				onCleared?.Invoke(_isClearInSelectedFile);
-			}
 		}
 
 		public void SetActSum(uint actSum)

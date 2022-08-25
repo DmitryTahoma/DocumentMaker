@@ -32,7 +32,6 @@ namespace Dml.Model.Files
 
 		public override string ToString()
 		{
-			//return ShowFullName ? FullName : Name;
 			return FullName;
 		}
 
