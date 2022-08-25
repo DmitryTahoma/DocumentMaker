@@ -1,4 +1,6 @@
 ﻿using Dml;
+using Dml.Model.Back;
+using Dml.Model.Session;
 using Dml.Model.Session.Attributes;
 using Dml.Model.Template;
 using DocumentMaker.Model.Algorithm;
@@ -22,6 +24,7 @@ namespace DocumentMaker.Model
 		private readonly ObservableCollection<FullDocumentTemplate> documentTemplates;
 		private readonly ObservableRangeCollection<HumanData> humanFullNameList;
 		private readonly ObservableRangeCollection<DmxFile> openedFilesList;
+		private readonly List<GameObject> gameNameList;
 
 		public DocumentMakerModel()
 		{
@@ -35,6 +38,7 @@ namespace DocumentMaker.Model
 			};
 			humanFullNameList = new ObservableRangeCollection<HumanData>();
 			openedFilesList = new ObservableRangeCollection<DmxFile>();
+			gameNameList = new List<GameObject>();
 		}
 
 		#region Window settings
@@ -83,6 +87,7 @@ namespace DocumentMaker.Model
 		public IList<FullDocumentTemplate> DocumentTemplatesList => documentTemplates;
 		public IList<HumanData> HumanFullNameList => humanFullNameList;
 		public bool HasNoMovedFiles => exporter.HasNoMovedFiles;
+		public IList<GameObject> GameNameList => gameNameList;
 
 		public void Save(string path, IEnumerable<FullBackDataModel> backModels)
 		{
@@ -129,6 +134,15 @@ namespace DocumentMaker.Model
 			foreach (FullDocumentTemplate template in documentTemplates)
 			{
 				template.LoadWorkTypesList(path);
+			}
+		}
+
+		public void LoadGameNames(string path)
+		{
+			XmlLoader loader = new XmlLoader();
+			if (loader.TryLoad(path))
+			{
+				loader.SetLoadedGameNames(gameNameList);
 			}
 		}
 

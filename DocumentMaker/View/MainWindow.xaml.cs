@@ -62,6 +62,7 @@ namespace DocumentMaker
 				x.Controller.IsRework = false;
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
+				x.SetGameNameList(controller.GameNameList);
 				UpdateActSum();
 
 				DmxFile selectedFile = controller.GetSelectedFile();
@@ -78,6 +79,7 @@ namespace DocumentMaker
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
 				x.SetWorkTypesList(controller.CurrentWorkTypesList);
+				x.SetGameNameList(controller.GameNameList);
 				UpdateActSum();
 
 				DmxFile selectedFile = controller.GetSelectedFile();
@@ -410,6 +412,7 @@ namespace DocumentMaker
 				if (control is FullBackData backData)
 				{
 					backData.SetViewByTemplate(controller.TemplateType);
+					backData.SetGameNameList(controller.GameNameList);
 				}
 			}
 			foreach (UIElement control in ReworkBacksData.Children)
@@ -418,6 +421,7 @@ namespace DocumentMaker
 				{
 					backData.SetViewByTemplate(controller.TemplateType);
 					backData.SetWorkTypesList(controller.CurrentWorkTypesList);
+					backData.SetGameNameList(controller.GameNameList);
 				}
 			}
 			DataHeader.SetViewByTemplate(controller.TemplateType);

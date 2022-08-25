@@ -12,7 +12,6 @@ namespace DocumentMaker.Controller.Controls
 		public FullBackDataController() : base(new FullBackDataModel())
 		{
 			model = base.GetModel() as FullBackDataModel;
-			Load();
 		}
 
 		public FullBackDataController(FullBackDataModel _model) : base(_model)
@@ -25,7 +24,6 @@ namespace DocumentMaker.Controller.Controls
 			{
 				model = new FullBackDataModel();
 			}
-			Load();
 		}
 
 		public string WeightText { get => model.WeightText; set => model.WeightText = value; }

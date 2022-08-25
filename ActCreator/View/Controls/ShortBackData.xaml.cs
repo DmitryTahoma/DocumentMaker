@@ -103,7 +103,7 @@ namespace ActCreator.View.Controls
 			}
 		}
 
-		public IList<string> GameNameList => controller.GameNameList;
+		public IList<GameObject> GameNameList => controller.GameNameList;
 
 		public string GameName
 		{

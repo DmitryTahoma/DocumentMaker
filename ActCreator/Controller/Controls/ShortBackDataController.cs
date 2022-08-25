@@ -10,7 +10,6 @@ namespace ActCreator.Controller.Controls
 		public ShortBackDataController() : base(new ShortBackDataModel())
 		{
 			model = base.GetModel() as ShortBackDataModel;
-			Load();
 		}
 
 		public ShortBackDataController(ShortBackDataModel _model) : base(_model)
@@ -23,7 +22,6 @@ namespace ActCreator.Controller.Controls
 			{
 				model = new ShortBackDataModel();
 			}
-			Load();
 		}
 
 		public new ShortBackDataModel GetModel()

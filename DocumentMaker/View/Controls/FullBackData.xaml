@@ -51,6 +51,7 @@
                 IsEnabled="{Binding ElementName=FullBackDataContext, Path=IsNotOtherType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="ColWithWorkTypeComboBox" Width="1.5*" />
+                    <ColumnDefinition Width="65" />
                     <ColumnDefinition MaxWidth="90" />
                     <ColumnDefinition Width="1.5*" />
                     <ColumnDefinition MaxWidth="90" />
@@ -66,9 +67,20 @@
                     SelectionChanged="WorkTypeChanged"
                     Style="{StaticResource MaterialDesignOutlinedComboBox}" />
 
+                <ComboBox
+                    x:Name="EpisodeNumberComboBox"
+                    Grid.Column="1"
+                    Margin="1.5"
+                    Padding="8.5"
+                    IsEditable="True"
+                    IsTextSearchEnabled="True"
+                    ItemsSource="{Binding ElementName=FullBackDataContext, Path=EpisodeNumberList, UpdateSourceTrigger=PropertyChanged}"
+                    PreviewTextInput="UIntValidating"
+                    Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                    Text="{Binding ElementName=FullBackDataContext, Path=EpisodeNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="BackNumberTextInput"
-                    Grid.Column="1"
+                    Grid.Column="2"
                     Margin="1.5"
                     Padding="7"
                     IsEnabled="{Binding ElementName=FullBackDataContext, Path=HasBackNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -76,14 +88,14 @@
                     Text="{Binding ElementName=FullBackDataContext, Path=BackNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="BackNameInput"
-                    Grid.Column="2"
+                    Grid.Column="3"
                     Margin="1.5"
                     Padding="7"
                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
                     Text="{Binding ElementName=FullBackDataContext, Path=BackName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="CountRegionsTextInput"
-                    Grid.Column="3"
+                    Grid.Column="4"
                     Margin="1.5"
                     Padding="7"
                     IsEnabled="{Binding ElementName=FullBackDataContext, Path=IsRegions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -93,7 +105,7 @@
 
                 <ComboBox
                     x:Name="GameNameComboBox"
-                    Grid.Column="4"
+                    Grid.Column="5"
                     Margin="1.5"
                     Padding="8.5"
                     IsEditable="True"
@@ -104,7 +116,7 @@
 
                 <CheckBox
                     x:Name="IsSketchCheckBox"
-                    Grid.Column="5"
+                    Grid.Column="6"
                     Margin="5"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"

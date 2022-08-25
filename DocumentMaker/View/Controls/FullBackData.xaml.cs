@@ -23,6 +23,7 @@ namespace DocumentMaker.View.Controls
 		public static readonly DependencyProperty IsRegionsProperty;
 		public static readonly DependencyProperty HasBackNumberProperty;
 		public static readonly DependencyProperty BackDataIdProperty;
+		public static readonly DependencyProperty EpisodeNumberTextProperty;
 		public static readonly DependencyProperty BackNumberTextProperty;
 		public static readonly DependencyProperty BackNameProperty;
 		public static readonly DependencyProperty CountRegionsTextProperty;
@@ -40,6 +41,7 @@ namespace DocumentMaker.View.Controls
 			IsRegionsProperty = DependencyProperty.Register("IsRegions", typeof(bool), typeof(FullBackData));
 			HasBackNumberProperty = DependencyProperty.Register("HasBackNumber", typeof(bool), typeof(FullBackData));
 			BackDataIdProperty = DependencyProperty.Register("BackDataId", typeof(uint), typeof(FullBackDataController));
+			EpisodeNumberTextProperty = DependencyProperty.Register("EpisodeNumberText", typeof(string), typeof(FullBackDataController));
 			BackNumberTextProperty = DependencyProperty.Register("BackNumberText", typeof(string), typeof(FullBackDataController));
 			BackNameProperty = DependencyProperty.Register("BackName", typeof(string), typeof(FullBackDataController));
 			CountRegionsTextProperty = DependencyProperty.Register("CountRegionsText", typeof(string), typeof(FullBackDataController));
@@ -85,6 +87,18 @@ namespace DocumentMaker.View.Controls
 
 		public IList<WorkObject> WorkTypesList => controller.WorkTypesList;
 
+		public IList<string> EpisodeNumberList => controller.GameNameList.FirstOrDefault(x => x.Name == GameName)?.Episodes;
+
+		public string EpisodeNumberText
+		{
+			get => (string)GetValue(EpisodeNumberTextProperty);
+			set
+			{
+				SetValue(EpisodeNumberTextProperty, value);
+				controller.EpisodeNumberText = value;
+			}
+		}
+
 		public string BackNumberText
 		{
 			get => (string)GetValue(BackNumberTextProperty);
@@ -115,7 +129,7 @@ namespace DocumentMaker.View.Controls
 			}
 		}
 
-		public IList<string> GameNameList => controller.GameNameList;
+		public IList<GameObject> GameNameList => controller.GameNameList;
 
 		public string GameName
 		{
@@ -124,6 +138,7 @@ namespace DocumentMaker.View.Controls
 			{
 				SetValue(GameNameProperty, value);
 				controller.GameName = value;
+				NotifyPropertyChanged(nameof(EpisodeNumberList));
 			}
 		}
 
@@ -369,6 +384,18 @@ namespace DocumentMaker.View.Controls
 			}
 			NotifyPropertyChanged(nameof(WorkTypesList));
 			WorkTypeComboBox.SelectedItem = WorkTypesList.FirstOrDefault(x => x.Id == controller.WorkObjectId % WorkTypesList.Count);
+		}
+
+		public void SetGameNameList(IList<GameObject> gameObjects)
+		{
+			controller.GameNameList.Clear();
+			if (gameObjects != null)
+			{
+				controller.GameNameList.AddRange(gameObjects);
+			}
+			NotifyPropertyChanged(nameof(GameNameList));
+			GameNameComboBox.SelectedItem = GameNameList.FirstOrDefault(x => x.Name == controller.GameName);
+			NotifyPropertyChanged(nameof(EpisodeNumberList));
 		}
 
 		public void SetBackType(BackType type)

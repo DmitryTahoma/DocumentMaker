@@ -2,15 +2,11 @@
 using Dml.Model;
 using Dml.Model.Back;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 
 namespace Dml.Controller
 {
 	public abstract class BaseBackDataController
 	{
-		private const string gameNamesFile = "projectnames.xml";
-
 		protected readonly StringValidator validator;
 		private readonly BaseBackDataModel model;
 
@@ -18,15 +14,15 @@ namespace Dml.Controller
 		{
 			validator = new StringValidator();
 			model = _model;
-			Load();
 		}
 
 		public uint Id { get => model.Id; set => model.Id = value; }
 		public BackType Type { get => model.Type; set => model.Type = value; }
+		public string EpisodeNumberText { get => model.EpisodeNumberText; set => model.EpisodeNumberText = value; }
 		public string BackNumberText { get => model.BackNumberText; set => model.BackNumberText = value; }
 		public string BackName { get => model.BackName; set => model.BackName = value; }
 		public string BackCountRegionsText { get => model.BackCountRegionsText; set => model.BackCountRegionsText = value; }
-		public IList<string> GameNameList => model.GameNameList;
+		public ObservableRangeCollection<GameObject> GameNameList => model.GameNameList;
 		public string GameName { get => model.GameName; set => model.GameName = value; }
 		public bool IsRework { get => model.IsRework; set => model.IsRework = value; }
 		public bool IsSketch { get => model.IsSketch; set => model.IsSketch = value; }
@@ -66,12 +62,6 @@ namespace Dml.Controller
 				return true;
 
 			return false;
-		}
-
-		public virtual void Load()
-		{
-			string gameNamesFullpath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), gameNamesFile);
-			model.LoadGameNames(gameNamesFullpath);
 		}
 	}
 }

@@ -11,5 +11,6 @@
 		public static string DmxFileFullNameNodeName { get => "FullName"; }
 		public static string DmxFileBackNodeName { get => "DmxBackData"; }
 		public static string ProjectNameNodeName { get => "ProjectName"; }
+		public static string CountEpisodesAttributeName { get => "CountEpisodes"; }
 	}
 }

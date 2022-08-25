@@ -1,4 +1,5 @@
 ﻿using Dml.Controller.Validation;
+using Dml.Model.Back;
 using Dml.Model.Template;
 using DocumentMaker.Controller.Controls;
 using DocumentMaker.Model;
@@ -19,6 +20,7 @@ namespace DocumentMaker.Controller
 		private const string saveFile = "session.xml";
 		private const string humansFile = "HumanData.xlsx";
 		private const string supportTypesFile = "SupportTypes.xlsx";
+		private const string gameNamesFile = "projectnames.xml";
 
 		private readonly StringValidator validator;
 		private readonly DocumentMakerModel model;
@@ -73,6 +75,7 @@ namespace DocumentMaker.Controller
 		public IList<HumanData> HumanFullNameList => model.HumanFullNameList;
 		public bool HasNoMovedFiles => model.HasNoMovedFiles;
 		public IList<WorkObject> CurrentWorkTypesList => DocumentTemplatesList.FirstOrDefault(x => x.Type == TemplateType)?.WorkTypesList;
+		public IList<GameObject> GameNameList => model.GameNameList;
 
 		public void Save()
 		{
@@ -87,6 +90,7 @@ namespace DocumentMaker.Controller
 			string saveFullpath = Path.Combine(path, saveFile);
 			string humansFullpath = Path.Combine(path, humansFile);
 			string supportTypesFullpath = Path.Combine(path, supportTypesFile);
+			string gameNamesFullpath = Path.Combine(path, gameNamesFile);
 
 			model.Load(saveFullpath, out List<FullBackDataModel> backModels);
 			foreach (FullBackDataModel model in backModels)
@@ -95,6 +99,7 @@ namespace DocumentMaker.Controller
 			}
 			model.LoadHumans(humansFullpath);
 			model.LoadWorkTypes(supportTypesFullpath);
+			model.LoadGameNames(gameNamesFullpath);
 		}
 
 		public void Export(string path)

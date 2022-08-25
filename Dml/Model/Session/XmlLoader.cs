@@ -1,4 +1,5 @@
 ﻿using Dml.Controller.Validation;
+using Dml.Model.Back;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -66,19 +67,30 @@ namespace Dml.Model.Session
 			humans.AddRange(tempHumans.OrderBy(x => x));
 		}
 
-		public void SetLoadedGameNames(ObservableRangeCollection<string> gameNameList)
+		public void SetLoadedGameNames(List<GameObject> gameNameList)
 		{
-			List<string> tempGameNames = new List<string>();
+			List<GameObject> tempGameNames = new List<GameObject>();
 
 			XmlElement root = xml.DocumentElement;
 			XmlNodeList nodeList = root.GetElementsByTagName(XmlConfNames.ProjectNameNodeName);
 			foreach (XmlElement elem in nodeList)
 			{
-				tempGameNames.Add(StringValidator.Trim(elem.InnerText));
+				uint countEpisodes = 0;
+				if (elem.HasAttribute(XmlConfNames.CountEpisodesAttributeName) && uint.TryParse(elem.GetAttribute(XmlConfNames.CountEpisodesAttributeName), out uint c))
+				{
+					countEpisodes = c;
+				}
+
+				GameObject gameObj = new GameObject
+				{
+					Name = StringValidator.Trim(elem.InnerText)
+				};
+				gameObj.SetEpisodes(countEpisodes);
+
+				tempGameNames.Add(gameObj);
 			}
 
-			gameNameList.Clear();
-			gameNameList.AddRange(tempGameNames.OrderBy(x => x));
+			gameNameList.AddRange(tempGameNames.OrderBy(x => x.Name));
 		}
 
 		protected void SetLoadedProperties(XmlElement root, object model)
