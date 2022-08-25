@@ -15,7 +15,7 @@ namespace DocumentMaker.Model.OfficeFiles
 
 			foreach (FullBackDataModel model in backModels)
 			{
-				if(model.IsRework == isExportRework)
+				if (model.IsRework == isExportRework)
 				{
 					rows.Add(new DocumentTableRowData(model, templateType));
 				}

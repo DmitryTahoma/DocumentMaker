@@ -1,5 +1,4 @@
 ﻿using Dml.Controller.Validation;
-using Dml.Model.Files;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -44,7 +43,7 @@ namespace Dml.Model.Session
 			models.Clear();
 
 			XmlNodeList nodeList = root.GetElementsByTagName(backNodeName);
-			foreach(XmlElement elem in nodeList)
+			foreach (XmlElement elem in nodeList)
 			{
 				T model = new T();
 				SetLoadedProperties(elem, model);
@@ -58,7 +57,7 @@ namespace Dml.Model.Session
 
 			XmlElement root = xml.DocumentElement;
 			XmlNodeList nodeList = root.GetElementsByTagName(XmlConfNames.HumanNodeName);
-			foreach(XmlElement elem in nodeList)
+			foreach (XmlElement elem in nodeList)
 			{
 				tempHumans.Add(StringValidator.Trim(elem.InnerText));
 			}
@@ -73,7 +72,7 @@ namespace Dml.Model.Session
 
 			XmlElement root = xml.DocumentElement;
 			XmlNodeList nodeList = root.GetElementsByTagName(XmlConfNames.ProjectNameNodeName);
-			foreach(XmlElement elem in nodeList)
+			foreach (XmlElement elem in nodeList)
 			{
 				tempGameNames.Add(StringValidator.Trim(elem.InnerText));
 			}

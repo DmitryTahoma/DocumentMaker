@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace DocumentMaker.Model.Session
 {
-	class DmxSaver : XmlSaver
+	internal class DmxSaver : XmlSaver
 	{
 		private XmlNode dmxFileNode;
 

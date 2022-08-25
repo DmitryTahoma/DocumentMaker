@@ -22,7 +22,7 @@ namespace DocumentMaker.Model.OfficeFiles
 			HumanPA = model.PaymentAccountText;
 			HumanBank = model.BankName;
 			HumanMFO = "МФО " + model.MfoText;
-			if(!isExportRework)
+			if (!isExportRework)
 			{
 				DogovorNum = model.ContractNumberText;
 				DogovorFullDate = model.ContractDateText;

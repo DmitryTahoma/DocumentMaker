@@ -1,6 +1,6 @@
 ﻿namespace DocumentMaker.Controller.Controls
 {
-	class FullBackDataFooterController
+	internal class FullBackDataFooterController
 	{
 		public uint ActSum { get; set; }
 	}

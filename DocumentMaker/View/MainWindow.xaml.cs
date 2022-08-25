@@ -1,14 +1,10 @@
-﻿using Dml.Controller;
-using Dml.Controller.Validation;
-using Dml.Controls;
-using Dml.Model.Files;
+﻿using Dml.Controller.Validation;
 using Dml.Model.Template;
 using DocumentMaker.Controller;
 using DocumentMaker.Controller.Controls;
 using DocumentMaker.Model;
 using DocumentMaker.Model.Files;
 using DocumentMaker.Model.OfficeFiles.Human;
-using DocumentMaker.View;
 using DocumentMaker.View.Controls;
 using DocumentMaker.View.Dialogs;
 using MaterialDesignThemes.Wpf;
@@ -21,7 +17,6 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Markup;
-using UpdaterAPI;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace DocumentMaker
@@ -70,7 +65,7 @@ namespace DocumentMaker
 				UpdateActSum();
 
 				DmxFile selectedFile = controller.GetSelectedFile();
-				if(selectedFile != null)
+				if (selectedFile != null)
 				{
 					selectedFile.AddBackModel(x.Controller.GetModel());
 				}
@@ -126,11 +121,11 @@ namespace DocumentMaker
 		public string ActSum
 		{
 			get => (string)GetValue(ActSumProperty);
-			set 
+			set
 			{
 				SetValue(ActSumProperty, value);
 				controller.ActSum = value;
-				
+
 				if (OpenedFilesComboBox != null
 					 && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
 				{
@@ -170,7 +165,7 @@ namespace DocumentMaker
 				string[] files = controller.GetOpenLaterFiles();
 				OpenFiles(files);
 				LoadFiles();
-				if(files != null && files.Length > 0)
+				if (files != null && files.Length > 0)
 				{
 					SetSelectedFile(files.Last());
 				}
@@ -200,7 +195,7 @@ namespace DocumentMaker
 				controller.TemplateType = documentTemplate.Type;
 				UpdateViewBackData();
 
-				if(OpenedFilesComboBox != null
+				if (OpenedFilesComboBox != null
 					&& OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
 				{
 					selectedFile.TemplateType = documentTemplate.Type;
@@ -281,9 +276,9 @@ namespace DocumentMaker
 
 		private void OpenFileClick(object sender, RoutedEventArgs e)
 		{
-			if(openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
-				OpenFiles(openFileDialog.FileNames); 
+				OpenFiles(openFileDialog.FileNames);
 				LoadFiles();
 				SetSelectedFile(openFileDialog.FileNames.Last());
 			}
@@ -354,7 +349,7 @@ namespace DocumentMaker
 			{
 				MessageBox.Show("Сума для корегування не може бути нульовою.",
 					"Корегування | Помилка",
-					MessageBoxButtons.OK, 
+					MessageBoxButtons.OK,
 					MessageBoxIcon.Error);
 			}
 		}
@@ -396,7 +391,7 @@ namespace DocumentMaker
 
 		private void SetDataFromControllerBackDatas(StackPanel stackPanel)
 		{
-			if(stackPanel != null)
+			if (stackPanel != null)
 			{
 				foreach (UIElement elem in stackPanel.Children)
 				{
@@ -417,9 +412,9 @@ namespace DocumentMaker
 					backData.SetViewByTemplate(controller.TemplateType);
 				}
 			}
-			foreach(UIElement control in ReworkBacksData.Children)
+			foreach (UIElement control in ReworkBacksData.Children)
 			{
-				if(control is FullBackData backData)
+				if (control is FullBackData backData)
 				{
 					backData.SetViewByTemplate(controller.TemplateType);
 					backData.SetWorkTypesList(controller.CurrentWorkTypesList);
@@ -485,18 +480,18 @@ namespace DocumentMaker
 		{
 			bool isCorrect = true;
 
-			if(e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop, true))
+			if (e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop, true))
 			{
 				string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
-				foreach(string filename in filenames)
+				foreach (string filename in filenames)
 				{
-					if(!File.Exists(filename))
+					if (!File.Exists(filename))
 					{
 						isCorrect = false;
 						break;
 					}
 					FileInfo info = new FileInfo(filename);
-					if(info.Extension != DmxFile.Extension)
+					if (info.Extension != DmxFile.Extension)
 					{
 						isCorrect = false;
 						break;
@@ -512,12 +507,12 @@ namespace DocumentMaker
 
 		private void OpenedFilesSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
-			if(sender is System.Windows.Controls.ComboBox comboBox && comboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
+			if (sender is System.Windows.Controls.ComboBox comboBox && comboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
 			{
 				controller.SetDataFromFile(selectedFile);
 				SetDataFromController();
 				AddLoadedBackData();
-				controller.SetSelectedFile(selectedFile); 
+				controller.SetSelectedFile(selectedFile);
 				UpdateViewBackData();
 				UpdateActSum();
 			}
@@ -537,7 +532,7 @@ namespace DocumentMaker
 		{
 			foreach (FullBackDataController backDataController in controller.BackDataControllers)
 			{
-				if(backDataController.IsRework)
+				if (backDataController.IsRework)
 				{
 					ReworkDataFooter.AddLoadedBackData(backDataController);
 				}
@@ -552,9 +547,9 @@ namespace DocumentMaker
 
 		private void SetSelectedFile(string filename)
 		{
-			foreach(DmxFile file in OpenedFilesList)
+			foreach (DmxFile file in OpenedFilesList)
 			{
-				if(file.FullName == filename || file.Name == filename)
+				if (file.FullName == filename || file.Name == filename)
 				{
 					OpenedFilesComboBox.SelectedItem = file;
 					break;
@@ -600,7 +595,7 @@ namespace DocumentMaker
 
 		private void UpdateSaldo()
 		{
-			if(uint.TryParse(ActSum, out uint sum) && uint.TryParse(DataFooter.AllSum, out uint curSum) && uint.TryParse(ReworkDataFooter.AllSum, out uint curSumRework))
+			if (uint.TryParse(ActSum, out uint sum) && uint.TryParse(DataFooter.AllSum, out uint curSum) && uint.TryParse(ReworkDataFooter.AllSum, out uint curSumRework))
 			{
 				ActSaldo = ((int)sum - (int)(curSum + curSumRework)).ToString();
 				ActSaldoInput.Text = ActSaldo;
@@ -616,10 +611,10 @@ namespace DocumentMaker
 				"SupportTypes.xlsx",
 			};
 
-			if(!ProgramValidator.ValidateExistsFiles(files))
+			if (!ProgramValidator.ValidateExistsFiles(files))
 			{
 				string notFindedFiles = "";
-				foreach(string file in files)
+				foreach (string file in files)
 				{
 					notFindedFiles += '\n' + file;
 				}

@@ -1,5 +1,4 @@
 ﻿using Dml;
-using Dml.Model;
 using Dml.Model.Files;
 using Dml.Model.Session;
 using Dml.Model.Session.Attributes;
@@ -14,7 +13,7 @@ namespace ActCreator.Model
 	public class ActCreatorModel
 	{
 		private readonly ObservableCollection<DocumentTemplate> documentTemplates;
-		private ObservableRangeCollection<string> humanFullNameList;
+		private readonly ObservableRangeCollection<string> humanFullNameList;
 
 		public ActCreatorModel()
 		{
@@ -78,7 +77,7 @@ namespace ActCreator.Model
 		public void LoadHumans(string path)
 		{
 			XmlLoader loader = new XmlLoader();
-			if(loader.TryLoad(path))
+			if (loader.TryLoad(path))
 			{
 				loader.SetLoadedHumans(humanFullNameList);
 			}
@@ -104,7 +103,7 @@ namespace ActCreator.Model
 			XmlSaver saver = new XmlSaver();
 			saver.AppendAllProperties(this, true);
 
-			foreach(ShortBackDataModel backDataModel in backModels)
+			foreach (ShortBackDataModel backDataModel in backModels)
 			{
 				saver.CreateBackNode();
 				saver.AppendAllBackProperties(backDataModel);

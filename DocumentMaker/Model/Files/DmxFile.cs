@@ -46,9 +46,9 @@ namespace DocumentMaker.Model.Files
 
 		private void SetDefaultSums()
 		{
-			foreach(FullBackDataModel model in backDataModels)
+			foreach (FullBackDataModel model in backDataModels)
 			{
-				if(model.SumText == null)
+				if (model.SumText == null)
 				{
 					model.SumText = model.SpentTimeText + "00";
 				}

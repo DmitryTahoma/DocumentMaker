@@ -10,7 +10,7 @@ namespace Dml.Controller.Validation
 		{
 			string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-			for(int i = 0; i < files.Count; ++i)
+			for (int i = 0; i < files.Count; ++i)
 			{
 				if (File.Exists(Path.Combine(path, files[i])))
 				{

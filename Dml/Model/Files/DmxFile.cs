@@ -38,7 +38,7 @@ namespace Dml.Model.Files
 		public virtual void Load()
 		{
 			XmlLoader loader = new XmlLoader();
-			if(loader.TryLoad(FullName))
+			if (loader.TryLoad(FullName))
 			{
 				loader.SetLoadedProperties(this);
 

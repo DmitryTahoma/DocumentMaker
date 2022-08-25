@@ -8,7 +8,7 @@ namespace DocumentMaker.Model
 {
 	public class FullDocumentTemplate : DocumentTemplate
 	{
-		private ObservableRangeCollection<WorkObject> workTypesList;
+		private readonly ObservableRangeCollection<WorkObject> workTypesList;
 
 		public FullDocumentTemplate() : base()
 		{

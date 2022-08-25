@@ -25,19 +25,19 @@ namespace DocumentMaker.Model.OfficeFiles
 			string res;
 			if (isRework) res = workText + (isSketch ? " ескізу " : " ");
 			else switch (templateType)
-			{
-				case DocumentTemplateType.Scripter: res = "Послуги з розробки логіки та візуальних ефектів "; break;
-				case DocumentTemplateType.Cutter: res = "Послуги з розробки пошарової 3D моделі та візуальних ефектів "; break;
-				case DocumentTemplateType.Painter:
-					{
-						res = "Послуги з розробки графічних матеріалів ";
-						if (isSketch)
-							res += "ескізу ";
-					}
-					break;
-				case DocumentTemplateType.Modeller: res = "Послуги з розробки 3D - моделі "; break;
-				default: res = string.Empty; break;
-			}
+				{
+					case DocumentTemplateType.Scripter: res = "Послуги з розробки логіки та візуальних ефектів "; break;
+					case DocumentTemplateType.Cutter: res = "Послуги з розробки пошарової 3D моделі та візуальних ефектів "; break;
+					case DocumentTemplateType.Painter:
+						{
+							res = "Послуги з розробки графічних матеріалів ";
+							if (isSketch)
+								res += "ескізу ";
+						}
+						break;
+					case DocumentTemplateType.Modeller: res = "Послуги з розробки 3D - моделі "; break;
+					default: res = string.Empty; break;
+				}
 
 			if (!string.IsNullOrEmpty(res))
 			{
@@ -74,7 +74,7 @@ namespace DocumentMaker.Model.OfficeFiles
 				countRegs = Regex.Replace(countRegs, @"\s+", "");
 				string[] parts = countRegs.Split(',');
 
-				foreach(string part in parts)
+				foreach (string part in parts)
 				{
 					if (!string.IsNullOrEmpty(part))
 					{
@@ -101,9 +101,9 @@ namespace DocumentMaker.Model.OfficeFiles
 				regs = regs.OrderBy(x => x).Distinct().ToList();
 
 				string res = "";
-				foreach(int reg in regs)
+				foreach (int reg in regs)
 				{
-					if(res != "")
+					if (res != "")
 					{
 						res += ", ";
 					}

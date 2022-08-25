@@ -61,12 +61,12 @@ namespace Dml.Controller.Validation
 		public bool IsOrderRegions(string str)
 		{
 			string[] parts = str.Split(',');
-			foreach(string part in parts)
+			foreach (string part in parts)
 			{
-				if(part.Contains('-'))
+				if (part.Contains('-'))
 				{
 					string[] subparts = part.Split('-');
-					if(subparts.Length > 1
+					if (subparts.Length > 1
 						&& int.TryParse(subparts[0], out int st)
 						&& int.TryParse(subparts[1], out int end)
 						&& st > end)

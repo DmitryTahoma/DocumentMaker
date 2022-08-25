@@ -251,7 +251,7 @@ namespace DocumentMaker.View.Controls
 
 		private void WorkTypeChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if(controller != null && sender is ComboBox comboBox && comboBox.SelectedItem is WorkObject workObject)
+			if (controller != null && sender is ComboBox comboBox && comboBox.SelectedItem is WorkObject workObject)
 			{
 				controller.WorkObjectId = workObject.Id;
 			}
@@ -336,7 +336,7 @@ namespace DocumentMaker.View.Controls
 			{
 				WorkTypeComboBox.Visibility = controller.IsRework ? Visibility.Visible : Visibility.Collapsed;
 			}
-			if(ColWithWorkTypeComboBox != null)
+			if (ColWithWorkTypeComboBox != null)
 			{
 				ColWithWorkTypeComboBox.Width = controller.IsRework ? new GridLength(1.5, GridUnitType.Star) : GridLength.Auto;
 			}
@@ -359,7 +359,7 @@ namespace DocumentMaker.View.Controls
 		public void SetWorkTypesList(IList<WorkObject> workObjects)
 		{
 			controller.WorkTypesList.Clear();
-			if(workObjects != null)
+			if (workObjects != null)
 			{
 				controller.WorkTypesList.AddRange(workObjects);
 			}

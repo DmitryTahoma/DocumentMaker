@@ -6,11 +6,10 @@ using DocumentMaker.Model.Back;
 using DocumentMaker.Model.OfficeFiles.Human;
 using System.IO;
 using System.Linq;
-using System.Xml;
 
 namespace DocumentMaker.Model.OfficeFiles
 {
-	class XlsxLoader
+	internal class XlsxLoader
 	{
 		public void LoadHumans(string path, ObservableRangeCollection<HumanData> humansData)
 		{
@@ -73,7 +72,7 @@ namespace DocumentMaker.Model.OfficeFiles
 			const char startColId = 'A';
 			const int startRowId = 2;
 
-			using(SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(path, false))
+			using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(path, false))
 			{
 				WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
 
@@ -83,18 +82,18 @@ namespace DocumentMaker.Model.OfficeFiles
 				WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
 				SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
 
-				int curRowId = 1; 
+				int curRowId = 1;
 				uint id = 0;
 				char col = (char)(startColId + (int)templateType);
-				foreach(Row r in sheetData.Elements<Row>())
+				foreach (Row r in sheetData.Elements<Row>())
 				{
-					if(curRowId >= startRowId)
+					if (curRowId >= startRowId)
 					{
 						Cell c = r.Elements<Cell>().FirstOrDefault(x => x.CellReference.Value == col + curRowId.ToString());
-						if(c != null)
+						if (c != null)
 						{
 							string text;
-							if(c.DataType != null && c.DataType == CellValues.SharedString && int.TryParse(c.CellValue.Text, out int strId))
+							if (c.DataType != null && c.DataType == CellValues.SharedString && int.TryParse(c.CellValue.Text, out int strId))
 							{
 								text = sharedStringTable.ChildElements[strId]?.InnerText;
 							}

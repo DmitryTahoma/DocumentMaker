@@ -24,7 +24,7 @@ namespace DocumentMaker.View.Controls
 			WeightAllTextProperty = DependencyProperty.Register("WeightAllText", typeof(string), typeof(FullBackDataFooter));
 		}
 
-		private FullBackDataFooterController controller;
+		private readonly FullBackDataFooterController controller;
 
 		private event ActionWithFullBackData onAdded;
 		private event Action onChangedSum;
@@ -100,13 +100,13 @@ namespace DocumentMaker.View.Controls
 
 		private void OnChangedSomeSum()
 		{
-			if(Data != null)
+			if (Data != null)
 			{
 				uint sums = 0;
 
-				foreach(UIElement elem in Data.Children)
+				foreach (UIElement elem in Data.Children)
 				{
-					if(elem is FullBackData backData && uint.TryParse(backData.SumText, out uint sum))
+					if (elem is FullBackData backData && uint.TryParse(backData.SumText, out uint sum))
 					{
 						sums += sum;
 					}
@@ -140,7 +140,7 @@ namespace DocumentMaker.View.Controls
 			if (controller.ActSum != 0 && double.TryParse(AllSum, out double sum))
 			{
 				WeightAllText = (sum / controller.ActSum).ToString();
-				if(WeightAllText.Length > 5)
+				if (WeightAllText.Length > 5)
 				{
 					WeightAllText = WeightAllText.Substring(0, 5) + "..";
 				}
@@ -153,12 +153,12 @@ namespace DocumentMaker.View.Controls
 
 		public void UpdateBackDataIds()
 		{
-			if(Data != null)
+			if (Data != null)
 			{
 				uint counter = 1;
-				foreach(UIElement elem in Data.Children)
+				foreach (UIElement elem in Data.Children)
 				{
-					if(elem is FullBackData backData)
+					if (elem is FullBackData backData)
 					{
 						backData.BackDataId = counter++;
 						backData.SetDataFromController();

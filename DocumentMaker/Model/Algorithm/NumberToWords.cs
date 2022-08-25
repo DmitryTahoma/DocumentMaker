@@ -6,13 +6,13 @@ namespace DocumentMaker.Model.Algorithm
 	public static class NumberToWords
 	{
 		//Наименования сотен
-		private static string[] hunds =
+		private static readonly string[] hunds =
 		{
 			"", "сто ", "двісті ", "триста ", "чотириста ",
 			"п'ятсот ", "шістсот ", "сімсот ", "вісімсот ", "дев'ятсот "
 		};
 		//Наименования десятков
-		private static string[] tens =
+		private static readonly string[] tens =
 		{
 			"", "десять ", "двадцять ", "тридцять ", "сорок ", "п'ятдесят ",
 			"шістдесят ", "сімдесят ", "вісімдесят ", "дев'яносто "

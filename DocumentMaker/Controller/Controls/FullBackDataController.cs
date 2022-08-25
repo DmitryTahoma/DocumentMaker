@@ -2,9 +2,6 @@
 using Dml.Controller;
 using DocumentMaker.Model.Back;
 using DocumentMaker.Model.Controls;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 
 namespace DocumentMaker.Controller.Controls
 {
@@ -44,7 +41,7 @@ namespace DocumentMaker.Controller.Controls
 
 		public override bool Validate(ref string errorText)
 		{
-			if(base.Validate(ref errorText))
+			if (base.Validate(ref errorText))
 			{
 				if (!uint.TryParse(SumText, out uint sumText) || sumText == 0)
 					errorText += "Сума не може бути нульовою.";

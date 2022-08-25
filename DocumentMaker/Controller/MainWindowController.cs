@@ -1,7 +1,4 @@
-﻿using Dml.Controller;
-using Dml.Controller.Validation;
-using Dml.Model;
-using Dml.Model.Files;
+﻿using Dml.Controller.Validation;
 using Dml.Model.Template;
 using DocumentMaker.Controller.Controls;
 using DocumentMaker.Model;
@@ -12,7 +9,6 @@ using DocumentMaker.Model.OfficeFiles.Human;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Windows;
 
@@ -46,8 +42,8 @@ namespace DocumentMaker.Controller
 		public double WindowWidth { get => model.WindowWidth; set => model.WindowWidth = value; }
 		public WindowState WindowState { get => model.WindowState; set => model.WindowState = value; }
 
-		public string CorrectDevelopmentWindow_NumberText { get => model.CorrectDevelopmentWindow_NumberText; set => model.CorrectDevelopmentWindow_NumberText  = value; }
-		public bool CorrectDevelopmentWindow_TakeSumFromSupport { get => model.CorrectDevelopmentWindow_TakeSumFromSupport; set => model.CorrectDevelopmentWindow_TakeSumFromSupport  = value; }
+		public string CorrectDevelopmentWindow_NumberText { get => model.CorrectDevelopmentWindow_NumberText; set => model.CorrectDevelopmentWindow_NumberText = value; }
+		public bool CorrectDevelopmentWindow_TakeSumFromSupport { get => model.CorrectDevelopmentWindow_TakeSumFromSupport; set => model.CorrectDevelopmentWindow_TakeSumFromSupport = value; }
 
 		public string CorrectSupportWindow_NumberText { get => model.CorrectSupportWindow_NumberText; set => model.CorrectSupportWindow_NumberText = value; }
 		public bool CorrectSupportWindow_TakeSumFromDevelopment { get => model.CorrectSupportWindow_TakeSumFromDevelopment; set => model.CorrectSupportWindow_TakeSumFromDevelopment = value; }
@@ -208,9 +204,9 @@ namespace DocumentMaker.Controller
 		{
 			model.OpenFiles(files, out List<string> skipped);
 			skippedFiles = string.Empty;
-			if(skipped.Count > 0)
+			if (skipped.Count > 0)
 			{
-				foreach(string file in skipped)
+				foreach (string file in skipped)
 				{
 					skippedFiles += file + '\n';
 				}
@@ -229,7 +225,7 @@ namespace DocumentMaker.Controller
 			SelectedHuman = file.SelectedHuman;
 			ActSum = file.ActSum;
 			BackDataControllers.Clear();
-			foreach(FullBackDataModel model in file.BackDataModels)
+			foreach (FullBackDataModel model in file.BackDataModels)
 			{
 				BackDataControllers.Add(new FullBackDataController(model));
 			}
@@ -280,9 +276,9 @@ namespace DocumentMaker.Controller
 		public void CorrectDevelopment(int minSum, bool takeSumFromSupport)
 		{
 			List<FullBackDataModel> developmentModels = new List<FullBackDataModel>(), supportModels = new List<FullBackDataModel>();
-			foreach(FullBackDataController controller in BackDataControllers)
+			foreach (FullBackDataController controller in BackDataControllers)
 			{
-				if(controller.IsRework)
+				if (controller.IsRework)
 				{
 					supportModels.Add(controller.GetModel());
 				}

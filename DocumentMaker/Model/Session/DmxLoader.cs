@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace DocumentMaker.Model.Session
 {
-	class DmxLoader : XmlLoader
+	internal class DmxLoader : XmlLoader
 	{
 		public DmxLoader() : base() { }
 

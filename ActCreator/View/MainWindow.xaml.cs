@@ -1,16 +1,12 @@
 ﻿using ActCreator.Controller;
 using ActCreator.Controller.Controls;
 using ActCreator.View.Controls;
-using Dml.Controller;
 using Dml.Controller.Validation;
-using Dml.Controls;
 using Dml.Model.Template;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Forms;
-using UpdaterAPI;
-using UpdaterAPI.Resources;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ActCreator

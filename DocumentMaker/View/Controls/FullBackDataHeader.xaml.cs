@@ -30,11 +30,11 @@ namespace DocumentMaker.View.Controls
 
 		public void HideWorkTypeLabel()
 		{
-			if(ColWithWorkTypeComboBox != null)
+			if (ColWithWorkTypeComboBox != null)
 			{
 				ColWithWorkTypeComboBox.Width = GridLength.Auto;
 			}
-			if(WorkTypeLabel != null)
+			if (WorkTypeLabel != null)
 			{
 				WorkTypeLabel.Visibility = Visibility.Collapsed;
 			}

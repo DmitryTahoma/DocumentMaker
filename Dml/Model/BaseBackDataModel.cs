@@ -8,7 +8,7 @@ namespace Dml.Model
 	public abstract class BaseBackDataModel
 	{
 		private readonly ObservableCollection<BackDataType> dataTypesList;
-		private ObservableRangeCollection<string> gameNameList;
+		private readonly ObservableRangeCollection<string> gameNameList;
 
 		public BaseBackDataModel()
 		{
@@ -42,7 +42,7 @@ namespace Dml.Model
 		public virtual void LoadGameNames(string path)
 		{
 			XmlLoader loader = new XmlLoader();
-			if(loader.TryLoad(path))
+			if (loader.TryLoad(path))
 			{
 				loader.SetLoadedGameNames(gameNameList);
 			}

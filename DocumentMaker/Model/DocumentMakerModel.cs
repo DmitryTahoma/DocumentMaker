@@ -1,7 +1,4 @@
 ﻿using Dml;
-using Dml.Model;
-using Dml.Model.Files;
-using Dml.Model.Session;
 using Dml.Model.Session.Attributes;
 using Dml.Model.Template;
 using DocumentMaker.Model.Algorithm;
@@ -23,8 +20,8 @@ namespace DocumentMaker.Model
 	{
 		private readonly OfficeExporter exporter;
 		private readonly ObservableCollection<FullDocumentTemplate> documentTemplates;
-		private ObservableRangeCollection<HumanData> humanFullNameList;
-		private ObservableRangeCollection<DmxFile> openedFilesList;
+		private readonly ObservableRangeCollection<HumanData> humanFullNameList;
+		private readonly ObservableRangeCollection<DmxFile> openedFilesList;
 
 		public DocumentMakerModel()
 		{
@@ -98,7 +95,7 @@ namespace DocumentMaker.Model
 				saver.AppendAllBackProperties(backDataModel);
 				saver.PushBackNode();
 			}
-			foreach(DmxFile file in openedFilesList)
+			foreach (DmxFile file in openedFilesList)
 			{
 				saver.CreateDmxFileNode();
 				saver.AppendAllDmxFileProperties(file);
@@ -129,7 +126,7 @@ namespace DocumentMaker.Model
 
 		public void LoadWorkTypes(string path)
 		{
-			foreach(FullDocumentTemplate template in documentTemplates)
+			foreach (FullDocumentTemplate template in documentTemplates)
 			{
 				template.LoadWorkTypesList(path);
 			}
@@ -141,9 +138,9 @@ namespace DocumentMaker.Model
 			{
 				bool isExportRework = i == 1;
 				uint actSum = 0;
-				foreach(FullBackDataModel backModel in backModels)
+				foreach (FullBackDataModel backModel in backModels)
 				{
-					if(backModel.IsRework == isExportRework && uint.TryParse(backModel.SumText, out uint sum))
+					if (backModel.IsRework == isExportRework && uint.TryParse(backModel.SumText, out uint sum))
 					{
 						actSum += sum;
 					}
@@ -205,21 +202,21 @@ namespace DocumentMaker.Model
 						DmxFile dmxFile = new DmxFile(file);
 
 						IList<DmxFile> fileList = openedFilesList.Where(f => f.Name == dmxFile.Name).ToList();
-						foreach(DmxFile f in fileList)
+						foreach (DmxFile f in fileList)
 						{
-							if(f.FullName == dmxFile.FullName)
+							if (f.FullName == dmxFile.FullName)
 							{
 								isAdd = false;
 								break;
 							}
 						}
 
-						if(isAdd)
+						if (isAdd)
 						{
 							adding.Add(dmxFile);
 							dmxFile.ShowFullName = fileList.Count > 0;
-							
-							foreach(DmxFile f in fileList)
+
+							foreach (DmxFile f in fileList)
 							{
 								f.ShowFullName = true;
 							}
@@ -236,9 +233,9 @@ namespace DocumentMaker.Model
 
 		public void LoadFiles()
 		{
-			foreach(DmxFile file in openedFilesList)
+			foreach (DmxFile file in openedFilesList)
 			{
-				if(!file.Loaded)
+				if (!file.Loaded)
 				{
 					file.Load();
 				}
@@ -251,7 +248,7 @@ namespace DocumentMaker.Model
 
 			IEnumerable<DmxFile> fileList = openedFilesList.Where(x => x.Name == file.Name);
 			bool showFullName = fileList.Count() != 1;
-			foreach(DmxFile dmxFile in fileList)
+			foreach (DmxFile dmxFile in fileList)
 			{
 				dmxFile.ShowFullName = showFullName;
 			}
@@ -259,7 +256,7 @@ namespace DocumentMaker.Model
 
 		public void SetSelectedFile(DmxFile file)
 		{
-			foreach(DmxFile dmxFile in openedFilesList)
+			foreach (DmxFile dmxFile in openedFilesList)
 			{
 				dmxFile.Selected = dmxFile == file;
 			}
@@ -283,25 +280,25 @@ namespace DocumentMaker.Model
 		public void CorrectSaldo(IEnumerable<FullBackDataModel> backDataModels)
 		{
 			double baseSum = 0;
-			if(int.TryParse(ActSum, out int sum))
+			if (int.TryParse(ActSum, out int sum))
 			{
 				baseSum = sum;
 			}
 
 			double totalWeight = 0;
-			foreach(FullBackDataModel backModel in backDataModels)
+			foreach (FullBackDataModel backModel in backDataModels)
 			{
-				if(uint.TryParse(backModel.SumText, out uint curSum))
+				if (uint.TryParse(backModel.SumText, out uint curSum))
 				{
 					totalWeight += curSum / baseSum;
 				}
 			}
 
 			int curTotalSum = (int)baseSum;
-			foreach(FullBackDataModel backModel in backDataModels)
+			foreach (FullBackDataModel backModel in backDataModels)
 			{
 				double curWeight = 0;
-				if(uint.TryParse(backModel.SumText, out uint curSum))
+				if (uint.TryParse(backModel.SumText, out uint curSum))
 				{
 					curWeight = curSum / baseSum;
 					curWeight /= totalWeight;
@@ -312,7 +309,7 @@ namespace DocumentMaker.Model
 			}
 
 			FullBackDataModel firstModel = backDataModels.FirstOrDefault();
-			if(firstModel != null && int.TryParse(firstModel.SumText, out int s))
+			if (firstModel != null && int.TryParse(firstModel.SumText, out int s))
 			{
 				firstModel.SumText = (s + curTotalSum).ToString();
 			}

@@ -1,9 +1,6 @@
 ﻿using Dml;
 using Dml.Model;
-using Dml.Model.Template;
 using DocumentMaker.Model.Back;
-using DocumentMaker.Model.OfficeFiles;
-using System.Collections.Generic;
 
 namespace DocumentMaker.Model.Controls
 {

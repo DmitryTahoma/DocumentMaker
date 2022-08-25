@@ -1,8 +1,6 @@
 ﻿using ActCreator.Controller.Controls;
 using ActCreator.Model;
-using Dml.Controller;
 using Dml.Controller.Validation;
-using Dml.Model;
 using Dml.Model.Template;
 using System.Collections.Generic;
 using System.IO;
@@ -74,7 +72,7 @@ namespace ActCreator.Controller
 		public void ExportDmx(string path)
 		{
 			List<ShortBackDataModel> backDataModels = new List<ShortBackDataModel>();
-			foreach(ShortBackDataController controller in BackDataControllers)
+			foreach (ShortBackDataController controller in BackDataControllers)
 			{
 				backDataModels.Add(controller.GetModel());
 			}

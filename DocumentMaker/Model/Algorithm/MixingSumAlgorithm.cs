@@ -70,7 +70,7 @@ namespace DocumentMaker.Model.Algorithm
 							{
 								if (randomPrecent > percent)
 								{
-									maxSumFlip = (int)(maxSum * percent / 100);
+									maxSumFlip = maxSum * percent / 100;
 
 									if (maxSum - maxSumFlip < _minNumber)
 									{
@@ -226,7 +226,7 @@ namespace DocumentMaker.Model.Algorithm
 							{
 								if (randomPrecent > percent)
 								{
-									minSumFlip = (int)(maxSum * percent / 100);
+									minSumFlip = maxSum * percent / 100;
 
 									if (minSumFlip + minSum > _maxNumber)
 									{
