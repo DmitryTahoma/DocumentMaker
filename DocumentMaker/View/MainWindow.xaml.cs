@@ -26,6 +26,8 @@ namespace DocumentMaker
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		#region Dependency Properties
+
 		public static readonly DependencyProperty TechnicalTaskDateTextProperty;
 		public static readonly DependencyProperty ActDateTextProperty;
 		public static readonly DependencyProperty AdditionNumTextProperty;
@@ -40,6 +42,8 @@ namespace DocumentMaker
 			ActSumProperty = DependencyProperty.Register("ActSum", typeof(string), typeof(MainWindowController));
 			ActSaldoProperty = DependencyProperty.Register("ActSaldo", typeof(string), typeof(MainWindowController));
 		}
+
+		#endregion
 
 		private readonly MainWindowController controller;
 		private readonly FolderBrowserDialog folderBrowserDialog;
@@ -168,6 +172,8 @@ namespace DocumentMaker
 			ActSumInput.CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
 		}
 
+		#region Properties
+
 		public IList<DmxFile> OpenedFilesList => controller.OpenedFilesList;
 
 		public IList<FullDocumentTemplate> DocumentTemplatesList => controller.DocumentTemplatesList;
@@ -213,6 +219,10 @@ namespace DocumentMaker
 		}
 
 		public double IconSize { get; } = 24;
+
+		#endregion
+
+		#region Event handlers
 
 		private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
@@ -497,7 +507,79 @@ namespace DocumentMaker
 			MoveBackData(OtherDataHeader, OtherBacksData, OtherDataFooter, ReworkDataHeader, ReworkDataFooter);
 		}
 
-		public IEnumerable<FullBackData> DeleteSelectedBackData(StackPanel stackPanel)
+		private void WindowPreviewDrop(object sender, System.Windows.DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop, true))
+			{
+				string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
+				OpenFiles(filenames);
+				LoadFiles();
+				SetSelectedFile(filenames.Last(filename => filename.EndsWith(DmxFile.Extension)));
+				e.Handled = true;
+			}
+		}
+
+		private void WindowDragEnter(object sender, System.Windows.DragEventArgs e)
+		{
+			bool isCorrect = true;
+
+			if (e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop, true))
+			{
+				string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
+				foreach (string filename in filenames)
+				{
+					if (!File.Exists(filename))
+					{
+						isCorrect = false;
+						break;
+					}
+					FileInfo info = new FileInfo(filename);
+					if (info.Extension != DmxFile.Extension)
+					{
+						isCorrect = false;
+						break;
+					}
+				}
+			}
+			if (isCorrect == true)
+				e.Effects = System.Windows.DragDropEffects.All;
+			else
+				e.Effects = System.Windows.DragDropEffects.None;
+			e.Handled = true;
+		}
+
+		private void OpenedFilesSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+		{
+			if (sender is System.Windows.Controls.ComboBox comboBox && comboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
+			{
+				controller.SetDataFromFile(selectedFile);
+				SetDataFromController();
+				AddLoadedBackData();
+				controller.SetSelectedFile(selectedFile);
+				UpdateViewBackData();
+				UpdateActSum();
+
+				if (BacksData.Children.Count <= 0) DataFooter.UpdateAllSum();
+				if (ReworkBacksData.Children.Count <= 0) ReworkDataFooter.UpdateAllSum();
+				if (OtherBacksData.Children.Count <= 0) OtherDataFooter.UpdateAllSum();
+			}
+		}
+
+		private void ActSumTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+		{
+			UpdateActSum();
+		}
+
+		private void UIntValidating(object sender, System.Windows.Input.TextCompositionEventArgs e)
+		{
+			inputingValidator.UIntInputing_PreviewTextInput(sender, e);
+		}
+
+		#endregion
+
+		#region Methods
+
+		private IEnumerable<FullBackData> DeleteSelectedBackData(StackPanel stackPanel)
 		{
 			DmxFile selectedFile = controller.GetSelectedFile();
 			List<UIElement> elems = new List<UIElement>();
@@ -524,7 +606,7 @@ namespace DocumentMaker
 			return removed;
 		}
 
-		public void MoveBackData(FullBackDataHeader headerFrom, StackPanel dataFrom, FullBackDataFooter footerFrom, FullBackDataHeader headerTo, FullBackDataFooter footerTo)
+		private void MoveBackData(FullBackDataHeader headerFrom, StackPanel dataFrom, FullBackDataFooter footerFrom, FullBackDataHeader headerTo, FullBackDataFooter footerTo)
 		{
 			IEnumerable<FullBackData> removed = DeleteSelectedBackData(dataFrom);
 			headerFrom.UpdateIsCheckedState();
@@ -629,74 +711,6 @@ namespace DocumentMaker
 		{
 			controller.LoadFiles();
 			SetSelectedFile(controller.GetSelectedFile()?.FullName);
-		}
-
-		private void WindowPreviewDrop(object sender, System.Windows.DragEventArgs e)
-		{
-			if (e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop, true))
-			{
-				string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
-				OpenFiles(filenames);
-				LoadFiles();
-				SetSelectedFile(filenames.Last(filename => filename.EndsWith(DmxFile.Extension)));
-				e.Handled = true;
-			}
-		}
-
-		private void WindowDragEnter(object sender, System.Windows.DragEventArgs e)
-		{
-			bool isCorrect = true;
-
-			if (e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop, true))
-			{
-				string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
-				foreach (string filename in filenames)
-				{
-					if (!File.Exists(filename))
-					{
-						isCorrect = false;
-						break;
-					}
-					FileInfo info = new FileInfo(filename);
-					if (info.Extension != DmxFile.Extension)
-					{
-						isCorrect = false;
-						break;
-					}
-				}
-			}
-			if (isCorrect == true)
-				e.Effects = System.Windows.DragDropEffects.All;
-			else
-				e.Effects = System.Windows.DragDropEffects.None;
-			e.Handled = true;
-		}
-
-		private void OpenedFilesSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-		{
-			if (sender is System.Windows.Controls.ComboBox comboBox && comboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
-			{
-				controller.SetDataFromFile(selectedFile);
-				SetDataFromController();
-				AddLoadedBackData();
-				controller.SetSelectedFile(selectedFile);
-				UpdateViewBackData();
-				UpdateActSum();
-
-				if (BacksData.Children.Count <= 0) DataFooter.UpdateAllSum();
-				if (ReworkBacksData.Children.Count <= 0) ReworkDataFooter.UpdateAllSum();
-				if (OtherBacksData.Children.Count <= 0) OtherDataFooter.UpdateAllSum();
-			}
-		}
-
-		private void ActSumTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-		{
-			UpdateActSum();
-		}
-
-		private void UIntValidating(object sender, System.Windows.Input.TextCompositionEventArgs e)
-		{
-			inputingValidator.UIntInputing_PreviewTextInput(sender, e);
 		}
 
 		private void AddLoadedBackData()
@@ -821,5 +835,7 @@ namespace DocumentMaker
 					MessageBoxIcon.Error);
 			}
 		}
+
+		#endregion
 	}
 }
