@@ -22,7 +22,7 @@ namespace ActCreator.Model
 			documentTemplates = new ObservableCollection<DocumentTemplate>
 			{
 				new DocumentTemplate { Name = "Скриптувальник", Type = DocumentTemplateType.Scripter, },
-				new DocumentTemplate { Name = "Різник", Type = DocumentTemplateType.Cutter, },
+				new DocumentTemplate { Name = "Технічний дизайнер", Type = DocumentTemplateType.Cutter, },
 				new DocumentTemplate { Name = "Художник", Type = DocumentTemplateType.Painter, },
 				new DocumentTemplate { Name = "Моделлер", Type = DocumentTemplateType.Modeller, },
 			};
@@ -123,7 +123,7 @@ namespace ActCreator.Model
 				saver.PushBackNode();
 			}
 
-			saver.Save(GetDmxFileName(path));
+			saver.Save(path);
 		}
 	}
 }

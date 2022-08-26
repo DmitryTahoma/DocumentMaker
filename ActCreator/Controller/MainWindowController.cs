@@ -74,6 +74,8 @@ namespace ActCreator.Controller
 
 		public bool DmxExists(string path) => model.DmxExists(path);
 
+		public string GetDmxFileName() => model.GetDmxFileName();
+
 		public void ExportDmx(string path)
 		{
 			List<ShortBackDataModel> backDataModels = new List<ShortBackDataModel>();

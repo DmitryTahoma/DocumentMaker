@@ -8,6 +8,12 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Forms;
 using MessageBox = System.Windows.Forms.MessageBox;
+using System.IO;
+
+#if INCLUDED_UPDATER_API
+using UpdaterAPI;
+using UpdaterAPI.Resources;
+#endif
 
 namespace ActCreator
 {
@@ -24,7 +30,7 @@ namespace ActCreator
 		}
 
 		private readonly MainWindowController controller;
-		private readonly FolderBrowserDialog folderBrowserDialog;
+		private readonly SaveFileDialog saveFileDialog;
 
 		public MainWindow()
 		{
@@ -43,13 +49,18 @@ namespace ActCreator
 			DataFooter.SubscribeRemoving((x) =>
 			{
 				controller.BackDataControllers.Remove(x.Controller);
+				DataFooter.UpdateBackDataIds();
 			});
 			DataFooter.SubscribeClearing(() =>
 			{
 				controller.BackDataControllers.Clear();
 			});
 
-			folderBrowserDialog = new FolderBrowserDialog();
+			saveFileDialog = new SaveFileDialog
+			{
+				DefaultExt = Dml.Model.Files.BaseDmxFile.Extension,
+				Filter = "Файл акту (*" + Dml.Model.Files.BaseDmxFile.Extension + ")|*" + Dml.Model.Files.BaseDmxFile.Extension
+			};
 		}
 
 		public IList<DocumentTemplate> DocumentTemplatesList => controller.DocumentTemplatesList;
@@ -87,6 +98,7 @@ namespace ActCreator
 				foreach (ShortBackDataController backDataController in controller.BackDataControllers)
 				{
 					DataFooter.AddLoadedBackData(backDataController);
+					DataFooter.UpdateBackDataIds();
 				}
 
 				UpdateViewBackData();
@@ -122,29 +134,20 @@ namespace ActCreator
 		{
 			if (controller.Validate(out string errorText))
 			{
-				if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				saveFileDialog.FileName = controller.GetDmxFileName();
+				if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 				{
-					bool existsFile = controller.DmxExists(folderBrowserDialog.SelectedPath);
-					if (!existsFile || (existsFile &&
-							MessageBox.Show("Файл вже існує. Ви впевнені, що хочете замінити його?",
-							"ActCreator | Export",
-							MessageBoxButtons.YesNo,
-							MessageBoxIcon.Question)
-								== System.Windows.Forms.DialogResult.Yes))
+					controller.ExportDmx(saveFileDialog.FileName);
+
+					if (MessageBox.Show("Файл збережений.\nВідкрити папку з файлом?",
+										"ActCreator | Export",
+										MessageBoxButtons.YesNo,
+										MessageBoxIcon.Information,
+										MessageBoxDefaultButton.Button2)
+						== System.Windows.Forms.DialogResult.Yes)
 					{
-						controller.ExportDmx(folderBrowserDialog.SelectedPath);
-
-						if (MessageBox.Show("Файл збережений.\nВідкрити папку з файлом?",
-											"ActCreator | Export",
-											MessageBoxButtons.YesNo,
-											MessageBoxIcon.Information,
-											MessageBoxDefaultButton.Button2)
-							== System.Windows.Forms.DialogResult.Yes)
-						{
-							Process.Start("explorer", folderBrowserDialog.SelectedPath);
-						}
+						Process.Start("explorer", Path.GetDirectoryName(saveFileDialog.FileName));
 					}
-
 				}
 			}
 			else

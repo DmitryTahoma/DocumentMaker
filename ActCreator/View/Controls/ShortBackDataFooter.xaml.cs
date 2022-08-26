@@ -84,12 +84,14 @@ namespace ActCreator.View.Controls
 					backData.TimeText = lastData.TimeText;
 					backData.IsSketch = lastData.IsSketch;
 					backData.OtherText = lastData.OtherText;
+					backData.EpisodeNumberText = lastData.EpisodeNumberText;
 					backData.SetBackType(lastData.GetBackType());
 				}
 
 				AddBackData(backData);
 				onAdded?.Invoke(backData);
-				OnChangedSomeTime();
+				OnChangedSomeTime(); 
+				UpdateBackDataIds();
 			}
 		}
 
@@ -179,6 +181,22 @@ namespace ActCreator.View.Controls
 				Data.Children.Clear();
 				OnChangedSomeTime();
 				onCleared?.Invoke();
+			}
+		}
+
+		public void UpdateBackDataIds()
+		{
+			if (Data != null)
+			{
+				uint counter = 1;
+				foreach (UIElement elem in Data.Children)
+				{
+					if (elem is ShortBackData backData)
+					{
+						backData.BackDataId = counter++;
+						backData.SetDataFromController();
+					}
+				}
 			}
 		}
 	}
