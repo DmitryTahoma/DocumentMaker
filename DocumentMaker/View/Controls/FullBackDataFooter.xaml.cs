@@ -1,6 +1,8 @@
 ﻿using Dml.Model.Template;
 using DocumentMaker.Controller.Controls;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -133,6 +135,17 @@ namespace DocumentMaker.View.Controls
 			backData.SubscribeChangedSum(OnChangedSomeSum);
 			Data.Children.Add(backData);
 			backData.UpdateInputStates();
+		}
+
+		public void AddMovedBackData(IEnumerable<FullBackData> backDatas)
+		{
+			foreach (FullBackData backData in backDatas)
+			{
+				backData.IsChecked = false;
+				AddBackData(backData);
+				onAdded?.Invoke(backData);
+			}
+			OnChangedSomeSum();
 		}
 
 		public void SetViewByTemplate(DocumentTemplateType templateType)

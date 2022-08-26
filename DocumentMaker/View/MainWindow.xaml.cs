@@ -477,6 +477,26 @@ namespace DocumentMaker
 			OtherDataFooter.UpdateAllSum();
 		}
 
+		public void MoveFromDevelopment(object sender, RoutedEventArgs e)
+		{
+			MoveBackData(DataHeader, BacksData, DataFooter, ReworkDataHeader, ReworkDataFooter);
+		}
+
+		public void MoveFromSupport(object sender, RoutedEventArgs e)
+		{
+			MoveBackData(ReworkDataHeader, ReworkBacksData, ReworkDataFooter, DataHeader, DataFooter);
+		}
+
+		public void MoveFromOtherToDevelopment(object sender, RoutedEventArgs e)
+		{
+			MoveBackData(OtherDataHeader, OtherBacksData, OtherDataFooter, DataHeader, DataFooter);
+		}
+
+		public void MoveFromOtherToSupport(object sender, RoutedEventArgs e)
+		{
+			MoveBackData(OtherDataHeader, OtherBacksData, OtherDataFooter, ReworkDataHeader, ReworkDataFooter);
+		}
+
 		public IEnumerable<FullBackData> DeleteSelectedBackData(StackPanel stackPanel)
 		{
 			DmxFile selectedFile = controller.GetSelectedFile();
@@ -488,21 +508,31 @@ namespace DocumentMaker
 					if (backData.IsChecked.HasValue && backData.IsChecked.Value)
 					{
 						elems.Add(elem);
+						backData.UnsubscribeAllEvents();
 						controller.BackDataControllers.Remove(backData.Controller);
 						selectedFile?.BackDataModels.Remove(backData.Controller.GetModel());
 					}
 				}
 			}
 
+			List<FullBackData> removed = new List<FullBackData>();
 			foreach (UIElement elem in elems)
 			{
 				stackPanel.Children.Remove(elem);
+				removed.Add((FullBackData)elem);
 			}
+			return removed;
+		}
 
-			foreach (UIElement elem in elems)
-			{
-				yield return (FullBackData)elem;
-			}
+		public void MoveBackData(FullBackDataHeader headerFrom, StackPanel dataFrom, FullBackDataFooter footerFrom, FullBackDataHeader headerTo, FullBackDataFooter footerTo)
+		{
+			IEnumerable<FullBackData> removed = DeleteSelectedBackData(dataFrom);
+			headerFrom.UpdateIsCheckedState();
+			footerFrom.UpdateBackDataIds();
+			footerFrom.UpdateAllSum();
+			footerTo.AddMovedBackData(removed);
+			headerTo.UpdateIsCheckedState();
+			footerTo.UpdateBackDataIds();
 		}
 
 		private void SetDataFromControllerBackDatas()

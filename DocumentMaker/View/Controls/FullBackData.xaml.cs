@@ -458,5 +458,11 @@ namespace DocumentMaker.View.Controls
 			else if (sender is CheckBox checkBox)
 				onSelectionChanged?.Invoke();
 		}
+
+		public void UnsubscribeAllEvents()
+		{
+			onChangedSum = null;
+			onSelectionChanged = null;
+		}
 	}
 }

@@ -228,7 +228,10 @@
                                 Text="Розробка" />
 
                             <Menu>
-                                <MenuItem Padding="7" ToolTip="Перекинути обрані елементи в підтримку">
+                                <MenuItem
+                                    Padding="7"
+                                    Click="MoveFromDevelopment"
+                                    ToolTip="Перекинути обрані елементи в підтримку">
                                     <MenuItem.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon
@@ -293,7 +296,10 @@
                                 Text="Підтримка" />
 
                             <Menu>
-                                <MenuItem Padding="7" ToolTip="Перекинути обрані елементи в розробку">
+                                <MenuItem
+                                    Padding="7"
+                                    Click="MoveFromSupport"
+                                    ToolTip="Перекинути обрані елементи в розробку">
                                     <MenuItem.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon
@@ -370,7 +376,10 @@
                                 Text="Інше" />
 
                             <Menu>
-                                <MenuItem Padding="7" ToolTip="Перекинути обрані елементи в розробку">
+                                <MenuItem
+                                    Padding="7"
+                                    Click="MoveFromOtherToDevelopment"
+                                    ToolTip="Перекинути обрані елементи в розробку">
                                     <MenuItem.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon
@@ -382,7 +391,10 @@
                                         </StackPanel>
                                     </MenuItem.Header>
                                 </MenuItem>
-                                <MenuItem Padding="7" ToolTip="Перекинути обрані елементи в підтримку">
+                                <MenuItem
+                                    Padding="7"
+                                    Click="MoveFromOtherToSupport"
+                                    ToolTip="Перекинути обрані елементи в підтримку">
                                     <MenuItem.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon
