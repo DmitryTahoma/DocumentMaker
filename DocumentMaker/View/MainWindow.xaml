@@ -76,7 +76,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Menu Grid.Column="1">
-                    <MenuItem Click="OpenFileClick" ToolTip="Файл">
+                    <MenuItem ToolTip="Файл">
                         <MenuItem.Header>
                             <materialDesign:PackIcon
                                 Width="{Binding ElementName=WindowContext, Path=IconSize}"
@@ -87,7 +87,7 @@
                         </MenuItem.Header>
 
                         <MenuItem
-                            Click="CloseFileClick"
+                            Click="OpenFileClick"
                             Header="Відкрити"
                             Icon="{materialDesign:PackIcon Kind=FileOutline}" />
                         <MenuItem
@@ -344,7 +344,7 @@
                                 </MenuItem>
                             </Menu>
 
-                            <uc:FullBackDataHeader x:Name="ReworkDataHeader" Data="{Binding ElementName=ReworkBacksData}"/>
+                            <uc:FullBackDataHeader x:Name="ReworkDataHeader" Data="{Binding ElementName=ReworkBacksData}" />
                             <StackPanel x:Name="ReworkBacksData" Orientation="Vertical" />
                             <uc:FullBackDataFooter x:Name="ReworkDataFooter" Data="{Binding ElementName=ReworkBacksData}" />
 
