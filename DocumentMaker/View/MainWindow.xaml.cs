@@ -135,11 +135,11 @@ namespace DocumentMaker
 			OtherDataHeader.HideWorkTypeLabel();
 			OtherDataHeader.SubscribeSelectionChanged((b) =>
 			{
-				if(b.HasValue)
+				if (b.HasValue)
 				{
-					foreach(UIElement elem in OtherkBacksData.Children)
+					foreach (UIElement elem in OtherBacksData.Children)
 					{
-						if(elem is FullBackData backData)
+						if (elem is FullBackData backData)
 						{
 							backData.SetIsCheckedWithoutCallback(b.Value);
 						}
@@ -157,7 +157,7 @@ namespace DocumentMaker
 				OtherDataHeader.UpdateIsCheckedState();
 
 				DmxFile selectedFile = controller.GetSelectedFile();
-				if(selectedFile != null)
+				if (selectedFile != null)
 				{
 					selectedFile.AddBackModel(x.Controller.GetModel());
 				}
@@ -453,11 +453,63 @@ namespace DocumentMaker
 			}
 		}
 
+		public void DeleteSelectedDevelopment(object sender, RoutedEventArgs e)
+		{
+			DeleteSelectedBackData(BacksData);
+			DataHeader.UpdateIsCheckedState();
+			DataFooter.UpdateBackDataIds();
+			DataFooter.UpdateAllSum();
+		}
+
+		public void DeleteSelectedSupport(object sender, RoutedEventArgs e)
+		{
+			DeleteSelectedBackData(ReworkBacksData);
+			ReworkDataHeader.UpdateIsCheckedState();
+			ReworkDataFooter.UpdateBackDataIds();
+			ReworkDataFooter.UpdateAllSum();
+		}
+
+		public void DeleteSelectedOther(object sender, RoutedEventArgs e)
+		{
+			DeleteSelectedBackData(OtherBacksData);
+			OtherDataHeader.UpdateIsCheckedState();
+			OtherDataFooter.UpdateBackDataIds();
+			OtherDataFooter.UpdateAllSum();
+		}
+
+		public IEnumerable<FullBackData> DeleteSelectedBackData(StackPanel stackPanel)
+		{
+			DmxFile selectedFile = controller.GetSelectedFile();
+			List<UIElement> elems = new List<UIElement>();
+			foreach (UIElement elem in stackPanel.Children)
+			{
+				if (elem is FullBackData backData)
+				{
+					if (backData.IsChecked.HasValue && backData.IsChecked.Value)
+					{
+						elems.Add(elem);
+						controller.BackDataControllers.Remove(backData.Controller);
+						selectedFile?.BackDataModels.Remove(backData.Controller.GetModel());
+					}
+				}
+			}
+
+			foreach (UIElement elem in elems)
+			{
+				stackPanel.Children.Remove(elem);
+			}
+
+			foreach (UIElement elem in elems)
+			{
+				yield return (FullBackData)elem;
+			}
+		}
+
 		private void SetDataFromControllerBackDatas()
 		{
 			SetDataFromControllerBackDatas(BacksData);
 			SetDataFromControllerBackDatas(ReworkBacksData);
-			SetDataFromControllerBackDatas(OtherkBacksData);
+			SetDataFromControllerBackDatas(OtherBacksData);
 		}
 
 		private void SetDataFromControllerBackDatas(StackPanel stackPanel)
@@ -493,9 +545,9 @@ namespace DocumentMaker
 					backData.SetGameNameList(controller.GameNameList);
 				}
 			}
-			foreach(UIElement control in OtherkBacksData.Children)
+			foreach (UIElement control in OtherBacksData.Children)
 			{
-				if(control is FullBackData backData)
+				if (control is FullBackData backData)
 				{
 					backData.SetViewByTemplate(controller.TemplateType);
 					backData.SetGameNameList(controller.GameNameList);
@@ -600,6 +652,10 @@ namespace DocumentMaker
 				controller.SetSelectedFile(selectedFile);
 				UpdateViewBackData();
 				UpdateActSum();
+
+				if (BacksData.Children.Count <= 0) DataFooter.UpdateAllSum();
+				if (ReworkBacksData.Children.Count <= 0) ReworkDataFooter.UpdateAllSum();
+				if (OtherBacksData.Children.Count <= 0) OtherDataFooter.UpdateAllSum();
 			}
 		}
 
@@ -620,10 +676,10 @@ namespace DocumentMaker
 			OtherDataFooter.ClearData();
 			foreach (FullBackDataController backDataController in controller.BackDataControllers)
 			{
-				if(backDataController.IsOtherType)
+				if (backDataController.IsOtherType)
 				{
 					FullBackData backData = OtherDataFooter.AddLoadedBackData(backDataController);
-					if(backData != null)
+					if (backData != null)
 					{
 						backData.SubscribeSelectionChanged(OtherDataHeader.UpdateIsCheckedState);
 					}
@@ -631,7 +687,7 @@ namespace DocumentMaker
 				else if (backDataController.IsRework)
 				{
 					FullBackData backData = ReworkDataFooter.AddLoadedBackData(backDataController);
-					if(backData != null)
+					if (backData != null)
 					{
 						backData.SubscribeSelectionChanged(ReworkDataHeader.UpdateIsCheckedState);
 					}
@@ -678,7 +734,7 @@ namespace DocumentMaker
 			{
 				UpdateActSumBackDataPanel(BacksData, sum);
 				UpdateActSumBackDataPanel(ReworkBacksData, sum);
-				UpdateActSumBackDataPanel(OtherkBacksData, sum);
+				UpdateActSumBackDataPanel(OtherBacksData, sum);
 				DataFooter?.SetActSum(sum);
 				ReworkDataFooter?.SetActSum(sum);
 				OtherDataFooter?.SetActSum(sum);
@@ -702,8 +758,8 @@ namespace DocumentMaker
 
 		private void UpdateSaldo()
 		{
-			if (uint.TryParse(ActSum, out uint sum) 
-				&& uint.TryParse(DataFooter.AllSum, out uint curSum) 
+			if (uint.TryParse(ActSum, out uint sum)
+				&& uint.TryParse(DataFooter.AllSum, out uint curSum)
 				&& uint.TryParse(ReworkDataFooter.AllSum, out uint curSumRework)
 				&& uint.TryParse(OtherDataFooter.AllSum, out uint curSumOther))
 			{

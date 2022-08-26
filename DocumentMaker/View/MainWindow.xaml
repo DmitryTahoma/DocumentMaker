@@ -240,7 +240,10 @@
                                         </StackPanel>
                                     </MenuItem.Header>
                                 </MenuItem>
-                                <MenuItem Padding="7" ToolTip="Видалити обрані елементи">
+                                <MenuItem
+                                    Padding="7"
+                                    Click="DeleteSelectedDevelopment"
+                                    ToolTip="Видалити обрані елементи">
                                     <MenuItem.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon
@@ -302,7 +305,10 @@
                                         </StackPanel>
                                     </MenuItem.Header>
                                 </MenuItem>
-                                <MenuItem Padding="7" ToolTip="Видалити обрані елементи">
+                                <MenuItem
+                                    Padding="7"
+                                    Click="DeleteSelectedSupport"
+                                    ToolTip="Видалити обрані елементи">
                                     <MenuItem.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon
@@ -388,7 +394,10 @@
                                         </StackPanel>
                                     </MenuItem.Header>
                                 </MenuItem>
-                                <MenuItem Padding="7" ToolTip="Видалити обрані елементи">
+                                <MenuItem
+                                    Padding="7"
+                                    Click="DeleteSelectedOther"
+                                    ToolTip="Видалити обрані елементи">
                                     <MenuItem.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon
@@ -402,9 +411,9 @@
                                 </MenuItem>
                             </Menu>
 
-                            <uc:FullBackDataHeader x:Name="OtherDataHeader" Data="{Binding ElementName=OtherkBacksData}" />
-                            <StackPanel x:Name="OtherkBacksData" Orientation="Vertical" />
-                            <uc:FullBackDataFooter x:Name="OtherDataFooter" Data="{Binding ElementName=OtherkBacksData}" />
+                            <uc:FullBackDataHeader x:Name="OtherDataHeader" Data="{Binding ElementName=OtherBacksData}" />
+                            <StackPanel x:Name="OtherBacksData" Orientation="Vertical" />
+                            <uc:FullBackDataFooter x:Name="OtherDataFooter" Data="{Binding ElementName=OtherBacksData}" />
 
                         </StackPanel>
                     </materialDesign:Card>

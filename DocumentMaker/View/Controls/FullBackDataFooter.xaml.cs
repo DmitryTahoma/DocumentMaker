@@ -66,7 +66,7 @@ namespace DocumentMaker.View.Controls
 
 		public void ClearData()
 		{
-			if(Data != null)
+			if (Data != null)
 			{
 				Data.Children.Clear();
 			}
@@ -175,6 +175,11 @@ namespace DocumentMaker.View.Controls
 					}
 				}
 			}
+		}
+
+		public void UpdateAllSum()
+		{
+			OnChangedSomeSum();
 		}
 	}
 }
