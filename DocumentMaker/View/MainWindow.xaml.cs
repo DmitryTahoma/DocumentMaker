@@ -192,8 +192,6 @@ namespace DocumentMaker
 			if (controller != null)
 			{
 				SetDataFromController();
-				AddLoadedBackData();
-				UpdateViewBackData();
 				string[] files = controller.GetOpenLaterFiles();
 				OpenFiles(files);
 				LoadFiles();
@@ -564,6 +562,8 @@ namespace DocumentMaker
 
 		private void AddLoadedBackData()
 		{
+			DataFooter.ClearData();
+			ReworkDataFooter.ClearData();
 			foreach (FullBackDataController backDataController in controller.BackDataControllers)
 			{
 				if (backDataController.IsRework)

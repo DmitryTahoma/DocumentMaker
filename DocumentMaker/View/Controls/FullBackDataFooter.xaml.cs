@@ -64,6 +64,14 @@ namespace DocumentMaker.View.Controls
 			onChangedSum += action;
 		}
 
+		public void ClearData()
+		{
+			if(Data != null)
+			{
+				Data.Children.Clear();
+			}
+		}
+
 		public FullBackData AddLoadedBackData(FullBackDataController controller)
 		{
 			if (Data != null)
