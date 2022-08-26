@@ -14,6 +14,7 @@ namespace DocumentMaker.Model.Controls
 		public string WeightText { get; set; }
 		public string SumText { get; set; }
 		public uint WorkObjectId { get; set; }
+		public bool IsOtherType { get; set; }
 		public ObservableRangeCollection<WorkObject> WorkTypesList { get; private set; }
 	}
 }

@@ -30,6 +30,7 @@ namespace DocumentMaker.Controller.Controls
 		public string SumText { get => model.SumText; set => model.SumText = value; }
 		public uint WorkObjectId { get => model.WorkObjectId; set => model.WorkObjectId = value; }
 		public uint ActSum { get; set; }
+		public bool IsOtherType { get => model.IsOtherType; set => model.IsOtherType = value; }
 		public ObservableRangeCollection<WorkObject> WorkTypesList => model.WorkTypesList;
 
 		public new FullBackDataModel GetModel()

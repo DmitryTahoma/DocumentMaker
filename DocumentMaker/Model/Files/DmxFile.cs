@@ -1,4 +1,5 @@
-﻿using Dml.Model.Files;
+﻿using Dml.Model.Back;
+using Dml.Model.Files;
 using Dml.Model.Session;
 using DocumentMaker.Model.Controls;
 using System;
@@ -27,6 +28,13 @@ namespace DocumentMaker.Model.Files
 
 				backDataModels = new List<FullBackDataModel>();
 				loader.SetLoadedListProperties(backDataModels);
+				foreach(FullBackDataModel model in backDataModels)
+				{
+					if(model.Type == BackType.Other)
+					{
+						model.IsOtherType = true;
+					}
+				}
 				SetDefaultSums();
 
 				Loaded = true;

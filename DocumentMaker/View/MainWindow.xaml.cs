@@ -52,18 +52,27 @@ namespace DocumentMaker
 			controller.Load();
 			SetWindowSettingsFromController();
 
+			folderBrowserDialog = new FolderBrowserDialog();
+			openFileDialog = new OpenFileDialog() { Multiselect = true, Filter = "DocumentMaker files (*" + DmxFile.Extension + ")|*" + DmxFile.Extension };
+			inputingValidator = new InputingValidator();
+
 			InitializeComponent();
+			InitializeComponentFromCode();
+		}
+
+		private void InitializeComponentFromCode()
+		{
 			TechnicalTaskDatePicker.Language = XmlLanguage.GetLanguage(System.Globalization.CultureInfo.CurrentCulture.IetfLanguageTag);
 			ActDatePicker.Language = XmlLanguage.GetLanguage(System.Globalization.CultureInfo.CurrentCulture.IetfLanguageTag);
-			DataHeader.HideWorkTypeLabel();
 
+			DataHeader.HideWorkTypeLabel();
 			DataHeader.SubscribeSelectionChanged((b) =>
 			{
 				if (b.HasValue)
 				{
 					foreach (UIElement elem in BacksData.Children)
 					{
-						if(elem is FullBackData backData)
+						if (elem is FullBackData backData)
 						{
 							backData.SetIsCheckedWithoutCallback(b.Value);
 						}
@@ -73,6 +82,7 @@ namespace DocumentMaker
 			DataFooter.SubscribeAddition((x) =>
 			{
 				x.Controller.IsRework = false;
+				x.Controller.IsOtherType = false;
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
 				x.SetGameNameList(controller.GameNameList);
@@ -104,6 +114,7 @@ namespace DocumentMaker
 			ReworkDataFooter.SubscribeAddition((x) =>
 			{
 				x.Controller.IsRework = true;
+				x.Controller.IsOtherType = false;
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
 				x.SetWorkTypesList(controller.CurrentWorkTypesList);
@@ -121,9 +132,38 @@ namespace DocumentMaker
 			});
 			ReworkDataFooter.SubscribeChangingSum(UpdateSaldo);
 
-			folderBrowserDialog = new FolderBrowserDialog();
-			openFileDialog = new OpenFileDialog() { Multiselect = true, Filter = "DocumentMaker files (*" + DmxFile.Extension + ")|*" + DmxFile.Extension };
-			inputingValidator = new InputingValidator();
+			OtherDataHeader.HideWorkTypeLabel();
+			OtherDataHeader.SubscribeSelectionChanged((b) =>
+			{
+				if(b.HasValue)
+				{
+					foreach(UIElement elem in OtherkBacksData.Children)
+					{
+						if(elem is FullBackData backData)
+						{
+							backData.SetIsCheckedWithoutCallback(b.Value);
+						}
+					}
+				}
+			});
+			OtherDataFooter.SubscribeAddition((x) =>
+			{
+				x.Controller.IsOtherType = true;
+				controller.BackDataControllers.Add(x.Controller);
+				x.SetViewByTemplate(controller.TemplateType);
+				x.SetGameNameList(controller.GameNameList);
+				x.SubscribeSelectionChanged(OtherDataHeader.UpdateIsCheckedState);
+				UpdateActSum();
+				OtherDataHeader.UpdateIsCheckedState();
+
+				DmxFile selectedFile = controller.GetSelectedFile();
+				if(selectedFile != null)
+				{
+					selectedFile.AddBackModel(x.Controller.GetModel());
+				}
+				x.UpdateInputStates();
+			});
+			OtherDataFooter.SubscribeChangingSum(UpdateSaldo);
 
 			ActSumInput.CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
 		}
@@ -417,6 +457,7 @@ namespace DocumentMaker
 		{
 			SetDataFromControllerBackDatas(BacksData);
 			SetDataFromControllerBackDatas(ReworkBacksData);
+			SetDataFromControllerBackDatas(OtherkBacksData);
 		}
 
 		private void SetDataFromControllerBackDatas(StackPanel stackPanel)
@@ -452,10 +493,22 @@ namespace DocumentMaker
 					backData.SetGameNameList(controller.GameNameList);
 				}
 			}
+			foreach(UIElement control in OtherkBacksData.Children)
+			{
+				if(control is FullBackData backData)
+				{
+					backData.SetViewByTemplate(controller.TemplateType);
+					backData.SetGameNameList(controller.GameNameList);
+				}
+			}
+
 			DataHeader.SetViewByTemplate(controller.TemplateType);
 			ReworkDataHeader.SetViewByTemplate(controller.TemplateType);
+			OtherDataHeader.SetViewByTemplate(controller.TemplateType);
+
 			DataFooter.SetViewByTemplate(controller.TemplateType);
 			ReworkDataFooter.SetViewByTemplate(controller.TemplateType);
+			OtherDataFooter.SetViewByTemplate(controller.TemplateType);
 		}
 
 		private void SetDataFromController()
@@ -564,9 +617,18 @@ namespace DocumentMaker
 		{
 			DataFooter.ClearData();
 			ReworkDataFooter.ClearData();
+			OtherDataFooter.ClearData();
 			foreach (FullBackDataController backDataController in controller.BackDataControllers)
 			{
-				if (backDataController.IsRework)
+				if(backDataController.IsOtherType)
+				{
+					FullBackData backData = OtherDataFooter.AddLoadedBackData(backDataController);
+					if(backData != null)
+					{
+						backData.SubscribeSelectionChanged(OtherDataHeader.UpdateIsCheckedState);
+					}
+				}
+				else if (backDataController.IsRework)
 				{
 					FullBackData backData = ReworkDataFooter.AddLoadedBackData(backDataController);
 					if(backData != null)
@@ -585,6 +647,7 @@ namespace DocumentMaker
 			}
 			DataFooter.UpdateBackDataIds();
 			ReworkDataFooter.UpdateBackDataIds();
+			OtherDataFooter.UpdateBackDataIds();
 		}
 
 		private void SetSelectedFile(string filename)
@@ -615,8 +678,10 @@ namespace DocumentMaker
 			{
 				UpdateActSumBackDataPanel(BacksData, sum);
 				UpdateActSumBackDataPanel(ReworkBacksData, sum);
+				UpdateActSumBackDataPanel(OtherkBacksData, sum);
 				DataFooter?.SetActSum(sum);
 				ReworkDataFooter?.SetActSum(sum);
+				OtherDataFooter?.SetActSum(sum);
 			}
 			UpdateSaldo();
 		}
@@ -637,9 +702,12 @@ namespace DocumentMaker
 
 		private void UpdateSaldo()
 		{
-			if (uint.TryParse(ActSum, out uint sum) && uint.TryParse(DataFooter.AllSum, out uint curSum) && uint.TryParse(ReworkDataFooter.AllSum, out uint curSumRework))
+			if (uint.TryParse(ActSum, out uint sum) 
+				&& uint.TryParse(DataFooter.AllSum, out uint curSum) 
+				&& uint.TryParse(ReworkDataFooter.AllSum, out uint curSumRework)
+				&& uint.TryParse(OtherDataFooter.AllSum, out uint curSumOther))
 			{
-				ActSaldo = ((int)sum - (int)(curSum + curSumRework)).ToString();
+				ActSaldo = ((int)sum - (int)(curSum + curSumRework + curSumOther)).ToString();
 				ActSaldoInput.Text = ActSaldo;
 			}
 		}
