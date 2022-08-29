@@ -375,5 +375,10 @@ namespace DocumentMaker.Model
 				backDataEnum.Current.SumText = sumsEnum.Current.ToString();
 			}
 		}
+
+		public void RandomizeReworkWorkTypes(IEnumerable<KeyValuePair<bool, FullBackDataModel>> backDatas)
+		{
+			BackDataRandomizer.ByWorkTypeName(backDatas, TemplateType);
+		}
 	}
 }

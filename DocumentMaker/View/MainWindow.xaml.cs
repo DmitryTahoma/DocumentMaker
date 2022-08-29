@@ -575,6 +575,23 @@ namespace DocumentMaker
 			inputingValidator.UIntInputing_PreviewTextInput(sender, e);
 		}
 
+		private void RandomizeReworkWorkTypes(object sender, RoutedEventArgs e)
+		{
+			List<FullBackDataController> selectedReworkElems = new List<FullBackDataController>();
+			foreach (UIElement elem in ReworkBacksData.Children)
+			{
+				if (elem is FullBackData backData && backData.IsChecked.HasValue && backData.IsChecked.Value)
+				{
+					selectedReworkElems.Add(backData.Controller);
+				}
+			}
+
+			controller.TrimAllStrings();
+			controller.RandomizeReworkWorkTypes(selectedReworkElems);
+			SetDataFromController();
+			SetDataFromControllerBackDatas();
+		}
+
 		#endregion
 
 		#region Methods

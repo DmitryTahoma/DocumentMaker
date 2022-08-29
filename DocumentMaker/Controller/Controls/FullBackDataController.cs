@@ -49,5 +49,13 @@ namespace DocumentMaker.Controller.Controls
 			}
 			return false;
 		}
+
+		public override void TrimAllStrings()
+		{
+			base.TrimAllStrings();
+
+			WeightText = WeightText?.Trim();
+			SumText = SumText?.Trim();
+		}
 	}
 }

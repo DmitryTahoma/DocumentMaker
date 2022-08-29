@@ -63,5 +63,16 @@ namespace Dml.Controller
 
 			return false;
 		}
+
+		public virtual void TrimAllStrings()
+		{
+			EpisodeNumberText = EpisodeNumberText?.Trim();
+			BackNumberText = BackNumberText?.Trim();
+			BackName = BackName?.Trim();
+			BackCountRegionsText = BackCountRegionsText?.Trim();
+			GameName = GameName?.Trim();
+			SpentTimeText = SpentTimeText?.Trim();
+			OtherText = OtherText?.Trim();
+		}
 	}
 }

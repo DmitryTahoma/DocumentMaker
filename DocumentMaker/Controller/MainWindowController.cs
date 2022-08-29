@@ -313,5 +313,39 @@ namespace DocumentMaker.Controller
 
 			model.CorrectSupport(minSum, takeSumFromDevelopment, developmentModels, supportModels);
 		}
+
+		public void RandomizeReworkWorkTypes(IEnumerable<FullBackDataController> checkedBackData)
+		{
+			IEnumerable<FullBackDataModel> checkedBackDataModels = checkedBackData.Select(x => x.GetModel());
+
+			model.RandomizeReworkWorkTypes(
+				GetModels()
+				.Where(x => x.IsOtherType == false && x.IsRework == true)
+				.Select(y => new KeyValuePair<bool, FullBackDataModel>(checkedBackDataModels.Contains(y), y)));
+		}
+
+		public void TrimAllStrings()
+		{
+			TechnicalTaskDateText = TechnicalTaskDateText?.Trim();
+			ActDateText = ActDateText?.Trim();
+			AdditionNumText = AdditionNumText?.Trim();
+			SelectedHuman = SelectedHuman?.Trim();
+			HumanIdText = HumanIdText?.Trim();
+			AddressText = AddressText?.Trim();
+			PaymentAccountText = PaymentAccountText?.Trim();
+			BankName = BankName?.Trim();
+			MfoText = MfoText?.Trim();
+			ContractNumberText = ContractNumberText?.Trim();
+			ContractDateText = ContractDateText?.Trim();
+			ContractReworkNumberText = ContractReworkNumberText?.Trim();
+			ContractReworkDateText = ContractReworkDateText?.Trim();
+			CityName = CityName?.Trim();
+			ActSum = ActSum?.Trim();
+
+			foreach (FullBackDataController backData in BackDataControllers)
+			{
+				backData.TrimAllStrings();
+			}
+		}
 	}
 }

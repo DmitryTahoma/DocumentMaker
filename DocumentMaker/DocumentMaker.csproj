@@ -88,6 +88,7 @@
     <Compile Include="Controller\Controls\FullBackDataFooterController.cs" />
     <Compile Include="Model\Algorithm\MixingSumAlgorithm.cs" />
     <Compile Include="Model\Algorithm\NumberToWords.cs" />
+    <Compile Include="Model\Algorithm\BackDataRandomizer.cs" />
     <Compile Include="Model\Back\WorkObject.cs" />
     <Compile Include="Model\Controls\FullBackDataModel.cs" />
     <Compile Include="Model\Files\DmxFile.cs" />

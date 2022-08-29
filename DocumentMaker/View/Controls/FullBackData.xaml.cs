@@ -257,6 +257,14 @@ namespace DocumentMaker.View.Controls
 					break;
 				}
 			}
+			foreach (WorkObject workObject in WorkTypesList)
+			{
+				if (workObject.Id == controller.WorkObjectId)
+				{
+					WorkTypeComboBox.SelectedItem = workObject;
+					break;
+				}
+			}
 			EpisodeNumberComboBox.Text = controller.EpisodeNumberText;
 			BackNumberTextInput.Text = controller.BackNumberText;
 			BackNameInput.Text = controller.BackName;

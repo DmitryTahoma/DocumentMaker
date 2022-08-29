@@ -326,7 +326,10 @@
                                         </StackPanel>
                                     </MenuItem.Header>
                                 </MenuItem>
-                                <MenuItem Padding="7" ToolTip="Заміксувати типи робіт">
+                                <MenuItem
+                                    Padding="7"
+                                    Click="RandomizeReworkWorkTypes"
+                                    ToolTip="Заміксувати типи робіт">
                                     <MenuItem.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon
