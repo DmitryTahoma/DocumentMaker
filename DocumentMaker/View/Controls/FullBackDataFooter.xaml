@@ -23,21 +23,23 @@
                 <ColumnDefinition Width="5*" />
             </Grid.ColumnDefinitions>
 
-            <MenuItem
-                Width="60"
-                Padding="19,0,0,0"
-                HorizontalAlignment="Center"
-                Click="AddBtnClick"
-                ToolTip="Добавити">
-                <MenuItem.Header>
-                    <materialDesign:PackIcon
-                        Width="24"
-                        Height="24"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Kind="PlusCircleOutline" />
-                </MenuItem.Header>
-            </MenuItem>
+            <Menu>
+                <MenuItem
+                    Width="60"
+                    Padding="19,0,0,0"
+                    HorizontalAlignment="Center"
+                    Click="AddBtnClick"
+                    ToolTip="Добавити">
+                    <MenuItem.Header>
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Kind="PlusCircleOutline" />
+                    </MenuItem.Header>
+                </MenuItem>
+            </Menu>
 
             <TextBlock
                 Grid.Column="2"
