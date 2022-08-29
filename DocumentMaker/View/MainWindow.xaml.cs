@@ -33,6 +33,8 @@ namespace DocumentMaker
 		public static readonly DependencyProperty AdditionNumTextProperty;
 		public static readonly DependencyProperty ActSumProperty;
 		public static readonly DependencyProperty ActSaldoProperty;
+		public static readonly DependencyProperty ContentVisibilityProperty;
+		public static readonly DependencyProperty ButtonOpenContentVisibilityProperty;
 
 		static MainWindow()
 		{
@@ -41,6 +43,8 @@ namespace DocumentMaker
 			AdditionNumTextProperty = DependencyProperty.Register("AdditionNumText", typeof(string), typeof(MainWindow));
 			ActSumProperty = DependencyProperty.Register("ActSum", typeof(string), typeof(MainWindowController));
 			ActSaldoProperty = DependencyProperty.Register("ActSaldo", typeof(string), typeof(MainWindowController));
+			ContentVisibilityProperty = DependencyProperty.Register("ContentVisibility", typeof(Visibility), typeof(MainWindow));
+			ButtonOpenContentVisibilityProperty = DependencyProperty.Register("ButtonOpenContentVisibility", typeof(Visibility), typeof(MainWindow));
 		}
 
 		#endregion
@@ -59,6 +63,9 @@ namespace DocumentMaker
 			folderBrowserDialog = new FolderBrowserDialog();
 			openFileDialog = new OpenFileDialog() { Multiselect = true, Filter = "DocumentMaker files (*" + DmxFile.Extension + ")|*" + DmxFile.Extension };
 			inputingValidator = new InputingValidator();
+
+			ContentVisibility = Visibility.Hidden;
+			ButtonOpenContentVisibility = Visibility.Visible;
 
 			InitializeComponent();
 			InitializeComponentFromCode();
@@ -255,6 +262,10 @@ namespace DocumentMaker
 		}
 
 		public double IconSize { get; } = 24;
+
+		public Visibility ContentVisibility { get => (Visibility)GetValue(ContentVisibilityProperty); set => SetValue(ContentVisibilityProperty, value); }
+
+		public Visibility ButtonOpenContentVisibility { get => (Visibility)GetValue(ButtonOpenContentVisibilityProperty); set => SetValue(ButtonOpenContentVisibilityProperty, value); }
 
 		#endregion
 
@@ -588,6 +599,9 @@ namespace DocumentMaker
 		{
 			if (sender is System.Windows.Controls.ComboBox comboBox && comboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
 			{
+				ContentVisibility = Visibility.Visible;
+				ButtonOpenContentVisibility = Visibility.Hidden;
+
 				controller.SetDataFromFile(selectedFile);
 				SetDataFromController();
 				AddLoadedBackData();
@@ -598,6 +612,11 @@ namespace DocumentMaker
 				if (BacksData.Children.Count <= 0) DataFooter.UpdateAllSum();
 				if (ReworkBacksData.Children.Count <= 0) ReworkDataFooter.UpdateAllSum();
 				if (OtherBacksData.Children.Count <= 0) OtherDataFooter.UpdateAllSum();
+			}
+			else
+			{
+				ContentVisibility = Visibility.Hidden;
+				ButtonOpenContentVisibility = Visibility.Visible;
 			}
 		}
 
