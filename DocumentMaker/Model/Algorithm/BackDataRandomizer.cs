@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace DocumentMaker.Model.Algorithm
 {
-	static class BackDataRandomizer
+	internal static class BackDataRandomizer
 	{
 		public static void ByWorkTypeName(IEnumerable<KeyValuePair<bool, FullBackDataModel>> backDatas, DocumentTemplateType documentTemplate)
 		{

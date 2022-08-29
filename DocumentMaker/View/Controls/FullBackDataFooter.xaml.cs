@@ -1,7 +1,5 @@
 ﻿using Dml.Model.Template;
 using DocumentMaker.Controller.Controls;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,7 +27,7 @@ namespace DocumentMaker.View.Controls
 		private readonly FullBackDataFooterController controller;
 
 		private event ActionWithFullBackData onAdded;
-		private event Action onChangedSum;
+		private event ActionWithBool onChangedSum;
 
 		public FullBackDataFooter()
 		{
@@ -61,7 +59,7 @@ namespace DocumentMaker.View.Controls
 			onAdded += action;
 		}
 
-		public void SubscribeChangingSum(Action action)
+		public void SubscribeChangingSum(ActionWithBool action)
 		{
 			onChangedSum += action;
 		}
@@ -110,7 +108,7 @@ namespace DocumentMaker.View.Controls
 			}
 		}
 
-		private void OnChangedSomeSum()
+		private void OnChangedSomeSum(bool updateWeight = true)
 		{
 			if (Data != null)
 			{
@@ -127,7 +125,7 @@ namespace DocumentMaker.View.Controls
 				AllSum = sums.ToString();
 			}
 			UpdateWeight();
-			onChangedSum?.Invoke();
+			onChangedSum?.Invoke(updateWeight);
 		}
 
 		private void AddBackData(FullBackData backData)
@@ -192,7 +190,7 @@ namespace DocumentMaker.View.Controls
 
 		public void UpdateAllSum()
 		{
-			OnChangedSomeSum();
+			OnChangedSomeSum(false);
 		}
 	}
 }

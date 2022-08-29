@@ -70,6 +70,7 @@ namespace DocumentMaker.Controller
 		public string CityName { get => model.CityName; set => model.CityName = value; }
 		public string ActSum { get => model.ActSum; set => model.ActSum = value; }
 		public string ActSaldo { get => model.ActSaldo; set => model.ActSaldo = value; }
+		public bool NeedUpdateSum { get => model.NeedUpdateSum; set => model.NeedUpdateSum = value; }
 		public List<FullBackDataController> BackDataControllers { get; set; }
 		public IList<FullDocumentTemplate> DocumentTemplatesList => model.DocumentTemplatesList;
 		public IList<HumanData> HumanFullNameList => model.HumanFullNameList;
@@ -228,7 +229,8 @@ namespace DocumentMaker.Controller
 		{
 			TemplateType = file.TemplateType;
 			SelectedHuman = file.SelectedHuman;
-			ActSum = file.ActSum;
+			ActSum = file.ActSum ?? "0";
+			NeedUpdateSum = file.NeedUpdateSum;
 			BackDataControllers.Clear();
 			foreach (FullBackDataModel model in file.BackDataModels)
 			{

@@ -77,7 +77,7 @@ namespace DocumentMaker.View.Controls
 
 		public void UpdateIsCheckedState()
 		{
-			if(Data != null)
+			if (Data != null)
 			{
 				bool? state = null;
 
@@ -115,7 +115,7 @@ namespace DocumentMaker.View.Controls
 
 		private void NumberCheckedChanged(object sender, RoutedEventArgs e)
 		{
-			if (isCheckedChangedWithoutCallback) 
+			if (isCheckedChangedWithoutCallback)
 				isCheckedChangedWithoutCallback = false;
 			else if (sender is CheckBox checkBox)
 				onSelectionChanged?.Invoke(checkBox.IsChecked);

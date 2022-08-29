@@ -5,10 +5,10 @@ using Dml.Controller.Validation;
 using Dml.Model.Template;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Forms;
 using MessageBox = System.Windows.Forms.MessageBox;
-using System.IO;
 
 #if INCLUDED_UPDATER_API
 using UpdaterAPI;

@@ -27,6 +27,7 @@ namespace DocumentMaker.Controller.Controls
 		}
 
 		public string WeightText { get => model.WeightText; set => model.WeightText = value; }
+		public double Weight { get => model.Weight; set => model.Weight = value; }
 		public string SumText { get => model.SumText; set => model.SumText = value; }
 		public uint WorkObjectId { get => model.WorkObjectId; set => model.WorkObjectId = value; }
 		public uint ActSum { get; set; }

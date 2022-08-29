@@ -60,8 +60,9 @@ namespace DocumentMaker.View.Controls
 		private FullBackDataController controller;
 		private readonly InputingValidator inputingValidator;
 		private bool isCheckedChangedWithoutCallback;
+		private bool needUpdateWeight;
 
-		private event Action onChangedSum;
+		private event ActionWithBool onChangedSum;
 		private event Action onSelectionChanged;
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -76,6 +77,7 @@ namespace DocumentMaker.View.Controls
 
 			inputingValidator = new InputingValidator();
 			isCheckedChangedWithoutCallback = false;
+			needUpdateWeight = true;
 			SumTextInput.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
 			EpisodeNumberComboBox.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
 		}
@@ -241,7 +243,7 @@ namespace DocumentMaker.View.Controls
 			}
 		}
 
-		public void SubscribeChangedSum(Action action)
+		public void SubscribeChangedSum(ActionWithBool action)
 		{
 			onChangedSum += action;
 		}
@@ -272,7 +274,9 @@ namespace DocumentMaker.View.Controls
 			GameNameComboBox.Text = controller.GameName;
 			IsSketchCheckBox.IsChecked = controller.IsSketch;
 			OtherTextInput.Text = controller.OtherText;
+			needUpdateWeight = false;
 			SumTextInput.Text = controller.SumText;
+			needUpdateWeight = true;
 
 			UpdateInputStates();
 		}
@@ -296,8 +300,11 @@ namespace DocumentMaker.View.Controls
 
 		private void SumTextInputTextChanged(object sender, TextChangedEventArgs e)
 		{
-			onChangedSum?.Invoke();
-			UpdateWeight();
+			onChangedSum?.Invoke(needUpdateWeight);
+			if (needUpdateWeight)
+			{
+				UpdateWeight();
+			}
 		}
 
 		private void RegionsValidatingPreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -432,14 +439,29 @@ namespace DocumentMaker.View.Controls
 			return controller.Type;
 		}
 
-		public void SetActSum(uint actSum)
+		public void SetActSum(uint actSum, bool needUpdateSum)
 		{
 			controller.ActSum = actSum;
-			UpdateWeight();
+			if (needUpdateSum)
+			{
+				UpdateSumText();
+			}
 		}
 
-		public void UpdateWeight()
+		private void UpdateWeight()
 		{
+			if (uint.TryParse(SumText, out uint sum))
+			{
+				controller.Weight = (double)sum / controller.ActSum;
+			}
+		}
+
+		private void UpdateSumText()
+		{
+			needUpdateWeight = false;
+			SumText = ((int)(controller.ActSum * controller.Weight)).ToString();
+			SumTextInput.Text = controller.SumText;
+			needUpdateWeight = true;
 		}
 
 		public void NotifyPropertyChanged(string name)

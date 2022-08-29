@@ -84,6 +84,7 @@ namespace DocumentMaker.Model
 		public string CityName { get; set; }
 		public string ActSum { get; set; }
 		public string ActSaldo { get; set; }
+		public bool NeedUpdateSum { get; set; }
 		public IList<FullDocumentTemplate> DocumentTemplatesList => documentTemplates;
 		public IList<HumanData> HumanFullNameList => humanFullNameList;
 		public bool HasNoMovedFiles => exporter.HasNoMovedFiles;

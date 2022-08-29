@@ -366,7 +366,7 @@ namespace ActCreator.View.Controls
 		{
 			string selectedGame = controller.GameName;
 			controller.GameNameList.Clear();
-			if(gameObjects != null)
+			if (gameObjects != null)
 			{
 				controller.GameNameList.AddRange(gameObjects);
 			}

@@ -17,6 +17,7 @@ namespace DocumentMaker.Model.Files
 		}
 
 		public string ActSum { get; set; }
+		public bool NeedUpdateSum { get; set; }
 		public IList<FullBackDataModel> BackDataModels { get => backDataModels; }
 
 		public override void Load()
@@ -28,14 +29,16 @@ namespace DocumentMaker.Model.Files
 
 				backDataModels = new List<FullBackDataModel>();
 				loader.SetLoadedListProperties(backDataModels);
-				foreach(FullBackDataModel model in backDataModels)
+				foreach (FullBackDataModel model in backDataModels)
 				{
-					if(model.Type == BackType.Other)
+					if (model.Type == BackType.Other)
 					{
 						model.IsOtherType = true;
 					}
+					model.SumText = "0";
 				}
-				SetDefaultSums();
+				NeedUpdateSum = true;
+				SetDefaultWeights();
 
 				Loaded = true;
 			}
@@ -52,14 +55,28 @@ namespace DocumentMaker.Model.Files
 			backDataModels.Add(backDataModel);
 		}
 
-		private void SetDefaultSums()
+		private void SetDefaultWeights()
 		{
+			double totalTime = 0;
+			List<double> times = new List<double>();
+
 			foreach (FullBackDataModel model in backDataModels)
 			{
-				if (model.SumText == null)
+				int time = 0;
+				if (int.TryParse(model.SpentTimeText, out int spentTime))
 				{
-					model.SumText = model.SpentTimeText + "00";
+					time = spentTime;
 				}
+				totalTime += time;
+				times.Add(time);
+			}
+
+			IEnumerator<double> timesEnum = times.GetEnumerator();
+			IEnumerator<FullBackDataModel> backDataModelsEnum = backDataModels.GetEnumerator();
+
+			while (timesEnum.MoveNext() && backDataModelsEnum.MoveNext())
+			{
+				backDataModelsEnum.Current.Weight = timesEnum.Current / totalTime;
 			}
 		}
 

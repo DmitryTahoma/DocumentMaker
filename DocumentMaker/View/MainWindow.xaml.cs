@@ -100,7 +100,19 @@ namespace DocumentMaker
 					selectedFile.AddBackModel(x.Controller.GetModel());
 				}
 			});
-			DataFooter.SubscribeChangingSum(UpdateSaldo);
+			DataFooter.SubscribeChangingSum((changedWeight) =>
+			{
+				if (changedWeight)
+				{
+					controller.NeedUpdateSum = false;
+					DmxFile selectedFile = controller.GetSelectedFile();
+					if (selectedFile != null)
+					{
+						selectedFile.NeedUpdateSum = false;
+					}
+				}
+				UpdateSaldo();
+			});
 
 			ReworkDataHeader.SubscribeSelectionChanged((b) =>
 			{
@@ -134,7 +146,19 @@ namespace DocumentMaker
 				}
 				x.UpdateInputStates();
 			});
-			ReworkDataFooter.SubscribeChangingSum(UpdateSaldo);
+			ReworkDataFooter.SubscribeChangingSum((changedWeight) =>
+			{
+				if (changedWeight)
+				{
+					controller.NeedUpdateSum = false;
+					DmxFile selectedFile = controller.GetSelectedFile();
+					if (selectedFile != null)
+					{
+						selectedFile.NeedUpdateSum = false;
+					}
+				}
+				UpdateSaldo();
+			});
 
 			OtherDataHeader.HideWorkTypeLabel();
 			OtherDataHeader.SubscribeSelectionChanged((b) =>
@@ -167,7 +191,19 @@ namespace DocumentMaker
 				}
 				x.UpdateInputStates();
 			});
-			OtherDataFooter.SubscribeChangingSum(UpdateSaldo);
+			OtherDataFooter.SubscribeChangingSum((changedWeight) =>
+			{
+				if (changedWeight)
+				{
+					controller.NeedUpdateSum = false;
+					DmxFile selectedFile = controller.GetSelectedFile();
+					if (selectedFile != null)
+					{
+						selectedFile.NeedUpdateSum = false;
+					}
+				}
+				UpdateSaldo();
+			});
 
 			ActSumInput.CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
 		}
@@ -811,7 +847,7 @@ namespace DocumentMaker
 				{
 					if (elem is FullBackData backData)
 					{
-						backData.SetActSum(sum);
+						backData.SetActSum(sum, controller.NeedUpdateSum);
 					}
 				}
 			}

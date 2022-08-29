@@ -12,6 +12,7 @@ namespace DocumentMaker.Model.Controls
 		}
 
 		public string WeightText { get; set; }
+		public double Weight { get; set; }
 		public string SumText { get; set; }
 		public uint WorkObjectId { get; set; }
 		public bool IsOtherType { get; set; }

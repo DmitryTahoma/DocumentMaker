@@ -90,7 +90,7 @@ namespace ActCreator.View.Controls
 
 				AddBackData(backData);
 				onAdded?.Invoke(backData);
-				OnChangedSomeTime(); 
+				OnChangedSomeTime();
 				UpdateBackDataIds();
 			}
 		}
