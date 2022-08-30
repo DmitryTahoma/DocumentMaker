@@ -8,19 +8,27 @@ namespace DocumentMaker.Model
 {
 	public class FullDocumentTemplate : DocumentTemplate
 	{
-		private readonly ObservableRangeCollection<WorkObject> workTypesList;
+		private readonly ObservableRangeCollection<WorkObject> workTypesList, reworkWorkTypesList;
 
 		public FullDocumentTemplate() : base()
 		{
 			workTypesList = new ObservableRangeCollection<WorkObject>();
+			reworkWorkTypesList = new ObservableRangeCollection<WorkObject>();
 		}
 
 		public IList<WorkObject> WorkTypesList => workTypesList;
+		public IList<WorkObject> ReworkWorkTypesList => reworkWorkTypesList;
 
 		public void LoadWorkTypesList(string fullpath)
 		{
 			XlsxLoader loader = new XlsxLoader();
 			loader.LoadWorkTypes(fullpath, Type, workTypesList);
+		}
+
+		public void LoadReworkWorkTypesList(string fullpath)
+		{
+			XlsxLoader loader = new XlsxLoader();
+			loader.LoadWorkTypes(fullpath, Type, reworkWorkTypesList);
 		}
 	}
 }

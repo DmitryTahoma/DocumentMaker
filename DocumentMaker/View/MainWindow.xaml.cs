@@ -3,6 +3,7 @@ using Dml.Model.Template;
 using DocumentMaker.Controller;
 using DocumentMaker.Controller.Controls;
 using DocumentMaker.Model;
+using DocumentMaker.Model.Back;
 using DocumentMaker.Model.Files;
 using DocumentMaker.Model.OfficeFiles.Human;
 using DocumentMaker.View.Controls;
@@ -76,7 +77,6 @@ namespace DocumentMaker
 			TechnicalTaskDatePicker.Language = XmlLanguage.GetLanguage(System.Globalization.CultureInfo.CurrentCulture.IetfLanguageTag);
 			ActDatePicker.Language = XmlLanguage.GetLanguage(System.Globalization.CultureInfo.CurrentCulture.IetfLanguageTag);
 
-			DataHeader.HideWorkTypeLabel();
 			DataHeader.SubscribeSelectionChanged((b) =>
 			{
 				if (b.HasValue)
@@ -96,6 +96,7 @@ namespace DocumentMaker
 				x.Controller.IsOtherType = false;
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
+				x.SetWorkTypesList(controller.CurrentWorkTypesList);
 				x.SetGameNameList(controller.GameNameList);
 				x.SubscribeSelectionChanged(DataHeader.UpdateIsCheckedState);
 				UpdateActSum();
@@ -140,7 +141,7 @@ namespace DocumentMaker
 				x.Controller.IsOtherType = false;
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
-				x.SetWorkTypesList(controller.CurrentWorkTypesList);
+				x.SetWorkTypesList(controller.CurrentReworkWorkTypesList);
 				x.SetGameNameList(controller.GameNameList);
 				x.SubscribeSelectionChanged(ReworkDataHeader.UpdateIsCheckedState);
 				UpdateActSum();
@@ -712,11 +713,15 @@ namespace DocumentMaker
 
 		private void UpdateViewBackData()
 		{
+			IList<WorkObject> currentWorkTypesList = controller.CurrentWorkTypesList,
+				currentReworkWorkTypesList = controller.CurrentReworkWorkTypesList;
+
 			foreach (UIElement control in BacksData.Children)
 			{
 				if (control is FullBackData backData)
 				{
 					backData.SetViewByTemplate(controller.TemplateType);
+					backData.SetWorkTypesList(currentWorkTypesList);
 					backData.SetGameNameList(controller.GameNameList);
 				}
 			}
@@ -725,7 +730,7 @@ namespace DocumentMaker
 				if (control is FullBackData backData)
 				{
 					backData.SetViewByTemplate(controller.TemplateType);
-					backData.SetWorkTypesList(controller.CurrentWorkTypesList);
+					backData.SetWorkTypesList(currentReworkWorkTypesList);
 					backData.SetGameNameList(controller.GameNameList);
 				}
 			}
@@ -890,6 +895,7 @@ namespace DocumentMaker
 			{
 				"HumanData.xlsx",
 				"projectnames.xml",
+				"DevelopmentTypes.xlsx",
 				"SupportTypes.xlsx",
 			};
 

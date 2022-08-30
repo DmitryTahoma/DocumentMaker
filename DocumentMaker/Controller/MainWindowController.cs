@@ -19,6 +19,7 @@ namespace DocumentMaker.Controller
 	{
 		private const string saveFile = "session.xml";
 		private const string humansFile = "HumanData.xlsx";
+		private const string developmentTypesFile = "DevelopmentTypes.xlsx";
 		private const string supportTypesFile = "SupportTypes.xlsx";
 		private const string gameNamesFile = "projectnames.xml";
 
@@ -76,6 +77,7 @@ namespace DocumentMaker.Controller
 		public IList<HumanData> HumanFullNameList => model.HumanFullNameList;
 		public bool HasNoMovedFiles => model.HasNoMovedFiles;
 		public IList<WorkObject> CurrentWorkTypesList => DocumentTemplatesList.FirstOrDefault(x => x.Type == TemplateType)?.WorkTypesList;
+		public IList<WorkObject> CurrentReworkWorkTypesList => DocumentTemplatesList.FirstOrDefault(x => x.Type == TemplateType)?.ReworkWorkTypesList;
 		public IList<GameObject> GameNameList => model.GameNameList;
 
 		public void Save()
@@ -90,6 +92,7 @@ namespace DocumentMaker.Controller
 			string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			string saveFullpath = Path.Combine(path, saveFile);
 			string humansFullpath = Path.Combine(path, humansFile);
+			string developmentTypesFullpath = Path.Combine(path, developmentTypesFile);
 			string supportTypesFullpath = Path.Combine(path, supportTypesFile);
 			string gameNamesFullpath = Path.Combine(path, gameNamesFile);
 
@@ -99,7 +102,7 @@ namespace DocumentMaker.Controller
 				BackDataControllers.Add(new FullBackDataController(model));
 			}
 			model.LoadHumans(humansFullpath);
-			model.LoadWorkTypes(supportTypesFullpath);
+			model.LoadWorkTypes(developmentTypesFullpath, supportTypesFullpath);
 			model.LoadGameNames(gameNamesFullpath);
 		}
 

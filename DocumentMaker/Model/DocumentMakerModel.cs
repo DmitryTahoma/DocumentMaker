@@ -130,11 +130,12 @@ namespace DocumentMaker.Model
 			loader.LoadHumans(path, humanFullNameList);
 		}
 
-		public void LoadWorkTypes(string path)
+		public void LoadWorkTypes(string developmentWorksPath, string supportWorksPath)
 		{
 			foreach (FullDocumentTemplate template in documentTemplates)
 			{
-				template.LoadWorkTypesList(path);
+				template.LoadWorkTypesList(developmentWorksPath);
+				template.LoadReworkWorkTypesList(supportWorksPath);
 			}
 		}
 

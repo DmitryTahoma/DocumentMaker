@@ -375,14 +375,13 @@ namespace DocumentMaker.View.Controls
 				GridWithGeneralData.Visibility = IsOtherType ? Visibility.Hidden : Visibility.Visible;
 			}
 
-			bool isVisible = WorkTypesList.Count > 0;
 			if (WorkTypeComboBox != null)
 			{
-				WorkTypeComboBox.Visibility = controller.IsRework ? Visibility.Visible : Visibility.Collapsed;
+				WorkTypeComboBox.Visibility = !controller.IsOtherType ? Visibility.Visible : Visibility.Collapsed;
 			}
 			if (ColWithWorkTypeComboBox != null)
 			{
-				ColWithWorkTypeComboBox.Width = controller.IsRework ? new GridLength(1.5, GridUnitType.Star) : GridLength.Auto;
+				ColWithWorkTypeComboBox.Width = !controller.IsOtherType ? new GridLength(1.5, GridUnitType.Star) : GridLength.Auto;
 			}
 		}
 
