@@ -1,6 +1,5 @@
 ﻿using Dml.Model.Template;
 using DocumentMaker.Controller.Controls;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -119,6 +118,9 @@ namespace DocumentMaker.View.Controls
 							OtherText = firstChecked.OtherText,
 						};
 						backData.SetBackType(firstChecked.GetBackType());
+						backData.Controller.WorkObjectId = firstChecked.Controller.WorkObjectId;
+						backData.Controller.EpisodeNumberText = firstChecked.Controller.EpisodeNumberText;
+						backData.SetDataFromController();
 						InsertBackData(backData, index);
 						onAdded?.Invoke(backData);
 

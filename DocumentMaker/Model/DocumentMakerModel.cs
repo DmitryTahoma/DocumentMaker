@@ -33,7 +33,7 @@ namespace DocumentMaker.Model
 			documentTemplates = new ObservableCollection<FullDocumentTemplate>
 			{
 				new FullDocumentTemplate { Name = "Скриптувальник", Type = DocumentTemplateType.Scripter, },
-				new FullDocumentTemplate { Name = "Різник", Type = DocumentTemplateType.Cutter, },
+				new FullDocumentTemplate { Name = "Технічний дизайнер", Type = DocumentTemplateType.Cutter, },
 				new FullDocumentTemplate { Name = "Художник", Type = DocumentTemplateType.Painter, },
 				new FullDocumentTemplate { Name = "Моделлер", Type = DocumentTemplateType.Modeller, },
 			};

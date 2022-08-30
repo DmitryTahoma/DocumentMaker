@@ -21,6 +21,11 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using MessageBox = System.Windows.Forms.MessageBox;
 
+#if INCLUDED_UPDATER_API
+using UpdaterAPI;
+using UpdaterAPI.Resources;
+#endif
+
 namespace DocumentMaker
 {
 	/// <summary>

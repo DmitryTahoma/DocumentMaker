@@ -416,14 +416,18 @@ namespace DocumentMaker.View.Controls
 
 		public void SetGameNameList(IList<GameObject> gameObjects)
 		{
+			string selectedGame = controller.GameName;
+			string selectedEpisode = controller.EpisodeNumberText;
 			controller.GameNameList.Clear();
 			if (gameObjects != null)
 			{
 				controller.GameNameList.AddRange(gameObjects);
 			}
 			NotifyPropertyChanged(nameof(GameNameList));
-			GameNameComboBox.SelectedItem = GameNameList.FirstOrDefault(x => x.Name == controller.GameName);
+			GameNameComboBox.SelectedItem = GameNameList.FirstOrDefault(x => x.Name == selectedGame);
 			NotifyPropertyChanged(nameof(EpisodeNumberList));
+			controller.EpisodeNumberText = selectedEpisode;
+			EpisodeNumberComboBox.Text = controller.EpisodeNumberText;
 		}
 
 		public void SetBackType(BackType type)
