@@ -1,5 +1,6 @@
 ﻿using Dml.Model.Template;
 using DocumentMaker.Controller.Controls;
+using System.Collections;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -88,23 +89,52 @@ namespace DocumentMaker.View.Controls
 		{
 			if (Data != null)
 			{
-				FullBackData backData = new FullBackData { BackDataId = (uint)(Data.Children.Count + 1) };
-
-				if (Data.Children.Count > 0 && Data.Children[Data.Children.Count - 1] is FullBackData lastData)
+				bool addedOne = false;
+				FullBackData firstChecked;
+				do
 				{
-					backData.BackNumberText = lastData.BackNumberText;
-					backData.BackName = lastData.BackName;
-					backData.CountRegionsText = lastData.CountRegionsText;
-					backData.GameName = lastData.GameName;
-					backData.IsRework = lastData.IsRework;
-					backData.IsSketch = lastData.IsSketch;
-					backData.OtherText = lastData.OtherText;
-					backData.SetBackType(lastData.GetBackType());
-				}
+					firstChecked = null;
+					int index = 1;
+					foreach (UIElement elem in Data.Children)
+					{
+						if (elem is FullBackData fullBackData && fullBackData.IsChecked.HasValue && fullBackData.IsChecked.Value)
+						{
+							firstChecked = fullBackData;
+							firstChecked.IsChecked = false;
+							break;
+						}
+						++index;
+					}
 
-				AddBackData(backData);
-				onAdded?.Invoke(backData);
+					if (firstChecked != null)
+					{
+						FullBackData backData = new FullBackData
+						{
+							BackNumberText = firstChecked.BackNumberText,
+							BackName = firstChecked.BackName,
+							CountRegionsText = firstChecked.CountRegionsText,
+							GameName = firstChecked.GameName,
+							IsRework = firstChecked.IsRework,
+							IsSketch = firstChecked.IsSketch,
+							OtherText = firstChecked.OtherText,
+						};
+						backData.SetBackType(firstChecked.GetBackType());
+						InsertBackData(backData, index);
+						onAdded?.Invoke(backData);
+
+						addedOne = true;
+					}
+
+				} while (firstChecked != null);
+
+				if (!addedOne)
+				{
+					FullBackData backData = new FullBackData();
+					AddBackData(backData);
+					onAdded?.Invoke(backData);
+				}
 				OnChangedSomeSum();
+				UpdateBackDataIds();
 			}
 		}
 
@@ -132,6 +162,13 @@ namespace DocumentMaker.View.Controls
 		{
 			backData.SubscribeChangedSum(OnChangedSomeSum);
 			Data.Children.Add(backData);
+			backData.UpdateInputStates();
+		}
+
+		private void InsertBackData(FullBackData backData, int index)
+		{
+			backData.SubscribeChangedSum(OnChangedSomeSum);
+			Data.Children.Insert(index, backData);
 			backData.UpdateInputStates();
 		}
 
