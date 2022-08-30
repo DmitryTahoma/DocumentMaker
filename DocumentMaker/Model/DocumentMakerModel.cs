@@ -1,5 +1,6 @@
 ﻿using Dml;
 using Dml.Model.Back;
+using Dml.Model.Files;
 using Dml.Model.Session;
 using Dml.Model.Session.Attributes;
 using Dml.Model.Template;
@@ -212,10 +213,10 @@ namespace DocumentMaker.Model
 				{
 					if (openedFilesList.Where(f => f.FullName == file).Count() > 0) continue;
 
-					if (File.Exists(file) && file.EndsWith(DmxFile.Extension))
+					if (File.Exists(file) && (file.EndsWith(BaseDmxFile.Extension) || file.EndsWith(DcmkFile.Extension)))
 					{
 						bool isAdd = true;
-						DmxFile dmxFile = new DmxFile(file);
+						DmxFile dmxFile = file.EndsWith(DcmkFile.Extension) ? new DcmkFile(file) : new DmxFile(file);
 
 						IList<DmxFile> fileList = openedFilesList.Where(f => f.Name == dmxFile.Name).ToList();
 						foreach (DmxFile f in fileList)
@@ -381,6 +382,26 @@ namespace DocumentMaker.Model
 		public void RandomizeReworkWorkTypes(IEnumerable<KeyValuePair<bool, FullBackDataModel>> backDatas)
 		{
 			BackDataRandomizer.ByWorkTypeName(backDatas, TemplateType);
+		}
+
+		public string GetDcmkFileName()
+		{
+			return SelectedHuman + DcmkFile.Extension;
+		}
+
+		public void ExportDcmk(string path, IEnumerable<FullBackDataModel> backModels)
+		{
+			XmlSaver saver = new XmlSaver();
+			saver.AppendAllProperties(this, true);
+
+			foreach (FullBackDataModel backDataModel in backModels)
+			{
+				saver.CreateBackNode();
+				saver.AppendAllBackProperties(backDataModel);
+				saver.PushBackNode();
+			}
+
+			saver.Save(path);
 		}
 	}
 }

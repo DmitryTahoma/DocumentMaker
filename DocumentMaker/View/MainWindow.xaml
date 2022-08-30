@@ -73,7 +73,10 @@
                         Icon="{materialDesign:PackIcon Kind=CloseBoxOutline}" />
                     <MenuItem Header="Закрити всі файли" Icon="{materialDesign:PackIcon Kind=CloseBoxMultipleOutline}" />
                     <Separator />
-                    <MenuItem Header="Зберегти" Icon="{materialDesign:PackIcon Kind=ContentSaveOutline}" />
+                    <MenuItem
+                        Click="ExportDcmkClick"
+                        Header="Зберегти"
+                        Icon="{materialDesign:PackIcon Kind=ContentSaveOutline}" />
                     <MenuItem Header="Зберегти всі файли" Icon="{materialDesign:PackIcon Kind=ContentSaveAllOutline}" />
                     <Separator />
                     <MenuItem

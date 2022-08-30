@@ -352,5 +352,12 @@ namespace DocumentMaker.Controller
 				backData.TrimAllStrings();
 			}
 		}
+
+		public string GetDcmkFileName() => model.GetDcmkFileName();
+
+		public void ExportDcmk(string path)
+		{
+			model.ExportDcmk(path, GetModels());
+		}
 	}
 }

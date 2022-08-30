@@ -24,7 +24,8 @@ namespace DocumentMaker.Model.Session
 					XmlElement fullNameNode = fullnames[0] as XmlElement;
 					if (fullNameNode != null && fullNameNode.HasAttribute(XmlConfNames.NodeAttributeName))
 					{
-						DmxFile dmxFile = new DmxFile(fullNameNode.GetAttribute(XmlConfNames.NodeAttributeName));
+						string path = fullNameNode.GetAttribute(XmlConfNames.NodeAttributeName);
+						DmxFile dmxFile = path.EndsWith(DcmkFile.Extension) ? new DcmkFile(path) : new DmxFile(path);
 						SetLoadedProperties(elem, dmxFile);
 						List<FullBackDataModel> backDataModels = new List<FullBackDataModel>();
 						SetLoadedListProperties(elem, XmlConfNames.DmxFileBackNodeName, backDataModels);

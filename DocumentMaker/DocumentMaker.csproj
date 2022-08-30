@@ -91,6 +91,7 @@
     <Compile Include="Model\Algorithm\BackDataRandomizer.cs" />
     <Compile Include="Model\Back\WorkObject.cs" />
     <Compile Include="Model\Controls\FullBackDataModel.cs" />
+    <Compile Include="Model\Files\DcmkFile.cs" />
     <Compile Include="Model\Files\DmxFile.cs" />
     <Compile Include="Model\FullDocumentTemplate.cs" />
     <Compile Include="Model\Session\DmxLoader.cs" />

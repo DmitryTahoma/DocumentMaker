@@ -1,4 +1,5 @@
 ﻿using Dml.Controller.Validation;
+using Dml.Model.Files;
 using Dml.Model.Template;
 using DocumentMaker.Controller;
 using DocumentMaker.Controller.Controls;
@@ -53,6 +54,7 @@ namespace DocumentMaker
 		private readonly MainWindowController controller;
 		private readonly FolderBrowserDialog folderBrowserDialog;
 		private readonly OpenFileDialog openFileDialog;
+		private readonly SaveFileDialog saveFileDialog;
 		private readonly InputingValidator inputingValidator;
 
 		public MainWindow(string[] args)
@@ -62,7 +64,18 @@ namespace DocumentMaker
 			SetWindowSettingsFromController();
 
 			folderBrowserDialog = new FolderBrowserDialog();
-			openFileDialog = new OpenFileDialog() { Multiselect = true, Filter = "DocumentMaker files (*" + DmxFile.Extension + ")|*" + DmxFile.Extension };
+			openFileDialog = new OpenFileDialog
+			{
+				Multiselect = true,
+				Filter = "Всі файли акту (*" + BaseDmxFile.Extension + ";*" + DcmkFile.Extension + ")|*" + BaseDmxFile.Extension + ";*" + DcmkFile.Extension
+					+ "|Файли акту (*" + BaseDmxFile.Extension + ")|*" + BaseDmxFile.Extension
+					+ "|Файли повного акту (*" + DcmkFile.Extension + ")|*" + DcmkFile.Extension
+			};
+			saveFileDialog = new SaveFileDialog
+			{
+				DefaultExt = DcmkFile.Extension,
+				Filter = "Файл повного акту (*" + DcmkFile.Extension + ")|*" + DcmkFile.Extension
+			};
 			inputingValidator = new InputingValidator();
 
 			ContentVisibility = Visibility.Hidden;
@@ -562,7 +575,7 @@ namespace DocumentMaker
 				string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
 				OpenFiles(filenames);
 				LoadFiles();
-				SetSelectedFile(filenames.Last(filename => filename.EndsWith(DmxFile.Extension)));
+				SetSelectedFile(filenames.Last(filename => filename.EndsWith(BaseDmxFile.Extension) || filename.EndsWith(DcmkFile.Extension)));
 				e.Handled = true;
 			}
 		}
@@ -582,7 +595,8 @@ namespace DocumentMaker
 						break;
 					}
 					FileInfo info = new FileInfo(filename);
-					if (info.Extension != DmxFile.Extension)
+					if (info.Extension != BaseDmxFile.Extension
+						&& info.Extension != DcmkFile.Extension)
 					{
 						isCorrect = false;
 						break;
@@ -646,6 +660,20 @@ namespace DocumentMaker
 			controller.RandomizeReworkWorkTypes(selectedReworkElems);
 			SetDataFromController();
 			SetDataFromControllerBackDatas();
+		}
+
+		private void ExportDcmkClick(object sender, RoutedEventArgs e)
+		{
+			saveFileDialog.FileName = controller.GetDcmkFileName();
+			if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				controller.ExportDcmk(saveFileDialog.FileName);
+
+				MessageBox.Show("Файл збережений.",
+					"DocumentMaker | Export dcmk",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Information);
+			}
 		}
 
 		#endregion

@@ -9,7 +9,7 @@ namespace DocumentMaker.Model.Files
 {
 	public class DmxFile : BaseDmxFile
 	{
-		private List<FullBackDataModel> backDataModels;
+		protected List<FullBackDataModel> backDataModels;
 
 		public DmxFile(string path) : base(path)
 		{
@@ -20,15 +20,25 @@ namespace DocumentMaker.Model.Files
 		public bool NeedUpdateSum { get; set; }
 		public IList<FullBackDataModel> BackDataModels { get => backDataModels; }
 
-		public override void Load()
+		protected bool TryLoadWithBacks()
 		{
 			XmlLoader loader = new XmlLoader();
 			if (loader.TryLoad(FullName))
 			{
 				loader.SetLoadedProperties(this);
-
 				backDataModels = new List<FullBackDataModel>();
 				loader.SetLoadedListProperties(backDataModels);
+
+				Loaded = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override void Load()
+		{
+			if (TryLoadWithBacks())
+			{
 				foreach (FullBackDataModel model in backDataModels)
 				{
 					if (model.Type == BackType.Other)
@@ -39,8 +49,6 @@ namespace DocumentMaker.Model.Files
 				}
 				NeedUpdateSum = true;
 				SetDefaultWeights();
-
-				Loaded = true;
 			}
 		}
 
