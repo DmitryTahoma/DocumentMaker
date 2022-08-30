@@ -13,6 +13,8 @@ namespace Dml.Model.Back
 
 		public string Name { get; set; }
 
+		public bool HaveEpisodes { get => episodes != null && episodes.Count > 0; }
+
 		public IList<string> Episodes { get => episodes; }
 
 		public void SetEpisodes(uint count)

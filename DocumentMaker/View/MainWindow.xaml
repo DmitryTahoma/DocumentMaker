@@ -76,7 +76,10 @@
                     <MenuItem Header="Зберегти" Icon="{materialDesign:PackIcon Kind=ContentSaveOutline}" />
                     <MenuItem Header="Зберегти всі файли" Icon="{materialDesign:PackIcon Kind=ContentSaveAllOutline}" />
                     <Separator />
-                    <MenuItem Header="Експорт" Icon="{materialDesign:PackIcon Kind=FileWordOutline}" />
+                    <MenuItem
+                        Click="ExportBtnClick"
+                        Header="Експорт"
+                        Icon="{materialDesign:PackIcon Kind=FileWordOutline}" />
                     <MenuItem Header="Експорт всіх актів" Icon="{materialDesign:PackIcon Kind=FileMultipleOutline}" />
                 </MenuItem>
                 <MenuItem
