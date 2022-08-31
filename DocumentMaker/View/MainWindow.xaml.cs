@@ -38,7 +38,7 @@ namespace DocumentMaker
 
 		public static readonly DependencyProperty TechnicalTaskDateTextProperty;
 		public static readonly DependencyProperty ActDateTextProperty;
-		public static readonly DependencyProperty AdditionNumTextProperty;
+		public static readonly DependencyProperty TechnicalTaskNumTextProperty;
 		public static readonly DependencyProperty ActSumProperty;
 		public static readonly DependencyProperty ActSaldoProperty;
 		public static readonly DependencyProperty ContentVisibilityProperty;
@@ -48,7 +48,7 @@ namespace DocumentMaker
 		{
 			TechnicalTaskDateTextProperty = DependencyProperty.Register("TechnicalTaskDateText", typeof(string), typeof(MainWindow));
 			ActDateTextProperty = DependencyProperty.Register("ActDateText", typeof(string), typeof(MainWindow));
-			AdditionNumTextProperty = DependencyProperty.Register("AdditionNumText", typeof(string), typeof(MainWindow));
+			TechnicalTaskNumTextProperty = DependencyProperty.Register("TechnicalTaskNumText", typeof(string), typeof(MainWindow));
 			ActSumProperty = DependencyProperty.Register("ActSum", typeof(string), typeof(MainWindowController));
 			ActSaldoProperty = DependencyProperty.Register("ActSaldo", typeof(string), typeof(MainWindowController));
 			ContentVisibilityProperty = DependencyProperty.Register("ContentVisibility", typeof(Visibility), typeof(MainWindow));
@@ -242,10 +242,10 @@ namespace DocumentMaker
 			set => SetValue(ActDateTextProperty, value);
 		}
 
-		public string AdditionNumText
+		public string TechnicalTaskNumText
 		{
-			get => (string)GetValue(AdditionNumTextProperty);
-			set => SetValue(AdditionNumTextProperty, value);
+			get => (string)GetValue(TechnicalTaskNumTextProperty);
+			set => SetValue(TechnicalTaskNumTextProperty, value);
 		}
 
 		public string ActSum
@@ -972,7 +972,7 @@ namespace DocumentMaker
 			DocumentTemplateComboBox.SelectedIndex = (int)controller.TemplateType;
 			TechnicalTaskDatePicker.Text = controller.TechnicalTaskDateText;
 			ActDatePicker.Text = controller.ActDateText;
-			AdditionNumTextInput.Text = controller.AdditionNumText;
+			TechnicalTaskNumTextInput.Text = controller.TechnicalTaskNumText;
 			ActSumInput.Text = controller.ActSum;
 			ActSaldoInput.Text = controller.ActSaldo;
 		}
@@ -981,7 +981,7 @@ namespace DocumentMaker
 		{
 			controller.TechnicalTaskDateText = TechnicalTaskDateText;
 			controller.ActDateText = ActDateText;
-			controller.AdditionNumText = AdditionNumText;
+			controller.TechnicalTaskNumText = TechnicalTaskNumText;
 			controller.ActSum = ActSum;
 			controller.ActSaldo = ActSaldo;
 		}

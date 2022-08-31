@@ -10,12 +10,13 @@ namespace DocumentMaker.Model.OfficeFiles
 		private const string yearStr = "року";
 
 		private readonly string technicalTaskDateText;
+		private readonly string ttNum;
 
 		public DocumentGeneralData(DocumentMakerModel model, bool isExportRework, uint actSum)
 		{
 			technicalTaskDateText = model.TechnicalTaskDateText;
 			ActDate = model.ActDateText;
-			DodatokNum = model.AdditionNumText;
+			ttNum = model.TechnicalTaskNumText;
 			HumanFullName = model.SelectedHuman;
 			HumanID = model.HumanIdText;
 			HumanAddress = model.AddressText;
@@ -45,7 +46,6 @@ namespace DocumentMaker.Model.OfficeFiles
 			}
 		}
 
-		public string DodatokNum { get; }
 
 		public string DogovorNum { get; }
 
@@ -59,7 +59,7 @@ namespace DocumentMaker.Model.OfficeFiles
 
 		public string TTDateD => Get2dNumber(DateTime.Parse(technicalTaskDateText).Day);
 
-		public string DodatokNum2d => Get2dNumber(DodatokNum);
+		public string TTNum2d => Get2dNumber(ttNum);
 
 		public string ActDate { get; }
 
@@ -99,6 +99,18 @@ namespace DocumentMaker.Model.OfficeFiles
 		public string ActSum { get; }
 
 		public string ActSumText { get; }
+
+		public string ActSumTextPart1 => ActSumText.Substring(0, ActSumText.LastIndexOf(' ')).ToLower();
+
+		public string ActSumTextPart2
+		{
+			get
+			{
+				string res = ActSumText;
+				int index = res.LastIndexOf(' ');
+				return res.Substring(index + 1, res.Length - index - 1);
+			}
+		}
 
 		private string Get2dNumber(string str)
 		{

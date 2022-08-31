@@ -57,7 +57,7 @@ namespace DocumentMaker.Controller
 		public DocumentTemplateType TemplateType { get => model.TemplateType; set => model.TemplateType = value; }
 		public string TechnicalTaskDateText { get => model.TechnicalTaskDateText; set => model.TechnicalTaskDateText = value; }
 		public string ActDateText { get => model.ActDateText; set => model.ActDateText = value; }
-		public string AdditionNumText { get => model.AdditionNumText; set => model.AdditionNumText = value; }
+		public string TechnicalTaskNumText { get => model.TechnicalTaskNumText; set => model.TechnicalTaskNumText = value; }
 		public string SelectedHuman { get => model.SelectedHuman; set => model.SelectedHuman = value; }
 		public string HumanIdText { get => model.HumanIdText; set => model.HumanIdText = value; }
 		public string AddressText { get => model.AddressText; set => model.AddressText = value; }
@@ -122,7 +122,7 @@ namespace DocumentMaker.Controller
 				errorText = "Невірно заповнена дата тех.завдання.\nПриклад: 20.07.2021";
 			else if (!validator.IsDate(ActDateText))
 				errorText = "Невірно заповнена дата акту.\nПриклад: 20.07.2021";
-			else if (!validator.IsDigit(AdditionNumText))
+			else if (!validator.IsDigit(TechnicalTaskNumText))
 				errorText = "Невірно заповнений номер додатку.\nПриклад: 1";
 			else if (!uint.TryParse(ActSum, out uint actSum) || actSum == 0)
 				errorText = "Сума акту не може бути нульовою!";
@@ -333,7 +333,7 @@ namespace DocumentMaker.Controller
 		{
 			TechnicalTaskDateText = TechnicalTaskDateText?.Trim();
 			ActDateText = ActDateText?.Trim();
-			AdditionNumText = AdditionNumText?.Trim();
+			TechnicalTaskNumText = TechnicalTaskNumText?.Trim();
 			SelectedHuman = SelectedHuman?.Trim();
 			HumanIdText = HumanIdText?.Trim();
 			AddressText = AddressText?.Trim();

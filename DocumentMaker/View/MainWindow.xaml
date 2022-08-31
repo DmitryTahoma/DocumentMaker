@@ -154,13 +154,13 @@
                     Style="{StaticResource MaterialDesignOutlinedDatePicker}"
                     Text="{Binding ElementName=WindowContext, Path=ActDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
-                    x:Name="AdditionNumTextInput"
+                    x:Name="TechnicalTaskNumTextInput"
                     Grid.Column="3"
                     Margin="0,10,10,10"
                     VerticalAlignment="Top"
-                    materialDesign:HintAssist.Hint="Номер додатку"
+                    materialDesign:HintAssist.Hint="Номер ТЗ"
                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                    Text="{Binding ElementName=WindowContext, Path=AdditionNumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding ElementName=WindowContext, Path=TechnicalTaskNumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     VerticalScrollBarVisibility="Auto" />
                 <!--  Grid.Row="0"  -->
 
