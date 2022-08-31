@@ -182,7 +182,7 @@ namespace DocumentMaker.View.Controls
 				AddBackData(backData);
 				onAdded?.Invoke(backData);
 			}
-			OnChangedSomeSum();
+			OnChangedSomeSum(false);
 		}
 
 		public void SetViewByTemplate(DocumentTemplateType templateType)
