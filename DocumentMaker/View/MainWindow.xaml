@@ -71,7 +71,10 @@
                         Click="CloseFileClick"
                         Header="Закрити"
                         Icon="{materialDesign:PackIcon Kind=CloseBoxOutline}" />
-                    <MenuItem Header="Закрити всі файли" Icon="{materialDesign:PackIcon Kind=CloseBoxMultipleOutline}" />
+                    <MenuItem
+                        Click="CloseAllFilesClick"
+                        Header="Закрити всі файли"
+                        Icon="{materialDesign:PackIcon Kind=CloseBoxMultipleOutline}" />
                     <Separator />
                     <MenuItem
                         Click="ExportDcmkClick"

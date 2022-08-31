@@ -469,6 +469,23 @@ namespace DocumentMaker
 								MessageBoxIcon.Information);
 		}
 
+		private void CloseAllFilesClick(object sender, RoutedEventArgs e)
+		{
+			if (OpenedFilesList.Count > 0)
+			{
+				while (OpenedFilesList.Count > 0)
+				{
+					controller.CloseFile(OpenedFilesList[0]);
+				}
+				OpenedFilesComboBox.SelectedIndex = -1;
+			}
+			else
+				MessageBox.Show("Спочатку необхідно відкрити файл.",
+								"DocumentMaker | Закриття файлу",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Information);
+		}
+
 		private async void InfoBtnClick(object sender, RoutedEventArgs e)
 		{
 			if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
