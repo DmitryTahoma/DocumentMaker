@@ -380,6 +380,15 @@ namespace DocumentMaker
 
 		private void ExportBtnClick(object sender, RoutedEventArgs e)
 		{
+			if (!(OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded))
+			{
+				MessageBox.Show("Спочатку необхідно відкрити файл.",
+								"DocumentMaker | Експорт актів",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Information);
+				return;
+			}
+
 			SetDataToController();
 			if (controller.Validate(out string errorText))
 			{
@@ -444,12 +453,20 @@ namespace DocumentMaker
 
 		private void CloseFileClick(object sender, RoutedEventArgs e)
 		{
-			int index = OpenedFilesComboBox.SelectedIndex;
-			if (index != -1 && OpenedFilesComboBox.SelectedItem is DmxFile file)
+			if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
 			{
-				controller.CloseFile(file);
-				OpenedFilesComboBox.SelectedIndex = OpenedFilesComboBox.Items.Count <= index ? index - 1 : index;
+				int index = OpenedFilesComboBox.SelectedIndex;
+				if (index != -1)
+				{
+					controller.CloseFile(selectedFile);
+					OpenedFilesComboBox.SelectedIndex = OpenedFilesComboBox.Items.Count <= index ? index - 1 : index;
+				}
 			}
+			else
+				MessageBox.Show("Спочатку необхідно відкрити файл.",
+								"DocumentMaker | Закриття файлу",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Information);
 		}
 
 		private async void InfoBtnClick(object sender, RoutedEventArgs e)
@@ -543,26 +560,53 @@ namespace DocumentMaker
 
 		public void DeleteSelectedDevelopment(object sender, RoutedEventArgs e)
 		{
-			DeleteSelectedBackData(BacksData);
-			DataHeader.UpdateIsCheckedState();
-			DataFooter.UpdateBackDataIds();
-			DataFooter.UpdateAllSum();
+			if ((!DataHeader.IsChecked.HasValue || DataHeader.IsChecked.Value) &&
+				MessageBox.Show("Ви впевнені, що хочете видалити обрані елементи?",
+				"DocumentMaker | Видалення | Розробка",
+				MessageBoxButtons.YesNo,
+				MessageBoxIcon.Question,
+				MessageBoxDefaultButton.Button1)
+					== System.Windows.Forms.DialogResult.Yes)
+			{
+				DeleteSelectedBackData(BacksData);
+				DataHeader.UpdateIsCheckedState();
+				DataFooter.UpdateBackDataIds();
+				DataFooter.UpdateAllSum();
+			}
 		}
 
 		public void DeleteSelectedSupport(object sender, RoutedEventArgs e)
 		{
-			DeleteSelectedBackData(ReworkBacksData);
-			ReworkDataHeader.UpdateIsCheckedState();
-			ReworkDataFooter.UpdateBackDataIds();
-			ReworkDataFooter.UpdateAllSum();
+			if ((!ReworkDataHeader.IsChecked.HasValue || ReworkDataHeader.IsChecked.Value) &&
+				MessageBox.Show("Ви впевнені, що хочете видалити обрані елементи?",
+				"DocumentMaker | Видалення | Підтримка",
+				MessageBoxButtons.YesNo,
+				MessageBoxIcon.Question,
+				MessageBoxDefaultButton.Button1)
+					== System.Windows.Forms.DialogResult.Yes)
+			{
+				DeleteSelectedBackData(ReworkBacksData);
+				ReworkDataHeader.UpdateIsCheckedState();
+				ReworkDataFooter.UpdateBackDataIds();
+				ReworkDataFooter.UpdateAllSum();
+			}
 		}
 
 		public void DeleteSelectedOther(object sender, RoutedEventArgs e)
 		{
-			DeleteSelectedBackData(OtherBacksData);
-			OtherDataHeader.UpdateIsCheckedState();
-			OtherDataFooter.UpdateBackDataIds();
-			OtherDataFooter.UpdateAllSum();
+			if ((!OtherDataHeader.IsChecked.HasValue || OtherDataHeader.IsChecked.Value) &&
+				MessageBox.Show("Ви впевнені, що хочете видалити обрані елементи?",
+				"DocumentMaker | Видалення | Інше",
+				MessageBoxButtons.YesNo,
+				MessageBoxIcon.Question,
+				MessageBoxDefaultButton.Button1)
+					== System.Windows.Forms.DialogResult.Yes)
+			{
+				DeleteSelectedBackData(OtherBacksData);
+				OtherDataHeader.UpdateIsCheckedState();
+				OtherDataFooter.UpdateBackDataIds();
+				OtherDataFooter.UpdateAllSum();
+			}
 		}
 
 		public void MoveFromDevelopment(object sender, RoutedEventArgs e)
@@ -681,16 +725,24 @@ namespace DocumentMaker
 
 		private void ExportDcmkClick(object sender, RoutedEventArgs e)
 		{
-			saveFileDialog.FileName = controller.GetDcmkFileName();
-			if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
 			{
-				controller.ExportDcmk(saveFileDialog.FileName);
+				saveFileDialog.FileName = controller.GetDcmkFileName();
+				if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				{
+					controller.ExportDcmk(saveFileDialog.FileName);
 
-				MessageBox.Show("Файл збережений.",
-					"DocumentMaker | Export dcmk",
-					MessageBoxButtons.OK,
-					MessageBoxIcon.Information);
+					MessageBox.Show("Файл збережений.",
+						"DocumentMaker | Export dcmk",
+						MessageBoxButtons.OK,
+						MessageBoxIcon.Information);
+				}
 			}
+			else
+				MessageBox.Show("Спочатку необхідно відкрити файл.",
+								"DocumentMaker | Збереження файлу",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Information);
 		}
 
 		#endregion
