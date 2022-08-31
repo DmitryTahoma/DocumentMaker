@@ -271,7 +271,7 @@ namespace DocumentMaker.View.Controls
 			BackNumberTextInput.Text = controller.BackNumberText;
 			BackNameInput.Text = controller.BackName;
 			CountRegionsTextInput.Text = controller.BackCountRegionsText;
-			GameNameComboBox.Text = controller.GameName;
+			GameNameComboBox.SelectedItem = GameNameList.FirstOrDefault(x => x.Name == controller.GameName);
 			IsSketchCheckBox.IsChecked = controller.IsSketch;
 			OtherTextInput.Text = controller.OtherText;
 			needUpdateWeight = false;

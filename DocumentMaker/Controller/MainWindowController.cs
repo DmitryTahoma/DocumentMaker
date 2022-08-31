@@ -232,7 +232,7 @@ namespace DocumentMaker.Controller
 		{
 			TemplateType = file.TemplateType;
 			SelectedHuman = file.SelectedHuman;
-			ActSum = file.ActSum ?? "0";
+			ActSum = file.ActSum;
 			NeedUpdateSum = file.NeedUpdateSum;
 			BackDataControllers.Clear();
 			foreach (FullBackDataModel model in file.BackDataModels)

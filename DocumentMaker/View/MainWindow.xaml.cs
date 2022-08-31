@@ -135,12 +135,7 @@ namespace DocumentMaker
 			{
 				if (changedWeight)
 				{
-					controller.NeedUpdateSum = false;
-					DmxFile selectedFile = controller.GetSelectedFile();
-					if (selectedFile != null)
-					{
-						selectedFile.NeedUpdateSum = false;
-					}
+					DisableUpdatingSum();
 				}
 				UpdateSaldo();
 			});
@@ -181,12 +176,7 @@ namespace DocumentMaker
 			{
 				if (changedWeight)
 				{
-					controller.NeedUpdateSum = false;
-					DmxFile selectedFile = controller.GetSelectedFile();
-					if (selectedFile != null)
-					{
-						selectedFile.NeedUpdateSum = false;
-					}
+					DisableUpdatingSum();
 				}
 				UpdateSaldo();
 			});
@@ -226,12 +216,7 @@ namespace DocumentMaker
 			{
 				if (changedWeight)
 				{
-					controller.NeedUpdateSum = false;
-					DmxFile selectedFile = controller.GetSelectedFile();
-					if (selectedFile != null)
-					{
-						selectedFile.NeedUpdateSum = false;
-					}
+					DisableUpdatingSum();
 				}
 				UpdateSaldo();
 			});
@@ -503,6 +488,7 @@ namespace DocumentMaker
 		{
 			if (uint.TryParse(ActSum, out uint actSum) && actSum != 0)
 			{
+				DisableUpdatingSum();
 				SetDataToController();
 				controller.CorrectSaldo();
 
@@ -521,6 +507,7 @@ namespace DocumentMaker
 		{
 			if (uint.TryParse(ActSum, out uint actSum) && actSum != 0)
 			{
+				DisableUpdatingSum();
 				CorrectDevelopmentDialog dialog = new CorrectDevelopmentDialog
 				{
 					NumberText = controller.CorrectDevelopmentWindow_NumberText,
@@ -550,6 +537,7 @@ namespace DocumentMaker
 		{
 			if (uint.TryParse(ActSum, out uint actSum) && actSum != 0)
 			{
+				DisableUpdatingSum();
 				CorrectSupportDialog dialog = new CorrectSupportDialog
 				{
 					NumberText = controller.CorrectSupportWindow_NumberText,
@@ -1058,6 +1046,16 @@ namespace DocumentMaker
 					"DocumentMaker | Відсутні файли",
 					MessageBoxButtons.OK,
 					MessageBoxIcon.Error);
+			}
+		}
+
+		private void DisableUpdatingSum()
+		{
+			controller.NeedUpdateSum = false;
+			DmxFile selectedFile = controller.GetSelectedFile();
+			if (selectedFile != null)
+			{
+				selectedFile.NeedUpdateSum = false;
 			}
 		}
 
