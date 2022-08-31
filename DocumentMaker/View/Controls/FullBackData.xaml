@@ -10,6 +10,25 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style
+                x:Key="AutoVisibilityFromEnabled_MaterialDesignOutlinedTextBox"
+                BasedOn="{StaticResource MaterialDesignOutlinedTextBox}"
+                TargetType="TextBox">
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="True">
+                        <Setter Property="Visibility" Value="Visible" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Visibility" Value="Hidden" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="8*" />
@@ -88,7 +107,7 @@
                     Margin="1.5"
                     Padding="7"
                     IsEnabled="{Binding ElementName=FullBackDataContext, Path=HasBackNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                    Style="{StaticResource AutoVisibilityFromEnabled_MaterialDesignOutlinedTextBox}"
                     Text="{Binding ElementName=FullBackDataContext, Path=BackNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="BackNameInput"
@@ -104,7 +123,7 @@
                     Padding="7"
                     IsEnabled="{Binding ElementName=FullBackDataContext, Path=IsRegions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     PreviewTextInput="RegionsValidatingPreviewTextInput"
-                    Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                    Style="{StaticResource AutoVisibilityFromEnabled_MaterialDesignOutlinedTextBox}"
                     Text="{Binding ElementName=FullBackDataContext, Path=CountRegionsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                 <ComboBox
