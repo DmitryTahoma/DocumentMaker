@@ -762,6 +762,39 @@ namespace DocumentMaker
 								MessageBoxIcon.Information);
 		}
 
+		private void ExportAllDcmkClick(object sender, RoutedEventArgs e)
+		{
+			if (OpenedFilesList.Count > 0)
+			{
+				string savedFiles = string.Empty;
+
+				foreach (DmxFile file in OpenedFilesList)
+				{
+					SetSelectedFile(file.FullName);
+					saveFileDialog.FileName = controller.GetDcmkFileName();
+					if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+					{
+						controller.ExportDcmk(saveFileDialog.FileName);
+
+						savedFiles += "\n" + saveFileDialog.FileName;
+					}
+				}
+
+				if (savedFiles != string.Empty)
+				{
+					MessageBox.Show("Файли збережені:" + savedFiles,
+						"DocumentMaker | Export dcmk",
+						MessageBoxButtons.OK,
+						MessageBoxIcon.Information);
+				}
+			}
+			else
+				MessageBox.Show("Спочатку необхідно відкрити файл.",
+								"DocumentMaker | Збереження файлу",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Information);
+		}
+
 		#endregion
 
 		#region Methods
