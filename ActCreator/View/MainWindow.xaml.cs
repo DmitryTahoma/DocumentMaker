@@ -13,6 +13,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 #if INCLUDED_UPDATER_API
 using UpdaterAPI;
 using UpdaterAPI.Resources;
+using System.Threading.Tasks;
 #endif
 
 namespace ActCreator
@@ -61,6 +62,10 @@ namespace ActCreator
 				DefaultExt = Dml.Model.Files.BaseDmxFile.Extension,
 				Filter = "Файл акту (*" + Dml.Model.Files.BaseDmxFile.Extension + ")|*" + Dml.Model.Files.BaseDmxFile.Extension
 			};
+
+#if INCLUDED_UPDATER_API
+			AssemblyLoader.LoadWinScp();
+#endif
 		}
 
 		public IList<DocumentTemplate> DocumentTemplatesList => controller.DocumentTemplatesList;
@@ -88,7 +93,11 @@ namespace ActCreator
 			controller.Save();
 		}
 
+#if INCLUDED_UPDATER_API
+		private async void WindowLoaded(object sender, RoutedEventArgs e)
+#else
 		private void WindowLoaded(object sender, RoutedEventArgs e)
+#endif
 		{
 			if (controller != null)
 			{
@@ -104,17 +113,19 @@ namespace ActCreator
 				UpdateViewBackData();
 
 #if INCLUDED_UPDATER_API
-				AssemblyLoader.LoadWinScp();
-				try
+				await Task.Run(() =>
 				{
-					bool _ = false;
-					UpdateInformer informer = new UpdateInformer();
-					informer.Notify(ref _);
-				}
-				catch
-				{
-					MessageBox.Show("Невозможно подключиться к шаре!", "ActCreator Update", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-				}
+					try
+					{
+						bool _ = false;
+						UpdateInformer informer = new UpdateInformer();
+						informer.Notify(ref _, isHidden: true);
+					}
+					catch
+					{
+						MessageBox.Show("Невозможно подключиться к шаре!", "ActCreator Update", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+					}
+				});
 #endif
 			}
 		}

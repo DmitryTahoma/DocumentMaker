@@ -24,6 +24,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 #if INCLUDED_UPDATER_API
 using UpdaterAPI;
 using UpdaterAPI.Resources;
+using System.Threading.Tasks;
 #endif
 
 namespace DocumentMaker
@@ -88,6 +89,10 @@ namespace DocumentMaker
 
 			InitializeComponent();
 			InitializeComponentFromCode();
+
+#if INCLUDED_UPDATER_API
+			AssemblyLoader.LoadWinScp();
+#endif
 		}
 
 		private void InitializeComponentFromCode()
@@ -302,7 +307,11 @@ namespace DocumentMaker
 			controller.Save();
 		}
 
+#if INCLUDED_UPDATER_API
+		private async void WindowLoaded(object sender, RoutedEventArgs e)
+#else
 		private void WindowLoaded(object sender, RoutedEventArgs e)
+#endif
 		{
 			CheckFiles();
 			if (controller != null)
@@ -318,16 +327,19 @@ namespace DocumentMaker
 				UpdateActSum();
 
 #if INCLUDED_UPDATER_API
-				try
+				await Task.Run(() =>
 				{
-					bool _ = false;
-					UpdateInformer informer = new UpdateInformer();
-					informer.Notify(ref _);
-				}
-				catch
-				{
-					MessageBox.Show("Невозможно подключиться к шаре!", "ActCreator Update", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-				}
+					try
+					{
+						bool _ = false;
+						UpdateInformer informer = new UpdateInformer();
+						informer.Notify(ref _, isHidden: true);
+					}
+					catch
+					{
+						MessageBox.Show("Невозможно подключиться к шаре!", "ActCreator Update", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+					}
+				});
 #endif
 			}
 		}
