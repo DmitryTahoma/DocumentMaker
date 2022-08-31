@@ -172,18 +172,18 @@ namespace DocumentMaker.Model
 
 					if (resource.Type == ResourceType.Docx)
 					{
-						exporter.ExportWordTemplate(resource.ProjectName, isExportRework);
+						string nearFullname = exporter.ExportWordTemplate(resource.ProjectName, isExportRework);
 						exporter.FillWordGeneralData(generalData);
 						exporter.FillWordTableData(tableData);
-						exporter.SaveWordContent(resource.ProjectName, isExportRework);
+						exporter.SaveWordContent(nearFullname);
+						exporter.SaveTemplate(generalData, path, nearFullname, resource.TemplateName);
 					}
 					else if (resource.Type == ResourceType.Xlsx)
 					{
 						exporter.ExportExcelTemplate(resource.ProjectName);
 						exporter.FillExcelTableData(resource.ProjectName, tableData);
+						exporter.SaveTemplate(generalData, path, "", resource.TemplateName);
 					}
-
-					exporter.SaveTemplate(generalData, path, resource.ProjectName, isExportRework, resource.TemplateName);
 				}
 			}
 		}

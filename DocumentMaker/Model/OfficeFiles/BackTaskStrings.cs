@@ -1,5 +1,6 @@
 ﻿using Dml.Model.Back;
 using Dml.Model.Template;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -123,5 +124,10 @@ namespace DocumentMaker.Model.OfficeFiles
 		}
 
 		public static string GetAddictionName(bool isExportRework) => isExportRework ? "Підтримка_" : "Розробка_";
+
+		public static string GetRandomString()
+		{
+			return "temp_" + DateTime.Now.ToString("yyyyMMddHHmmssfffffff");
+		}
 	}
 }

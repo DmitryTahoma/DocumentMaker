@@ -89,7 +89,10 @@
                         Click="ExportBtnClick"
                         Header="Експорт"
                         Icon="{materialDesign:PackIcon Kind=FileWordOutline}" />
-                    <MenuItem Header="Експорт всіх актів" Icon="{materialDesign:PackIcon Kind=FileMultipleOutline}" />
+                    <MenuItem
+                        Click="ExportAllBtnClick"
+                        Header="Експорт всіх актів"
+                        Icon="{materialDesign:PackIcon Kind=FileMultipleOutline}" />
                 </MenuItem>
                 <MenuItem
                     Click="InfoBtnClick"

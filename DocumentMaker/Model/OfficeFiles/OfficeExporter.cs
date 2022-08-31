@@ -13,6 +13,8 @@ namespace DocumentMaker.Model.OfficeFiles
 {
 	internal class OfficeExporter
 	{
+		public static string TempFolderName => "export-temp";
+
 		private XmlDocument xml;
 		private string rowPartXml;
 		private readonly List<KeyValuePair<string, string>> notMovedFiles;
@@ -37,7 +39,7 @@ namespace DocumentMaker.Model.OfficeFiles
 			TemplateLoaded = false;
 		}
 
-		public void ExportWordTemplate(string name, bool isExportRework)
+		public string ExportWordTemplate(string name, bool isExportRework)
 		{
 			if (!TemplateLoaded)
 			{
@@ -47,12 +49,14 @@ namespace DocumentMaker.Model.OfficeFiles
 				if (FindRowPart())
 				{
 					TemplateLoaded = true;
+					return nearFullname;
 				}
 				else
 				{
 					File.Delete(nearFullname);
 				}
 			}
+			return null;
 		}
 
 		public void FillWordGeneralData(DocumentGeneralData data)
@@ -91,15 +95,13 @@ namespace DocumentMaker.Model.OfficeFiles
 			}
 		}
 
-		public void SaveWordContent(string projectName, bool isExportRework)
+		public void SaveWordContent(string nearFullname)
 		{
-			string nearFullname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), BackTaskStrings.GetAddictionName(isExportRework) + projectName);
 			SetXmlToWordFile(nearFullname);
 		}
 
-		public void SaveTemplate(DocumentGeneralData data, string path, string projectName, bool isExportRework, string templateName)
+		public void SaveTemplate(DocumentGeneralData data, string path, string nearFullname, string templateName)
 		{
-			string nearFullname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), BackTaskStrings.GetAddictionName(isExportRework) + projectName);
 			FillPropertiesData(data, ref templateName);
 
 			string fullpath = Path.Combine(path, templateName);
@@ -139,9 +141,10 @@ namespace DocumentMaker.Model.OfficeFiles
 
 		public void RemoveTemplates()
 		{
-			foreach (KeyValuePair<string, string> file in notMovedFiles)
+			string tempFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), TempFolderName);
+			if (Directory.Exists(tempFolderPath))
 			{
-				File.Delete(file.Key);
+				Directory.Delete(tempFolderPath, true);
 			}
 
 			notMovedFiles.Clear();
@@ -226,11 +229,15 @@ namespace DocumentMaker.Model.OfficeFiles
 		private void ExportTemplate(string name, bool isExportRework, out string nearFullname)
 		{
 			string addictionStr = BackTaskStrings.GetAddictionName(isExportRework);
-			string nearPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-			nearFullname = Path.Combine(nearPath, addictionStr + name);
+			string nearPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), TempFolderName);
+			nearFullname = Path.Combine(nearPath, BackTaskStrings.GetRandomString() + "_" + addictionStr + name);
 			if (File.Exists(nearFullname))
 			{
 				File.Delete(nearFullname);
+			}
+			if (!Directory.Exists(nearPath))
+			{
+				Directory.CreateDirectory(nearPath);
 			}
 
 			ResourceUnloader.Unload(name, nearFullname);

@@ -398,17 +398,16 @@ namespace DocumentMaker
 												"DocumentMaker | Export",
 												MessageBoxButtons.OK,
 												MessageBoxIcon.Warning);
-
-								controller.RemoveTemplates();
 								isShowResult = false;
 							}
 						}
 						else
 						{
-							controller.RemoveTemplates();
+							isShowResult = false;
 						}
 					}
 
+					controller.RemoveTemplates();
 					if (isShowResult && MessageBox.Show("Файли збережені.\nВідкрити папку з файлами?",
 										"DocumentMaker | Export",
 										MessageBoxButtons.YesNo,
@@ -423,6 +422,87 @@ namespace DocumentMaker
 			else
 			{
 				MessageBox.Show(errorText, "DocumentMaker | Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private void ExportAllBtnClick(object sender, RoutedEventArgs e)
+		{
+			if (!(OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded))
+			{
+				MessageBox.Show("Спочатку необхідно відкрити файл.",
+								"DocumentMaker | Експорт актів",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Information);
+				return;
+			}
+
+			if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				bool isShowResult = false;
+				foreach (DmxFile file in OpenedFilesList)
+				{
+					SetSelectedFile(file.FullName);
+					SetDataToController();
+
+					if (!controller.Validate(out string errorText))
+					{
+						if (MessageBox.Show(errorText,
+							"DocumentMaker | Validation | " + file.Name,
+							MessageBoxButtons.OKCancel,
+							MessageBoxIcon.Error,
+							MessageBoxDefaultButton.Button1)
+								== System.Windows.Forms.DialogResult.OK)
+						{
+							continue;
+						}
+						else
+						{
+							break;
+						}
+					}
+
+					controller.Export(folderBrowserDialog.SelectedPath);
+					isShowResult = true;
+				}
+
+				if (controller.HasNoMovedFiles)
+				{
+					string startInfoNoMoved = controller.GetInfoNoMovedFiles();
+					if (MessageBox.Show("Файли за заданними путями вже існують.\n\n" + startInfoNoMoved + "\nЗамінити?",
+										"DocumentMaker | Export",
+										MessageBoxButtons.YesNo,
+										MessageBoxIcon.Question)
+											== System.Windows.Forms.DialogResult.Yes)
+					{
+						controller.ReplaceCreatedFiles();
+
+						if (controller.HasNoMovedFiles)
+						{
+							string infoNoMoved = controller.GetInfoNoMovedFiles();
+							MessageBox.Show("Не вдалось перемістити наступні файли. Можливо вони відкриті в іншій програмі.\n\n" + infoNoMoved,
+											"DocumentMaker | Export",
+											MessageBoxButtons.OK,
+											MessageBoxIcon.Warning);
+
+							isShowResult = startInfoNoMoved != infoNoMoved;
+						}
+					}
+					else
+					{
+						isShowResult = false;
+					}
+				}
+
+				controller.RemoveTemplates();
+				if (isShowResult && MessageBox.Show("Файли збережені.\nВідкрити папку з файлами?",
+										"DocumentMaker | Export",
+										MessageBoxButtons.YesNo,
+										MessageBoxIcon.Information,
+										MessageBoxDefaultButton.Button2)
+						== System.Windows.Forms.DialogResult.Yes)
+				{
+					Process.Start("explorer", folderBrowserDialog.SelectedPath);
+				}
 			}
 		}
 
