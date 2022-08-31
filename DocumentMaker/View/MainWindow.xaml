@@ -266,7 +266,7 @@
                                     <MenuItem
                                         Padding="7"
                                         Click="CorrectDevelopClick"
-                                        ToolTip="Корегування сум розробки">
+                                        ToolTip="Коригування сум розробки">
                                         <MenuItem.Header>
                                             <StackPanel Orientation="Horizontal">
                                                 <materialDesign:PackIcon
@@ -275,7 +275,7 @@
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
                                                     Kind="PencilOutline" />
-                                                <Label VerticalAlignment="Center" Content="_Корегування" />
+                                                <Label VerticalAlignment="Center" Content="_Коригування" />
                                             </StackPanel>
                                         </MenuItem.Header>
                                     </MenuItem>
@@ -349,7 +349,7 @@
                                     <MenuItem
                                         Padding="7"
                                         Click="CorrectSupportClick"
-                                        ToolTip="Корегування сум підтримки">
+                                        ToolTip="Коригування сум підтримки">
                                         <MenuItem.Header>
                                             <StackPanel Orientation="Horizontal">
                                                 <materialDesign:PackIcon
@@ -358,7 +358,7 @@
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
                                                     Kind="PencilOutline" />
-                                                <Label VerticalAlignment="Center" Content="_Корегування" />
+                                                <Label VerticalAlignment="Center" Content="_Коригування" />
                                             </StackPanel>
                                         </MenuItem.Header>
                                     </MenuItem>
