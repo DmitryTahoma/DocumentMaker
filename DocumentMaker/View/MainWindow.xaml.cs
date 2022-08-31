@@ -1094,8 +1094,13 @@ namespace DocumentMaker
 
 		private void UpdateSaldo()
 		{
-			if (uint.TryParse(ActSum, out uint sum)
-				&& uint.TryParse(DataFooter.AllSum, out uint curSum)
+			uint sum = 0;
+			if (uint.TryParse(ActSum, out uint s))
+			{
+				sum = s;
+			}
+
+			if (uint.TryParse(DataFooter.AllSum, out uint curSum)
 				&& uint.TryParse(ReworkDataFooter.AllSum, out uint curSumRework)
 				&& uint.TryParse(OtherDataFooter.AllSum, out uint curSumOther))
 			{

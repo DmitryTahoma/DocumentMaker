@@ -186,6 +186,8 @@
                         Grid.Column="1"
                         Margin="5"
                         Padding="5"
+                        materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                        MaxLength="9"
                         PreviewTextInput="UIntValidating"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
                         Text="{Binding ElementName=WindowContext, Path=ActSum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
