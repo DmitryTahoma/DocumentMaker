@@ -764,15 +764,13 @@ namespace DocumentMaker
 				ButtonOpenContentVisibility = Visibility.Hidden;
 
 				controller.SetDataFromFile(selectedFile);
-				SetDataFromController();
 				AddLoadedBackData();
+				DataFooter?.UpdateAllSum();
+				ReworkDataFooter?.UpdateAllSum();
+				OtherDataFooter?.UpdateAllSum();
+				SetDataFromController();
 				controller.SetSelectedFile(selectedFile);
 				UpdateViewBackData();
-				UpdateActSum();
-
-				if (BacksData.Children.Count <= 0) DataFooter.UpdateAllSum();
-				if (ReworkBacksData.Children.Count <= 0) ReworkDataFooter.UpdateAllSum();
-				if (OtherBacksData.Children.Count <= 0) OtherDataFooter.UpdateAllSum();
 			}
 			else
 			{
@@ -1073,6 +1071,40 @@ namespace DocumentMaker
 				UpdateActSumBackDataPanel(OtherBacksData, sum);
 			}
 			UpdateSaldo();
+
+			if (controller.NeedUpdateSum && int.TryParse(ActSaldo, out int currentSaldo))
+			{
+				FullBackDataController last = controller.BackDataControllers.LastOrDefault();
+				if (last != null && int.TryParse(last.SumText, out int lastSum))
+				{
+					last.SumText = (lastSum + currentSaldo).ToString();
+
+					foreach (UIElement elem in BacksData.Children)
+					{
+						if (elem is FullBackData backData && backData.Controller == last)
+						{
+							backData.SetDataFromController();
+							return;
+						}
+					}
+					foreach (UIElement elem in ReworkBacksData.Children)
+					{
+						if (elem is FullBackData backData && backData.Controller == last)
+						{
+							backData.SetDataFromController();
+							return;
+						}
+					}
+					foreach (UIElement elem in OtherBacksData.Children)
+					{
+						if (elem is FullBackData backData && backData.Controller == last)
+						{
+							backData.SetDataFromController();
+							return;
+						}
+					}
+				}
+			}
 		}
 
 		private void UpdateActSumBackDataPanel(StackPanel stackPanel, uint sum)
