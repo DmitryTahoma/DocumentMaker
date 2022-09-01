@@ -763,6 +763,7 @@ namespace DocumentMaker
 				ContentVisibility = Visibility.Visible;
 				ButtonOpenContentVisibility = Visibility.Hidden;
 
+				SetDataToController();
 				controller.SetDataFromFile(selectedFile);
 				AddLoadedBackData();
 				DataFooter?.UpdateAllSum();
