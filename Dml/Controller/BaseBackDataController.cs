@@ -39,12 +39,15 @@ namespace Dml.Controller
 		{
 			errorText = "Строка таблиці №" + Id.ToString() + ": ";
 
+			BackNumberText = BackNumberText.Replace(',', '.');
 			if (Type == BackType.Other && !validator.IsFree(OtherText))
 				errorText += "Строка з текстом не може бути пустою.";
 			else if (Type != BackType.Other)
 			{
 				if (Type != BackType.Craft && !validator.IsFree(BackNumberText))
 					errorText += "Строка \"Номер беку\" не може бути пустою.";
+				else if (Type != BackType.Craft && !validator.IsUFloat(BackNumberText))
+					errorText += "Невірно заповнений номер беку.\nПриклад: 15, 9.1, 15.6";
 				else if (!validator.IsFree(BackName))
 					errorText += "Строка \"Ім’я беку\" не може бути пустою.";
 				else if ((Type == BackType.Regions || Type == BackType.HogRegions) && !validator.IsFree(BackCountRegionsText))

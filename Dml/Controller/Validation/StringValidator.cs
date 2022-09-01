@@ -9,12 +9,14 @@ namespace Dml.Controller.Validation
 		private readonly Regex dateRegex;
 		private readonly Regex digitRegex;
 		private readonly Regex nameRegex;
+		private readonly Regex ufloatRegex;
 
 		public StringValidator()
 		{
 			dateRegex = new Regex(@"^[0-3]\d\.[0-1]\d\.\d{4}$", RegexOptions.Compiled);
 			digitRegex = new Regex(@"^\d+$", RegexOptions.Compiled);
 			nameRegex = new Regex(@"^[\D\S]+$", RegexOptions.Compiled);
+			ufloatRegex = new Regex(@"^[1-9]+\d*(\.[1-9]+\d*)?$", RegexOptions.Compiled);
 		}
 
 		public bool IsFree(string str)
@@ -83,6 +85,11 @@ namespace Dml.Controller.Validation
 			return DateTime.TryParse(date1, out DateTime d1)
 				&& DateTime.TryParse(date2, out DateTime d2)
 				&& d1 > d2;
+		}
+
+		public bool IsUFloat(string str)
+		{
+			return ufloatRegex.IsMatch(str);
 		}
 
 		public static string Trim(string str)

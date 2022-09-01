@@ -350,6 +350,11 @@ namespace DocumentMaker.View.Controls
 			inputingValidator.UIntInputing_PreviewTextInput(sender, e);
 		}
 
+		private void UFloatValidating(object sender, System.Windows.Input.TextCompositionEventArgs e)
+		{
+			inputingValidator.UFloatInputing_PreviewTextInput(sender, e);
+		}
+
 		public void UpdateInputStates()
 		{
 			IsRegions = controller.Type == BackType.Regions || controller.Type == BackType.HogRegions;
