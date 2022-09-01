@@ -862,6 +862,14 @@ namespace DocumentMaker
 								MessageBoxIcon.Information);
 		}
 
+		private void UnfocusOnEnter(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter)
+			{
+				Keyboard.ClearFocus();
+			}
+		}
+
 		#endregion
 
 		#region Methods
