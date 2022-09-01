@@ -424,7 +424,7 @@ namespace DocumentMaker.View.Controls
 				controller.GameNameList.AddRange(gameObjects);
 			}
 			NotifyPropertyChanged(nameof(GameNameList));
-			GameNameComboBox.SelectedItem = GameNameList.FirstOrDefault(x => x.Name == selectedGame);
+			GameNameComboBox.Text = selectedGame;
 			NotifyPropertyChanged(nameof(EpisodeNumberList));
 			controller.EpisodeNumberText = selectedEpisode;
 			EpisodeNumberComboBox.Text = controller.EpisodeNumberText;
