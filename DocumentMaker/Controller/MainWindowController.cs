@@ -122,12 +122,16 @@ namespace DocumentMaker.Controller
 				errorText = "Невірно заповнена дата тех.завдання.\nПриклад: 20.07.2021";
 			else if (!validator.IsDate(ActDateText))
 				errorText = "Невірно заповнена дата акту.\nПриклад: 20.07.2021";
+			else if (!validator.IsMoreDateTime(ActDateText, TechnicalTaskDateText))
+				errorText = "Дата акту повинна бути більшою за дату технічного завдання.";
 			else if (!validator.IsDigit(TechnicalTaskNumText))
-				errorText = "Невірно заповнений номер додатку.\nПриклад: 1";
+				errorText = "Невірно заповнений номер технічного завдання.\nПриклад: 1";
 			else if (!uint.TryParse(ActSum, out uint actSum) || actSum == 0)
 				errorText = "Сума акту не може бути нульовою!";
 			else if (ActSaldo != "0")
 				errorText = "Сальдо не нульове!";
+			else if (BackDataControllers.FirstOrDefault(x => x.IsOtherType) != null)
+				errorText = "Таблиця \"Інше\" повинна бути пустою.";
 			else
 			{
 				HumanData human = GetSelectedHuman();
@@ -162,6 +166,29 @@ namespace DocumentMaker.Controller
 					if (!backDataController.Validate(ref errorText))
 					{
 						return false;
+					}
+				}
+
+				foreach (FullBackDataController backDataController in BackDataControllers)
+				{
+					foreach (FullBackDataController innerBackDataController in BackDataControllers)
+					{
+						if (backDataController != innerBackDataController)
+						{
+							if (backDataController.EqualsModelWithoutWorkAndRework(innerBackDataController, TemplateType))
+							{
+								bool validated = false;
+								if (backDataController.IsRework == !innerBackDataController.IsRework)
+									errorText = "Одна й та ж сама робота не може бути водночас і в розробці, і в підтримці.\nВ розробці пункт №" + (!backDataController.IsRework ? backDataController.Id.ToString() : innerBackDataController.Id.ToString()) + " і в підтримці пункт №" + (backDataController.IsRework ? backDataController.Id.ToString() : innerBackDataController.Id.ToString()) + " мають однакові данні.";
+								else if (backDataController.WorkObjectId == innerBackDataController.WorkObjectId)
+									errorText = "В " + (!backDataController.IsRework ? "розробці" : "підтримці") + " пункти №" + backDataController.Id.ToString() + " і №" + innerBackDataController.Id.ToString() + " мають однакові данні.";
+								else
+									validated = true;
+
+								if (!validated)
+									return false;
+							}
+						}
 					}
 				}
 

@@ -78,6 +78,13 @@ namespace Dml.Controller.Validation
 			return true;
 		}
 
+		public bool IsMoreDateTime(string date1, string date2)
+		{
+			return DateTime.TryParse(date1, out DateTime d1)
+				&& DateTime.TryParse(date2, out DateTime d2)
+				&& d1 > d2;
+		}
+
 		public static string Trim(string str)
 		{
 			return Regex.Replace(str.Trim(), @"\s+", " ");

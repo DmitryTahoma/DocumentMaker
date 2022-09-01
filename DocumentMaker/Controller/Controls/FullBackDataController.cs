@@ -1,5 +1,6 @@
 ﻿using Dml;
 using Dml.Controller;
+using Dml.Model.Template;
 using DocumentMaker.Model.Back;
 using DocumentMaker.Model.Controls;
 
@@ -43,6 +44,10 @@ namespace DocumentMaker.Controller.Controls
 		{
 			if (base.Validate(ref errorText))
 			{
+				if (IsOtherType) errorText.Insert(0, "[Інше] ");
+				else if (IsRework) errorText.Insert(0, "[Підтримка] ");
+				else errorText.Insert(0, "[Розробка] ");
+
 				if (!uint.TryParse(SumText, out uint sumText) || sumText == 0)
 					errorText += "Сума не може бути нульовою.";
 				else
@@ -57,6 +62,11 @@ namespace DocumentMaker.Controller.Controls
 
 			WeightText = WeightText?.Trim();
 			SumText = SumText?.Trim();
+		}
+
+		public bool EqualsModelWithoutWorkAndRework(FullBackDataController obj, DocumentTemplateType documentTemplate)
+		{
+			return model.EqualsWithoutWorkAndRework(obj.model, documentTemplate);
 		}
 	}
 }

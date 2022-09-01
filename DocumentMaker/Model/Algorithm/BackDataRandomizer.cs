@@ -1,5 +1,4 @@
-﻿using Dml.Model.Back;
-using Dml.Model.Template;
+﻿using Dml.Model.Template;
 using DocumentMaker.Model.Back;
 using DocumentMaker.Model.Controls;
 using System;
@@ -35,47 +34,13 @@ namespace DocumentMaker.Model.Algorithm
 				{
 					isCurrentBack = true;
 				}
-				else if ((!pair.Key || !isCurrentBack) && EqualsBackDataModels(current, pair.Value, documentTemplate))
+				else if ((!pair.Key || !isCurrentBack) && current.EqualsWithoutWork(pair.Value, documentTemplate))
 				{
 					res.Remove(pair.Value.WorkTypesList[(int)pair.Value.WorkObjectId]);
 				}
 			}
 
 			return res;
-		}
-
-		private static bool EqualsBackDataModels(FullBackDataModel obj1, FullBackDataModel obj2, DocumentTemplateType documentTemplate)
-		{
-			return obj1.Type == obj2.Type &&
-				(
-					(
-						obj1.Type != BackType.Other &&
-						obj1.EpisodeNumberText == obj2.EpisodeNumberText &&
-						obj1.BackName == obj2.BackName &&
-						obj1.GameName == obj2.GameName &&
-						obj1.IsRework == obj2.IsRework &&
-						(
-							documentTemplate != DocumentTemplateType.Painter ||
-							obj1.IsSketch == obj2.IsSketch
-						) &&
-						(
-							(
-								obj1.Type != BackType.Regions &&
-								obj1.Type != BackType.HogRegions
-							) ||
-							obj1.BackCountRegionsText == obj2.BackCountRegionsText
-						) &&
-						(
-							obj1.Type == BackType.Craft ||
-							obj1.BackNumberText == obj2.BackNumberText
-						)
-					) ||
-					(
-						obj1.Type == BackType.Other &&
-						obj1.OtherText == obj2.OtherText
-					)
-				)
-			;
 		}
 	}
 }
