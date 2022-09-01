@@ -1071,9 +1071,6 @@ namespace DocumentMaker
 				UpdateActSumBackDataPanel(BacksData, sum);
 				UpdateActSumBackDataPanel(ReworkBacksData, sum);
 				UpdateActSumBackDataPanel(OtherBacksData, sum);
-				DataFooter?.SetActSum(sum);
-				ReworkDataFooter?.SetActSum(sum);
-				OtherDataFooter?.SetActSum(sum);
 			}
 			UpdateSaldo();
 		}

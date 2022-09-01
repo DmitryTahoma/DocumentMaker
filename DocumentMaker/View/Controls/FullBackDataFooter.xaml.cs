@@ -24,14 +24,11 @@ namespace DocumentMaker.View.Controls
 			WeightAllTextProperty = DependencyProperty.Register("WeightAllText", typeof(string), typeof(FullBackDataFooter));
 		}
 
-		private readonly FullBackDataFooterController controller;
-
 		private event ActionWithFullBackData onAdded;
 		private event ActionWithBool onChangedSum;
 
 		public FullBackDataFooter()
 		{
-			controller = new FullBackDataFooterController();
 			InitializeComponent();
 			DataContext = this;
 		}
@@ -156,7 +153,6 @@ namespace DocumentMaker.View.Controls
 
 				AllSum = sums.ToString();
 			}
-			UpdateWeight();
 			onChangedSum?.Invoke(updateWeight);
 		}
 
@@ -187,28 +183,6 @@ namespace DocumentMaker.View.Controls
 
 		public void SetViewByTemplate(DocumentTemplateType templateType)
 		{
-		}
-
-		public void SetActSum(uint actSum)
-		{
-			controller.ActSum = actSum;
-			UpdateWeight();
-		}
-
-		public void UpdateWeight()
-		{
-			if (controller.ActSum != 0 && double.TryParse(AllSum, out double sum))
-			{
-				WeightAllText = (sum / controller.ActSum).ToString();
-				if (WeightAllText.Length > 5)
-				{
-					WeightAllText = WeightAllText.Substring(0, 5) + "..";
-				}
-			}
-			else
-			{
-				WeightAllText = "0";
-			}
 		}
 
 		public void UpdateBackDataIds()
