@@ -125,28 +125,61 @@ namespace DocumentMaker.Model
 			}
 		}
 
-		public void LoadHumans(string path)
+		public bool TryLoadHumans(string path)
 		{
-			XlsxLoader loader = new XlsxLoader();
-			loader.LoadHumans(path, humanFullNameList);
-		}
-
-		public void LoadWorkTypes(string developmentWorksPath, string supportWorksPath)
-		{
-			foreach (FullDocumentTemplate template in documentTemplates)
+			try
 			{
-				template.LoadWorkTypesList(developmentWorksPath);
-				template.LoadReworkWorkTypesList(supportWorksPath);
+				XlsxLoader loader = new XlsxLoader();
+				loader.LoadHumans(path, humanFullNameList);
+				return true;
+			}
+			catch
+			{
+				return false;
 			}
 		}
 
-		public void LoadGameNames(string path)
+		public bool TryLoadDevelopmentWorkTypes(string path)
+		{
+			try
+			{
+				foreach (FullDocumentTemplate template in documentTemplates)
+				{
+					template.LoadWorkTypesList(path);
+				}
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		public bool TryLoadReworkWorkTypes(string path)
+		{
+			try
+			{
+				foreach (FullDocumentTemplate template in documentTemplates)
+				{
+					template.LoadReworkWorkTypesList(path);
+				}
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		public bool TryLoadGameNames(string path)
 		{
 			XmlLoader loader = new XmlLoader();
 			if (loader.TryLoad(path))
 			{
 				loader.SetLoadedGameNames(gameNameList);
+				return true;
 			}
+			return false;
 		}
 
 		public void Export(string path, IEnumerable<FullBackDataModel> backModels)

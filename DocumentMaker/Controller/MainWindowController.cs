@@ -27,6 +27,7 @@ namespace DocumentMaker.Controller
 		private readonly DocumentMakerModel model;
 
 		private string[] openFilesLater;
+		private readonly List<string> notLoadedFiles;
 
 		public MainWindowController(string[] args)
 		{
@@ -35,6 +36,7 @@ namespace DocumentMaker.Controller
 			BackDataControllers = new List<FullBackDataController>();
 
 			openFilesLater = args;
+			notLoadedFiles = new List<string>();
 		}
 
 		#region Window settings
@@ -101,9 +103,11 @@ namespace DocumentMaker.Controller
 			{
 				BackDataControllers.Add(new FullBackDataController(model));
 			}
-			model.LoadHumans(humansFullpath);
-			model.LoadWorkTypes(developmentTypesFullpath, supportTypesFullpath);
-			model.LoadGameNames(gameNamesFullpath);
+
+			if (!model.TryLoadHumans(humansFullpath)) notLoadedFiles.Add(humansFullpath);
+			if (!model.TryLoadDevelopmentWorkTypes(developmentTypesFullpath)) notLoadedFiles.Add(developmentTypesFullpath);
+			if (!model.TryLoadReworkWorkTypes(supportTypesFullpath)) notLoadedFiles.Add(supportTypesFullpath);
+			if (!model.TryLoadGameNames(gameNamesFullpath)) notLoadedFiles.Add(gameNamesFullpath);
 		}
 
 		public void Export(string path)
@@ -386,5 +390,7 @@ namespace DocumentMaker.Controller
 		{
 			model.ExportDcmk(path, GetModels());
 		}
+
+		public List<string> GetNotLoadedFilesList() => notLoadedFiles;
 	}
 }

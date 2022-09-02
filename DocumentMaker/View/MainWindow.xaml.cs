@@ -10,8 +10,8 @@ using DocumentMaker.Model.OfficeFiles.Human;
 using DocumentMaker.View.Controls;
 using DocumentMaker.View.Dialogs;
 using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -20,7 +20,6 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Markup;
 using MessageBox = System.Windows.Forms.MessageBox;
-using System;
 
 #if INCLUDED_UPDATER_API
 using UpdaterAPI;
@@ -1182,6 +1181,21 @@ namespace DocumentMaker
 				}
 
 				MessageBox.Show("Не знайдені необхідні файли (програма може працювати з помилками):\n" + notFindedFiles,
+					"DocumentMaker | Відсутні файли",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
+			}
+
+			List<string> notLoadedFilesList = controller.GetNotLoadedFilesList();
+			if (notLoadedFilesList != null && notLoadedFilesList.Count > 0)
+			{
+				string notLoadedFiles = "";
+				foreach (string file in notLoadedFilesList)
+				{
+					notLoadedFiles += '\n' + file;
+				}
+
+				MessageBox.Show("Не вдалось загрузити необхідні файли - можливо вони відкриті в іншій програмі. (програма може працювати з помилками):\n" + notLoadedFiles,
 					"DocumentMaker | Відсутні файли",
 					MessageBoxButtons.OK,
 					MessageBoxIcon.Error);
