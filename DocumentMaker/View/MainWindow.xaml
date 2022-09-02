@@ -269,6 +269,21 @@
                                     </MenuItem>
                                     <MenuItem
                                         Padding="7"
+                                        Click="RandomizeWorkTypes"
+                                        ToolTip="Заміксувати типи робіт">
+                                        <MenuItem.Header>
+                                            <StackPanel Orientation="Horizontal">
+                                                <materialDesign:PackIcon
+                                                    Width="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                    Height="{Binding ElementName=WindowContext, Path=IconSize}"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Kind="DiceMultipleOutline" />
+                                            </StackPanel>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <MenuItem
+                                        Padding="7"
                                         Click="CorrectDevelopClick"
                                         ToolTip="Коригування сум розробки">
                                         <MenuItem.Header>

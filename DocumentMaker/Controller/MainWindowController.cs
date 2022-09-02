@@ -350,11 +350,21 @@ namespace DocumentMaker.Controller
 			model.CorrectSupport(minSum, takeSumFromDevelopment, developmentModels, supportModels);
 		}
 
+		public void RandomizeWorkTypes(IEnumerable<FullBackDataController> checkedBackData)
+		{
+			IEnumerable<FullBackDataModel> checkedBackDataModels = checkedBackData.Select(x => x.GetModel());
+
+			model.RandomizeWorkTypes(
+				GetModels()
+				.Where(x => x.IsOtherType == false && x.IsRework == false)
+				.Select(y => new KeyValuePair<bool, FullBackDataModel>(checkedBackDataModels.Contains(y), y)));
+		}
+
 		public void RandomizeReworkWorkTypes(IEnumerable<FullBackDataController> checkedBackData)
 		{
 			IEnumerable<FullBackDataModel> checkedBackDataModels = checkedBackData.Select(x => x.GetModel());
 
-			model.RandomizeReworkWorkTypes(
+			model.RandomizeWorkTypes(
 				GetModels()
 				.Where(x => x.IsOtherType == false && x.IsRework == true)
 				.Select(y => new KeyValuePair<bool, FullBackDataModel>(checkedBackDataModels.Contains(y), y)));

@@ -805,6 +805,23 @@ namespace DocumentMaker
 			inputingValidator.UIntInputing_PreviewTextInput(sender, e);
 		}
 
+		private void RandomizeWorkTypes(object sender, RoutedEventArgs e)
+		{
+			List<FullBackDataController> selectedElems = new List<FullBackDataController>();
+			foreach (UIElement elem in BacksData.Children)
+			{
+				if (elem is FullBackData backData && backData.IsChecked.HasValue && backData.IsChecked.Value)
+				{
+					selectedElems.Add(backData.Controller);
+				}
+			}
+
+			controller.TrimAllStrings();
+			controller.RandomizeWorkTypes(selectedElems);
+			SetDataFromController();
+			SetDataFromControllerBackDatas();
+		}
+
 		private void RandomizeReworkWorkTypes(object sender, RoutedEventArgs e)
 		{
 			List<FullBackDataController> selectedReworkElems = new List<FullBackDataController>();

@@ -412,7 +412,7 @@ namespace DocumentMaker.Model
 			}
 		}
 
-		public void RandomizeReworkWorkTypes(IEnumerable<KeyValuePair<bool, FullBackDataModel>> backDatas)
+		public void RandomizeWorkTypes(IEnumerable<KeyValuePair<bool, FullBackDataModel>> backDatas)
 		{
 			BackDataRandomizer.ByWorkTypeName(backDatas, TemplateType);
 		}
