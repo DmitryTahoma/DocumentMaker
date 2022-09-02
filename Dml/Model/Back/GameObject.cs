@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Dml.Model.Back
 {
@@ -29,6 +30,13 @@ namespace Dml.Model.Back
 		public override string ToString()
 		{
 			return Name;
+		}
+
+		public bool HaveEpisode(string episodeName)
+		{
+			if (episodeName != null)
+				return episodes.FirstOrDefault(x => x == episodeName) != null;
+			return false;
 		}
 	}
 }

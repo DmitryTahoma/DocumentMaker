@@ -2,6 +2,7 @@
 using Dml.Model;
 using Dml.Model.Back;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dml.Controller
 {
@@ -44,6 +45,8 @@ namespace Dml.Controller
 				errorText += "Строка з текстом не може бути пустою.";
 			else if (Type != BackType.Other)
 			{
+				GameObject selectedGame = GameNameList.FirstOrDefault(x => x.Name == GameName);
+
 				if (Type != BackType.Craft && !validator.IsFree(BackNumberText))
 					errorText += "Строка \"Номер беку\" не може бути пустою.";
 				else if (Type != BackType.Craft && !validator.IsUFloat(BackNumberText))
@@ -58,6 +61,8 @@ namespace Dml.Controller
 					errorText += "Регіони записані некорректно. Кінець послідовності менший за початок.\nПриклад: 1-2, 3-4, 8-15";
 				else if (!validator.IsFree(GameName))
 					errorText += "Строка \"Назва гри\" не може бути пустою.";
+				else if (selectedGame != null && !selectedGame.HaveEpisode(EpisodeNumberText))
+					errorText += "Оберіть коректний епізод.";
 				else
 					return true;
 			}
