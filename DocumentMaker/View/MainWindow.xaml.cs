@@ -302,6 +302,7 @@ namespace DocumentMaker
 #endif
 		{
 			CheckFiles();
+			WindowState = controller.WindowState;
 			if (controller != null)
 			{
 				SetDataFromController();
@@ -1099,7 +1100,6 @@ namespace DocumentMaker
 			Left = controller.WindowLeft;
 			Height = controller.WindowHeight;
 			Width = controller.WindowWidth;
-			WindowState = controller.WindowState;
 			WindowValidator.MoveToValidPosition(this);
 		}
 
