@@ -381,6 +381,7 @@ namespace DocumentMaker
 				}
 
 				SetDataToController();
+				controller.TrimAllStrings();
 				if (controller.Validate(out string errorText))
 				{
 					if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -456,6 +457,7 @@ namespace DocumentMaker
 					{
 						SetSelectedFile(file.FullName);
 						SetDataToController();
+						controller.TrimAllStrings();
 
 						if (!controller.Validate(out string errorText))
 						{
