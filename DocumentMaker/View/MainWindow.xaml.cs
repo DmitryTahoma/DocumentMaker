@@ -115,6 +115,7 @@ namespace DocumentMaker
 			});
 			DataFooter.SubscribeAddition((x) =>
 			{
+				DisableUpdatingSum();
 				x.Controller.IsRework = false;
 				x.Controller.IsOtherType = false;
 				controller.BackDataControllers.Add(x.Controller);
@@ -155,6 +156,7 @@ namespace DocumentMaker
 			});
 			ReworkDataFooter.SubscribeAddition((x) =>
 			{
+				DisableUpdatingSum();
 				x.Controller.IsRework = true;
 				x.Controller.IsOtherType = false;
 				controller.BackDataControllers.Add(x.Controller);
@@ -197,6 +199,7 @@ namespace DocumentMaker
 			});
 			OtherDataFooter.SubscribeAddition((x) =>
 			{
+				DisableUpdatingSum();
 				x.Controller.IsOtherType = true;
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
