@@ -415,14 +415,12 @@ namespace DocumentMaker
 						}
 
 						controller.RemoveTemplates();
-						if (isShowResult && MessageBox.Show("Файли збережені.\nВідкрити папку з файлами?",
-											"DocumentMaker | Export",
-											MessageBoxButtons.YesNo,
-											MessageBoxIcon.Information,
-											MessageBoxDefaultButton.Button2)
-							== System.Windows.Forms.DialogResult.Yes)
+						if (isShowResult)
 						{
-							Process.Start("explorer", folderBrowserDialog.SelectedPath);
+							MessageBox.Show("Файли збережені.",
+											"DocumentMaker | Export",
+											MessageBoxButtons.OK,
+											MessageBoxIcon.Information);
 						}
 					}
 				}
@@ -509,14 +507,12 @@ namespace DocumentMaker
 					}
 
 					controller.RemoveTemplates();
-					if (isShowResult && MessageBox.Show("Файли збережені.\nВідкрити папку з файлами?",
-											"DocumentMaker | Export",
-											MessageBoxButtons.YesNo,
-											MessageBoxIcon.Information,
-											MessageBoxDefaultButton.Button2)
-							== System.Windows.Forms.DialogResult.Yes)
+					if (isShowResult)
 					{
-						Process.Start("explorer", folderBrowserDialog.SelectedPath);
+						MessageBox.Show("Файли збережені.",
+										"DocumentMaker | Export",
+										MessageBoxButtons.OK,
+										MessageBoxIcon.Information);
 					}
 				}
 			}
