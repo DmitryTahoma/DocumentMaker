@@ -19,17 +19,11 @@ namespace DocumentMaker.Model.Algorithm
 			int percent = 10; // Какой процент от суммы перекидывать
 			int minNumber = 400;
 			float randomPrecent; // Смещение процента от percent
-			int minPercent = 0; // Погрешность от percent
-			int maxPercent = 0; // Погрешность от percent
+			int minPercent = -3; // Погрешность от percent
+			int maxPercent = 5; // Погрешность от percent
 
 			if (percent + minPercent < 0)
 				minPercent = -percent;
-
-			if (_isRemoveIdenticalNumbers)
-			{
-				RemoveIdenticalNumbers(ref _rozrobka);
-				RemoveIdenticalNumbers(ref _pidtrimka);
-			}
 
 			int maxIndexNumberPidtrimka = -1;
 			FindMaxIndex(_pidtrimka, ref maxIndexNumberPidtrimka); // Индекс максимальной суммы пидтрымкы
@@ -139,12 +133,6 @@ namespace DocumentMaker.Model.Algorithm
 
 					if (isFlip)
 					{
-						if (_isRemoveIdenticalNumbers)
-						{
-							RemoveIdenticalNumbers(ref _rozrobka);
-							RemoveIdenticalNumbers(ref _pidtrimka);
-						}
-
 						FindMaxIndex(_rozrobka, ref maxIndexNumberRozrobka);
 						FindMinIndex(_rozrobka, ref minIndexNumberRozrobka);
 						FindMaxIndex(_pidtrimka, ref maxIndexNumberPidtrimka);
@@ -154,6 +142,13 @@ namespace DocumentMaker.Model.Algorithm
 					if (counterFlip <= 0)
 						break;
 				}
+			}
+
+			// Пересчет одинаковых сумм
+			if (_isRemoveIdenticalNumbers)
+			{
+				RemoveIdenticalNumbers(ref _rozrobka);
+				RemoveIdenticalNumbers(ref _pidtrimka);
 			}
 		}
 
@@ -171,17 +166,11 @@ namespace DocumentMaker.Model.Algorithm
 			int percent = 10; // Какой процент от суммы перекидывать
 
 			float randomPrecent; // Смещение процента от percent
-			int minPercent = 0; // Погрешность от percent
-			int maxPercent = 0; // Погрешность от percent
+			int minPercent = -3; // Погрешность от percent
+			int maxPercent = 5; // Погрешность от percent
 
 			if (percent + minPercent < 0)
 				minPercent = -percent;
-
-			if (_isRemoveIdenticalNumbers)
-			{
-				RemoveIdenticalNumbers(ref _rozrobka);
-				RemoveIdenticalNumbers(ref _pidtrimka);
-			}
 
 			int maxIndexNumberPidtrimka = -1;
 			FindMaxIndex(_pidtrimka, ref maxIndexNumberPidtrimka); // Индекс максимальной суммы пидтрымкы
@@ -289,13 +278,6 @@ namespace DocumentMaker.Model.Algorithm
 
 					if (isFlip)
 					{
-						// Пересчет одинаковых сумм
-						if (_isRemoveIdenticalNumbers)
-						{
-							RemoveIdenticalNumbers(ref _rozrobka);
-							RemoveIdenticalNumbers(ref _pidtrimka);
-						}
-
 						// Пересчет мин-макс индексов сумм
 						FindMaxIndex(_pidtrimka, ref maxIndexNumberPidtrimka);
 						FindMinIndex(_pidtrimka, ref minIndexNumberPidtrimka);
@@ -308,6 +290,13 @@ namespace DocumentMaker.Model.Algorithm
 						break;
 				}
 			}
+
+			// Пересчет одинаковых сумм
+			if (_isRemoveIdenticalNumbers)
+			{
+				RemoveIdenticalNumbers(ref _rozrobka);
+				RemoveIdenticalNumbers(ref _pidtrimka);
+			}
 		}
 
 		/// <summary>
@@ -316,7 +305,6 @@ namespace DocumentMaker.Model.Algorithm
 		private static void RemoveIdenticalNumbers(ref List<int> _array)
 		{
 			Random rnd = new Random();
-			bool isFlip = false;
 			int sumSpread = 75; // Разница между пунктами
 			int percent = 100; // Какой процент от суммы перекидывать 
 			int minPercent = 3 * 100 / sumSpread; // Погрешность от percent
@@ -326,10 +314,7 @@ namespace DocumentMaker.Model.Algorithm
 			if (percent + minPercent < 0)
 				minPercent = -percent;
 
-			// Ограничение перебросов чтобы не зациклилось
-			int counterFlip = _array.Count * _array.Count;
-
-			for (int i = 0; i < _array.Count && !isFlip; i++)
+			for (int i = 0; i < _array.Count; i++)
 			{
 				if (_array[i] == 0)
 					continue;
@@ -352,29 +337,16 @@ namespace DocumentMaker.Model.Algorithm
 							{
 								_array[i] -= sumFlip;
 								_array[j] += sumFlip;
-								isFlip = true;
-								counterFlip--;
 								break;
 							}
 							else
 							{
 								_array[j] += _array[i];
 								_array[i] = 0;
-								isFlip = true;
-								counterFlip--;
 								break;
 							}
 						}
 					}
-				}
-
-				if (counterFlip <= 0)
-					break;
-
-				if (isFlip)
-				{
-					i = -1;
-					isFlip = false;
 				}
 			}
 		}
