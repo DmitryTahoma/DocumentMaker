@@ -145,11 +145,11 @@ namespace DocumentMaker.Model.Algorithm
 			}
 
 			// Пересчет одинаковых сумм
-			if (_isRemoveIdenticalNumbers)
-			{
-				RemoveIdenticalNumbers(ref _rozrobka);
-				RemoveIdenticalNumbers(ref _pidtrimka);
-			}
+			//if (_isRemoveIdenticalNumbers)
+			//{
+			//	RemoveIdenticalNumbers(ref _rozrobka);
+			//	RemoveIdenticalNumbers(ref _pidtrimka);
+			//}
 		}
 
 		/// <summary>
@@ -292,11 +292,11 @@ namespace DocumentMaker.Model.Algorithm
 			}
 
 			// Пересчет одинаковых сумм
-			if (_isRemoveIdenticalNumbers)
-			{
-				RemoveIdenticalNumbers(ref _rozrobka);
-				RemoveIdenticalNumbers(ref _pidtrimka);
-			}
+			//if (_isRemoveIdenticalNumbers)
+			//{
+			//	RemoveIdenticalNumbers(ref _rozrobka);
+			//	RemoveIdenticalNumbers(ref _pidtrimka);
+			//}
 		}
 
 		/// <summary>
