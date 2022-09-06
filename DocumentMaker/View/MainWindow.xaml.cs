@@ -633,61 +633,41 @@ namespace DocumentMaker
 
 		private async void CorrectDevelopClick(object sender, RoutedEventArgs e)
 		{
-			if (uint.TryParse(ActSum, out uint actSum) && actSum != 0)
+			DisableUpdatingSum();
+			CorrectDevelopmentDialog dialog = new CorrectDevelopmentDialog
 			{
-				DisableUpdatingSum();
-				CorrectDevelopmentDialog dialog = new CorrectDevelopmentDialog
-				{
-					NumberText = controller.CorrectDevelopmentWindow_NumberText,
-					TakeSumFromSupport = controller.CorrectDevelopmentWindow_TakeSumFromSupport,
-				};
-				await DialogHost.Show(dialog);
+				NumberText = controller.CorrectDevelopmentWindow_NumberText,
+				TakeSumFromSupport = controller.CorrectDevelopmentWindow_TakeSumFromSupport,
+			};
+			await DialogHost.Show(dialog);
 
-				controller.CorrectDevelopmentWindow_NumberText = dialog.NumberText;
-				controller.CorrectDevelopmentWindow_TakeSumFromSupport = dialog.TakeSumFromSupport;
+			controller.CorrectDevelopmentWindow_NumberText = dialog.NumberText;
+			controller.CorrectDevelopmentWindow_TakeSumFromSupport = dialog.TakeSumFromSupport;
 
-				if (dialog.IsCorrection && int.TryParse(dialog.NumberText, out int sum))
-				{
-					controller.CorrectDevelopment(sum, dialog.TakeSumFromSupport);
-					SetDataFromControllerBackDatas();
-				}
-			}
-			else
+			if (dialog.IsCorrection && int.TryParse(dialog.NumberText, out int sum))
 			{
-				MessageBox.Show("Сума для корегування не може бути нульовою.",
-					"Корегування | Помилка",
-					MessageBoxButtons.OK,
-					MessageBoxIcon.Error);
+				controller.CorrectDevelopment(sum, dialog.TakeSumFromSupport);
+				SetDataFromControllerBackDatas();
 			}
 		}
 
 		private async void CorrectSupportClick(object sender, RoutedEventArgs e)
 		{
-			if (uint.TryParse(ActSum, out uint actSum) && actSum != 0)
+			DisableUpdatingSum();
+			CorrectSupportDialog dialog = new CorrectSupportDialog
 			{
-				DisableUpdatingSum();
-				CorrectSupportDialog dialog = new CorrectSupportDialog
-				{
-					NumberText = controller.CorrectSupportWindow_NumberText,
-					TakeSumFromDevelopment = controller.CorrectSupportWindow_TakeSumFromDevelopment
-				};
-				await DialogHost.Show(dialog);
+				NumberText = controller.CorrectSupportWindow_NumberText,
+				TakeSumFromDevelopment = controller.CorrectSupportWindow_TakeSumFromDevelopment
+			};
+			await DialogHost.Show(dialog);
 
-				controller.CorrectSupportWindow_NumberText = dialog.NumberText;
-				controller.CorrectSupportWindow_TakeSumFromDevelopment = dialog.TakeSumFromDevelopment;
+			controller.CorrectSupportWindow_NumberText = dialog.NumberText;
+			controller.CorrectSupportWindow_TakeSumFromDevelopment = dialog.TakeSumFromDevelopment;
 
-				if (dialog.IsCorrection && int.TryParse(dialog.NumberText, out int sum))
-				{
-					controller.CorrectSupport(sum, dialog.TakeSumFromDevelopment);
-					SetDataFromControllerBackDatas();
-				}
-			}
-			else
+			if (dialog.IsCorrection && int.TryParse(dialog.NumberText, out int sum))
 			{
-				MessageBox.Show("Сума для корегування не може бути нульовою.",
-					"Корегування | Помилка",
-					MessageBoxButtons.OK,
-					MessageBoxIcon.Error);
+				controller.CorrectSupport(sum, dialog.TakeSumFromDevelopment);
+				SetDataFromControllerBackDatas();
 			}
 		}
 
