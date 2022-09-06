@@ -299,9 +299,9 @@ namespace DocumentMaker.Controller
 			return model.HumanFullNameList.FirstOrDefault(x => x.Name == SelectedHuman);
 		}
 
-		public void CorrectSaldo()
+		public void CorrectSaldo(IEnumerable<FullBackDataController> backDataControllers)
 		{
-			model.CorrectSaldo(GetModels());
+			model.CorrectSaldo(backDataControllers.Select(x=>x.GetModel()));
 		}
 
 		private List<FullBackDataModel> GetModels()

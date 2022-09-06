@@ -329,39 +329,63 @@ namespace DocumentMaker.Model
 
 		public void CorrectSaldo(IEnumerable<FullBackDataModel> backDataModels)
 		{
-			double baseSum = 0;
-			if (int.TryParse(ActSum, out int sum))
+			int saldo;
+			if(!int.TryParse(ActSaldo, out saldo))
 			{
-				baseSum = sum;
+				saldo = 0;
 			}
 
-			double totalWeight = 0;
-			foreach (FullBackDataModel backModel in backDataModels)
+			List<FullBackDataModel> openList = new List<FullBackDataModel>(backDataModels);
+			while(saldo != 0 && openList.Count > 0)
 			{
-				if (uint.TryParse(backModel.SumText, out uint curSum))
+				int partOfSaldo = saldo / openList.Count;
+
+				foreach(FullBackDataModel backDataModel in openList)
 				{
-					totalWeight += curSum / baseSum;
-				}
-			}
+					int sum;
+					if(!int.TryParse(backDataModel.SumText, out sum))
+					{
+						sum = 0;
+					}
 
-			int curTotalSum = (int)baseSum;
-			foreach (FullBackDataModel backModel in backDataModels)
-			{
-				double curWeight = 0;
-				if (uint.TryParse(backModel.SumText, out uint curSum))
+					sum += partOfSaldo;
+					saldo -= partOfSaldo;
+					backDataModel.SumText = sum.ToString();
+				}
+				FullBackDataModel last = openList.LastOrDefault();
+				if (last != null)
 				{
-					curWeight = curSum / baseSum;
-					curWeight /= totalWeight;
-				}
-				int newCurSum = (int)(baseSum * curWeight);
-				backModel.SumText = newCurSum.ToString();
-				curTotalSum -= newCurSum;
-			}
+					int sum;
+					if (!int.TryParse(last.SumText, out sum))
+					{
+						sum = 0;
+					}
 
-			FullBackDataModel firstModel = backDataModels.FirstOrDefault();
-			if (firstModel != null && int.TryParse(firstModel.SumText, out int s))
-			{
-				firstModel.SumText = (s + curTotalSum).ToString();
+					sum += saldo;
+					saldo -= saldo;
+					last.SumText = sum.ToString();
+				}
+
+				List<FullBackDataModel> deletionList = new List<FullBackDataModel>();
+				foreach(FullBackDataModel backDataModel in openList)
+				{
+					int sum;
+					if (!int.TryParse(backDataModel.SumText, out sum))
+					{
+						sum = 0;
+					}
+
+					if(sum <= 0)
+					{
+						saldo += sum;
+						deletionList.Add(backDataModel);
+						backDataModel.SumText = "0";
+					}
+				}
+				foreach(FullBackDataModel backDataModel in deletionList)
+				{
+					openList.Remove(backDataModel);
+				}
 			}
 		}
 

@@ -40,6 +40,7 @@ namespace DocumentMaker
 		public static readonly DependencyProperty ActDateTextProperty;
 		public static readonly DependencyProperty TechnicalTaskNumTextProperty;
 		public static readonly DependencyProperty ActSumProperty;
+		public static readonly DependencyProperty ActSumSelectedProperty;
 		public static readonly DependencyProperty ActSaldoProperty;
 		public static readonly DependencyProperty ContentVisibilityProperty;
 		public static readonly DependencyProperty ButtonOpenContentVisibilityProperty;
@@ -50,6 +51,7 @@ namespace DocumentMaker
 			ActDateTextProperty = DependencyProperty.Register("ActDateText", typeof(string), typeof(MainWindow));
 			TechnicalTaskNumTextProperty = DependencyProperty.Register("TechnicalTaskNumText", typeof(string), typeof(MainWindow));
 			ActSumProperty = DependencyProperty.Register("ActSum", typeof(string), typeof(MainWindowController));
+			ActSumSelectedProperty = DependencyProperty.Register("ActSumSelected", typeof(string), typeof(MainWindowController));
 			ActSaldoProperty = DependencyProperty.Register("ActSaldo", typeof(string), typeof(MainWindowController));
 			ContentVisibilityProperty = DependencyProperty.Register("ContentVisibility", typeof(Visibility), typeof(MainWindow));
 			ButtonOpenContentVisibilityProperty = DependencyProperty.Register("ButtonOpenContentVisibility", typeof(Visibility), typeof(MainWindow));
@@ -112,6 +114,7 @@ namespace DocumentMaker
 						}
 					}
 				}
+				UpdateActSumSelected();
 			});
 			DataFooter.SubscribeAddition((x) =>
 			{
@@ -122,7 +125,11 @@ namespace DocumentMaker
 				x.SetViewByTemplate(controller.TemplateType);
 				x.SetWorkTypesList(controller.CurrentWorkTypesList);
 				x.SetGameNameList(controller.GameNameList);
-				x.SubscribeSelectionChanged(DataHeader.UpdateIsCheckedState);
+				x.SubscribeSelectionChanged(()=> 
+				{
+					DataHeader.UpdateIsCheckedState();
+					UpdateActSumSelected();
+				});
 				UpdateActSum();
 				DataHeader.UpdateIsCheckedState();
 
@@ -153,6 +160,7 @@ namespace DocumentMaker
 						}
 					}
 				}
+				UpdateActSumSelected();
 			});
 			ReworkDataFooter.SubscribeAddition((x) =>
 			{
@@ -163,7 +171,11 @@ namespace DocumentMaker
 				x.SetViewByTemplate(controller.TemplateType);
 				x.SetWorkTypesList(controller.CurrentReworkWorkTypesList);
 				x.SetGameNameList(controller.GameNameList);
-				x.SubscribeSelectionChanged(ReworkDataHeader.UpdateIsCheckedState);
+				x.SubscribeSelectionChanged(() => 
+				{
+					ReworkDataHeader.UpdateIsCheckedState();
+					UpdateActSumSelected();
+				});
 				UpdateActSum();
 				ReworkDataHeader.UpdateIsCheckedState();
 
@@ -196,6 +208,7 @@ namespace DocumentMaker
 						}
 					}
 				}
+				UpdateActSumSelected();
 			});
 			OtherDataFooter.SubscribeAddition((x) =>
 			{
@@ -204,7 +217,11 @@ namespace DocumentMaker
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
 				x.SetGameNameList(controller.GameNameList);
-				x.SubscribeSelectionChanged(OtherDataHeader.UpdateIsCheckedState);
+				x.SubscribeSelectionChanged(() =>
+				{
+					OtherDataHeader.UpdateIsCheckedState();
+					UpdateActSumSelected();
+				});
 				UpdateActSum();
 				OtherDataHeader.UpdateIsCheckedState();
 
@@ -264,6 +281,17 @@ namespace DocumentMaker
 				{
 					selectedFile.ActSum = value;
 				}
+			}
+		}
+		
+
+		public string ActSumSelected
+		{
+			get => (string)GetValue(ActSumSelectedProperty);
+			set
+			{
+				SetValue(ActSumSelectedProperty, value);
+				//controller.ActSum = value;
 			}
 		}
 
@@ -586,9 +614,13 @@ namespace DocumentMaker
 			{
 				DisableUpdatingSum();
 				SetDataToController();
-				controller.CorrectSaldo();
+
+				controller.CorrectSaldo(GetSelectedBackDatas().Select(x=>x.Controller));
 
 				SetDataFromControllerBackDatas();
+				DataFooter?.UpdateAllSum();
+				ReworkDataFooter?.UpdateAllSum();
+				OtherDataFooter?.UpdateAllSum();
 			}
 			else
 			{
@@ -787,7 +819,8 @@ namespace DocumentMaker
 				OtherDataFooter?.UpdateAllSum();
 				SetDataFromController();
 				controller.SetSelectedFile(selectedFile);
-				UpdateViewBackData();
+				UpdateViewBackData(); 
+				UpdateSaldo();
 			}
 			else
 			{
@@ -808,34 +841,16 @@ namespace DocumentMaker
 
 		private void RandomizeWorkTypes(object sender, RoutedEventArgs e)
 		{
-			List<FullBackDataController> selectedElems = new List<FullBackDataController>();
-			foreach (UIElement elem in BacksData.Children)
-			{
-				if (elem is FullBackData backData && backData.IsChecked.HasValue && backData.IsChecked.Value)
-				{
-					selectedElems.Add(backData.Controller);
-				}
-			}
-
 			controller.TrimAllStrings();
-			controller.RandomizeWorkTypes(selectedElems);
+			controller.RandomizeWorkTypes(GetSelectedBackDatas(BacksData).Select(x=>x.Controller));
 			SetDataFromController();
 			SetDataFromControllerBackDatas();
 		}
 
 		private void RandomizeReworkWorkTypes(object sender, RoutedEventArgs e)
 		{
-			List<FullBackDataController> selectedReworkElems = new List<FullBackDataController>();
-			foreach (UIElement elem in ReworkBacksData.Children)
-			{
-				if (elem is FullBackData backData && backData.IsChecked.HasValue && backData.IsChecked.Value)
-				{
-					selectedReworkElems.Add(backData.Controller);
-				}
-			}
-
 			controller.TrimAllStrings();
-			controller.RandomizeReworkWorkTypes(selectedReworkElems);
+			controller.RandomizeReworkWorkTypes(GetSelectedBackDatas(ReworkBacksData).Select(x => x.Controller));
 			SetDataFromController();
 			SetDataFromControllerBackDatas();
 		}
@@ -1057,7 +1072,10 @@ namespace DocumentMaker
 					FullBackData backData = OtherDataFooter.AddLoadedBackData(backDataController);
 					if (backData != null)
 					{
-						backData.SubscribeSelectionChanged(OtherDataHeader.UpdateIsCheckedState);
+						backData.SubscribeSelectionChanged(() => {
+							OtherDataHeader.UpdateIsCheckedState();
+							UpdateActSumSelected();
+						});
 					}
 				}
 				else if (backDataController.IsRework)
@@ -1065,7 +1083,10 @@ namespace DocumentMaker
 					FullBackData backData = ReworkDataFooter.AddLoadedBackData(backDataController);
 					if (backData != null)
 					{
-						backData.SubscribeSelectionChanged(ReworkDataHeader.UpdateIsCheckedState);
+						backData.SubscribeSelectionChanged(() => {
+							ReworkDataHeader.UpdateIsCheckedState();
+							UpdateActSumSelected();
+						});
 					}
 				}
 				else
@@ -1073,7 +1094,10 @@ namespace DocumentMaker
 					FullBackData backData = DataFooter.AddLoadedBackData(backDataController);
 					if (backData != null)
 					{
-						backData.SubscribeSelectionChanged(DataHeader.UpdateIsCheckedState);
+						backData.SubscribeSelectionChanged(() => {
+							DataHeader.UpdateIsCheckedState();
+							UpdateActSumSelected();
+						});
 					}
 				}
 			}
@@ -1164,6 +1188,7 @@ namespace DocumentMaker
 
 		private void UpdateSaldo()
 		{
+			UpdateActSumSelected();
 			uint sum = 0;
 			if (uint.TryParse(ActSum, out uint s))
 			{
@@ -1226,6 +1251,29 @@ namespace DocumentMaker
 			if (selectedFile != null)
 			{
 				selectedFile.NeedUpdateSum = false;
+			}
+		}
+
+		private void UpdateActSumSelected()
+		{
+			ActSumSelectedInput.Text = GetSelectedBackDatas().Sum(x => int.TryParse(x.SumText, out int s) ? s : 0).ToString();
+		}
+
+		private IEnumerable<FullBackData> GetSelectedBackDatas()
+		{
+			return GetSelectedBackDatas(BacksData)
+				.Union(GetSelectedBackDatas(ReworkBacksData))
+				.Union(GetSelectedBackDatas(OtherBacksData));
+		}
+
+		private IEnumerable<FullBackData> GetSelectedBackDatas(StackPanel stackPanel)
+		{
+			foreach(UIElement elem in stackPanel.Children)
+			{
+				if(elem is FullBackData backData && backData.IsChecked.HasValue && backData.IsChecked.Value)
+				{
+					yield return backData;
+				}
 			}
 		}
 

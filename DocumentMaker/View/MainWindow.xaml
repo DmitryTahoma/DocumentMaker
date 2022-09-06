@@ -166,21 +166,17 @@
                     VerticalScrollBarVisibility="Auto" />
                 <!--  Grid.Row="0"  -->
 
-                <Grid
-                    Grid.Row="1"
-                    Grid.Column="2"
-                    Grid.ColumnSpan="2">
+                <Grid Grid.Row="1" Grid.ColumnSpan="4">
 
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
                         <ColumnDefinition />
                         <ColumnDefinition />
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
 
                     <TextBlock Style="{StaticResource LabelRight}" Text="Сума:" />
                     <TextBox
@@ -195,22 +191,34 @@
                         Text="{Binding ElementName=WindowContext, Path=ActSum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextChanged="ActSumTextChanged" />
 
+
                     <TextBlock
-                        Grid.Row="1"
+                        Grid.Column="2"
+                        Style="{StaticResource LabelRight}"
+                        Text="Сума виділених:" />
+                    <TextBox
+                        x:Name="ActSumSelectedInput"
+                        Grid.Column="3"
+                        Margin="5"
+                        Padding="5"
+                        IsReadOnly="True"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding ElementName=WindowContext, Path=ActSumSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TextBlock
+                        Grid.Column="4"
                         Style="{StaticResource LabelRight}"
                         Text="Сальдо:" />
                     <TextBox
                         x:Name="ActSaldoInput"
-                        Grid.Row="1"
-                        Grid.Column="1"
+                        Grid.Column="5"
                         Margin="5"
                         Padding="5"
                         IsReadOnly="True"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
                         Text="{Binding ElementName=WindowContext, Path=ActSaldo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     <Button
-                        Grid.Row="1"
-                        Grid.Column="2"
+                        Grid.Column="6"
                         Margin="5,0,10,0"
                         Click="CorrectSaldoClick"
                         Content="Коригувати"
