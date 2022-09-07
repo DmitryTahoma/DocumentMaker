@@ -98,6 +98,14 @@
                     Click="InfoBtnClick"
                     Header="Інформація"
                     Icon="{materialDesign:PackIcon Kind=InformationCircleOutline}" />
+                <MenuItem
+                    Click="UndoClick"
+                    Icon="{materialDesign:PackIcon Kind=Undo}"
+                    ToolTip="Назад" />
+                <MenuItem
+                    Click="RedoClick"
+                    Icon="{materialDesign:PackIcon Kind=Redo}"
+                    ToolTip="Вперед" />
             </Menu>
 
             <ComboBox
@@ -185,6 +193,7 @@
                         Margin="5"
                         Padding="5"
                         materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                        IsUndoEnabled="False"
                         MaxLength="9"
                         PreviewTextInput="UIntValidating"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"

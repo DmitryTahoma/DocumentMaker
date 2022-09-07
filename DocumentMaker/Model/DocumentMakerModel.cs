@@ -4,6 +4,7 @@ using Dml.Model.Files;
 using Dml.Model.Session;
 using Dml.Model.Session.Attributes;
 using Dml.Model.Template;
+using Dml.UndoRedo;
 using DocumentMaker.Model.Algorithm;
 using DocumentMaker.Model.Controls;
 using DocumentMaker.Model.Files;
@@ -27,6 +28,11 @@ namespace DocumentMaker.Model
 		private readonly ObservableRangeCollection<DmxFile> openedFilesList;
 		private readonly List<GameObject> gameNameList;
 
+		private readonly ActionsStack actionsStack;
+		private readonly PropertySetActionProvider<DocumentMakerModel, string> actSumActionProvider = new PropertySetActionProvider<DocumentMakerModel, string>(x => x.ActSum);
+
+		private string actSum;
+
 		public DocumentMakerModel()
 		{
 			exporter = new OfficeExporter();
@@ -40,6 +46,7 @@ namespace DocumentMaker.Model
 			humanFullNameList = new ObservableRangeCollection<HumanData>();
 			openedFilesList = new ObservableRangeCollection<DmxFile>();
 			gameNameList = new List<GameObject>();
+			actionsStack = new ActionsStack();
 		}
 
 		#region Window settings
@@ -83,13 +90,22 @@ namespace DocumentMaker.Model
 		public string ContractReworkNumberText { get; set; }
 		public string ContractReworkDateText { get; set; }
 		public string CityName { get; set; }
-		public string ActSum { get; set; }
+		public string ActSum 
+		{
+			get => actSum;
+			set 
+			{
+				if (actionsStack.ActionsStackingEnabled) actionsStack.Push(actSumActionProvider.CreateAction(this, value));
+				actSum = value; 
+			}
+		}
 		public string ActSaldo { get; set; }
 		public bool NeedUpdateSum { get; set; }
 		public IList<FullDocumentTemplate> DocumentTemplatesList => documentTemplates;
 		public IList<HumanData> HumanFullNameList => humanFullNameList;
 		public bool HasNoMovedFiles => exporter.HasNoMovedFiles;
 		public IList<GameObject> GameNameList => gameNameList;
+		public bool IsActionsStackingEnabled => actionsStack.ActionsStackingEnabled;
 
 		public void Save(string path, IEnumerable<FullBackDataModel> backModels)
 		{
@@ -327,113 +343,93 @@ namespace DocumentMaker.Model
 			return null;
 		}
 
-		public void CorrectSaldo(IEnumerable<FullBackDataModel> backDataModels)
+		public IEnumerable<int> CorrectSaldo(IEnumerable<FullBackDataModel> backDataModels)
 		{
-			int saldo;
-			if(!int.TryParse(ActSaldo, out saldo))
-			{
-				saldo = 0;
-			}
+			int saldo = int.TryParse(ActSaldo, out int tempSaldo) ? tempSaldo : 0;
+			List<StructContainer<int>> openList = new List<StructContainer<int>>(backDataModels.Select(x => (StructContainer<int>)(int.TryParse(x.SumText, out int s) ? s : 0)));
+			List<StructContainer<int>> closeList = new List<StructContainer<int>>(openList);
 
-			List<FullBackDataModel> openList = new List<FullBackDataModel>(backDataModels);
-			while(saldo != 0 && openList.Count > 0)
+			while (saldo != 0 && closeList.Count > 0)
 			{
-				int partOfSaldo = saldo / openList.Count;
+				int partOfSaldo = saldo / closeList.Count;
 
-				foreach(FullBackDataModel backDataModel in openList)
+				foreach (StructContainer<int> sumContainer in closeList)
 				{
-					int sum;
-					if(!int.TryParse(backDataModel.SumText, out sum))
-					{
-						sum = 0;
-					}
-
-					sum += partOfSaldo;
+					sumContainer.Obj += partOfSaldo;
 					saldo -= partOfSaldo;
-					backDataModel.SumText = sum.ToString();
 				}
-				FullBackDataModel last = openList.LastOrDefault();
-				if (last != null)
+				StructContainer<int> lastContainer = closeList.LastOrDefault();
+				if (lastContainer != null)
 				{
-					int sum;
-					if (!int.TryParse(last.SumText, out sum))
-					{
-						sum = 0;
-					}
-
-					sum += saldo;
+					lastContainer.Obj += saldo;
 					saldo -= saldo;
-					last.SumText = sum.ToString();
 				}
 
-				List<FullBackDataModel> deletionList = new List<FullBackDataModel>();
-				foreach(FullBackDataModel backDataModel in openList)
+				List<StructContainer<int>> deletionList = new List<StructContainer<int>>();
+				foreach (StructContainer<int> sumContainer in closeList)
 				{
-					int sum;
-					if (!int.TryParse(backDataModel.SumText, out sum))
+					if ((int)sumContainer <= 0)
 					{
-						sum = 0;
-					}
-
-					if(sum <= 0)
-					{
-						saldo += sum;
-						deletionList.Add(backDataModel);
-						backDataModel.SumText = "0";
+						saldo += (int)sumContainer;
+						sumContainer.Obj = 0;
+						deletionList.Add(sumContainer);
 					}
 				}
-				foreach(FullBackDataModel backDataModel in deletionList)
+				foreach (StructContainer<int> sumContainer in deletionList)
 				{
-					openList.Remove(backDataModel);
+					closeList.Remove(sumContainer);
 				}
 			}
+
+			return openList.Select(x => (int)x);
 		}
 
-		public void CorrectDevelopment(int minSum, bool takeSumFromSupport, List<FullBackDataModel> developmentModels, List<FullBackDataModel> supportModels)
+		public IEnumerable<int> CorrectDevelopment(int minSum, bool takeSumFromSupport, List<FullBackDataModel> models)
 		{
-			List<int> developmentInput = new List<int>(GetSumsFromModels(developmentModels)),
-				supportInput = new List<int>(GetSumsFromModels(supportModels));
+			List<int> developmentInput = new List<int>();
+			List<int> supportInput = new List<int>();
+
+			foreach (FullBackDataModel model in models)
+				(model.IsRework ? supportInput : developmentInput).Add(int.TryParse(model.SumText, out int s) ? s : 0);
 
 			MixingSumAlgorithm.MoreNumber(ref developmentInput, ref supportInput, minSum, takeSumFromSupport, true, false);
 
-			SetSumsToModels(developmentModels, developmentInput);
-			SetSumsToModels(supportModels, supportInput);
+			List<int> result = new List<int>();
+			IEnumerator<int> developmentInputEnum = developmentInput.GetEnumerator();
+			IEnumerator<int> supportInputEnum = supportInput.GetEnumerator();
+			developmentInputEnum.MoveNext();
+			supportInputEnum.MoveNext();
+			foreach (FullBackDataModel model in models)
+			{
+				IEnumerator<int> enumerator = model.IsRework ? supportInputEnum : developmentInputEnum;
+				result.Add(enumerator.Current);
+				enumerator.MoveNext();
+			}
+			return result;
 		}
 
-		public void CorrectSupport(int minSum, bool takeSumFromSupport, List<FullBackDataModel> developmentModels, List<FullBackDataModel> supportModels)
+		public IEnumerable<int> CorrectSupport(int minSum, bool takeSumFromSupport, List<FullBackDataModel> models)
 		{
-			List<int> developmentInput = new List<int>(GetSumsFromModels(developmentModels)),
-				supportInput = new List<int>(GetSumsFromModels(supportModels));
+			List<int> developmentInput = new List<int>();
+			List<int> supportInput = new List<int>();
+
+			foreach (FullBackDataModel model in models)
+				(model.IsRework ? supportInput : developmentInput).Add(int.TryParse(model.SumText, out int s) ? s : 0);
 
 			MixingSumAlgorithm.LessNumber(ref developmentInput, ref supportInput, minSum, takeSumFromSupport, true, false);
 
-			SetSumsToModels(developmentModels, developmentInput);
-			SetSumsToModels(supportModels, supportInput);
-		}
-
-		private IEnumerable<int> GetSumsFromModels(List<FullBackDataModel> backData)
-		{
-			foreach (FullBackDataModel model in backData)
+			List<int> result = new List<int>();
+			IEnumerator<int> developmentInputEnum = developmentInput.GetEnumerator();
+			IEnumerator<int> supportInputEnum = supportInput.GetEnumerator();
+			developmentInputEnum.MoveNext();
+			supportInputEnum.MoveNext();
+			foreach (FullBackDataModel model in models)
 			{
-				if (int.TryParse(model.SumText, out int sum))
-				{
-					yield return sum;
-				}
-				else
-				{
-					yield return 0;
-				}
+				IEnumerator<int> enumerator = model.IsRework ? supportInputEnum : developmentInputEnum;
+				result.Add(enumerator.Current);
+				enumerator.MoveNext();
 			}
-		}
-
-		private void SetSumsToModels(List<FullBackDataModel> backData, List<int> sums)
-		{
-			IEnumerator<int> sumsEnum = sums.GetEnumerator();
-			IEnumerator<FullBackDataModel> backDataEnum = backData.GetEnumerator();
-			while (sumsEnum.MoveNext() && backDataEnum.MoveNext())
-			{
-				backDataEnum.Current.SumText = sumsEnum.Current.ToString();
-			}
+			return result;
 		}
 
 		public void RandomizeWorkTypes(IEnumerable<KeyValuePair<bool, FullBackDataModel>> backDatas)
@@ -459,6 +455,44 @@ namespace DocumentMaker.Model
 			}
 
 			saver.Save(path);
+		}
+
+		public void EnableActionsStacking()
+		{
+			actionsStack.ActionsStackingEnabled = true;
+		}
+
+		public void DisableActionsStacking()
+		{
+			actionsStack.ActionsStackingEnabled = false;
+		}
+
+		public void Redo()
+		{
+			actionsStack.Redo();
+		}
+
+		public void Undo()
+		{
+			actionsStack.Undo();
+		}
+
+		public void AddUndoRedoLink(IUndoRedoAction action)
+		{
+			actionsStack.AddLinkToLast(action);
+		}
+
+		public IUndoRedoActionsStack GetActionsStack()
+		{
+			return actionsStack;
+		}
+
+		public void RemoveFromActionsStack(IEnumerable<FullBackDataModel> models)
+		{
+			foreach(FullBackDataModel model in models)
+			{
+				actionsStack.RemoveActionsWithTarget(model);
+			}
 		}
 	}
 }

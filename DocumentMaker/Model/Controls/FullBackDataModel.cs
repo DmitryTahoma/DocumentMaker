@@ -2,12 +2,17 @@
 using Dml.Model;
 using Dml.Model.Back;
 using Dml.Model.Template;
+using Dml.UndoRedo;
 using DocumentMaker.Model.Back;
 
 namespace DocumentMaker.Model.Controls
 {
 	public class FullBackDataModel : BaseBackDataModel
 	{
+		private readonly PropertySetActionProvider<FullBackDataModel, string> sumTextActionProvider = new PropertySetActionProvider<FullBackDataModel, string>(x => x.SumText);
+
+		private string sumText;
+
 		public FullBackDataModel() : base()
 		{
 			WorkTypesList = new ObservableRangeCollection<WorkObject>();
@@ -15,7 +20,15 @@ namespace DocumentMaker.Model.Controls
 
 		public string WeightText { get; set; }
 		public double Weight { get; set; }
-		public string SumText { get; set; }
+		public string SumText 
+		{
+			get => sumText;
+			set
+			{
+				if (actionsStack?.ActionsStackingEnabled ?? false) actionsStack.Push(sumTextActionProvider.CreateAction(this, value));
+				sumText = value;
+			}
+		}
 		public uint WorkObjectId { get; set; }
 		public bool IsOtherType { get; set; }
 		public ObservableRangeCollection<WorkObject> WorkTypesList { get; private set; }
@@ -85,6 +98,16 @@ namespace DocumentMaker.Model.Controls
 					)
 				)
 			;
+		}
+
+		public void EnableActionsStacking()
+		{
+			actionsStack.ActionsStackingEnabled = true;
+		}
+
+		public void DisableActionsStacking()
+		{
+			actionsStack.ActionsStackingEnabled = false;
 		}
 	}
 }

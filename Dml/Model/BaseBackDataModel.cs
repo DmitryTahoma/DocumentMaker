@@ -1,4 +1,5 @@
 ﻿using Dml.Model.Back;
+using Dml.UndoRedo;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -8,6 +9,7 @@ namespace Dml.Model
 	{
 		private readonly ObservableCollection<BackDataType> dataTypesList;
 		private readonly ObservableRangeCollection<GameObject> gameNameList;
+		protected IUndoRedoActionsStack actionsStack = null;
 
 		public BaseBackDataModel()
 		{
@@ -38,5 +40,16 @@ namespace Dml.Model
 		public string SpentTimeText { get; set; }
 		public string OtherText { get; set; }
 		public IList<BackDataType> BackDataTypesList => dataTypesList;
+		public bool IsActionsStackingEnabled => actionsStack.ActionsStackingEnabled;
+
+		public virtual void SetActionsStack(IUndoRedoActionsStack actionsStack)
+		{
+			this.actionsStack = actionsStack;
+		}
+
+		public virtual void AddUndoRedoLink(IUndoRedoAction action)
+		{
+			actionsStack.AddLinkToLast(action);
+		}
 	}
 }

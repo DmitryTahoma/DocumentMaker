@@ -68,5 +68,15 @@ namespace DocumentMaker.Controller.Controls
 		{
 			return model.EqualsWithoutWorkAndRework(obj.model, documentTemplate);
 		}
+
+		public void EnableActionsStacking()
+		{
+			model.EnableActionsStacking();
+		}
+
+		public void DisableActionsStacking()
+		{
+			model.DisableActionsStacking();
+		}
 	}
 }

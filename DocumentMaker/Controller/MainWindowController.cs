@@ -1,6 +1,7 @@
 ﻿using Dml.Controller.Validation;
 using Dml.Model.Back;
 using Dml.Model.Template;
+using Dml.UndoRedo;
 using DocumentMaker.Controller.Controls;
 using DocumentMaker.Model;
 using DocumentMaker.Model.Back;
@@ -81,6 +82,7 @@ namespace DocumentMaker.Controller
 		public IList<WorkObject> CurrentWorkTypesList => DocumentTemplatesList.FirstOrDefault(x => x.Type == TemplateType)?.WorkTypesList;
 		public IList<WorkObject> CurrentReworkWorkTypesList => DocumentTemplatesList.FirstOrDefault(x => x.Type == TemplateType)?.ReworkWorkTypesList;
 		public IList<GameObject> GameNameList => model.GameNameList;
+		public bool IsActionsStackingEnabled => model.IsActionsStackingEnabled;
 
 		public void Save()
 		{
@@ -261,6 +263,9 @@ namespace DocumentMaker.Controller
 
 		public void SetDataFromFile(DmxFile file)
 		{
+			bool actionsStackingEnable = IsActionsStackingEnabled;
+			DisableActionsStacking();
+
 			TemplateType = file.TemplateType;
 			SelectedHuman = file.SelectedHuman;
 			ActSum = file.ActSum;
@@ -270,6 +275,8 @@ namespace DocumentMaker.Controller
 			{
 				BackDataControllers.Add(new FullBackDataController(model));
 			}
+
+			if (actionsStackingEnable) EnableActionsStacking();
 		}
 
 		public void CloseFile(DmxFile file)
@@ -299,9 +306,9 @@ namespace DocumentMaker.Controller
 			return model.HumanFullNameList.FirstOrDefault(x => x.Name == SelectedHuman);
 		}
 
-		public void CorrectSaldo(IEnumerable<FullBackDataController> backDataControllers)
+		public IEnumerable<int> CorrectSaldo(IEnumerable<FullBackDataController> backDataControllers)
 		{
-			model.CorrectSaldo(backDataControllers.Select(x=>x.GetModel()));
+			return model.CorrectSaldo(backDataControllers.Select(x=>x.GetModel()));
 		}
 
 		private List<FullBackDataModel> GetModels()
@@ -314,40 +321,14 @@ namespace DocumentMaker.Controller
 			return backDataModels;
 		}
 
-		public void CorrectDevelopment(int minSum, bool takeSumFromSupport)
+		public IEnumerable<int> CorrectDevelopment(int minSum, bool takeSumFromSupport)
 		{
-			List<FullBackDataModel> developmentModels = new List<FullBackDataModel>(), supportModels = new List<FullBackDataModel>();
-			foreach (FullBackDataController controller in BackDataControllers)
-			{
-				if (controller.IsRework)
-				{
-					supportModels.Add(controller.GetModel());
-				}
-				else
-				{
-					developmentModels.Add(controller.GetModel());
-				}
-			}
-
-			model.CorrectDevelopment(minSum, takeSumFromSupport, developmentModels, supportModels);
+			return model.CorrectDevelopment(minSum, takeSumFromSupport, GetModels());
 		}
 
-		public void CorrectSupport(int minSum, bool takeSumFromDevelopment)
+		public IEnumerable<int> CorrectSupport(int minSum, bool takeSumFromDevelopment)
 		{
-			List<FullBackDataModel> developmentModels = new List<FullBackDataModel>(), supportModels = new List<FullBackDataModel>();
-			foreach (FullBackDataController controller in BackDataControllers)
-			{
-				if (controller.IsRework)
-				{
-					supportModels.Add(controller.GetModel());
-				}
-				else
-				{
-					developmentModels.Add(controller.GetModel());
-				}
-			}
-
-			model.CorrectSupport(minSum, takeSumFromDevelopment, developmentModels, supportModels);
+			return model.CorrectSupport(minSum, takeSumFromDevelopment, GetModels());
 		}
 
 		public void RandomizeWorkTypes(IEnumerable<FullBackDataController> checkedBackData)
@@ -402,5 +383,40 @@ namespace DocumentMaker.Controller
 		}
 
 		public List<string> GetNotLoadedFilesList() => notLoadedFiles;
+
+		public void EnableActionsStacking()
+		{
+			model.EnableActionsStacking();
+		}
+
+		public void DisableActionsStacking()
+		{
+			model.DisableActionsStacking();
+		}
+
+		public void Redo()
+		{
+			model.Redo();
+		}
+
+		public void Undo()
+		{
+			model.Undo();
+		}
+
+		public void AddUndoRedoLink(IUndoRedoAction action)
+		{
+			model.AddUndoRedoLink(action);
+		}
+
+		public IUndoRedoActionsStack GetActionsStack()
+		{
+			return model.GetActionsStack();
+		}
+
+		public void RemoveFromActionsStack(IEnumerable<FullBackDataController> controllers)
+		{
+			model.RemoveFromActionsStack(controllers.Select(x => x.GetModel()));
+		}
 	}
 }

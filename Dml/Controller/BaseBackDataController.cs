@@ -1,6 +1,7 @@
 ﻿using Dml.Controller.Validation;
 using Dml.Model;
 using Dml.Model.Back;
+using Dml.UndoRedo;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -30,6 +31,7 @@ namespace Dml.Controller
 		public string SpentTimeText { get => model.SpentTimeText; set => model.SpentTimeText = value; }
 		public string OtherText { get => model.OtherText; set => model.OtherText = value; }
 		public IList<BackDataType> BackDataTypesList => model.BackDataTypesList;
+		public bool IsActionsStackingEnabled => model.IsActionsStackingEnabled;
 
 		public virtual BaseBackDataModel GetModel()
 		{
@@ -81,6 +83,16 @@ namespace Dml.Controller
 			GameName = GameName?.Trim();
 			SpentTimeText = SpentTimeText?.Trim();
 			OtherText = OtherText?.Trim();
+		}
+
+		public virtual void SetActionsStack(IUndoRedoActionsStack actionsStack)
+		{
+			model.SetActionsStack(actionsStack);
+		}
+
+		public virtual void AddUndoRedoLink(IUndoRedoAction action)
+		{
+			model.AddUndoRedoLink(action);
 		}
 	}
 }

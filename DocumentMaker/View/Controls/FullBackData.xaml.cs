@@ -1,6 +1,7 @@
 ﻿using Dml.Controller.Validation;
 using Dml.Model.Back;
 using Dml.Model.Template;
+using Dml.UndoRedo;
 using DocumentMaker.Controller.Controls;
 using DocumentMaker.Model.Back;
 using System;
@@ -250,6 +251,9 @@ namespace DocumentMaker.View.Controls
 
 		public void SetDataFromController()
 		{
+			bool actionsStackingEnable = controller.IsActionsStackingEnabled;
+			controller.DisableActionsStacking();
+
 			BackDataIdLabel.Text = controller.Id.ToString();
 			foreach (BackDataType backData in BackDataTypesList)
 			{
@@ -279,6 +283,8 @@ namespace DocumentMaker.View.Controls
 			needUpdateWeight = true;
 
 			UpdateInputStates();
+
+			if (actionsStackingEnable) controller.EnableActionsStacking();
 		}
 
 		private void TypeChanged(object sender, SelectionChangedEventArgs e)
@@ -300,6 +306,16 @@ namespace DocumentMaker.View.Controls
 
 		private void SumTextInputTextChanged(object sender, TextChangedEventArgs e)
 		{
+			if (controller.IsActionsStackingEnabled && sender is TextBox textBox)
+			{
+				controller.AddUndoRedoLink(new UndoRedoLink(() =>
+				{
+					textBox.Text = controller.SumText;
+					textBox.Focus();
+					textBox.SelectionStart = textBox.Text.Length;
+					textBox.SelectionLength = 0;
+				}));
+			}
 			onChangedSum?.Invoke(needUpdateWeight);
 			if (needUpdateWeight)
 			{
