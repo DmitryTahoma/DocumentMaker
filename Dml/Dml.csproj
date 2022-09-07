@@ -90,6 +90,14 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="UndoRedo\ActionsStack.cs" />
+    <Compile Include="UndoRedo\BaseUndoRedoAction.cs" />
+    <Compile Include="UndoRedo\ITargetUndoRedoAction.cs" />
+    <Compile Include="UndoRedo\IUndoRedoAction.cs" />
+    <Compile Include="UndoRedo\IUndoRedoActionsStack.cs" />
+    <Compile Include="UndoRedo\PropertySetAction.cs" />
+    <Compile Include="UndoRedo\PropertySetActionProvider.cs" />
+    <Compile Include="UndoRedo\UndoRedoLink.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
