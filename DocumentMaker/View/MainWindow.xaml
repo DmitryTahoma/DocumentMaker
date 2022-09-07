@@ -58,6 +58,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
                 <RowDefinition x:Name="ContentRow" />
             </Grid.RowDefinitions>
 
@@ -94,30 +95,51 @@
                         Header="Експорт всіх актів"
                         Icon="{materialDesign:PackIcon Kind=FileMultipleOutline}" />
                 </MenuItem>
+                <MenuItem Header="Редагування" Icon="{materialDesign:PackIcon Kind=FileDocumentEditOutline}">
+                    <MenuItem
+                        Click="UndoClick"
+                        Header="Повернути"
+                        Icon="{materialDesign:PackIcon Kind=Undo}"
+                        InputGestureText="Ctrl+Z" />
+                    <MenuItem
+                        Click="RedoClick"
+                        Header="Повторити"
+                        Icon="{materialDesign:PackIcon Kind=Redo}"
+                        InputGestureText="Ctrl+Y" />
+                </MenuItem>
                 <MenuItem
                     Click="InfoBtnClick"
                     Header="Інформація"
                     Icon="{materialDesign:PackIcon Kind=InformationCircleOutline}" />
-                <MenuItem
-                    Click="UndoClick"
-                    Icon="{materialDesign:PackIcon Kind=Undo}"
-                    ToolTip="Назад" />
-                <MenuItem
-                    Click="RedoClick"
-                    Icon="{materialDesign:PackIcon Kind=Redo}"
-                    ToolTip="Вперед" />
             </Menu>
+
+            <ToolBarTray Grid.Row="1" IsLocked="True">
+                <ToolBar Style="{StaticResource MaterialDesignToolBar}">
+                    <Button
+                        Padding="5"
+                        Click="UndoClick"
+                        Content="{materialDesign:PackIcon Kind=Undo,
+                                                          Size=18}"
+                        ToolTip="Повернути (Ctrl+Z)" />
+                    <Button
+                        Padding="5"
+                        Click="RedoClick"
+                        Content="{materialDesign:PackIcon Kind=Redo,
+                                                          Size=18}"
+                        ToolTip="Повторити (Ctrl+Y)" />
+                </ToolBar>
+            </ToolBarTray>
 
             <ComboBox
                 x:Name="OpenedFilesComboBox"
-                Grid.Row="1"
+                Grid.Row="2"
                 materialDesign:HintAssist.Hint="Файл"
                 ItemsSource="{Binding ElementName=WindowContext, Path=OpenedFilesList, UpdateSourceTrigger=PropertyChanged}"
                 SelectionChanged="OpenedFilesSelectionChanged"
                 Style="{StaticResource MaterialDesignFilledComboBox}" />
 
             <Button
-                Grid.Row="2"
+                Grid.Row="3"
                 Height="{Binding ElementName=ContentRow, Path=Height}"
                 Click="OpenFileClick"
                 Content="Відкрити файл"
@@ -125,7 +147,7 @@
                 Style="{StaticResource MaterialDesignOutlinedDarkButton}"
                 Visibility="{Binding ElementName=WindowContext, Path=ButtonOpenContentVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <Grid Grid.Row="2" Visibility="{Binding ElementName=WindowContext, Path=ContentVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <Grid Grid.Row="3" Visibility="{Binding ElementName=WindowContext, Path=ContentVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="5*" />
