@@ -1,5 +1,7 @@
 ﻿namespace Dml.UndoRedo
 {
+	public delegate void UndoRedoActionPushedHandler(IUndoRedoAction action);
+
 	public interface IUndoRedoActionsStack
 	{
 		bool ActionsStackingEnabled { get; set; }
@@ -12,5 +14,6 @@
 		void Undo();
 		void AddLinkToLast(IUndoRedoAction action);
 		void RemoveActionsWithTarget<TObj>(TObj target);
+		void SubscribePushed(UndoRedoActionPushedHandler action);
 	}
 }

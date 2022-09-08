@@ -83,6 +83,8 @@ namespace DocumentMaker.Controller
 		public IList<WorkObject> CurrentReworkWorkTypesList => DocumentTemplatesList.FirstOrDefault(x => x.Type == TemplateType)?.ReworkWorkTypesList;
 		public IList<GameObject> GameNameList => model.GameNameList;
 		public bool IsActionsStackingEnabled => model.IsActionsStackingEnabled;
+		public bool CanRedo => model.CanRedo;
+		public bool CanUndo => model.CanUndo;
 
 		public void Save()
 		{
@@ -417,6 +419,11 @@ namespace DocumentMaker.Controller
 		public void RemoveFromActionsStack(IEnumerable<FullBackDataController> controllers)
 		{
 			model.RemoveFromActionsStack(controllers.Select(x => x.GetModel()));
+		}
+
+		public void SubscribeActionPushed(UndoRedoActionPushedHandler action)
+		{
+			model.SubscribeActionPushed(action);
 		}
 	}
 }

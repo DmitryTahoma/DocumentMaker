@@ -100,12 +100,14 @@
                         Click="UndoClick"
                         Header="Повернути"
                         Icon="{materialDesign:PackIcon Kind=Undo}"
-                        InputGestureText="Ctrl+Z" />
+                        InputGestureText="Ctrl+Z"
+                        IsEnabled="{Binding ElementName=WindowContext, Path=CanUndo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     <MenuItem
                         Click="RedoClick"
                         Header="Повторити"
                         Icon="{materialDesign:PackIcon Kind=Redo}"
-                        InputGestureText="Ctrl+Y" />
+                        InputGestureText="Ctrl+Y"
+                        IsEnabled="{Binding ElementName=WindowContext, Path=CanRedo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </MenuItem>
                 <MenuItem
                     Click="InfoBtnClick"
@@ -120,12 +122,14 @@
                         Click="UndoClick"
                         Content="{materialDesign:PackIcon Kind=Undo,
                                                           Size=18}"
+                        IsEnabled="{Binding ElementName=WindowContext, Path=CanUndo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         ToolTip="Повернути (Ctrl+Z)" />
                     <Button
                         Padding="5"
                         Click="RedoClick"
                         Content="{materialDesign:PackIcon Kind=Redo,
                                                           Size=18}"
+                        IsEnabled="{Binding ElementName=WindowContext, Path=CanRedo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         ToolTip="Повторити (Ctrl+Y)" />
                 </ToolBar>
             </ToolBarTray>

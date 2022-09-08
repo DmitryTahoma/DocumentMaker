@@ -106,6 +106,8 @@ namespace DocumentMaker.Model
 		public bool HasNoMovedFiles => exporter.HasNoMovedFiles;
 		public IList<GameObject> GameNameList => gameNameList;
 		public bool IsActionsStackingEnabled => actionsStack.ActionsStackingEnabled;
+		public bool CanRedo => actionsStack.CanRedo;
+		public bool CanUndo => actionsStack.CanUndo;
 
 		public void Save(string path, IEnumerable<FullBackDataModel> backModels)
 		{
@@ -493,6 +495,11 @@ namespace DocumentMaker.Model
 			{
 				actionsStack.RemoveActionsWithTarget(model);
 			}
+		}
+
+		public void SubscribeActionPushed(UndoRedoActionPushedHandler action)
+		{
+			actionsStack.SubscribePushed(action);
 		}
 	}
 }

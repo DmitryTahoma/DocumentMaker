@@ -45,6 +45,8 @@ namespace DocumentMaker
 		public static readonly DependencyProperty ActSaldoProperty;
 		public static readonly DependencyProperty ContentVisibilityProperty;
 		public static readonly DependencyProperty ButtonOpenContentVisibilityProperty;
+		public static readonly DependencyProperty CanRedoProperty;
+		public static readonly DependencyProperty CanUndoProperty;
 
 		static MainWindow()
 		{
@@ -56,6 +58,8 @@ namespace DocumentMaker
 			ActSaldoProperty = DependencyProperty.Register("ActSaldo", typeof(string), typeof(MainWindowController));
 			ContentVisibilityProperty = DependencyProperty.Register("ContentVisibility", typeof(Visibility), typeof(MainWindow));
 			ButtonOpenContentVisibilityProperty = DependencyProperty.Register("ButtonOpenContentVisibility", typeof(Visibility), typeof(MainWindow));
+			CanRedoProperty = DependencyProperty.Register("CanRedo", typeof(bool), typeof(MainWindow));
+			CanUndoProperty = DependencyProperty.Register("CanUndo", typeof(bool), typeof(MainWindow));
 		}
 
 		#endregion
@@ -319,6 +323,18 @@ namespace DocumentMaker
 
 		private bool CanUndoNeedUpdateSum { get; set; } = true;
 
+		public bool CanRedo
+		{
+			get => (bool)GetValue(CanRedoProperty);
+			set => SetValue(CanRedoProperty, value);
+		}
+
+		public bool CanUndo
+		{
+			get => (bool)GetValue(CanUndoProperty);
+			set => SetValue(CanUndoProperty, value);
+		}
+
 		#endregion
 
 		#region Event handlers
@@ -372,6 +388,7 @@ namespace DocumentMaker
 #endif
 			}
 			controller.EnableActionsStacking();
+			controller.SubscribeActionPushed((action) => { UpdateUndoRedoState(); });
 		}
 
 		private void ChangedDocumentTemplate(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -975,16 +992,12 @@ namespace DocumentMaker
 
 		private void RedoClick(object sender, RoutedEventArgs e)
 		{
-			controller.DisableActionsStacking();
-			controller.Redo();
-			controller.EnableActionsStacking();
+			Redo();
 		}
 
 		private void UndoClick(object sender, RoutedEventArgs e)
 		{
-			controller.DisableActionsStacking();
-			controller.Undo();
-			controller.EnableActionsStacking();
+			Undo();
 		}
 
 		#endregion
@@ -1411,6 +1424,28 @@ namespace DocumentMaker
 					yield return backData;
 				}
 			}
+		}
+
+		private void Redo()
+		{
+			controller.DisableActionsStacking();
+			controller.Redo();
+			controller.EnableActionsStacking();
+			UpdateUndoRedoState();
+		}
+
+		private void Undo()
+		{
+			controller.DisableActionsStacking();
+			controller.Undo();
+			controller.EnableActionsStacking();
+			UpdateUndoRedoState();
+		}
+
+		private void UpdateUndoRedoState()
+		{
+			CanUndo = controller.CanUndo;
+			CanRedo = controller.CanRedo;
 		}
 
 		#endregion

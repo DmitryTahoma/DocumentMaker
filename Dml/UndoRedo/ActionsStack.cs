@@ -7,6 +7,8 @@ namespace Dml.UndoRedo
 		private LinkedList<IUndoRedoAction> redoList;
 		private LinkedList<IUndoRedoAction> undoList;
 
+		private event UndoRedoActionPushedHandler onPushed;
+
 		public ActionsStack()
 		{
 			redoList = new LinkedList<IUndoRedoAction>();
@@ -28,6 +30,7 @@ namespace Dml.UndoRedo
 					undoList.RemoveFirst();
 
 				undoList.AddLast(action);
+				onPushed?.Invoke(action);
 			}
 		}
 
@@ -62,6 +65,11 @@ namespace Dml.UndoRedo
 		{
 			RemoveActionsWithTarget(target, redoList);
 			RemoveActionsWithTarget(target, undoList);
+		}
+
+		public void SubscribePushed(UndoRedoActionPushedHandler action)
+		{
+			onPushed += action;
 		}
 
 		private void RemoveActionsWithTarget<TObj>(TObj target, LinkedList<IUndoRedoAction> list)
