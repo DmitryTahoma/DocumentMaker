@@ -166,6 +166,8 @@
             Margin="1.5"
             Padding="8.5"
             VerticalAlignment="Center"
+            ContextMenu="{x:Null}"
+            IsUndoEnabled="False"
             PreviewTextInput="UIntValidating"
             Style="{StaticResource MaterialDesignOutlinedTextBox}"
             Text="{Binding ElementName=FullBackDataContext, Path=SumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

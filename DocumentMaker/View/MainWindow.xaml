@@ -22,6 +22,7 @@
     Loaded="WindowLoaded"
     PreviewDragOver="WindowDragEnter"
     PreviewDrop="WindowPreviewDrop"
+    PreviewKeyDown="WindowKeyDown"
     mc:Ignorable="d">
 
     <materialDesign:DialogHost CloseOnClickAway="True">
@@ -219,6 +220,7 @@
                         Margin="5"
                         Padding="5"
                         materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                        ContextMenu="{x:Null}"
                         IsUndoEnabled="False"
                         MaxLength="9"
                         PreviewTextInput="UIntValidating"
@@ -236,7 +238,9 @@
                         Grid.Column="3"
                         Margin="5"
                         Padding="5"
+                        ContextMenu="{x:Null}"
                         IsReadOnly="True"
+                        IsUndoEnabled="False"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
                         Text="{Binding ElementName=WindowContext, Path=ActSumSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
@@ -249,7 +253,9 @@
                         Grid.Column="5"
                         Margin="5"
                         Padding="5"
+                        ContextMenu="{x:Null}"
                         IsReadOnly="True"
+                        IsUndoEnabled="False"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
                         Text="{Binding ElementName=WindowContext, Path=ActSaldo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     <Button

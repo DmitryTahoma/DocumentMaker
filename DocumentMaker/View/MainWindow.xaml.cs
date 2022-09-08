@@ -1000,6 +1000,22 @@ namespace DocumentMaker
 			Undo();
 		}
 
+		private void WindowKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if ((Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && Keyboard.IsKeyDown(Key.Y))
+				|| (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) && Keyboard.IsKeyDown(Key.Z)))
+			{
+				Redo();
+				e.Handled = true;
+			}
+			else if ((Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && Keyboard.IsKeyDown(Key.Z))
+				|| (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) && Keyboard.IsKeyDown(Key.Back)))
+			{
+				Undo();
+				e.Handled = true;
+			}
+		}
+
 		#endregion
 
 		#region Methods
