@@ -111,6 +111,7 @@ namespace DocumentMaker.View.Controls
 			set
 			{
 				SetValue(EpisodeNumberTextProperty, value);
+				HaveUnsavedChanges = true;
 				controller.EpisodeNumberText = value;
 			}
 		}
@@ -121,6 +122,7 @@ namespace DocumentMaker.View.Controls
 			set
 			{
 				SetValue(BackNumberTextProperty, value);
+				HaveUnsavedChanges = true;
 				controller.BackNumberText = value;
 			}
 		}
@@ -131,6 +133,7 @@ namespace DocumentMaker.View.Controls
 			set
 			{
 				SetValue(BackNameProperty, value);
+				HaveUnsavedChanges = true;
 				controller.BackName = value;
 			}
 		}
@@ -141,6 +144,7 @@ namespace DocumentMaker.View.Controls
 			set
 			{
 				SetValue(CountRegionsTextProperty, value);
+				HaveUnsavedChanges = true;
 				controller.BackCountRegionsText = value;
 			}
 		}
@@ -154,6 +158,7 @@ namespace DocumentMaker.View.Controls
 			{
 				SetValue(GameNameProperty, value);
 				controller.GameName = value;
+				HaveUnsavedChanges = true;
 				NotifyPropertyChanged(nameof(EpisodeNumberList));
 			}
 		}
@@ -186,6 +191,7 @@ namespace DocumentMaker.View.Controls
 			set
 			{
 				SetValue(IsSketchProperty, value);
+				HaveUnsavedChanges = true;
 				controller.IsSketch = value;
 			}
 		}
@@ -208,6 +214,7 @@ namespace DocumentMaker.View.Controls
 			set
 			{
 				SetValue(OtherTextProperty, value);
+				HaveUnsavedChanges = true;
 				controller.OtherText = value;
 			}
 		}
@@ -243,6 +250,8 @@ namespace DocumentMaker.View.Controls
 				}
 			}
 		}
+
+		public bool HaveUnsavedChanges { get => controller.HaveUnsavedChanges; set => controller.HaveUnsavedChanges = value; }
 
 		public void SubscribeChangedSum(ActionWithBool action)
 		{
@@ -292,6 +301,7 @@ namespace DocumentMaker.View.Controls
 			if (controller != null && sender is ComboBox comboBox && comboBox.SelectedItem is BackDataType dataType)
 			{
 				controller.Type = dataType.Type;
+				HaveUnsavedChanges = true;
 				UpdateInputStates();
 			}
 		}
@@ -301,11 +311,13 @@ namespace DocumentMaker.View.Controls
 			if (controller != null && sender is ComboBox comboBox && comboBox.SelectedItem is WorkObject workObject)
 			{
 				controller.WorkObjectId = workObject.Id;
+				HaveUnsavedChanges = true;
 			}
 		}
 
 		private void SumTextInputTextChanged(object sender, TextChangedEventArgs e)
 		{
+			HaveUnsavedChanges = true;
 			if (controller.IsActionsStackingEnabled && sender is TextBox textBox)
 			{
 				controller.AddUndoRedoLink(new UndoRedoLink(() =>

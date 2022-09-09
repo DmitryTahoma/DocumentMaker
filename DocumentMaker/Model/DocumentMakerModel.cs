@@ -109,6 +109,9 @@ namespace DocumentMaker.Model
 		public bool CanRedo => actionsStack.CanRedo;
 		public bool CanUndo => actionsStack.CanUndo;
 
+		[IsNotDmxContent]
+		public bool HaveUnsavedChanges { get; set; }
+
 		public void Save(string path, IEnumerable<FullBackDataModel> backModels)
 		{
 			DmxSaver saver = new DmxSaver();
@@ -525,6 +528,11 @@ namespace DocumentMaker.Model
 			{
 				backDataModelsEnum.Current.Weight = timesEnum.Current / totalTime;
 			}
+		}
+
+		public void ClearUndoRedo()
+		{
+			actionsStack.Clear();
 		}
 	}
 }

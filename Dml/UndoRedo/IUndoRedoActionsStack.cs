@@ -15,5 +15,6 @@
 		void AddLinkToLast(IUndoRedoAction action);
 		void RemoveActionsWithTarget<TObj>(TObj target);
 		void SubscribePushed(UndoRedoActionPushedHandler action);
+		void Clear();
 	}
 }

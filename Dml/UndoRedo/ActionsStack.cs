@@ -80,6 +80,12 @@ namespace Dml.UndoRedo
 			onPushed += action;
 		}
 
+		public void Clear()
+		{
+			redoList.Clear();
+			undoList.Clear();
+		}
+
 		private void RemoveActionsWithTarget<TObj>(TObj target, LinkedList<IUndoRedoAction> list)
 		{
 			List<ITargetUndoRedoAction<TObj>> removeList = new List<ITargetUndoRedoAction<TObj>>();

@@ -32,6 +32,7 @@ namespace Dml.Controller
 		public string OtherText { get => model.OtherText; set => model.OtherText = value; }
 		public IList<BackDataType> BackDataTypesList => model.BackDataTypesList;
 		public bool IsActionsStackingEnabled => model.IsActionsStackingEnabled;
+		public bool HaveUnsavedChanges { get => model.HaveUnsavedChanges; set => model.HaveUnsavedChanges = value; }
 
 		public virtual BaseBackDataModel GetModel()
 		{

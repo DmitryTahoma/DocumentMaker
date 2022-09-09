@@ -1,4 +1,5 @@
 ﻿using Dml.Model.Back;
+using Dml.Model.Session.Attributes;
 using Dml.UndoRedo;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -40,7 +41,10 @@ namespace Dml.Model
 		public string SpentTimeText { get; set; }
 		public string OtherText { get; set; }
 		public IList<BackDataType> BackDataTypesList => dataTypesList;
-		public bool IsActionsStackingEnabled => actionsStack.ActionsStackingEnabled;
+		public bool IsActionsStackingEnabled => actionsStack?.ActionsStackingEnabled ?? false;
+
+		[IsNotDmxContent]
+		public bool HaveUnsavedChanges { get; set; }
 
 		public virtual void SetActionsStack(IUndoRedoActionsStack actionsStack)
 		{

@@ -85,6 +85,7 @@ namespace DocumentMaker.Controller
 		public bool IsActionsStackingEnabled => model.IsActionsStackingEnabled;
 		public bool CanRedo => model.CanRedo;
 		public bool CanUndo => model.CanUndo;
+		public bool HaveUnsavedChanges { get => model.HaveUnsavedChanges; set => model.HaveUnsavedChanges = value; }
 
 		public void Save()
 		{
@@ -429,6 +430,34 @@ namespace DocumentMaker.Controller
 		public void ResetWeights()
 		{
 			model.ResetWeight(GetModels());
+		}
+
+		public bool HaveUnsavedChangesAtAll()
+		{
+			if (HaveUnsavedChanges)
+				return true;
+
+			foreach(FullBackDataController backDataController in BackDataControllers)
+			{
+				if (backDataController.HaveUnsavedChanges)
+					return true;
+			}
+			return false;
+		}
+
+		public void ResetHaveUnsavedChanges()
+		{
+			HaveUnsavedChanges = false;
+
+			foreach (FullBackDataController backDataController in BackDataControllers)
+			{
+				backDataController.HaveUnsavedChanges = false;
+			}
+		}
+
+		public void ClearUndoRedo()
+		{
+			model.ClearUndoRedo();
 		}
 	}
 }

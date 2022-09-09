@@ -70,6 +70,8 @@ namespace DocumentMaker
 		private readonly SaveFileDialog saveFileDialog;
 		private readonly InputingValidator inputingValidator;
 
+		private bool cancelOpenedFilesSelectionChanged;
+
 		public MainWindow(string[] args)
 		{
 			controller = new MainWindowController(args);
@@ -123,6 +125,7 @@ namespace DocumentMaker
 			});
 			DataFooter.SubscribeAddition((x) =>
 			{
+				HaveUnsavedChanges = true;
 				DisableUpdatingSum();
 				CanUndoNeedUpdateSum = false;
 				x.Controller.IsRework = false;
@@ -172,6 +175,7 @@ namespace DocumentMaker
 			});
 			ReworkDataFooter.SubscribeAddition((x) =>
 			{
+				HaveUnsavedChanges = true;
 				DisableUpdatingSum();
 				CanUndoNeedUpdateSum = false;
 				x.Controller.IsRework = true;
@@ -223,6 +227,7 @@ namespace DocumentMaker
 			});
 			OtherDataFooter.SubscribeAddition((x) =>
 			{
+				HaveUnsavedChanges = true;
 				DisableUpdatingSum();
 				CanUndoNeedUpdateSum = false;
 				x.Controller.IsOtherType = true;
@@ -335,6 +340,8 @@ namespace DocumentMaker
 			set => SetValue(CanUndoProperty, value);
 		}
 
+		public bool HaveUnsavedChanges { get => controller.HaveUnsavedChanges; set => controller.HaveUnsavedChanges = value; }
+
 		#endregion
 
 		#region Event handlers
@@ -364,6 +371,7 @@ namespace DocumentMaker
 				SetDataFromController();
 				string[] files = controller.GetOpenLaterFiles();
 				OpenFiles(files);
+				ResetHaveUnsavedChanges();
 				LoadFiles();
 				if (files != null && files.Length > 0)
 				{
@@ -389,6 +397,7 @@ namespace DocumentMaker
 			}
 			controller.EnableActionsStacking();
 			controller.SubscribeActionPushed((action) => { UpdateUndoRedoState(); });
+			ResetHaveUnsavedChanges();
 		}
 
 		private void ChangedDocumentTemplate(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -397,6 +406,7 @@ namespace DocumentMaker
 				&& sender is System.Windows.Controls.ComboBox comboBox
 				&& comboBox.SelectedItem is DocumentTemplate documentTemplate)
 			{
+				HaveUnsavedChanges = true;
 				controller.TemplateType = documentTemplate.Type;
 				UpdateViewBackData();
 
@@ -669,8 +679,14 @@ namespace DocumentMaker
 			}
 			controller.EnableActionsStacking();
 
-			if (isNeedUpdateSum && !pushedFirst)
+			if(pushedFirst)
+			{
+				HaveUnsavedChanges = true;
+			}
+			else if (isNeedUpdateSum)
+			{
 				EnableUpdatingSum();
+			}
 
 			SetDataFromControllerBackDatas();
 			DataFooter?.UpdateAllSum();
@@ -724,8 +740,14 @@ namespace DocumentMaker
 				}
 				controller.EnableActionsStacking();
 
-				if (isNeedUpdateSum && !pushedFirst)
+				if (pushedFirst)
+				{
+					HaveUnsavedChanges = true;
+				}
+				else if (isNeedUpdateSum)
+				{
 					EnableUpdatingSum();
+				}
 
 				SetDataFromControllerBackDatas();
 			}
@@ -777,8 +799,14 @@ namespace DocumentMaker
 				}
 				controller.EnableActionsStacking();
 
-				if (isNeedUpdateSum && !pushedFirst)
+				if (pushedFirst)
+				{
+					HaveUnsavedChanges = true;
+				}
+				else if (isNeedUpdateSum)
+				{
 					EnableUpdatingSum();
+				}
 
 				SetDataFromControllerBackDatas();
 			}
@@ -794,6 +822,7 @@ namespace DocumentMaker
 				MessageBoxDefaultButton.Button1)
 					== System.Windows.Forms.DialogResult.Yes)
 			{
+				HaveUnsavedChanges = true;
 				DisableUpdatingSum();
 				CanUndoNeedUpdateSum = false;
 				IEnumerable<FullBackData> removedElems = DeleteSelectedBackData(BacksData);
@@ -814,6 +843,7 @@ namespace DocumentMaker
 				MessageBoxDefaultButton.Button1)
 					== System.Windows.Forms.DialogResult.Yes)
 			{
+				HaveUnsavedChanges = true;
 				DisableUpdatingSum();
 				CanUndoNeedUpdateSum = false;
 				IEnumerable<FullBackData> removedElems = DeleteSelectedBackData(ReworkBacksData);
@@ -834,6 +864,7 @@ namespace DocumentMaker
 				MessageBoxDefaultButton.Button1)
 					== System.Windows.Forms.DialogResult.Yes)
 			{
+				HaveUnsavedChanges = true;
 				DisableUpdatingSum();
 				CanUndoNeedUpdateSum = false;
 				IEnumerable<FullBackData> removedElems = DeleteSelectedBackData(OtherBacksData);
@@ -847,21 +878,25 @@ namespace DocumentMaker
 		public void MoveFromDevelopment(object sender, RoutedEventArgs e)
 		{
 			MoveBackData(DataHeader, BacksData, DataFooter, ReworkDataHeader, ReworkDataFooter);
+			HaveUnsavedChanges = true;
 		}
 
 		public void MoveFromSupport(object sender, RoutedEventArgs e)
 		{
 			MoveBackData(ReworkDataHeader, ReworkBacksData, ReworkDataFooter, DataHeader, DataFooter);
+			HaveUnsavedChanges = true;
 		}
 
 		public void MoveFromOtherToDevelopment(object sender, RoutedEventArgs e)
 		{
 			MoveBackData(OtherDataHeader, OtherBacksData, OtherDataFooter, DataHeader, DataFooter);
+			HaveUnsavedChanges = true;
 		}
 
 		public void MoveFromOtherToSupport(object sender, RoutedEventArgs e)
 		{
 			MoveBackData(OtherDataHeader, OtherBacksData, OtherDataFooter, ReworkDataHeader, ReworkDataFooter);
+			HaveUnsavedChanges = true;
 		}
 
 		private void WindowPreviewDrop(object sender, System.Windows.DragEventArgs e)
@@ -908,8 +943,48 @@ namespace DocumentMaker
 
 		private void OpenedFilesSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
+			if(cancelOpenedFilesSelectionChanged)
+			{
+				cancelOpenedFilesSelectionChanged = false;
+				return;
+			}
+
 			if (sender is System.Windows.Controls.ComboBox comboBox && comboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
 			{
+				if(HaveUnsavedChangesAtAll())
+				{
+					DialogResult res = MessageBox.Show("Відкритий файл має незбережені зміни. Зберегти файл перед змінною?",
+						"Зміна файлу",
+						MessageBoxButtons.YesNoCancel,
+						MessageBoxIcon.Question,
+						MessageBoxDefaultButton.Button1);
+
+					if (res == System.Windows.Forms.DialogResult.Yes)
+					{
+						saveFileDialog.FileName = controller.GetDcmkFileName();
+						res = saveFileDialog.ShowDialog();
+						if (res == System.Windows.Forms.DialogResult.OK)
+						{
+							controller.ExportDcmk(saveFileDialog.FileName);
+
+							MessageBox.Show("Файл збережений.",
+								"DocumentMaker | Export dcmk",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Information);
+						}
+					}
+
+					if(res == System.Windows.Forms.DialogResult.Cancel)
+					{
+						cancelOpenedFilesSelectionChanged = true;
+						comboBox.SelectedItem = controller.GetSelectedFile();
+						return;
+					}
+				}
+
+				controller.ClearUndoRedo();
+				UpdateUndoRedoState();
+
 				ContentVisibility = Visibility.Visible;
 				ButtonOpenContentVisibility = Visibility.Hidden;
 
@@ -923,6 +998,8 @@ namespace DocumentMaker
 				controller.SetSelectedFile(selectedFile);
 				UpdateViewBackData(); 
 				UpdateSaldo();
+
+				ResetHaveUnsavedChanges();
 			}
 			else
 			{
@@ -933,7 +1010,8 @@ namespace DocumentMaker
 
 		private void ActSumTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
 		{
-			if(controller.IsActionsStackingEnabled && sender is System.Windows.Controls.TextBox textBox)
+			HaveUnsavedChanges = true;
+			if (controller.IsActionsStackingEnabled && sender is System.Windows.Controls.TextBox textBox)
 			{
 				controller.AddUndoRedoLink(new UndoRedoLink(() => 
 				{
@@ -953,6 +1031,7 @@ namespace DocumentMaker
 
 		private void RandomizeWorkTypes(object sender, RoutedEventArgs e)
 		{
+			HaveUnsavedChanges = true;
 			controller.TrimAllStrings();
 			controller.RandomizeWorkTypes(GetSelectedBackDatas(BacksData).Select(x=>x.Controller));
 			SetDataFromController();
@@ -961,6 +1040,7 @@ namespace DocumentMaker
 
 		private void RandomizeReworkWorkTypes(object sender, RoutedEventArgs e)
 		{
+			HaveUnsavedChanges = true;
 			controller.TrimAllStrings();
 			controller.RandomizeReworkWorkTypes(GetSelectedBackDatas(ReworkBacksData).Select(x => x.Controller));
 			SetDataFromController();
@@ -1517,6 +1597,16 @@ namespace DocumentMaker
 		{
 			CanUndo = controller.CanUndo;
 			CanRedo = controller.CanRedo;
+		}
+
+		private bool HaveUnsavedChangesAtAll()
+		{
+			return controller.HaveUnsavedChangesAtAll();
+		}
+
+		private void ResetHaveUnsavedChanges()
+		{
+			controller.ResetHaveUnsavedChanges();
 		}
 
 		#endregion
