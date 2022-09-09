@@ -518,5 +518,23 @@ namespace DocumentMaker.View.Controls
 			onChangedSum = null;
 			onSelectionChanged = null;
 		}
+
+		public void SetSumTextChangesWithLink(string sumText)
+		{
+			controller.SetSumTextChangesWithLink(sumText, new UndoRedoLink(() =>
+			{
+				needUpdateWeight = false;
+				SumTextInput.Text = controller.SumText;
+				needUpdateWeight = true;
+			}));
+		}
+
+		public void SetSumTextChangesWithAction(string sumText)
+		{
+			bool isActionStackingEnable = controller.IsActionsStackingEnabled;
+			controller.EnableActionsStacking();
+			controller.SumText = sumText;
+			if (!isActionStackingEnable) controller.DisableActionsStacking();
+		}
 	}
 }

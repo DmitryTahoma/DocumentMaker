@@ -425,5 +425,10 @@ namespace DocumentMaker.Controller
 		{
 			model.SubscribeActionPushed(action);
 		}
+
+		public void ResetWeights()
+		{
+			model.ResetWeight(GetModels());
+		}
 	}
 }

@@ -109,5 +109,16 @@ namespace DocumentMaker.Model.Controls
 		{
 			actionsStack.ActionsStackingEnabled = false;
 		}
+
+		public void SetSumTextChangesWithLink(string sumText, params IUndoRedoAction[] links)
+		{
+			IUndoRedoAction action = sumTextActionProvider.CreateAction(this, sumText);
+			foreach(IUndoRedoAction link in links)
+			{
+				action.AddLink(link);
+			}
+			actionsStack.AddLinkToLast(action);
+			this.sumText = sumText;
+		}
 	}
 }

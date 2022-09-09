@@ -501,5 +501,30 @@ namespace DocumentMaker.Model
 		{
 			actionsStack.SubscribePushed(action);
 		}
+
+		public void ResetWeight(IEnumerable<FullBackDataModel> models)
+		{
+			double totalTime = 0;
+			List<double> times = new List<double>();
+
+			foreach (FullBackDataModel model in models)
+			{
+				int time = 0;
+				if (int.TryParse(model.SpentTimeText, out int spentTime))
+				{
+					time = spentTime;
+				}
+				totalTime += time;
+				times.Add(time);
+			}
+
+			IEnumerator<double> timesEnum = times.GetEnumerator();
+			IEnumerator<FullBackDataModel> backDataModelsEnum = models.GetEnumerator();
+
+			while (timesEnum.MoveNext() && backDataModelsEnum.MoveNext())
+			{
+				backDataModelsEnum.Current.Weight = timesEnum.Current / totalTime;
+			}
+		}
 	}
 }

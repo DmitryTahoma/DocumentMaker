@@ -1,6 +1,7 @@
 ﻿using Dml;
 using Dml.Controller;
 using Dml.Model.Template;
+using Dml.UndoRedo;
 using DocumentMaker.Model.Back;
 using DocumentMaker.Model.Controls;
 
@@ -77,6 +78,11 @@ namespace DocumentMaker.Controller.Controls
 		public void DisableActionsStacking()
 		{
 			model.DisableActionsStacking();
+		}
+
+		public void SetSumTextChangesWithLink(string sumText, params IUndoRedoAction[] links)
+		{
+			model.SetSumTextChangesWithLink(sumText, links);
 		}
 	}
 }

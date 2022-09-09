@@ -150,7 +150,7 @@ namespace DocumentMaker
 			{
 				if (changedWeight)
 				{
-					AddUndoRedoLinkNeedUpdateSum(controller.NeedUpdateSum);
+					AddUndoRedoLinkNeedUpdateSumWithCheck(controller.NeedUpdateSum);
 					DisableUpdatingSum();
 				}
 				UpdateSaldo();
@@ -200,7 +200,7 @@ namespace DocumentMaker
 			{
 				if (changedWeight)
 				{
-					AddUndoRedoLinkNeedUpdateSum(controller.NeedUpdateSum);
+					AddUndoRedoLinkNeedUpdateSumWithCheck(controller.NeedUpdateSum);
 					DisableUpdatingSum();
 				}
 				UpdateSaldo();
@@ -249,7 +249,7 @@ namespace DocumentMaker
 			{
 				if (changedWeight)
 				{
-					AddUndoRedoLinkNeedUpdateSum(controller.NeedUpdateSum);
+					AddUndoRedoLinkNeedUpdateSumWithCheck(controller.NeedUpdateSum);
 					DisableUpdatingSum();
 				}
 				UpdateSaldo();
@@ -652,13 +652,19 @@ namespace DocumentMaker
 			bool pushedFirst = false;
 			while(selectedBackDatasEnum.MoveNext() && resultSumsEnum.MoveNext())
 			{
+				if(pushedFirst)
+				{
+					selectedBackDatasEnum.Current.SetSumTextChangesWithLink(resultSumsEnum.Current.ToString());
+				}
 				selectedBackDatasEnum.Current.SumTextInput.Text = resultSumsEnum.Current.ToString();
 				if(!pushedFirst)
 				{
 					pushedFirst = true;
+					controller.DisableActionsStacking();
 					AddUndoRedoLinkNeedUpdateSum(isNeedUpdateSum);
 				}
 			}
+			controller.EnableActionsStacking();
 
 			SetDataFromControllerBackDatas();
 			DataFooter?.UpdateAllSum();
@@ -668,8 +674,6 @@ namespace DocumentMaker
 
 		private async void CorrectDevelopClick(object sender, RoutedEventArgs e)
 		{
-			bool isNeedUpdateSum = controller.NeedUpdateSum;
-			DisableUpdatingSum();
 			CorrectDevelopmentDialog dialog = new CorrectDevelopmentDialog
 			{
 				NumberText = controller.CorrectDevelopmentWindow_NumberText,
@@ -682,24 +686,37 @@ namespace DocumentMaker
 
 			if (dialog.IsCorrection && int.TryParse(dialog.NumberText, out int sum))
 			{
+				bool isNeedUpdateSum = controller.NeedUpdateSum;
+				DisableUpdatingSum();
 				IEnumerable<int> resultSums = controller.CorrectDevelopment(sum, dialog.TakeSumFromSupport);
 				IEnumerator<FullBackDataController> backDataControllersEnum = controller.BackDataControllers.GetEnumerator();
 				IEnumerator<int> resultSumsEnum = resultSums.GetEnumerator();
 				List<FullBackData> allFullBackDatas = new List<FullBackData>(GetAllFullBacksData());
 				bool pushedFirst = false;
-				while(backDataControllersEnum.MoveNext() && resultSumsEnum.MoveNext())
+				controller.DisableActionsStacking();
+				while (backDataControllersEnum.MoveNext() && resultSumsEnum.MoveNext())
 				{
 					FullBackData current = allFullBackDatas.FirstOrDefault(x => x.Controller == backDataControllersEnum.Current);
 					if(current != null && current.SumTextInput.Text != resultSumsEnum.Current.ToString())
 					{
-						current.SumTextInput.Text = resultSumsEnum.Current.ToString();
-						if(!pushedFirst)
+						if(pushedFirst)
+						{
+							current.SetSumTextChangesWithLink(resultSumsEnum.Current.ToString());
+						}
+						else
 						{
 							pushedFirst = true;
+							current.SetSumTextChangesWithAction(resultSumsEnum.Current.ToString());
+							controller.AddUndoRedoLink(new UndoRedoLink(() => 
+							{
+								current.SumTextInput.Text = current.Controller.SumText; 
+							}));
 							AddUndoRedoLinkNeedUpdateSum(isNeedUpdateSum);
 						}
+						current.SumTextInput.Text = resultSumsEnum.Current.ToString();
 					}
 				}
+				controller.EnableActionsStacking();
 
 				SetDataFromControllerBackDatas();
 			}
@@ -707,8 +724,6 @@ namespace DocumentMaker
 
 		private async void CorrectSupportClick(object sender, RoutedEventArgs e)
 		{
-			bool isNeedUpdateSum = controller.NeedUpdateSum;
-			DisableUpdatingSum();
 			CorrectSupportDialog dialog = new CorrectSupportDialog
 			{
 				NumberText = controller.CorrectSupportWindow_NumberText,
@@ -721,24 +736,37 @@ namespace DocumentMaker
 
 			if (dialog.IsCorrection && int.TryParse(dialog.NumberText, out int sum))
 			{
+				bool isNeedUpdateSum = controller.NeedUpdateSum;
+				DisableUpdatingSum();
 				IEnumerable<int> resultSums = controller.CorrectSupport(sum, dialog.TakeSumFromDevelopment);
 				IEnumerator<FullBackDataController> backDataControllersEnum = controller.BackDataControllers.GetEnumerator();
 				IEnumerator<int> resultSumsEnum = resultSums.GetEnumerator();
 				List<FullBackData> allFullBackDatas = new List<FullBackData>(GetAllFullBacksData());
 				bool pushedFirst = false;
+				controller.DisableActionsStacking();
 				while (backDataControllersEnum.MoveNext() && resultSumsEnum.MoveNext())
 				{
 					FullBackData current = allFullBackDatas.FirstOrDefault(x => x.Controller == backDataControllersEnum.Current);
 					if (current != null && current.SumTextInput.Text != resultSumsEnum.Current.ToString())
 					{
-						current.SumTextInput.Text = resultSumsEnum.Current.ToString();
-						if (!pushedFirst)
+						if (pushedFirst)
+						{
+							current.SetSumTextChangesWithLink(resultSumsEnum.Current.ToString());
+						}
+						else
 						{
 							pushedFirst = true;
+							current.SetSumTextChangesWithAction(resultSumsEnum.Current.ToString());
+							controller.AddUndoRedoLink(new UndoRedoLink(() =>
+							{
+								current.SumTextInput.Text = current.Controller.SumText;
+							}));
 							AddUndoRedoLinkNeedUpdateSum(isNeedUpdateSum);
 						}
+						current.SumTextInput.Text = resultSumsEnum.Current.ToString();
 					}
 				}
+				controller.EnableActionsStacking();
 
 				SetDataFromControllerBackDatas();
 			}
@@ -1372,6 +1400,10 @@ namespace DocumentMaker
 		private void EnableUpdatingSum()
 		{
 			SetNeedUpdateSumState(true);
+			if(CanUndoNeedUpdateSum)
+			{
+				controller.ResetWeights();
+			}
 		}
 
 		private void DisableUpdatingSum()
@@ -1414,13 +1446,26 @@ namespace DocumentMaker
 
 		private void AddUndoRedoLinkNeedUpdateSum(bool isNeedUpdateSum)
 		{
+			controller.AddUndoRedoLink(new UndoRedoLink(
+					redo: (data) => 
+					{
+						if ((bool)data && CanUndoNeedUpdateSum) 
+							DisableUpdatingSum(); 
+					},
+					undo: (data) => 
+					{
+						if ((bool)data && CanUndoNeedUpdateSum)
+							EnableUpdatingSum(); 
+					}
+					)
+			{ Data = isNeedUpdateSum });
+		}
+
+		private void AddUndoRedoLinkNeedUpdateSumWithCheck(bool isNeedUpdateSum)
+		{
 			if (controller.IsActionsStackingEnabled)
 			{
-				controller.AddUndoRedoLink(new UndoRedoLink(
-					redo: (data) => { if ((bool)data && CanUndoNeedUpdateSum) DisableUpdatingSum(); },
-					undo: (data) => { if ((bool)data && CanUndoNeedUpdateSum) EnableUpdatingSum(); }
-					)
-				{ Data = isNeedUpdateSum });
+				AddUndoRedoLinkNeedUpdateSum(isNeedUpdateSum);
 			}
 		}
 
