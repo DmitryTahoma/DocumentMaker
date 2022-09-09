@@ -4,8 +4,8 @@ namespace Dml.UndoRedo
 {
 	public class ActionsStack : IUndoRedoActionsStack
 	{
-		private LinkedList<IUndoRedoAction> redoList;
-		private LinkedList<IUndoRedoAction> undoList;
+		private readonly LinkedList<IUndoRedoAction> redoList;
+		private readonly LinkedList<IUndoRedoAction> undoList;
 
 		private event UndoRedoActionPushedHandler onPushed;
 
@@ -29,7 +29,7 @@ namespace Dml.UndoRedo
 				while (redoList.Count + undoList.Count > MaxCapacity)
 					undoList.RemoveFirst();
 
-				if(CanUndo && action is ITargetValueUndoRedoAction newTargetValueAction && undoList.Last.Value is ITargetValueUndoRedoAction lastTargetValueAction && lastTargetValueAction.GetType() == newTargetValueAction.GetType()
+				if (CanUndo && action is ITargetValueUndoRedoAction newTargetValueAction && undoList.Last.Value is ITargetValueUndoRedoAction lastTargetValueAction && lastTargetValueAction.GetType() == newTargetValueAction.GetType()
 					&& newTargetValueAction.GetTarget() == lastTargetValueAction.GetTarget() && lastTargetValueAction.GetNewValue() == newTargetValueAction.GetOldValue())
 				{
 					lastTargetValueAction.SetNewValue(newTargetValueAction.GetNewValue());
@@ -89,14 +89,14 @@ namespace Dml.UndoRedo
 		private void RemoveActionsWithTarget<TObj>(TObj target, LinkedList<IUndoRedoAction> list)
 		{
 			List<ITargetUndoRedoAction<TObj>> removeList = new List<ITargetUndoRedoAction<TObj>>();
-			foreach(IUndoRedoAction undoRedoAction in list)
+			foreach (IUndoRedoAction undoRedoAction in list)
 			{
-				if(undoRedoAction is ITargetUndoRedoAction<TObj> targetAction && ReferenceEquals(targetAction.Target, target))
+				if (undoRedoAction is ITargetUndoRedoAction<TObj> targetAction && ReferenceEquals(targetAction.Target, target))
 				{
 					removeList.Add(targetAction);
 				}
 			}
-			foreach(IUndoRedoAction removeItem in removeList)
+			foreach (IUndoRedoAction removeItem in removeList)
 			{
 				list.Remove(removeItem);
 			}

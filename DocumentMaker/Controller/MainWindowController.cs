@@ -311,7 +311,7 @@ namespace DocumentMaker.Controller
 
 		public IEnumerable<int> CorrectSaldo(IEnumerable<FullBackDataController> backDataControllers)
 		{
-			return model.CorrectSaldo(backDataControllers.Select(x=>x.GetModel()));
+			return model.CorrectSaldo(backDataControllers.Select(x => x.GetModel()));
 		}
 
 		private List<FullBackDataModel> GetModels()
@@ -438,7 +438,7 @@ namespace DocumentMaker.Controller
 			if (HaveUnsavedChanges)
 				return true;
 
-			foreach(FullBackDataController backDataController in BackDataControllers)
+			foreach (FullBackDataController backDataController in BackDataControllers)
 			{
 				if (backDataController.HaveUnsavedChanges)
 					return true;

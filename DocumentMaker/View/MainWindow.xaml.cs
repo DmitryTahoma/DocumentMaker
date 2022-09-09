@@ -667,14 +667,14 @@ namespace DocumentMaker
 			SetDataToController();
 
 			List<FullBackData> selectedBackDatas = new List<FullBackData>(GetSelectedBackDatas());
-			IEnumerable<int> resultSums = controller.CorrectSaldo(selectedBackDatas.Select(x=>x.Controller));
+			IEnumerable<int> resultSums = controller.CorrectSaldo(selectedBackDatas.Select(x => x.Controller));
 
 			IEnumerator<FullBackData> selectedBackDatasEnum = selectedBackDatas.GetEnumerator();
 			IEnumerator<int> resultSumsEnum = resultSums.GetEnumerator();
 			bool pushedFirst = false;
-			while(selectedBackDatasEnum.MoveNext() && resultSumsEnum.MoveNext())
+			while (selectedBackDatasEnum.MoveNext() && resultSumsEnum.MoveNext())
 			{
-				if (selectedBackDatasEnum.Current.Controller.SumText == resultSumsEnum.Current.ToString()) 
+				if (selectedBackDatasEnum.Current.Controller.SumText == resultSumsEnum.Current.ToString())
 					continue;
 
 				if (pushedFirst)
@@ -682,7 +682,7 @@ namespace DocumentMaker
 					selectedBackDatasEnum.Current.SetSumTextChangesWithLink(resultSumsEnum.Current.ToString());
 				}
 				selectedBackDatasEnum.Current.SumTextInput.Text = resultSumsEnum.Current.ToString();
-				if(!pushedFirst)
+				if (!pushedFirst)
 				{
 					pushedFirst = true;
 					controller.DisableActionsStacking();
@@ -691,7 +691,7 @@ namespace DocumentMaker
 			}
 			controller.EnableActionsStacking();
 
-			if(pushedFirst)
+			if (pushedFirst)
 			{
 				HaveUnsavedChanges = true;
 			}
@@ -731,9 +731,9 @@ namespace DocumentMaker
 				while (backDataControllersEnum.MoveNext() && resultSumsEnum.MoveNext())
 				{
 					FullBackData current = allFullBackDatas.FirstOrDefault(x => x.Controller == backDataControllersEnum.Current);
-					if(current != null && current.SumTextInput.Text != resultSumsEnum.Current.ToString())
+					if (current != null && current.SumTextInput.Text != resultSumsEnum.Current.ToString())
 					{
-						if(pushedFirst)
+						if (pushedFirst)
 						{
 							current.SetSumTextChangesWithLink(resultSumsEnum.Current.ToString());
 						}
@@ -741,9 +741,9 @@ namespace DocumentMaker
 						{
 							pushedFirst = true;
 							current.SetSumTextChangesWithAction(resultSumsEnum.Current.ToString());
-							controller.AddUndoRedoLink(new UndoRedoLink(() => 
+							controller.AddUndoRedoLink(new UndoRedoLink(() =>
 							{
-								current.SumTextInput.Text = current.Controller.SumText; 
+								current.SumTextInput.Text = current.Controller.SumText;
 							}));
 							AddUndoRedoLinkNeedUpdateSum(isNeedUpdateSum);
 						}
@@ -955,7 +955,7 @@ namespace DocumentMaker
 
 		private void OpenedFilesSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
-			if(cancelOpenedFilesSelectionChanged)
+			if (cancelOpenedFilesSelectionChanged)
 			{
 				cancelOpenedFilesSelectionChanged = false;
 				return;
@@ -963,7 +963,7 @@ namespace DocumentMaker
 
 			if (sender is System.Windows.Controls.ComboBox comboBox && comboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
 			{
-				if(HaveUnsavedChangesAtAll())
+				if (HaveUnsavedChangesAtAll())
 				{
 					DialogResult res = MessageBox.Show("Відкритий файл має незбережені зміни. Зберегти файл перед змінною?",
 						"Зміна файлу",
@@ -986,7 +986,7 @@ namespace DocumentMaker
 						}
 					}
 
-					if(res == System.Windows.Forms.DialogResult.Cancel)
+					if (res == System.Windows.Forms.DialogResult.Cancel)
 					{
 						cancelOpenedFilesSelectionChanged = true;
 						comboBox.SelectedItem = controller.GetSelectedFile();
@@ -1008,7 +1008,7 @@ namespace DocumentMaker
 				OtherDataFooter?.UpdateAllSum();
 				SetDataFromController();
 				controller.SetSelectedFile(selectedFile);
-				UpdateViewBackData(); 
+				UpdateViewBackData();
 				UpdateSaldo();
 
 				ResetHaveUnsavedChanges();
@@ -1025,7 +1025,7 @@ namespace DocumentMaker
 			HaveUnsavedChanges = true;
 			if (controller.IsActionsStackingEnabled && sender is System.Windows.Controls.TextBox textBox)
 			{
-				controller.AddUndoRedoLink(new UndoRedoLink(() => 
+				controller.AddUndoRedoLink(new UndoRedoLink(() =>
 				{
 					textBox.Text = controller.ActSum;
 					textBox.Focus();
@@ -1045,7 +1045,7 @@ namespace DocumentMaker
 		{
 			HaveUnsavedChanges = true;
 			controller.TrimAllStrings();
-			controller.RandomizeWorkTypes(GetSelectedBackDatas(BacksData).Select(x=>x.Controller));
+			controller.RandomizeWorkTypes(GetSelectedBackDatas(BacksData).Select(x => x.Controller));
 			SetDataFromController();
 			SetDataFromControllerBackDatas();
 		}
@@ -1197,7 +1197,7 @@ namespace DocumentMaker
 			SetDataFromControllerBackDatas(BacksData);
 			SetDataFromControllerBackDatas(ReworkBacksData);
 			SetDataFromControllerBackDatas(OtherBacksData);
-			if(actionsStackingEnable) controller.EnableActionsStacking();
+			if (actionsStackingEnable) controller.EnableActionsStacking();
 		}
 
 		private void SetDataFromControllerBackDatas(StackPanel stackPanel)
@@ -1277,7 +1277,7 @@ namespace DocumentMaker
 			controller.TechnicalTaskNumText = TechnicalTaskNumText;
 			controller.ActSum = ActSum;
 			controller.ActSaldo = ActSaldo;
-			if(actionsStackingEnable) controller.EnableActionsStacking();
+			if (actionsStackingEnable) controller.EnableActionsStacking();
 		}
 
 		private void OpenFiles(string[] filenames)
@@ -1315,7 +1315,8 @@ namespace DocumentMaker
 					FullBackData backData = OtherDataFooter.AddLoadedBackData(backDataController);
 					if (backData != null)
 					{
-						backData.SubscribeSelectionChanged(() => {
+						backData.SubscribeSelectionChanged(() =>
+						{
 							OtherDataHeader.UpdateIsCheckedState();
 							UpdateActSumSelected();
 						});
@@ -1326,7 +1327,8 @@ namespace DocumentMaker
 					FullBackData backData = ReworkDataFooter.AddLoadedBackData(backDataController);
 					if (backData != null)
 					{
-						backData.SubscribeSelectionChanged(() => {
+						backData.SubscribeSelectionChanged(() =>
+						{
 							ReworkDataHeader.UpdateIsCheckedState();
 							UpdateActSumSelected();
 						});
@@ -1337,7 +1339,8 @@ namespace DocumentMaker
 					FullBackData backData = DataFooter.AddLoadedBackData(backDataController);
 					if (backData != null)
 					{
-						backData.SubscribeSelectionChanged(() => {
+						backData.SubscribeSelectionChanged(() =>
+						{
 							DataHeader.UpdateIsCheckedState();
 							UpdateActSumSelected();
 						});
@@ -1375,7 +1378,7 @@ namespace DocumentMaker
 		private void UpdateActSum()
 		{
 			bool actionsStackingEnable = controller.IsActionsStackingEnabled;
-			if(controller.NeedUpdateSum) controller.DisableActionsStacking();
+			if (controller.NeedUpdateSum) controller.DisableActionsStacking();
 
 			uint sum = uint.TryParse(ActSum, out uint s) ? s : 0;
 			UpdateActSumBackDataPanel(BacksData, sum);
@@ -1502,7 +1505,7 @@ namespace DocumentMaker
 		private void EnableUpdatingSum()
 		{
 			SetNeedUpdateSumState(true);
-			if(CanUndoNeedUpdateSum)
+			if (CanUndoNeedUpdateSum)
 			{
 				controller.ResetWeights();
 			}
@@ -1537,9 +1540,9 @@ namespace DocumentMaker
 
 		private IEnumerable<FullBackData> GetSelectedBackDatas(StackPanel stackPanel)
 		{
-			foreach(UIElement elem in stackPanel.Children)
+			foreach (UIElement elem in stackPanel.Children)
 			{
-				if(elem is FullBackData backData && backData.IsChecked.HasValue && backData.IsChecked.Value)
+				if (elem is FullBackData backData && backData.IsChecked.HasValue && backData.IsChecked.Value)
 				{
 					yield return backData;
 				}
@@ -1549,15 +1552,15 @@ namespace DocumentMaker
 		private void AddUndoRedoLinkNeedUpdateSum(bool isNeedUpdateSum)
 		{
 			controller.AddUndoRedoLink(new UndoRedoLink(
-					redo: (data) => 
-					{
-						if ((bool)data && CanUndoNeedUpdateSum) 
-							DisableUpdatingSum(); 
-					},
-					undo: (data) => 
+					redo: (data) =>
 					{
 						if ((bool)data && CanUndoNeedUpdateSum)
-							EnableUpdatingSum(); 
+							DisableUpdatingSum();
+					},
+					undo: (data) =>
+					{
+						if ((bool)data && CanUndoNeedUpdateSum)
+							EnableUpdatingSum();
 					}
 					)
 			{ Data = isNeedUpdateSum });

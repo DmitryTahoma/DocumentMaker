@@ -20,7 +20,7 @@ namespace DocumentMaker.Model.Controls
 
 		public string WeightText { get; set; }
 		public double Weight { get; set; }
-		public string SumText 
+		public string SumText
 		{
 			get => sumText;
 			set
@@ -113,7 +113,7 @@ namespace DocumentMaker.Model.Controls
 		public void SetSumTextChangesWithLink(string sumText, params IUndoRedoAction[] links)
 		{
 			IUndoRedoAction action = sumTextActionProvider.CreateAction(this, sumText);
-			foreach(IUndoRedoAction link in links)
+			foreach (IUndoRedoAction link in links)
 			{
 				action.AddLink(link);
 			}

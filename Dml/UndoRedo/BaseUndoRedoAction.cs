@@ -13,7 +13,7 @@ namespace Dml.UndoRedo
 
 		public virtual void Redo()
 		{
-			foreach(IUndoRedoAction link in chain)
+			foreach (IUndoRedoAction link in chain)
 			{
 				link.Redo();
 			}
@@ -21,7 +21,7 @@ namespace Dml.UndoRedo
 
 		public virtual void Undo()
 		{
-			foreach(IUndoRedoAction link in chain)
+			foreach (IUndoRedoAction link in chain)
 			{
 				link.Undo();
 			}

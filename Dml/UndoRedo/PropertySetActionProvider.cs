@@ -6,8 +6,8 @@ namespace Dml.UndoRedo
 {
 	public class PropertySetActionProvider<TObj, TProp>
 	{
-		private Func<TObj, TProp> getter;
-		private Action<TObj, TProp> setter;
+		private readonly Func<TObj, TProp> getter;
+		private readonly Action<TObj, TProp> setter;
 
 		public PropertySetActionProvider(Expression<Func<TObj, TProp>> propertySelector)
 		{

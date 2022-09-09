@@ -1,6 +1,6 @@
 ﻿namespace Dml
 {
-	public class StructContainer<T> where T : struct 
+	public class StructContainer<T> where T : struct
 	{
 		public StructContainer()
 		{

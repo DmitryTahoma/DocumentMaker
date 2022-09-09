@@ -4,7 +4,7 @@ namespace Dml.UndoRedo
 {
 	public class PropertySetAction<TObj, TProp> : BaseUndoRedoAction, ITargetValueUndoRedoAction<TObj, TProp>
 	{
-		private Action<TObj, TProp> setter;
+		private readonly Action<TObj, TProp> setter;
 
 		public PropertySetAction(Action<TObj, TProp> setter, TObj target, TProp oldValue, TProp newValue)
 		{

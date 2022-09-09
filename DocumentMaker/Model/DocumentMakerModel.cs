@@ -90,13 +90,13 @@ namespace DocumentMaker.Model
 		public string ContractReworkNumberText { get; set; }
 		public string ContractReworkDateText { get; set; }
 		public string CityName { get; set; }
-		public string ActSum 
+		public string ActSum
 		{
 			get => actSum;
-			set 
+			set
 			{
 				if (actionsStack.ActionsStackingEnabled) actionsStack.Push(actSumActionProvider.CreateAction(this, value));
-				actSum = value; 
+				actSum = value;
 			}
 		}
 		public string ActSaldo { get; set; }
@@ -494,7 +494,7 @@ namespace DocumentMaker.Model
 
 		public void RemoveFromActionsStack(IEnumerable<FullBackDataModel> models)
 		{
-			foreach(FullBackDataModel model in models)
+			foreach (FullBackDataModel model in models)
 			{
 				actionsStack.RemoveActionsWithTarget(model);
 			}
