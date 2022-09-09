@@ -652,7 +652,10 @@ namespace DocumentMaker
 			bool pushedFirst = false;
 			while(selectedBackDatasEnum.MoveNext() && resultSumsEnum.MoveNext())
 			{
-				if(pushedFirst)
+				if (selectedBackDatasEnum.Current.Controller.SumText == resultSumsEnum.Current.ToString()) 
+					continue;
+
+				if (pushedFirst)
 				{
 					selectedBackDatasEnum.Current.SetSumTextChangesWithLink(resultSumsEnum.Current.ToString());
 				}
@@ -665,6 +668,9 @@ namespace DocumentMaker
 				}
 			}
 			controller.EnableActionsStacking();
+
+			if (isNeedUpdateSum && !pushedFirst)
+				EnableUpdatingSum();
 
 			SetDataFromControllerBackDatas();
 			DataFooter?.UpdateAllSum();
@@ -718,6 +724,9 @@ namespace DocumentMaker
 				}
 				controller.EnableActionsStacking();
 
+				if (isNeedUpdateSum && !pushedFirst)
+					EnableUpdatingSum();
+
 				SetDataFromControllerBackDatas();
 			}
 		}
@@ -767,6 +776,9 @@ namespace DocumentMaker
 					}
 				}
 				controller.EnableActionsStacking();
+
+				if (isNeedUpdateSum && !pushedFirst)
+					EnableUpdatingSum();
 
 				SetDataFromControllerBackDatas();
 			}
