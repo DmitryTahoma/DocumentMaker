@@ -1285,12 +1285,10 @@ namespace DocumentMaker
 			bool actionsStackingEnable = controller.IsActionsStackingEnabled;
 			if(controller.NeedUpdateSum) controller.DisableActionsStacking();
 
-			if (uint.TryParse(ActSum, out uint sum))
-			{
-				UpdateActSumBackDataPanel(BacksData, sum);
-				UpdateActSumBackDataPanel(ReworkBacksData, sum);
-				UpdateActSumBackDataPanel(OtherBacksData, sum);
-			}
+			uint sum = uint.TryParse(ActSum, out uint s) ? s : 0;
+			UpdateActSumBackDataPanel(BacksData, sum);
+			UpdateActSumBackDataPanel(ReworkBacksData, sum);
+			UpdateActSumBackDataPanel(OtherBacksData, sum);
 			UpdateSaldo();
 
 			if (controller.NeedUpdateSum)
