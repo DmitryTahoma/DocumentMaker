@@ -1,7 +1,7 @@
 ﻿namespace Dml.UndoRedo
 {
-	public interface ITargetUndoRedoAction<TObj> : IUndoRedoAction
+	public interface ITargetUndoRedoAction
 	{
-		TObj Target { get; }
+		object GetTarget();
 	}
 }

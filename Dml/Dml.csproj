@@ -94,6 +94,9 @@
     <Compile Include="UndoRedo\ActionsStack.cs" />
     <Compile Include="UndoRedo\BaseUndoRedoAction.cs" />
     <Compile Include="UndoRedo\ITargetUndoRedoAction.cs" />
+    <Compile Include="UndoRedo\ITargetUndoRedoActionGeneric.cs" />
+    <Compile Include="UndoRedo\ITargetValueUndoRedoAction.cs" />
+    <Compile Include="UndoRedo\ITargetValueUndoRedoActionGeneric.cs" />
     <Compile Include="UndoRedo\IUndoRedoAction.cs" />
     <Compile Include="UndoRedo\IUndoRedoActionsStack.cs" />
     <Compile Include="UndoRedo\PropertySetAction.cs" />

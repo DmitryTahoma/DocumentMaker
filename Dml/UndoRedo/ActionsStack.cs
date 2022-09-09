@@ -29,8 +29,16 @@ namespace Dml.UndoRedo
 				while (redoList.Count + undoList.Count > MaxCapacity)
 					undoList.RemoveFirst();
 
-				undoList.AddLast(action);
-				onPushed?.Invoke(action);
+				if(CanUndo && action is ITargetValueUndoRedoAction newTargetValueAction && undoList.Last.Value is ITargetValueUndoRedoAction lastTargetValueAction && lastTargetValueAction.GetType() == newTargetValueAction.GetType()
+					&& newTargetValueAction.GetTarget() == lastTargetValueAction.GetTarget() && lastTargetValueAction.GetNewValue() == newTargetValueAction.GetOldValue())
+				{
+					lastTargetValueAction.SetNewValue(newTargetValueAction.GetNewValue());
+				}
+				else
+				{
+					undoList.AddLast(action);
+					onPushed?.Invoke(action);
+				}
 			}
 		}
 
