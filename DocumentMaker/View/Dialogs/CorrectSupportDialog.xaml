@@ -9,6 +9,7 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     KeyDown="ControlKeyDown"
+    Loaded="DialogLoaded"
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>

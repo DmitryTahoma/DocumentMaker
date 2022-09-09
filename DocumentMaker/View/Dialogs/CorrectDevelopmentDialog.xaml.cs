@@ -44,5 +44,11 @@ namespace DocumentMaker.View.Dialogs
 		{
 			inputingValidator.UIntInputing_PreviewTextInput(sender, e);
 		}
+
+		private void DialogLoaded(object sender, RoutedEventArgs e)
+		{
+			SumInput.Focus();
+			SumInput.Select(0, SumInput.Text.Length);
+		}
 	}
 }
