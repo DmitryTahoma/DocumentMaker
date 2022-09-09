@@ -604,6 +604,12 @@ namespace DocumentMaker
 		{
 			if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
 			{
+				CheckNeedSaveBeforeClosing(out DialogResult res);
+				if (res == System.Windows.Forms.DialogResult.Cancel)
+				{
+					return;
+				}
+
 				int index = OpenedFilesComboBox.SelectedIndex;
 				if (index != -1)
 				{
@@ -622,6 +628,12 @@ namespace DocumentMaker
 		{
 			if (OpenedFilesList.Count > 0)
 			{
+				CheckNeedSaveBeforeClosing(out DialogResult res);
+				if (res == System.Windows.Forms.DialogResult.Cancel)
+				{
+					return;
+				}
+
 				while (OpenedFilesList.Count > 0)
 				{
 					controller.CloseFile(OpenedFilesList[0]);
@@ -1607,6 +1619,34 @@ namespace DocumentMaker
 		private void ResetHaveUnsavedChanges()
 		{
 			controller.ResetHaveUnsavedChanges();
+		}
+
+		private void CheckNeedSaveBeforeClosing(out DialogResult dialogResult)
+		{
+			if (HaveUnsavedChangesAtAll())
+			{
+				dialogResult = MessageBox.Show("Файл має незбережені зміни. Зберегти файл перед закриттям?",
+					"Закриття файлу",
+					MessageBoxButtons.YesNoCancel,
+					MessageBoxIcon.Question,
+					MessageBoxDefaultButton.Button1);
+
+				if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+				{
+					saveFileDialog.FileName = controller.GetDcmkFileName();
+					dialogResult = saveFileDialog.ShowDialog();
+					if (dialogResult == System.Windows.Forms.DialogResult.OK)
+					{
+						controller.ExportDcmk(saveFileDialog.FileName);
+
+						MessageBox.Show("Файл збережений.",
+							"DocumentMaker | Export dcmk",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Information);
+					}
+				}
+			}
+			dialogResult = System.Windows.Forms.DialogResult.None;
 		}
 
 		#endregion

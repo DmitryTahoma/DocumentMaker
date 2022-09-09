@@ -383,6 +383,7 @@ namespace DocumentMaker.Controller
 		public void ExportDcmk(string path)
 		{
 			model.ExportDcmk(path, GetModels());
+			ResetHaveUnsavedChanges();
 		}
 
 		public List<string> GetNotLoadedFilesList() => notLoadedFiles;
