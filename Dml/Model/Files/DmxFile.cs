@@ -17,7 +17,7 @@ namespace Dml.Model.Files
 			SelectedHuman = null;
 		}
 
-		public string FullName { get; private set; }
+		public string FullName { get; protected set; }
 		public string Name => Path.GetFileName(FullName);
 		public bool Selected { get; set; }
 		public bool Loaded { get; protected set; }

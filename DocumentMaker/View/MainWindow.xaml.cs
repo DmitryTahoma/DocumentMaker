@@ -380,6 +380,7 @@ namespace DocumentMaker
 				{
 					SetSelectedFile(files.Last());
 				}
+				controller.ChangeOpenedFilesExtension();
 				UpdateActSum();
 
 #if INCLUDED_UPDATER_API
@@ -600,6 +601,7 @@ namespace DocumentMaker
 				OpenFiles(openFileDialog.FileNames);
 				LoadFiles();
 				SetSelectedFile(openFileDialog.FileNames.Last());
+				controller.ChangeOpenedFilesExtension();
 			}
 		}
 
@@ -941,6 +943,7 @@ namespace DocumentMaker
 				OpenFiles(filenames);
 				LoadFiles();
 				SetSelectedFile(filenames.Last(filename => filename.EndsWith(BaseDmxFile.Extension) || filename.EndsWith(DcmkFile.Extension)));
+				controller.ChangeOpenedFilesExtension();
 				e.Handled = true;
 			}
 		}
@@ -1386,7 +1389,7 @@ namespace DocumentMaker
 		{
 			foreach (DmxFile file in OpenedFilesList)
 			{
-				if (file.FullName == filename || file.Name == filename)
+				if (Path.ChangeExtension(file.FullName, null) == Path.ChangeExtension(filename, null) || Path.ChangeExtension(file.Name, null) == Path.ChangeExtension(filename, null))
 				{
 					OpenedFilesComboBox.SelectedItem = file;
 					break;

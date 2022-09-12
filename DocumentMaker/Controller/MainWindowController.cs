@@ -460,5 +460,13 @@ namespace DocumentMaker.Controller
 		{
 			model.ClearUndoRedo();
 		}
+
+		public void ChangeOpenedFilesExtension()
+		{
+			foreach(DmxFile file in OpenedFilesList)
+			{
+				file.ChangeExtension();
+			}
+		}
 	}
 }

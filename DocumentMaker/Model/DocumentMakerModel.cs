@@ -272,10 +272,10 @@ namespace DocumentMaker.Model
 						bool isAdd = true;
 						DmxFile dmxFile = file.EndsWith(DcmkFile.Extension) ? new DcmkFile(file) : new DmxFile(file);
 
-						IList<DmxFile> fileList = openedFilesList.Where(f => f.Name == dmxFile.Name).ToList();
+						IList<DmxFile> fileList = openedFilesList.Where(f => Path.ChangeExtension(f.Name, null) == Path.ChangeExtension(dmxFile.Name, null)).ToList();
 						foreach (DmxFile f in fileList)
 						{
-							if (f.FullName == dmxFile.FullName)
+							if (Path.ChangeExtension(f.FullName, null) == Path.ChangeExtension(dmxFile.FullName, null))
 							{
 								isAdd = false;
 								break;

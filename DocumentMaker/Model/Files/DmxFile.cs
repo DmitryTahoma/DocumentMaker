@@ -4,6 +4,7 @@ using Dml.Model.Session;
 using DocumentMaker.Model.Controls;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace DocumentMaker.Model.Files
 {
@@ -96,6 +97,11 @@ namespace DocumentMaker.Model.Files
 		public void RemoveAllBackModel(Predicate<FullBackDataModel> match)
 		{
 			backDataModels.RemoveAll(match);
+		}
+
+		public void ChangeExtension()
+		{
+			FullName = Path.ChangeExtension(FullName, DcmkFile.Extension);
 		}
 	}
 }
