@@ -958,6 +958,8 @@ namespace DocumentMaker
 
 		private void OpenedFilesSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
+			if (!IsLoaded) return;
+
 			if (cancelOpenedFilesSelectionChanged)
 			{
 				cancelOpenedFilesSelectionChanged = false;

@@ -2,14 +2,12 @@
     x:Class="DocumentMaker.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:MaterialDesignThemes.Wpf.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:dml="clr-namespace:Dml.Controls;assembly=Dml"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:uc="clr-namespace:DocumentMaker.View.Controls"
-    xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf"
+    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     x:Name="WindowContext"
     Title="DocumentMaker"
     MinWidth="700"
@@ -24,6 +22,14 @@
     PreviewDrop="WindowPreviewDrop"
     PreviewKeyDown="WindowKeyDown"
     mc:Ignorable="d">
+
+    <Window.Resources>
+        <CollectionViewSource x:Key="OpenedFilesListView" Source="{Binding ElementName=WindowContext, Path=OpenedFilesList, UpdateSourceTrigger=PropertyChanged}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Name"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </Window.Resources>
 
     <materialDesign:DialogHost CloseOnClickAway="True">
         <materialDesign:DialogHost.DialogContent>
@@ -139,9 +145,10 @@
                 x:Name="OpenedFilesComboBox"
                 Grid.Row="2"
                 materialDesign:HintAssist.Hint="Файл"
-                ItemsSource="{Binding ElementName=WindowContext, Path=OpenedFilesList, UpdateSourceTrigger=PropertyChanged}"
+                ItemsSource="{Binding Source={StaticResource OpenedFilesListView}}"
                 SelectionChanged="OpenedFilesSelectionChanged"
-                Style="{StaticResource MaterialDesignFilledComboBox}" />
+                Style="{StaticResource MaterialDesignFilledComboBox}">
+            </ComboBox>
 
             <Button
                 Grid.Row="3"
