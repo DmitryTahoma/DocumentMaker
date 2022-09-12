@@ -616,8 +616,16 @@ namespace DocumentMaker
 				int index = OpenedFilesComboBox.SelectedIndex;
 				if (index != -1)
 				{
+					ResetHaveUnsavedChanges();
 					controller.CloseFile(selectedFile);
-					OpenedFilesComboBox.SelectedIndex = OpenedFilesComboBox.Items.Count <= index ? index - 1 : index;
+					int newIndex = OpenedFilesComboBox.Items.Count <= index ? index - 1 : index;
+					if(newIndex < 0)
+					{
+						controller.ClearUndoRedo();
+						UpdateUndoRedoState();
+					}
+					ResetHaveUnsavedChanges();
+					OpenedFilesComboBox.SelectedIndex = newIndex;
 				}
 			}
 			else
@@ -639,9 +647,12 @@ namespace DocumentMaker
 
 				while (OpenedFilesList.Count > 0)
 				{
+					ResetHaveUnsavedChanges();
 					controller.CloseFile(OpenedFilesList[0]);
 				}
 				OpenedFilesComboBox.SelectedIndex = -1;
+				controller.ClearUndoRedo();
+				UpdateUndoRedoState();
 			}
 			else
 				MessageBox.Show("Спочатку необхідно відкрити файл.",
@@ -1631,6 +1642,7 @@ namespace DocumentMaker
 
 		private void CheckNeedSaveBeforeClosing(out DialogResult dialogResult)
 		{
+			dialogResult = System.Windows.Forms.DialogResult.None;
 			if (HaveUnsavedChangesAtAll())
 			{
 				dialogResult = MessageBox.Show("Файл має незбережені зміни. Зберегти файл перед закриттям?",
@@ -1654,7 +1666,6 @@ namespace DocumentMaker
 					}
 				}
 			}
-			dialogResult = System.Windows.Forms.DialogResult.None;
 		}
 
 		#endregion
