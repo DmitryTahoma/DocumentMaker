@@ -1,4 +1,5 @@
 ﻿using Dml.Model.Template;
+using Dml.UndoRedo;
 using DocumentMaker.Controller.Controls;
 using System.Collections.Generic;
 using System.Windows;
@@ -51,6 +52,8 @@ namespace DocumentMaker.View.Controls
 			set => SetValue(WeightAllTextProperty, value);
 		}
 
+		public IUndoRedoActionsStack ActionsStack { get; set; } = null;
+
 		public void SubscribeAddition(ActionWithFullBackData action)
 		{
 			onAdded += action;
@@ -85,6 +88,9 @@ namespace DocumentMaker.View.Controls
 		{
 			if (Data != null)
 			{
+				bool actionsStackingEnable = ActionsStack.ActionsStackingEnabled;
+				ActionsStack.ActionsStackingEnabled = false;
+
 				bool addedOne = false;
 				FullBackData firstChecked;
 				do
@@ -134,6 +140,8 @@ namespace DocumentMaker.View.Controls
 				}
 				OnChangedSomeSum();
 				UpdateBackDataIds();
+
+				ActionsStack.ActionsStackingEnabled = actionsStackingEnable;
 			}
 		}
 

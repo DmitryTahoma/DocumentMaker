@@ -158,6 +158,7 @@ namespace DocumentMaker
 				}
 				UpdateSaldo();
 			});
+			DataFooter.ActionsStack = controller.GetActionsStack();
 
 			ReworkDataHeader.SubscribeSelectionChanged((b) =>
 			{
@@ -209,6 +210,7 @@ namespace DocumentMaker
 				}
 				UpdateSaldo();
 			});
+			ReworkDataFooter.ActionsStack = controller.GetActionsStack();
 
 			OtherDataHeader.HideWorkTypeLabel();
 			OtherDataHeader.SubscribeSelectionChanged((b) =>
@@ -259,6 +261,7 @@ namespace DocumentMaker
 				}
 				UpdateSaldo();
 			});
+			OtherDataFooter.ActionsStack = controller.GetActionsStack();
 
 			ActSumInput.CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
 		}

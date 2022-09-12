@@ -102,12 +102,14 @@ namespace DocumentMaker.Model.Controls
 
 		public void EnableActionsStacking()
 		{
-			actionsStack.ActionsStackingEnabled = true;
+			if(actionsStack != null)
+				actionsStack.ActionsStackingEnabled = true;
 		}
 
 		public void DisableActionsStacking()
 		{
-			actionsStack.ActionsStackingEnabled = false;
+			if (actionsStack != null)
+				actionsStack.ActionsStackingEnabled = false;
 		}
 
 		public void SetSumTextChangesWithLink(string sumText, params IUndoRedoAction[] links)
