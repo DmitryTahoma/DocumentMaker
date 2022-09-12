@@ -271,6 +271,9 @@ namespace DocumentMaker.Controller
 
 			TemplateType = file.TemplateType;
 			SelectedHuman = file.SelectedHuman;
+			TechnicalTaskDateText = file.TechnicalTaskDateText;
+			ActDateText = file.ActDateText;
+			TechnicalTaskNumText = file.TechnicalTaskNumText;
 			ActSum = file.ActSum;
 			NeedUpdateSum = file.NeedUpdateSum;
 			BackDataControllers.Clear();

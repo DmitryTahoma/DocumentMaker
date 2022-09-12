@@ -50,9 +50,9 @@ namespace DocumentMaker
 
 		static MainWindow()
 		{
-			TechnicalTaskDateTextProperty = DependencyProperty.Register("TechnicalTaskDateText", typeof(string), typeof(MainWindow));
-			ActDateTextProperty = DependencyProperty.Register("ActDateText", typeof(string), typeof(MainWindow));
-			TechnicalTaskNumTextProperty = DependencyProperty.Register("TechnicalTaskNumText", typeof(string), typeof(MainWindow));
+			TechnicalTaskDateTextProperty = DependencyProperty.Register("TechnicalTaskDateText", typeof(string), typeof(MainWindowController));
+			ActDateTextProperty = DependencyProperty.Register("ActDateText", typeof(string), typeof(MainWindowController));
+			TechnicalTaskNumTextProperty = DependencyProperty.Register("TechnicalTaskNumText", typeof(string), typeof(MainWindowController));
 			ActSumProperty = DependencyProperty.Register("ActSum", typeof(string), typeof(MainWindowController));
 			ActSumSelectedProperty = DependencyProperty.Register("ActSumSelected", typeof(string), typeof(MainWindowController));
 			ActSaldoProperty = DependencyProperty.Register("ActSaldo", typeof(string), typeof(MainWindowController));
@@ -275,19 +275,46 @@ namespace DocumentMaker
 		public string TechnicalTaskDateText
 		{
 			get => (string)GetValue(TechnicalTaskDateTextProperty);
-			set => SetValue(TechnicalTaskDateTextProperty, value);
+			set 
+			{
+				SetValue(TechnicalTaskDateTextProperty, value);
+				controller.TechnicalTaskDateText = value;
+
+				if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+				{
+					selectedFile.TechnicalTaskDateText = value;
+				}
+			}
 		}
 
 		public string ActDateText
 		{
 			get => (string)GetValue(ActDateTextProperty);
-			set => SetValue(ActDateTextProperty, value);
+			set
+			{
+				SetValue(ActDateTextProperty, value);
+				controller.ActDateText = value;
+
+				if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+				{
+					selectedFile.ActDateText = value;
+				}
+			}
 		}
 
 		public string TechnicalTaskNumText
 		{
 			get => (string)GetValue(TechnicalTaskNumTextProperty);
-			set => SetValue(TechnicalTaskNumTextProperty, value);
+			set 
+			{
+				SetValue(TechnicalTaskNumTextProperty, value);
+				controller.TechnicalTaskNumText = value;
+
+				if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+				{
+					selectedFile.TechnicalTaskNumText = value;
+				}
+			}
 		}
 
 		public string ActSum

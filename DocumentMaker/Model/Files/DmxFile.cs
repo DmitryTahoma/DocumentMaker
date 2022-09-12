@@ -17,8 +17,16 @@ namespace DocumentMaker.Model.Files
 			backDataModels = null;
 		}
 
+		#region Loaded data
+
+		public string TechnicalTaskDateText { get; set; }
+		public string ActDateText { get; set; }
+		public string TechnicalTaskNumText { get; set; } = "1";
 		public string ActSum { get; set; }
 		public bool NeedUpdateSum { get; set; }
+
+		#endregion
+
 		public IList<FullBackDataModel> BackDataModels { get => backDataModels; }
 
 		protected bool TryLoadWithBacks()
