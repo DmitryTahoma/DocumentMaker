@@ -714,6 +714,10 @@ namespace DocumentMaker
 				EnableUpdatingSum();
 			}
 
+			if(DataHeader != null) DataHeader.IsChecked = false;
+			if(ReworkDataHeader != null) ReworkDataHeader.IsChecked = false;
+			if(OtherDataHeader != null) OtherDataHeader.IsChecked = false;
+
 			SetDataFromControllerBackDatas();
 			DataFooter?.UpdateAllSum();
 			ReworkDataFooter?.UpdateAllSum();
@@ -775,6 +779,8 @@ namespace DocumentMaker
 					EnableUpdatingSum();
 				}
 
+				if (DataHeader != null) DataHeader.IsChecked = false;
+
 				SetDataFromControllerBackDatas();
 			}
 		}
@@ -833,6 +839,8 @@ namespace DocumentMaker
 				{
 					EnableUpdatingSum();
 				}
+
+				if (ReworkDataHeader != null) ReworkDataHeader.IsChecked = false;
 
 				SetDataFromControllerBackDatas();
 			}
@@ -1062,6 +1070,7 @@ namespace DocumentMaker
 			HaveUnsavedChanges = true;
 			controller.TrimAllStrings();
 			controller.RandomizeWorkTypes(GetSelectedBackDatas(BacksData).Select(x => x.Controller));
+			if (DataHeader != null) DataHeader.IsChecked = false;
 			SetDataFromController();
 			SetDataFromControllerBackDatas();
 		}
@@ -1071,6 +1080,7 @@ namespace DocumentMaker
 			HaveUnsavedChanges = true;
 			controller.TrimAllStrings();
 			controller.RandomizeReworkWorkTypes(GetSelectedBackDatas(ReworkBacksData).Select(x => x.Controller));
+			if (ReworkDataHeader != null) ReworkDataHeader.IsChecked = false;
 			SetDataFromController();
 			SetDataFromControllerBackDatas();
 		}
