@@ -1197,6 +1197,7 @@ namespace DocumentMaker
 
 		private void MoveBackData(FullBackDataHeader headerFrom, StackPanel dataFrom, FullBackDataFooter footerFrom, FullBackDataHeader headerTo, FullBackDataFooter footerTo)
 		{
+			bool isNeedUpdateSum = controller.NeedUpdateSum;
 			IEnumerable<FullBackData> removed = DeleteSelectedBackData(dataFrom);
 			headerFrom.UpdateIsCheckedState();
 			footerFrom.UpdateBackDataIds();
@@ -1204,6 +1205,7 @@ namespace DocumentMaker
 			footerTo.AddMovedBackData(removed);
 			headerTo.UpdateIsCheckedState();
 			footerTo.UpdateBackDataIds();
+			if (isNeedUpdateSum) EnableUpdatingSum();
 		}
 
 		private void SetDataFromControllerBackDatas()
