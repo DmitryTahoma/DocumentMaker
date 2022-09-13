@@ -1005,17 +1005,33 @@ namespace DocumentMaker
 			e.Handled = true;
 		}
 
-		private void OpenedFilesSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+		private void OpenedFilesSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (!IsLoaded) return;
+			if (!IsInitialized)
+			{
+				Initialized += FileChangedAction;
+			}
+			else
+			{
+				FileChangedAction(sender, e);
+			}
+		}
 
+		private void FileChangedAction(object sender, EventArgs e)
+		{
+			FileChangedAction();
+			Initialized -= FileChangedAction;
+		}
+
+		private void FileChangedAction()
+		{
 			if (cancelOpenedFilesSelectionChanged)
 			{
 				cancelOpenedFilesSelectionChanged = false;
 				return;
 			}
 
-			if (sender is System.Windows.Controls.ComboBox comboBox && comboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
+			if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
 			{
 				if (HaveUnsavedChangesAtAll())
 				{
@@ -1043,7 +1059,7 @@ namespace DocumentMaker
 					if (res == System.Windows.Forms.DialogResult.Cancel)
 					{
 						cancelOpenedFilesSelectionChanged = true;
-						comboBox.SelectedItem = controller.GetSelectedFile();
+						OpenedFilesComboBox.SelectedItem = controller.GetSelectedFile();
 						return;
 					}
 				}
