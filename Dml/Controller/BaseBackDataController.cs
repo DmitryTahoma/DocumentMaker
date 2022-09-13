@@ -43,7 +43,9 @@ namespace Dml.Controller
 		{
 			errorText += "Строка таблиці №" + Id.ToString() + ": ";
 
-			BackNumberText = BackNumberText.Replace(',', '.');
+			if(BackNumberText != null)
+				BackNumberText = BackNumberText.Replace(',', '.');
+
 			if (Type == BackType.Other && !validator.IsFree(OtherText))
 				errorText += "Строка з текстом не може бути пустою.";
 			else if (Type != BackType.Other)
