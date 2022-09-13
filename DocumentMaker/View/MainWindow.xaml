@@ -131,18 +131,42 @@
                 <ToolBar Style="{StaticResource MaterialDesignToolBar}">
                     <Button
                         Padding="5"
+                        Click="ExportDcmkClick"
+                        ToolTip="Зберегти">
+                        <materialDesign:PackIcon
+                            Width="18"
+                            Height="18"
+                            Kind="ContentSaveOutline" />
+                    </Button>
+                    <Button
+                        Padding="5"
+                        Click="ExportBtnClick"
+                        ToolTip="Експорт">
+                        <materialDesign:PackIcon
+                            Width="18"
+                            Height="18"
+                            Kind="FileWordOutline" />
+                    </Button>
+                    <Button
+                        Padding="5"
                         Click="UndoClick"
-                        Content="{materialDesign:PackIcon Kind=Undo,
-                                                          Size=18}"
                         IsEnabled="{Binding ElementName=WindowContext, Path=CanUndo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        ToolTip="Повернути (Ctrl+Z)" />
+                        ToolTip="Повернути (Ctrl+Z)">
+                        <materialDesign:PackIcon
+                            Width="18"
+                            Height="18"
+                            Kind="Undo" />
+                    </Button>
                     <Button
                         Padding="5"
                         Click="RedoClick"
-                        Content="{materialDesign:PackIcon Kind=Redo,
-                                                          Size=18}"
                         IsEnabled="{Binding ElementName=WindowContext, Path=CanRedo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        ToolTip="Повторити (Ctrl+Y)" />
+                        ToolTip="Повторити (Ctrl+Y)">
+                        <materialDesign:PackIcon
+                            Width="18"
+                            Height="18"
+                            Kind="Redo" />
+                    </Button>
                 </ToolBar>
             </ToolBarTray>
 
