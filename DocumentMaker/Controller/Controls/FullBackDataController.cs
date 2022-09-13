@@ -43,12 +43,12 @@ namespace DocumentMaker.Controller.Controls
 
 		public override bool Validate(ref string errorText)
 		{
+			if (IsOtherType) errorText = "[Інше] ";
+			else if (IsRework) errorText = "[Підтримка] ";
+			else errorText = "[Розробка] ";
+
 			if (base.Validate(ref errorText))
 			{
-				if (IsOtherType) errorText.Insert(0, "[Інше] ");
-				else if (IsRework) errorText.Insert(0, "[Підтримка] ");
-				else errorText.Insert(0, "[Розробка] ");
-
 				if (!uint.TryParse(SumText, out uint sumText) || sumText == 0)
 					errorText += "Сума не може бути нульовою.";
 				else

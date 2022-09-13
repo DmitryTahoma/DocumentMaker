@@ -41,7 +41,7 @@ namespace Dml.Controller
 
 		public virtual bool Validate(ref string errorText)
 		{
-			errorText = "Строка таблиці №" + Id.ToString() + ": ";
+			errorText += "Строка таблиці №" + Id.ToString() + ": ";
 
 			BackNumberText = BackNumberText.Replace(',', '.');
 			if (Type == BackType.Other && !validator.IsFree(OtherText))
@@ -64,8 +64,10 @@ namespace Dml.Controller
 					errorText += "Регіони записані некорректно. Кінець послідовності менший за початок.\nПриклад: 1-2, 3-4, 8-15";
 				else if (!validator.IsFree(GameName))
 					errorText += "Строка \"Назва гри\" не може бути пустою.";
-				else if (selectedGame != null && !selectedGame.HaveEpisode(EpisodeNumberText))
+				else if (selectedGame != null && selectedGame.HaveEpisodes && !selectedGame.HaveEpisode(EpisodeNumberText))
 					errorText += "Оберіть коректний епізод.";
+				else if (selectedGame != null && !selectedGame.HaveEpisodes && !string.IsNullOrEmpty(EpisodeNumberText))
+					errorText += "У вибраній грі \"" + selectedGame.Name + "\" немає епізодів.";
 				else
 					return true;
 			}
