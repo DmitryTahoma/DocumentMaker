@@ -1220,6 +1220,31 @@ namespace DocumentMaker
 			}
 		}
 
+		private async void ChangeAllDates(object sender, RoutedEventArgs e)
+		{
+			ChangeDatesDialog dialog = new ChangeDatesDialog
+			{
+				TechnicalTaskDateText = TechnicalTaskDateText,
+				ActDateText = ActDateText
+			};
+			await DialogHost.Show(dialog);
+			if(dialog.IsChanging)
+			{
+				bool changed = controller.ChangeTechnicalTaskDateAtAllFiles(dialog.TechnicalTaskDateText);
+				changed = controller.ChangeActDateAtAllFiles(dialog.ActDateText) || changed;
+				if(changed)
+				{
+					DmxFile selectedFile = controller.GetSelectedFile();
+					if(selectedFile != null)
+					{
+						controller.TechnicalTaskDateText = selectedFile.TechnicalTaskDateText;
+						controller.ActDateText = selectedFile.ActDateText;
+						SetDataFromController();
+					}
+				}
+			}
+		}
+
 		#endregion
 
 		#region Methods

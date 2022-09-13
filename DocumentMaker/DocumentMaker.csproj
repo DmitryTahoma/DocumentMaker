@@ -95,6 +95,9 @@
     <Compile Include="Model\FullDocumentTemplate.cs" />
     <Compile Include="Model\Session\DmxLoader.cs" />
     <Compile Include="Model\Session\DmxSaver.cs" />
+    <Compile Include="View\Dialogs\ChangeDatesDialog.xaml.cs">
+      <DependentUpon>ChangeDatesDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Dialogs\CorrectDevelopmentDialog.xaml.cs">
       <DependentUpon>CorrectDevelopmentDialog.xaml</DependentUpon>
     </Compile>
@@ -113,6 +116,10 @@
     <Compile Include="View\Dialogs\HumanInformationDialog.xaml.cs">
       <DependentUpon>HumanInformationDialog.xaml</DependentUpon>
     </Compile>
+    <Page Include="View\Dialogs\ChangeDatesDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Dialogs\CorrectDevelopmentDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

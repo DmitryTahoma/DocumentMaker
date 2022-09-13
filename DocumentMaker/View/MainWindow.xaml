@@ -115,6 +115,11 @@
                         Icon="{materialDesign:PackIcon Kind=Redo}"
                         InputGestureText="Ctrl+Y"
                         IsEnabled="{Binding ElementName=WindowContext, Path=CanRedo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <Separator />
+                    <MenuItem
+                        Click="ChangeAllDates"
+                        Header="Змінити дату у всіх файлах"
+                        Icon="{materialDesign:PackIcon Kind=CalendarMonth}" />
                 </MenuItem>
                 <MenuItem
                     Click="InfoBtnClick"

@@ -534,5 +534,21 @@ namespace DocumentMaker.Model
 		{
 			actionsStack.Clear();
 		}
+
+		public void ChangeTechnicalTaskDateAtAllFiles(string technicalTaskDateText)
+		{
+			foreach(DmxFile file in openedFilesList)
+			{
+				file.TechnicalTaskDateText = technicalTaskDateText;
+			}
+		}
+
+		public void ChangeActDateAtAllFiles(string actDateText)
+		{
+			foreach(DmxFile file in openedFilesList)
+			{
+				file.ActDateText = actDateText;
+			}
+		}
 	}
 }

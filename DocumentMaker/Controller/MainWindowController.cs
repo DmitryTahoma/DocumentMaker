@@ -475,5 +475,31 @@ namespace DocumentMaker.Controller
 				file.ChangeExtension();
 			}
 		}
+
+		public bool ChangeTechnicalTaskDateAtAllFiles(string technicalTaskDateText)
+		{
+			if (!validator.IsFree(technicalTaskDateText))
+			{
+				return false;
+			}
+			else
+			{
+				model.ChangeTechnicalTaskDateAtAllFiles(technicalTaskDateText);
+				return true;
+			}
+		}
+
+		public bool ChangeActDateAtAllFiles(string actDateText)
+		{
+			if (!validator.IsFree(actDateText))
+			{
+				return false;
+			}
+			else
+			{
+				model.ChangeActDateAtAllFiles(actDateText);
+				return true;
+			}
+		}
 	}
 }
