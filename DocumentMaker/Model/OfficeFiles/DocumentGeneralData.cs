@@ -27,11 +27,15 @@ namespace DocumentMaker.Model.OfficeFiles
 			{
 				DogovorNum = model.ContractNumberText;
 				DogovorFullDate = model.ContractDateText;
+				NameOfWorkText = "розробки";
+				FirstPartText = "розробки ігрових прикладних програм Замовника";
 			}
 			else
 			{
 				DogovorNum = model.ContractReworkNumberText;
 				DogovorFullDate = model.ContractReworkDateText;
+				NameOfWorkText = "підтримки";
+				FirstPartText = "підтримки ігрових прикладних програм Замовника в придатному для використання стані в межах післяпродажного обслуговування без розширення чи поліпшення їх функціональних характеристик";
 			}
 			ActSum = actSum.ToString();
 			CityName = model.CityName;
@@ -46,6 +50,9 @@ namespace DocumentMaker.Model.OfficeFiles
 			}
 		}
 
+		public string NameOfWorkText { get; }
+
+		public string FirstPartText { get; }
 
 		public string DogovorNum { get; }
 
