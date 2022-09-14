@@ -50,6 +50,8 @@ namespace ActCreator.Controller
 		public IList<string> HumanFullNameList => model.HumanFullNameList;
 		public IList<GameObject> GameNameList => model.GameNameList;
 		public bool HaveOpenLaterFiles => openLaterFilename != null;
+		public string OpenedFile => model.OpenedFileName;
+		public bool IsOpenedFile => OpenedFile != null;
 
 		public void Save()
 		{
@@ -138,6 +140,7 @@ namespace ActCreator.Controller
 			{
 				model.Load(filename, out List<ShortBackDataModel> backModels);
 				BackDataControllers = new List<ShortBackDataController>(backModels.Select(x => new ShortBackDataController(x)));
+				model.OpenedFileName = filename;
 				return true;
 			}
 		}

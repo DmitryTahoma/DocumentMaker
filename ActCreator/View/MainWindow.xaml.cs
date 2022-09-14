@@ -271,6 +271,7 @@ namespace ActCreator
 				SetDataFromController();
 				AddLoadedBackData();
 				UpdateViewBackData();
+				UpdateTitle();
 			}
 		}
 
@@ -282,6 +283,16 @@ namespace ActCreator
 		private void UpdateDataTableVisibility()
 		{
 			DataTableVisibility = (controller.TemplateType == DocumentTemplateType.Empty || string.IsNullOrEmpty(SelectedHuman)) ? Visibility.Collapsed : Visibility.Visible;
+		}
+
+		private void UpdateTitle()
+		{
+			string fileStr = string.Empty;
+			if(controller.IsOpenedFile)
+			{
+				fileStr = " | " + controller.OpenedFile;
+			}
+			Title = "ActCreator" + fileStr;
 		}
 	}
 }
