@@ -2,9 +2,11 @@
 using ActCreator.Model;
 using Dml.Controller.Validation;
 using Dml.Model.Back;
+using Dml.Model.Files;
 using Dml.Model.Template;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 
@@ -19,11 +21,16 @@ namespace ActCreator.Controller
 		private readonly ActCreatorModel model;
 		private readonly StringValidator validator;
 
-		public MainWindowController()
+		private string openLaterFilename = null;
+
+		public MainWindowController(string[] args)
 		{
 			model = new ActCreatorModel();
 			validator = new StringValidator();
 			BackDataControllers = new List<ShortBackDataController>();
+
+			if (args != null && args.Length > 0)
+				openLaterFilename = args[0];
 		}
 
 		#region Window settings
@@ -42,6 +49,7 @@ namespace ActCreator.Controller
 		public IList<DocumentTemplate> DocumentTemplatesList => model.DocumentTemplatesList;
 		public IList<string> HumanFullNameList => model.HumanFullNameList;
 		public IList<GameObject> GameNameList => model.GameNameList;
+		public bool HaveOpenLaterFiles => openLaterFilename != null;
 
 		public void Save()
 		{
@@ -113,6 +121,25 @@ namespace ActCreator.Controller
 			}
 
 			return false;
+		}
+
+		public string GetOpenLaterFile()
+		{
+			return openLaterFilename;
+		}
+
+		public bool OpenFile(string filename)
+		{
+			if(!filename.EndsWith(BaseDmxFile.Extension))
+			{
+				return false;
+			}
+			else
+			{
+				model.Load(filename, out List<ShortBackDataModel> backModels);
+				BackDataControllers = new List<ShortBackDataController>(backModels.Select(x => new ShortBackDataController(x)));
+				return true;
+			}
 		}
 	}
 }

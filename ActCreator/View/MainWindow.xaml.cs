@@ -2,6 +2,7 @@
 using ActCreator.Controller.Controls;
 using ActCreator.View.Controls;
 using Dml.Controller.Validation;
+using Dml.Model.Files;
 using Dml.Model.Template;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,12 +33,15 @@ namespace ActCreator
 
 		private readonly MainWindowController controller;
 		private readonly SaveFileDialog saveFileDialog;
+		private readonly OpenFileDialog openFileDialog;
 
-		public MainWindow()
+		public MainWindow(string[] args)
 		{
-			controller = new MainWindowController();
+			controller = new MainWindowController(args);
 			controller.Load();
 			SetWindowSettingsFromController();
+
+			openFileDialog = new OpenFileDialog { Filter= "Файли акту (*" + BaseDmxFile.Extension + ")|*" + BaseDmxFile.Extension };
 
 			InitializeComponent();
 
@@ -101,15 +105,13 @@ namespace ActCreator
 		{
 			if (controller != null)
 			{
-				DocumentTemplateComboBox.SelectedIndex = (int)controller.TemplateType;
-				HumanFullNameComboBox.Text = controller.SelectedHuman;
-
-				foreach (ShortBackDataController backDataController in controller.BackDataControllers)
+				if(controller.HaveOpenLaterFiles)
 				{
-					DataFooter.AddLoadedBackData(backDataController);
-					DataFooter.UpdateBackDataIds();
+					OpenFile(controller.GetOpenLaterFile());
 				}
-
+				ResetHaveUnsavedChanges();
+				SetDataFromController();
+				AddLoadedBackData();
 				UpdateViewBackData();
 
 #if INCLUDED_UPDATER_API
@@ -167,6 +169,44 @@ namespace ActCreator
 			}
 		}
 
+		private void OpenFileClick(object sender, RoutedEventArgs e)
+		{
+			if(openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				OpenFile(openFileDialog.FileName);
+			}
+		}
+
+		private void WindowPreviewDrop(object sender, System.Windows.DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop, true))
+			{
+				string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
+				if(filenames.Length > 0 && filenames[0] != null)
+				{
+					OpenFile(filenames[0]);
+					e.Handled = true;
+				}
+			}
+		}
+
+		private void WindowDragEnter(object sender, System.Windows.DragEventArgs e)
+		{
+			bool isCorrect = true;
+
+			if(e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop, true))
+			{
+				string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
+				if(filenames.Length != 1 || !File.Exists(filenames[0]) || new FileInfo(filenames[0]).Extension != BaseDmxFile.Extension)
+				{
+					isCorrect = false;
+				}
+			}
+
+			e.Effects = isCorrect ? System.Windows.DragDropEffects.All : System.Windows.DragDropEffects.None;
+			e.Handled = true;
+		}
+
 		private void UpdateViewBackData()
 		{
 			foreach (UIElement control in BacksData.Children)
@@ -189,6 +229,44 @@ namespace ActCreator
 			Width = controller.WindowWidth;
 			WindowState = controller.WindowState;
 			WindowValidator.MoveToValidPosition(this);
+		}
+
+		private void SetDataFromController()
+		{
+			DocumentTemplateComboBox.SelectedIndex = (int)controller.TemplateType;
+			HumanFullNameComboBox.Text = controller.SelectedHuman;
+		}
+
+		private void AddLoadedBackData()
+		{
+			DataFooter.ClearData();
+			foreach (ShortBackDataController backDataController in controller.BackDataControllers)
+			{
+				DataFooter.AddLoadedBackData(backDataController);
+			}
+			DataFooter.UpdateBackDataIds();
+		}
+
+		private void OpenFile(string filename)
+		{
+			if(!controller.OpenFile(filename))
+			{
+				MessageBox.Show("Не вдалось відкрити файл:\n\n" + filename, 
+					"ActCreator | Open Files",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
+			}
+			else
+			{
+				SetDataFromController();
+				AddLoadedBackData();
+				UpdateViewBackData();
+			}
+		}
+
+		private void ResetHaveUnsavedChanges()
+		{
+
 		}
 	}
 }

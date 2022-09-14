@@ -177,6 +177,14 @@ namespace ActCreator.View.Controls
 			}
 		}
 
+		public void ClearData()
+		{
+			if (Data != null)
+			{
+				Data.Children.Clear();
+			}
+		}
+
 		public void UpdateBackDataIds()
 		{
 			if (Data != null)

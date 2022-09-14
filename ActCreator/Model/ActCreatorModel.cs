@@ -17,6 +17,8 @@ namespace ActCreator.Model
 		private readonly ObservableRangeCollection<string> humanFullNameList;
 		private readonly List<GameObject> gameNameList;
 
+		private string openedFileName;
+
 		public ActCreatorModel()
 		{
 			documentTemplates = new ObservableCollection<DocumentTemplate>
@@ -28,6 +30,8 @@ namespace ActCreator.Model
 			};
 			humanFullNameList = new ObservableRangeCollection<string>();
 			gameNameList = new List<GameObject>();
+
+			openedFileName = null;
 		}
 
 		#region Window settings

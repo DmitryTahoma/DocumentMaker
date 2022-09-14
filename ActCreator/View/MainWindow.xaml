@@ -12,9 +12,13 @@
     Title="ActCreator"
     MinWidth="700"
     MinHeight="300"
+    AllowDrop="True"
     Closing="WindowClosing"
+    DragEnter="WindowDragEnter"
     FontSize="15"
     Loaded="WindowLoaded"
+    PreviewDragOver="WindowDragEnter"
+    PreviewDrop="WindowPreviewDrop"
     mc:Ignorable="d">
 
     <materialDesign:DialogHost CloseOnClickAway="True">
@@ -57,6 +61,7 @@
             <Menu>
                 <MenuItem Header="Файл" Icon="{materialDesign:PackIcon Kind=FileOutline}">
                     <MenuItem
+                        Click="OpenFileClick"
                         Header="Відкрити"
                         Icon="{materialDesign:PackIcon Kind=FileOutline}"
                         InputGestureText="Ctrl+O" />
