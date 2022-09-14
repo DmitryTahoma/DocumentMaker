@@ -374,8 +374,7 @@ namespace ActCreator.View.Controls
 			NotifyPropertyChanged(nameof(GameNameList));
 			GameNameComboBox.SelectedItem = GameNameList.FirstOrDefault(x => x.Name == selectedGame);
 			NotifyPropertyChanged(nameof(EpisodeNumberList));
-			controller.EpisodeNumberText = selectedEpisode;
-			EpisodeNumberComboBox.Text = controller.EpisodeNumberText;
+			EpisodeNumberComboBox.SelectedItem = EpisodeNumberList.FirstOrDefault(x => x == selectedEpisode);
 		}
 
 		public void SetBackType(BackType type)
