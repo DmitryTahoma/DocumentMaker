@@ -25,10 +25,12 @@ namespace ActCreator
 	public partial class MainWindow : Window
 	{
 		public static readonly DependencyProperty SelectedHumanProperty;
+		public static readonly DependencyProperty DataTableVisibilityProperty;
 
 		static MainWindow()
 		{
-			SelectedHumanProperty = DependencyProperty.Register("SelectedHuman", typeof(string), typeof(ComboBox));
+			SelectedHumanProperty = DependencyProperty.Register("SelectedHuman", typeof(string), typeof(MainWindowController));
+			DataTableVisibilityProperty = DependencyProperty.Register("DataTableVisibility", typeof(Visibility), typeof(MainWindow));
 		}
 
 		private readonly MainWindowController controller;
@@ -81,7 +83,14 @@ namespace ActCreator
 			{
 				SetValue(SelectedHumanProperty, value);
 				controller.SelectedHuman = value;
+				UpdateDataTableVisibility();
 			}
+		}
+
+		public Visibility DataTableVisibility
+		{
+			get => (Visibility)GetValue(DataTableVisibilityProperty); 
+			set => SetValue(DataTableVisibilityProperty, value); 
 		}
 
 		public IList<string> HumanFullNameList => controller.HumanFullNameList;
@@ -140,6 +149,7 @@ namespace ActCreator
 			{
 				controller.TemplateType = documentTemplate.Type;
 				UpdateViewBackData();
+				UpdateDataTableVisibility();
 			}
 		}
 
@@ -267,6 +277,11 @@ namespace ActCreator
 		private void ResetHaveUnsavedChanges()
 		{
 
+		}
+
+		private void UpdateDataTableVisibility()
+		{
+			DataTableVisibility = (controller.TemplateType == DocumentTemplateType.Empty || string.IsNullOrEmpty(SelectedHuman)) ? Visibility.Collapsed : Visibility.Visible;
 		}
 	}
 }
