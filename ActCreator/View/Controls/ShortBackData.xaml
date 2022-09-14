@@ -158,7 +158,7 @@
             <MenuItem
                 Width="50"
                 Height="42"
-                Padding="19,0,0,0"
+                Padding="17,0,0,0"
                 HorizontalAlignment="Center"
                 Click="DeleteBtnClick"
                 ToolTip="Видалити">
