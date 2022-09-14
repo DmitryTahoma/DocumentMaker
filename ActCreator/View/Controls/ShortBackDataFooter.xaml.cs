@@ -164,14 +164,7 @@ namespace ActCreator.View.Controls
 
 		public void SetViewByTemplate(DocumentTemplateType templateType)
 		{
-			if (templateType == DocumentTemplateType.Painter)
-			{
-				IsSketchColumn.Width = new GridLength(1, GridUnitType.Star);
-			}
-			else
-			{
-				IsSketchColumn.Width = GridLength.Auto;
-			}
+
 		}
 
 		public void ClearBackData()

@@ -4,11 +4,31 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ActCreator.View.Controls"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="ShortBackDataContext"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style
+                x:Key="AutoVisibilityFromEnabled_MaterialDesignOutlinedTextBox"
+                BasedOn="{StaticResource MaterialDesignOutlinedTextBox}"
+                TargetType="TextBox">
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="True">
+                        <Setter Property="Visibility" Value="Visible" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Visibility" Value="Hidden" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="8*" />
@@ -16,15 +36,10 @@
             <ColumnDefinition Width="50" />
         </Grid.ColumnDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
-
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.5*" MaxWidth="30" />
-                <ColumnDefinition MaxWidth="120" />
+                <ColumnDefinition MaxWidth="140" />
                 <ColumnDefinition Width="6*" />
             </Grid.ColumnDefinitions>
 
@@ -37,10 +52,12 @@
             <ComboBox
                 x:Name="BackTypeComboBox"
                 Grid.Column="1"
+                Margin="1.5"
+                Padding="8.5"
                 ItemsSource="{Binding ElementName=ShortBackDataContext, Path=BackDataTypesList, UpdateSourceTrigger=PropertyChanged}"
                 SelectedIndex="0"
                 SelectionChanged="TypeChanged"
-                Style="{StaticResource BackDataComboBox}" />
+                Style="{StaticResource MaterialDesignOutlinedComboBox}" />
 
             <Grid
                 x:Name="GridWithGeneralData"
@@ -58,78 +75,103 @@
 
                 <ComboBox
                     x:Name="EpisodeNumberComboBox"
-                    IsEditable="True"
-                    IsTextSearchEnabled="True"
+                    Margin="1.5"
+                    Padding="8.5"
                     ItemsSource="{Binding ElementName=ShortBackDataContext, Path=EpisodeNumberList, UpdateSourceTrigger=PropertyChanged}"
                     PreviewTextInput="UIntValidating"
-                    Style="{StaticResource ChooseTemplateComboBox}"
+                    Style="{StaticResource MaterialDesignOutlinedComboBox}"
                     Text="{Binding ElementName=ShortBackDataContext, Path=EpisodeNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="BackNumberTextInput"
                     Grid.Column="1"
+                    Margin="1.5"
+                    Padding="7"
                     IsEnabled="{Binding ElementName=ShortBackDataContext, Path=HasBackNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource TextBoxFreeValidation}"
+                    Style="{StaticResource AutoVisibilityFromEnabled_MaterialDesignOutlinedTextBox}"
                     Text="{Binding ElementName=ShortBackDataContext, Path=BackNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="BackNameInput"
                     Grid.Column="2"
-                    Style="{StaticResource TextBoxFreeValidation}"
+                    Margin="1.5"
+                    Padding="7"
+                    Style="{StaticResource MaterialDesignOutlinedTextBox}"
                     Text="{Binding ElementName=ShortBackDataContext, Path=BackName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="CountRegionsTextInput"
                     Grid.Column="3"
+                    Margin="1.5"
+                    Padding="7"
                     IsEnabled="{Binding ElementName=ShortBackDataContext, Path=IsRegions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     PreviewTextInput="RegionsValidatingPreviewTextInput"
-                    Style="{StaticResource TextBoxNumberValidation}"
+                    Style="{StaticResource AutoVisibilityFromEnabled_MaterialDesignOutlinedTextBox}"
                     Text="{Binding ElementName=ShortBackDataContext, Path=CountRegionsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                 <ComboBox
                     x:Name="GameNameComboBox"
                     Grid.Column="4"
-                    IsEditable="True"
-                    IsTextSearchEnabled="True"
+                    Margin="1.5"
+                    Padding="8.5"
                     ItemsSource="{Binding ElementName=ShortBackDataContext, Path=GameNameList, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource ChooseTemplateComboBox}"
+                    Style="{StaticResource MaterialDesignOutlinedComboBox}"
                     Text="{Binding ElementName=ShortBackDataContext, Path=GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                 <CheckBox
                     x:Name="IsReworkCheckBox"
                     Grid.Column="5"
-                    IsChecked="{Binding ElementName=ShortBackDataContext, Path=IsRework, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource BackDataCheckBox}" />
+                    Margin="5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding ElementName=ShortBackDataContext, Path=IsRework, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                 <CheckBox
                     x:Name="IsSketchCheckBox"
                     Grid.Column="6"
-                    IsChecked="{Binding ElementName=ShortBackDataContext, Path=IsSketch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource BackDataCheckBox}" />
+                    Margin="5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding ElementName=ShortBackDataContext, Path=IsSketch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
 
             <TextBox
                 x:Name="OtherTextInput"
                 Grid.Column="2"
+                Margin="1.5"
+                Padding="7"
+                AcceptsReturn="True"
                 IsEnabled="{Binding ElementName=ShortBackDataContext, Path=IsNotOtherType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Style="{StaticResource TextBoxOtherText}"
+                Style="{StaticResource MaterialDesignOutlinedTextBox}"
                 Text="{Binding ElementName=ShortBackDataContext, Path=OtherText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
 
         <TextBox
             x:Name="TimeTextInput"
             Grid.Column="1"
+            Margin="1.5"
+            Padding="8.5"
+            VerticalAlignment="Center"
             PreviewTextInput="UIntValidating"
-            Style="{StaticResource TextBoxNumberValidation}"
+            Style="{StaticResource MaterialDesignOutlinedTextBox}"
             Text="{Binding ElementName=ShortBackDataContext, Path=TimeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             TextChanged="TextChangedTextBoxTime" />
 
-        <Button
-            Grid.Column="2"
-            Click="DeleteBtnClick"
-            Style="{StaticResource BtnRoundedCross}" />
-
-        <TextBox
-            Grid.Row="1"
-            Grid.ColumnSpan="3"
-            Style="{StaticResource BackDataSplitter}" />
+        <Menu Grid.Column="2">
+            <MenuItem
+                Width="50"
+                Height="42"
+                Padding="19,0,0,0"
+                HorizontalAlignment="Center"
+                Click="DeleteBtnClick"
+                ToolTip="Видалити">
+                <MenuItem.Header>
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Kind="WindowClose" />
+                </MenuItem.Header>
+            </MenuItem>
+        </Menu>
 
     </Grid>
 </UserControl>
