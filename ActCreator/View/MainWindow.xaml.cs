@@ -48,7 +48,7 @@ namespace ActCreator
 			controller.Load();
 			SetWindowSettingsFromController();
 
-			openFileDialog = new OpenFileDialog { Filter= "Файли акту (*" + BaseDmxFile.Extension + ")|*" + BaseDmxFile.Extension };
+			openFileDialog = new OpenFileDialog { Filter = "Файли акту (*" + BaseDmxFile.Extension + ")|*" + BaseDmxFile.Extension };
 
 			InitializeComponent();
 
@@ -99,28 +99,28 @@ namespace ActCreator
 
 		public Visibility DataTableVisibility
 		{
-			get => (Visibility)GetValue(DataTableVisibilityProperty); 
-			set => SetValue(DataTableVisibilityProperty, value); 
+			get => (Visibility)GetValue(DataTableVisibilityProperty);
+			set => SetValue(DataTableVisibilityProperty, value);
 		}
 
 		public Visibility FileContentVisibility
 		{
-			get => (Visibility)GetValue(FileContentVisibilityProperty); 
-			set => SetValue(FileContentVisibilityProperty, value); 
+			get => (Visibility)GetValue(FileContentVisibilityProperty);
+			set => SetValue(FileContentVisibilityProperty, value);
 		}
 
 		public Visibility CreateFileButtonVisibility
 		{
-			get => (Visibility)GetValue(CreateFileButtonVisibilityProperty); 
-			set => SetValue(CreateFileButtonVisibilityProperty, value); 
+			get => (Visibility)GetValue(CreateFileButtonVisibilityProperty);
+			set => SetValue(CreateFileButtonVisibilityProperty, value);
 		}
 
 		public IList<string> HumanFullNameList => controller.HumanFullNameList;
 
-		public bool HaveUnsavedChanges 
+		public bool HaveUnsavedChanges
 		{
 			get => controller.HaveUnsavedChanges;
-			set 
+			set
 			{
 				controller.HaveUnsavedChanges = value;
 				UpdateTitle();
@@ -154,7 +154,7 @@ namespace ActCreator
 			WindowState = controller.WindowState;
 			if (controller != null)
 			{
-				if(controller.HaveOpenLaterFiles)
+				if (controller.HaveOpenLaterFiles)
 				{
 					OpenFile(controller.GetOpenLaterFile());
 				}
@@ -219,7 +219,7 @@ namespace ActCreator
 
 		private void CreateFileClick(object sender, RoutedEventArgs e)
 		{
-			controller.CreateFile(); 
+			controller.CreateFile();
 			UpdateDataTableVisibility();
 			ResetHaveUnsavedChanges();
 			UpdateTitle();
@@ -231,7 +231,7 @@ namespace ActCreator
 			if (e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop, true))
 			{
 				string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
-				if(filenames.Length > 0 && filenames[0] != null)
+				if (filenames.Length > 0 && filenames[0] != null)
 				{
 					OpenFile(filenames[0]);
 					e.Handled = true;
@@ -243,10 +243,10 @@ namespace ActCreator
 		{
 			bool isCorrect = true;
 
-			if(e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop, true))
+			if (e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop, true))
 			{
 				string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
-				if(filenames.Length != 1 || !File.Exists(filenames[0]) || new FileInfo(filenames[0]).Extension != BaseDmxFile.Extension)
+				if (filenames.Length != 1 || !File.Exists(filenames[0]) || new FileInfo(filenames[0]).Extension != BaseDmxFile.Extension)
 				{
 					isCorrect = false;
 				}
@@ -258,7 +258,7 @@ namespace ActCreator
 
 		private void OnBackDataPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			if(!controller.IsOpeningFile && !controller.IsLoadingLastSession)
+			if (!controller.IsOpeningFile && !controller.IsLoadingLastSession)
 			{
 				HaveUnsavedChanges = true;
 			}
@@ -278,7 +278,7 @@ namespace ActCreator
 			{
 				OnOpenFile();
 				e.Handled = true;
-			} 
+			}
 			else if (control && Keyboard.IsKeyDown(Key.W))
 			{
 				OnCloseFile();
@@ -351,7 +351,7 @@ namespace ActCreator
 
 			if (!controller.OpenFile(filename))
 			{
-				MessageBox.Show("Не вдалось відкрити файл:\n\n" + filename, 
+				MessageBox.Show("Не вдалось відкрити файл:\n\n" + filename,
 					"ActCreator | Open Files",
 					MessageBoxButtons.OK,
 					MessageBoxIcon.Error);
@@ -384,7 +384,7 @@ namespace ActCreator
 			if (controller.IsOpeningFile || controller.IsLoadingLastSession) return;
 
 			string fileStr = string.Empty;
-			if(controller.IsOpenedFile)
+			if (controller.IsOpenedFile)
 			{
 				if (controller.HaveUnsavedChangesAtAll())
 					fileStr += '*';
@@ -395,7 +395,7 @@ namespace ActCreator
 
 		private void UpdateFileContentVisibility()
 		{
-			FileContentVisibility =		  controller.IsOpenedFile ? Visibility.Visible : Visibility.Collapsed;
+			FileContentVisibility = controller.IsOpenedFile ? Visibility.Visible : Visibility.Collapsed;
 			CreateFileButtonVisibility = !controller.IsOpenedFile ? Visibility.Visible : Visibility.Collapsed;
 		}
 

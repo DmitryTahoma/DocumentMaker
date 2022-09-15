@@ -43,7 +43,7 @@ namespace Dml.Controller
 		{
 			errorText += "Строка таблиці №" + Id.ToString() + ": ";
 
-			if(BackNumberText != null)
+			if (BackNumberText != null)
 				BackNumberText = BackNumberText.Replace(',', '.');
 
 			if (Type == BackType.Other && !validator.IsFree(OtherText))

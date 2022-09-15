@@ -21,7 +21,7 @@ namespace ActCreator.Controller
 		private readonly ActCreatorModel model;
 		private readonly StringValidator validator;
 
-		private string openLaterFilename = null;
+		private readonly string openLaterFilename = null;
 
 		public MainWindowController(string[] args)
 		{
@@ -137,7 +137,7 @@ namespace ActCreator.Controller
 
 		public bool OpenFile(string filename)
 		{
-			if(!filename.EndsWith(BaseDmxFile.Extension))
+			if (!filename.EndsWith(BaseDmxFile.Extension))
 			{
 				return false;
 			}

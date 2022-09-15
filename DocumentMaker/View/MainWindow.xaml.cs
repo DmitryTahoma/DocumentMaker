@@ -275,7 +275,7 @@ namespace DocumentMaker
 		public string TechnicalTaskDateText
 		{
 			get => (string)GetValue(TechnicalTaskDateTextProperty);
-			set 
+			set
 			{
 				SetValue(TechnicalTaskDateTextProperty, value);
 				controller.TechnicalTaskDateText = value;
@@ -305,7 +305,7 @@ namespace DocumentMaker
 		public string TechnicalTaskNumText
 		{
 			get => (string)GetValue(TechnicalTaskNumTextProperty);
-			set 
+			set
 			{
 				SetValue(TechnicalTaskNumTextProperty, value);
 				controller.TechnicalTaskNumText = value;
@@ -648,7 +648,7 @@ namespace DocumentMaker
 					ResetHaveUnsavedChanges();
 					controller.CloseFile(selectedFile);
 					int newIndex = OpenedFilesComboBox.Items.Count <= index ? index - 1 : index;
-					if(newIndex < 0)
+					if (newIndex < 0)
 					{
 						controller.ClearUndoRedo();
 						UpdateUndoRedoState();
@@ -743,9 +743,9 @@ namespace DocumentMaker
 				EnableUpdatingSum();
 			}
 
-			if(DataHeader != null) DataHeader.IsChecked = false;
-			if(ReworkDataHeader != null) ReworkDataHeader.IsChecked = false;
-			if(OtherDataHeader != null) OtherDataHeader.IsChecked = false;
+			if (DataHeader != null) DataHeader.IsChecked = false;
+			if (ReworkDataHeader != null) ReworkDataHeader.IsChecked = false;
+			if (OtherDataHeader != null) OtherDataHeader.IsChecked = false;
 
 			SetDataFromControllerBackDatas();
 			DataFooter?.UpdateAllSum();
@@ -1228,14 +1228,14 @@ namespace DocumentMaker
 				ActDateText = ActDateText
 			};
 			await DialogHost.Show(dialog);
-			if(dialog.IsChanging)
+			if (dialog.IsChanging)
 			{
 				bool changed = controller.ChangeTechnicalTaskDateAtAllFiles(dialog.TechnicalTaskDateText);
 				changed = controller.ChangeActDateAtAllFiles(dialog.ActDateText) || changed;
-				if(changed)
+				if (changed)
 				{
 					DmxFile selectedFile = controller.GetSelectedFile();
-					if(selectedFile != null)
+					if (selectedFile != null)
 					{
 						controller.TechnicalTaskDateText = selectedFile.TechnicalTaskDateText;
 						controller.ActDateText = selectedFile.ActDateText;

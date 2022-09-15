@@ -470,7 +470,7 @@ namespace DocumentMaker.Controller
 
 		public void ChangeOpenedFilesExtension()
 		{
-			foreach(DmxFile file in OpenedFilesList)
+			foreach (DmxFile file in OpenedFilesList)
 			{
 				file.ChangeExtension();
 			}

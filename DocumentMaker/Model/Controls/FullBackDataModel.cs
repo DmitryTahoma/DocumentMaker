@@ -102,7 +102,7 @@ namespace DocumentMaker.Model.Controls
 
 		public void EnableActionsStacking()
 		{
-			if(actionsStack != null)
+			if (actionsStack != null)
 				actionsStack.ActionsStackingEnabled = true;
 		}
 
