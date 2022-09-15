@@ -87,6 +87,7 @@
                     Margin="1.5"
                     Padding="7"
                     IsEnabled="{Binding ElementName=ShortBackDataContext, Path=HasBackNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    PreviewTextInput="UFloatValidating"
                     Style="{StaticResource AutoVisibilityFromEnabled_MaterialDesignOutlinedTextBox}"
                     Text="{Binding ElementName=ShortBackDataContext, Path=BackNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox

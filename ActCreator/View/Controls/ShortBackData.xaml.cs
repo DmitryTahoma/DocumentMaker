@@ -332,6 +332,11 @@ namespace ActCreator.View.Controls
 			inputingValidator.UIntInputing_PreviewTextInput(sender, e);
 		}
 
+		private void UFloatValidating(object sender, System.Windows.Input.TextCompositionEventArgs e)
+		{
+			inputingValidator.UFloatInputing_PreviewTextInput(sender, e);
+		}
+
 		public void UpdateInputStates()
 		{
 			IsRegions = controller.Type == BackType.Regions || controller.Type == BackType.HogRegions;
@@ -383,8 +388,16 @@ namespace ActCreator.View.Controls
 			}
 			NotifyPropertyChanged(nameof(GameNameList));
 			GameNameComboBox.SelectedItem = GameNameList.FirstOrDefault(x => x.Name == selectedGame);
+			if (GameNameComboBox.SelectedItem == null)
+			{
+				GameNameComboBox.Text = null;
+			}
 			NotifyPropertyChanged(nameof(EpisodeNumberList));
 			EpisodeNumberComboBox.SelectedItem = EpisodeNumberList?.FirstOrDefault(x => x == selectedEpisode);
+			if (EpisodeNumberComboBox.SelectedItem == null)
+			{
+				EpisodeNumberComboBox.Text = null;
+			}
 		}
 
 		public void SetBackType(BackType type)

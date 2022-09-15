@@ -328,6 +328,10 @@ namespace ActCreator
 		{
 			DocumentTemplateComboBox.SelectedIndex = (int)controller.TemplateType;
 			HumanFullNameComboBox.Text = controller.SelectedHuman;
+			if (HumanFullNameComboBox.SelectedItem == null)
+			{
+				HumanFullNameComboBox.Text = null;
+			}
 		}
 
 		private void AddLoadedBackData()
