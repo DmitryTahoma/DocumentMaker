@@ -66,6 +66,7 @@
                         Icon="{materialDesign:PackIcon Kind=FileOutline}"
                         InputGestureText="Ctrl+O" />
                     <MenuItem
+                        Click="CloseFileClick"
                         Header="Закрити"
                         Icon="{materialDesign:PackIcon Kind=CloseBoxOutline}"
                         InputGestureText="Ctrl+W" />

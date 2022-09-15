@@ -122,6 +122,7 @@ namespace ActCreator
 				SetDataFromController();
 				AddLoadedBackData();
 				UpdateViewBackData();
+				UpdateTitle();
 
 #if INCLUDED_UPDATER_API
 				await Task.Run(() =>
@@ -184,6 +185,23 @@ namespace ActCreator
 			if(openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
 				OpenFile(openFileDialog.FileName);
+			}
+		}
+
+		private void CloseFileClick(object sender, RoutedEventArgs e)
+		{
+			if (controller.IsOpenedFile)
+			{
+				controller.CloseFile();
+				DataFooter.ClearBackData();
+				UpdateTitle();
+			}
+			else
+			{
+				MessageBox.Show("Спочатку необхідно відкрити файл.",
+								"DocumentMaker | Закриття файлу",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Information);
 			}
 		}
 

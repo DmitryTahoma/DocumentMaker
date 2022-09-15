@@ -47,7 +47,6 @@ namespace ActCreator.Model
 
 		#endregion
 
-		[IsNotDmxContent]
 		public string OpenedFileName { get; set; }
 
 		public DocumentTemplateType TemplateType { get; set; } = DocumentTemplateType.Empty;
@@ -129,6 +128,11 @@ namespace ActCreator.Model
 			}
 
 			saver.Save(path);
+		}
+
+		public void CloseFile()
+		{
+			OpenedFileName = null;
 		}
 	}
 }

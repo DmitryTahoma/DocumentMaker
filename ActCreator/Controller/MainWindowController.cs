@@ -144,5 +144,10 @@ namespace ActCreator.Controller
 				return true;
 			}
 		}
+
+		public void CloseFile()
+		{
+			model.CloseFile();
+		}
 	}
 }
