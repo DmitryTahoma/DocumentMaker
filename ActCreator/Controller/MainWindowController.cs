@@ -144,7 +144,7 @@ namespace ActCreator.Controller
 			{
 				model.Load(filename, out List<ShortBackDataModel> backModels);
 				BackDataControllers = new List<ShortBackDataController>(backModels.Select(x => new ShortBackDataController(x)));
-				model.OpenedFileName = filename;
+				model.SetOpenedFileName(filename);
 				return true;
 			}
 		}

@@ -149,11 +149,6 @@ namespace ActCreator
 				{
 					OpenFile(controller.GetOpenLaterFile());
 				}
-				controller.IsLoadingLastSession = true;
-				SetDataFromController();
-				AddLoadedBackData();
-				UpdateViewBackData();
-				controller.IsLoadingLastSession = false;
 				ResetHaveUnsavedChanges();
 				UpdateTitle();
 				UpdateFileContentVisibility();

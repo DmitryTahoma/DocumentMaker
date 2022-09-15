@@ -17,6 +17,8 @@ namespace ActCreator.Model
 		private readonly ObservableRangeCollection<string> humanFullNameList;
 		private readonly List<GameObject> gameNameList;
 
+		private string openedFileName;
+
 		public ActCreatorModel()
 		{
 			documentTemplates = new ObservableCollection<DocumentTemplate>
@@ -29,7 +31,7 @@ namespace ActCreator.Model
 			humanFullNameList = new ObservableRangeCollection<string>();
 			gameNameList = new List<GameObject>();
 
-			OpenedFileName = null;
+			openedFileName = null;
 		}
 
 		#region Window settings
@@ -47,7 +49,7 @@ namespace ActCreator.Model
 
 		#endregion
 
-		public string OpenedFileName { get; set; }
+		public string OpenedFileName => openedFileName;
 
 		public DocumentTemplateType TemplateType { get; set; } = DocumentTemplateType.Empty;
 		public string SelectedHuman { get; set; }
@@ -133,14 +135,19 @@ namespace ActCreator.Model
 			saver.Save(path);
 		}
 
+		public void SetOpenedFileName(string fileName)
+		{
+			openedFileName = fileName;
+		}
+
 		public void CloseFile()
 		{
-			OpenedFileName = null;
+			openedFileName = null;
 		}
 
 		public void CreateFile()
 		{
-			OpenedFileName = "new";
+			openedFileName = "new";
 		}
 	}
 }
