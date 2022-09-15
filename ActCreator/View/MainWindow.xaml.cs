@@ -128,6 +128,13 @@ namespace ActCreator
 
 		private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
+			CheckNeedSaveBeforeClosing(out DialogResult res);
+			if (res == System.Windows.Forms.DialogResult.Cancel)
+			{
+				e.Cancel = true;
+				return;
+			}
+
 			controller.WindowTop = Top;
 			controller.WindowLeft = Left;
 			controller.WindowHeight = Height;
