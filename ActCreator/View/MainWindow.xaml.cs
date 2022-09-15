@@ -338,7 +338,13 @@ namespace ActCreator
 
 		private void OpenFile(string filename)
 		{
-			if(!controller.OpenFile(filename))
+			CheckNeedSaveBeforeClosing(out DialogResult res);
+			if (res == System.Windows.Forms.DialogResult.Cancel)
+			{
+				return;
+			}
+
+			if (!controller.OpenFile(filename))
 			{
 				MessageBox.Show("Не вдалось відкрити файл:\n\n" + filename, 
 					"ActCreator | Open Files",
