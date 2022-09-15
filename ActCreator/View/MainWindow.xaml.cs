@@ -301,6 +301,14 @@ namespace ActCreator
 			}
 		}
 
+		private void UnfocusOnEnter(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter)
+			{
+				Keyboard.ClearFocus();
+			}
+		}
+
 		private void UpdateViewBackData()
 		{
 			foreach (UIElement control in BacksData.Children)

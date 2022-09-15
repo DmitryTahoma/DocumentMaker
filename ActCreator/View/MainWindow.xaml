@@ -16,6 +16,7 @@
     Closing="WindowClosing"
     DragEnter="WindowDragEnter"
     FontSize="15"
+    KeyDown="UnfocusOnEnter"
     Loaded="WindowLoaded"
     PreviewDragOver="WindowDragEnter"
     PreviewDrop="WindowPreviewDrop"
