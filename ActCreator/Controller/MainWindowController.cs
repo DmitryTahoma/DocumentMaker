@@ -149,5 +149,10 @@ namespace ActCreator.Controller
 		{
 			model.CloseFile();
 		}
+
+		public void CreateFile()
+		{
+			model.CreateFile();
+		}
 	}
 }

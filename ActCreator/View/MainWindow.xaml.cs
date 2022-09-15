@@ -225,7 +225,9 @@ namespace ActCreator
 
 		private void CreateFileClick(object sender, RoutedEventArgs e)
 		{
-
+			controller.CreateFile();
+			UpdateTitle();
+			UpdateFileContentVisibility();
 		}
 
 		private void WindowPreviewDrop(object sender, System.Windows.DragEventArgs e)

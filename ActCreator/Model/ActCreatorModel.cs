@@ -134,5 +134,10 @@ namespace ActCreator.Model
 		{
 			OpenedFileName = null;
 		}
+
+		public void CreateFile()
+		{
+			OpenedFileName = "new";
+		}
 	}
 }
