@@ -13,6 +13,8 @@ namespace ActCreator.Model
 {
 	public class ActCreatorModel
 	{
+		private const string newFileName = "new";
+
 		private readonly ObservableCollection<DocumentTemplate> documentTemplates;
 		private readonly ObservableRangeCollection<string> humanFullNameList;
 		private readonly List<GameObject> gameNameList;
@@ -56,6 +58,7 @@ namespace ActCreator.Model
 		public IList<DocumentTemplate> DocumentTemplatesList => documentTemplates;
 		public IList<string> HumanFullNameList => humanFullNameList;
 		public IList<GameObject> GameNameList => gameNameList;
+		public bool IsNewFile => openedFileName == newFileName;
 
 		[IsNotDmxContent]
 		public bool HaveUnsavedChanges { get; set; }
@@ -133,6 +136,7 @@ namespace ActCreator.Model
 			}
 
 			saver.Save(path);
+			openedFileName = path;
 		}
 
 		public void SetOpenedFileName(string fileName)
@@ -147,7 +151,7 @@ namespace ActCreator.Model
 
 		public void CreateFile()
 		{
-			openedFileName = "new";
+			openedFileName = newFileName;
 		}
 	}
 }

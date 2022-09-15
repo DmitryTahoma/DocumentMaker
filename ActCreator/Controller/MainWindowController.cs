@@ -55,6 +55,7 @@ namespace ActCreator.Controller
 		public bool HaveUnsavedChanges { get => model.HaveUnsavedChanges; set => model.HaveUnsavedChanges = value; }
 		public bool IsOpeningFile { get; set; } = false;
 		public bool IsLoadingLastSession { get; set; } = false;
+		public bool IsNewFile => model.IsNewFile;
 
 		public void Save()
 		{
@@ -98,7 +99,6 @@ namespace ActCreator.Controller
 			}
 
 			model.ExportDmx(path, backDataModels);
-			ResetHaveUnsavedChanges();
 		}
 
 		public bool Validate(out string errorText)
@@ -117,6 +117,7 @@ namespace ActCreator.Controller
 			{
 				foreach (ShortBackDataController backDataController in BackDataControllers)
 				{
+					errorText = string.Empty;
 					if (!backDataController.Validate(ref errorText))
 					{
 						return false;

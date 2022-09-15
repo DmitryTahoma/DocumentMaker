@@ -71,13 +71,14 @@
                         InputGestureText="Ctrl+W" />
                     <Separator />
                     <MenuItem
-                        Click="ExportBtnClick"
+                        Click="SaveBtnClick"
                         Header="Зберегти"
                         Icon="{materialDesign:PackIcon Kind=ContentSaveOutline}"
                         InputGestureText="Ctrl+S" />
                     <MenuItem
+                        Click="SaveAsBtnClick"
                         Header="Зберегти як"
-                        Icon="{materialDesign:PackIcon Kind=ContentSaveOutline}"
+                        Icon="{materialDesign:PackIcon Kind=ContentSaveEditOutline}"
                         InputGestureText="Ctrl+Alt+S" />
                 </MenuItem>
                 <MenuItem Header="Редагування" Icon="{materialDesign:PackIcon Kind=FileDocumentEditOutline}">

@@ -196,7 +196,27 @@ namespace ActCreator
 			}
 		}
 
-		private void ExportBtnClick(object sender, RoutedEventArgs e)
+		private void SaveBtnClick(object sender, RoutedEventArgs e)
+		{
+			if (controller.IsNewFile)
+			{
+				SaveAsBtnClick(sender, e);
+				return;
+			}
+
+			if (controller.Validate(out string errorText))
+			{
+				controller.ExportDmx(controller.OpenedFile);
+				ResetHaveUnsavedChanges();
+				UpdateTitle();
+			}
+			else
+			{
+				MessageBox.Show(errorText, "ActCreator | Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private void SaveAsBtnClick(object sender, RoutedEventArgs e)
 		{
 			if (controller.Validate(out string errorText))
 			{
@@ -204,6 +224,8 @@ namespace ActCreator
 				if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 				{
 					controller.ExportDmx(saveFileDialog.FileName);
+					ResetHaveUnsavedChanges();
+					UpdateTitle();
 
 					if (MessageBox.Show("Файл збережений.\nВідкрити папку з файлом?",
 										"ActCreator | Export",
@@ -212,7 +234,7 @@ namespace ActCreator
 										MessageBoxDefaultButton.Button2)
 						== System.Windows.Forms.DialogResult.Yes)
 					{
-						Process.Start("explorer", Path.GetDirectoryName(saveFileDialog.FileName));
+						Process.Start("explorer", "/n, /select, " + saveFileDialog.FileName);
 					}
 				}
 			}
@@ -418,12 +440,20 @@ namespace ActCreator
 					dialogResult = saveFileDialog.ShowDialog();
 					if (dialogResult == System.Windows.Forms.DialogResult.OK)
 					{
-						controller.ExportDmx(saveFileDialog.FileName);
+						if (controller.Validate(out string errorText))
+						{
+							controller.ExportDmx(saveFileDialog.FileName);
 
-						MessageBox.Show("Файл збережений.",
-							"ActCreator | Export dcmk",
-							MessageBoxButtons.OK,
-							MessageBoxIcon.Information);
+							MessageBox.Show("Файл збережений.",
+								"ActCreator | Export dcmk",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Information);
+						}
+						else
+						{
+							dialogResult = System.Windows.Forms.DialogResult.Cancel;
+							MessageBox.Show("Неможливо зберегти файл!\n" + errorText, "ActCreator | Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						}
 					}
 				}
 			}
