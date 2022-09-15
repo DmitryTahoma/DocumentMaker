@@ -143,6 +143,7 @@ namespace ActCreator
 		private void WindowLoaded(object sender, RoutedEventArgs e)
 #endif
 		{
+			WindowState = controller.WindowState;
 			if (controller != null)
 			{
 				if(controller.HaveOpenLaterFiles)
@@ -311,7 +312,6 @@ namespace ActCreator
 			Left = controller.WindowLeft;
 			Height = controller.WindowHeight;
 			Width = controller.WindowWidth;
-			WindowState = controller.WindowState;
 			WindowValidator.MoveToValidPosition(this);
 		}
 
