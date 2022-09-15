@@ -19,6 +19,7 @@
     Loaded="WindowLoaded"
     PreviewDragOver="WindowDragEnter"
     PreviewDrop="WindowPreviewDrop"
+    PreviewKeyDown="WindowKeyDown"
     mc:Ignorable="d">
 
     <materialDesign:DialogHost CloseOnClickAway="True">
@@ -86,7 +87,7 @@
                         Click="RemoveAllClick"
                         Header="Видалити всі пункти"
                         Icon="{materialDesign:PackIcon Kind=SortVariantRemove}"
-                        InputGestureText="Alt+Del" />
+                        InputGestureText="Alt+Delete" />
                 </MenuItem>
             </Menu>
 

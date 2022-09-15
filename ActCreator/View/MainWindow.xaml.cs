@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 #if INCLUDED_UPDATER_API
@@ -198,83 +199,22 @@ namespace ActCreator
 
 		private void SaveBtnClick(object sender, RoutedEventArgs e)
 		{
-			if (controller.IsNewFile)
-			{
-				SaveAsBtnClick(sender, e);
-				return;
-			}
-
-			if (controller.Validate(out string errorText))
-			{
-				controller.ExportDmx(controller.OpenedFile);
-				ResetHaveUnsavedChanges();
-				UpdateTitle();
-			}
-			else
-			{
-				MessageBox.Show(errorText, "ActCreator | Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
+			OnSave();
 		}
 
 		private void SaveAsBtnClick(object sender, RoutedEventArgs e)
 		{
-			if (controller.Validate(out string errorText))
-			{
-				saveFileDialog.FileName = controller.GetDmxFileName();
-				if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-				{
-					controller.ExportDmx(saveFileDialog.FileName);
-					ResetHaveUnsavedChanges();
-					UpdateTitle();
-
-					if (MessageBox.Show("Файл збережений.\nВідкрити папку з файлом?",
-										"ActCreator | Export",
-										MessageBoxButtons.YesNo,
-										MessageBoxIcon.Information,
-										MessageBoxDefaultButton.Button2)
-						== System.Windows.Forms.DialogResult.Yes)
-					{
-						Process.Start("explorer", "/n, /select, " + saveFileDialog.FileName);
-					}
-				}
-			}
-			else
-			{
-				MessageBox.Show(errorText, "ActCreator | Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
+			OnSaveAs();
 		}
 
 		private void OpenFileClick(object sender, RoutedEventArgs e)
 		{
-			if(openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-			{
-				OpenFile(openFileDialog.FileName);
-			}
+			OnOpenFile();
 		}
 
 		private void CloseFileClick(object sender, RoutedEventArgs e)
 		{
-			if (controller.IsOpenedFile)
-			{
-				CheckNeedSaveBeforeClosing(out DialogResult res);
-				if (res == System.Windows.Forms.DialogResult.Cancel)
-				{
-					return;
-				}
-
-				controller.CloseFile();
-				DataFooter.ClearBackData();
-				ResetHaveUnsavedChanges();
-				UpdateTitle();
-				UpdateFileContentVisibility();
-			}
-			else
-			{
-				MessageBox.Show("Спочатку необхідно відкрити файл.",
-								"ActCreator | Закриття файлу",
-								MessageBoxButtons.OK,
-								MessageBoxIcon.Information);
-			}
+			OnCloseFile();
 		}
 
 		private void CreateFileClick(object sender, RoutedEventArgs e)
@@ -326,8 +266,39 @@ namespace ActCreator
 
 		private void RemoveAllClick(object sender, RoutedEventArgs e)
 		{
-			DataFooter.ClearBackData();
-			HaveUnsavedChanges = true;
+			OnRemoveAll();
+		}
+
+		private void WindowKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			bool control = Keyboard.Modifiers.HasFlag(ModifierKeys.Control);
+			bool alt = Keyboard.Modifiers.HasFlag(ModifierKeys.Alt);
+
+			if (control && Keyboard.IsKeyDown(Key.O))
+			{
+				OnOpenFile();
+				e.Handled = true;
+			} 
+			else if (control && Keyboard.IsKeyDown(Key.W))
+			{
+				OnCloseFile();
+				e.Handled = true;
+			}
+			else if (control && alt && Keyboard.IsKeyDown(Key.S))
+			{
+				OnSaveAs();
+				e.Handled = true;
+			}
+			else if (control && Keyboard.IsKeyDown(Key.S))
+			{
+				OnSave();
+				e.Handled = true;
+			}
+			else if (alt && Keyboard.IsKeyDown(Key.Delete))
+			{
+				OnRemoveAll();
+				e.Handled = true;
+			}
 		}
 
 		private void UpdateViewBackData()
@@ -462,6 +433,93 @@ namespace ActCreator
 					}
 				}
 			}
+		}
+
+		private void OnOpenFile()
+		{
+			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				OpenFile(openFileDialog.FileName);
+			}
+		}
+
+		private void OnCloseFile()
+		{
+			if (controller.IsOpenedFile)
+			{
+				CheckNeedSaveBeforeClosing(out DialogResult res);
+				if (res == System.Windows.Forms.DialogResult.Cancel)
+				{
+					return;
+				}
+
+				controller.CloseFile();
+				DataFooter.ClearBackData();
+				ResetHaveUnsavedChanges();
+				UpdateTitle();
+				UpdateFileContentVisibility();
+			}
+			else
+			{
+				MessageBox.Show("Спочатку необхідно відкрити файл.",
+								"ActCreator | Закриття файлу",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Information);
+			}
+		}
+
+		private void OnSaveAs()
+		{
+			if (controller.Validate(out string errorText))
+			{
+				saveFileDialog.FileName = controller.GetDmxFileName();
+				if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				{
+					controller.ExportDmx(saveFileDialog.FileName);
+					ResetHaveUnsavedChanges();
+					UpdateTitle();
+
+					if (MessageBox.Show("Файл збережений.\nВідкрити папку з файлом?",
+										"ActCreator | Export",
+										MessageBoxButtons.YesNo,
+										MessageBoxIcon.Information,
+										MessageBoxDefaultButton.Button2)
+						== System.Windows.Forms.DialogResult.Yes)
+					{
+						Process.Start("explorer", "/n, /select, " + saveFileDialog.FileName);
+					}
+				}
+			}
+			else
+			{
+				MessageBox.Show(errorText, "ActCreator | Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private void OnSave()
+		{
+			if (controller.IsNewFile)
+			{
+				OnSaveAs();
+				return;
+			}
+
+			if (controller.Validate(out string errorText))
+			{
+				controller.ExportDmx(controller.OpenedFile);
+				ResetHaveUnsavedChanges();
+				UpdateTitle();
+			}
+			else
+			{
+				MessageBox.Show(errorText, "ActCreator | Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private void OnRemoveAll()
+		{
+			DataFooter.ClearBackData();
+			HaveUnsavedChanges = true;
 		}
 	}
 }
