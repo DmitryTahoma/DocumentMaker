@@ -26,11 +26,15 @@ namespace ActCreator
 	{
 		public static readonly DependencyProperty SelectedHumanProperty;
 		public static readonly DependencyProperty DataTableVisibilityProperty;
+		public static readonly DependencyProperty FileContentVisibilityProperty;
+		public static readonly DependencyProperty CreateFileButtonVisibilityProperty;
 
 		static MainWindow()
 		{
 			SelectedHumanProperty = DependencyProperty.Register("SelectedHuman", typeof(string), typeof(MainWindowController));
 			DataTableVisibilityProperty = DependencyProperty.Register("DataTableVisibility", typeof(Visibility), typeof(MainWindow));
+			FileContentVisibilityProperty = DependencyProperty.Register("FileContentVisibility", typeof(Visibility), typeof(MainWindow));
+			CreateFileButtonVisibilityProperty = DependencyProperty.Register("CreateFileButtonVisibility", typeof(Visibility), typeof(MainWindow));
 		}
 
 		private readonly MainWindowController controller;
@@ -93,6 +97,18 @@ namespace ActCreator
 			set => SetValue(DataTableVisibilityProperty, value); 
 		}
 
+		public Visibility FileContentVisibility
+		{
+			get => (Visibility)GetValue(FileContentVisibilityProperty); 
+			set => SetValue(FileContentVisibilityProperty, value); 
+		}
+
+		public Visibility CreateFileButtonVisibility
+		{
+			get => (Visibility)GetValue(CreateFileButtonVisibilityProperty); 
+			set => SetValue(CreateFileButtonVisibilityProperty, value); 
+		}
+
 		public IList<string> HumanFullNameList => controller.HumanFullNameList;
 
 		private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -123,6 +139,7 @@ namespace ActCreator
 				AddLoadedBackData();
 				UpdateViewBackData();
 				UpdateTitle();
+				UpdateFileContentVisibility();
 
 #if INCLUDED_UPDATER_API
 				await Task.Run(() =>
@@ -195,6 +212,7 @@ namespace ActCreator
 				controller.CloseFile();
 				DataFooter.ClearBackData();
 				UpdateTitle();
+				UpdateFileContentVisibility();
 			}
 			else
 			{
@@ -203,6 +221,11 @@ namespace ActCreator
 								MessageBoxButtons.OK,
 								MessageBoxIcon.Information);
 			}
+		}
+
+		private void CreateFileClick(object sender, RoutedEventArgs e)
+		{
+
 		}
 
 		private void WindowPreviewDrop(object sender, System.Windows.DragEventArgs e)
@@ -290,6 +313,7 @@ namespace ActCreator
 				AddLoadedBackData();
 				UpdateViewBackData();
 				UpdateTitle();
+				UpdateFileContentVisibility();
 			}
 		}
 
@@ -311,6 +335,12 @@ namespace ActCreator
 				fileStr = " | " + controller.OpenedFile;
 			}
 			Title = "ActCreator" + fileStr;
+		}
+
+		private void UpdateFileContentVisibility()
+		{
+			FileContentVisibility =		  controller.IsOpenedFile ? Visibility.Visible : Visibility.Collapsed;
+			CreateFileButtonVisibility = !controller.IsOpenedFile ? Visibility.Visible : Visibility.Collapsed;
 		}
 	}
 }
