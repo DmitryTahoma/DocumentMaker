@@ -83,6 +83,7 @@
                 </MenuItem>
                 <MenuItem Header="Редагування" Icon="{materialDesign:PackIcon Kind=FileDocumentEditOutline}">
                     <MenuItem
+                        Click="RemoveAllClick"
                         Header="Видалити всі пункти"
                         Icon="{materialDesign:PackIcon Kind=SortVariantRemove}"
                         InputGestureText="Alt+Del" />

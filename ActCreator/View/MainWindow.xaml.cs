@@ -321,8 +321,13 @@ namespace ActCreator
 			if(!controller.IsOpeningFile && !controller.IsLoadingLastSession)
 			{
 				HaveUnsavedChanges = true;
-				UpdateTitle();
 			}
+		}
+
+		private void RemoveAllClick(object sender, RoutedEventArgs e)
+		{
+			DataFooter.ClearBackData();
+			HaveUnsavedChanges = true;
 		}
 
 		private void UpdateViewBackData()
