@@ -55,6 +55,9 @@ namespace ActCreator.Model
 		public IList<string> HumanFullNameList => humanFullNameList;
 		public IList<GameObject> GameNameList => gameNameList;
 
+		[IsNotDmxContent]
+		public bool HaveUnsavedChanges { get; set; }
+
 		public void Save(string path, IEnumerable<ShortBackDataModel> backModels)
 		{
 			XmlSaver saver = new XmlSaver();

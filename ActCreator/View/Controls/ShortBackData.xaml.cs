@@ -93,6 +93,7 @@ namespace ActCreator.View.Controls
 			{
 				SetValue(EpisodeNumberTextProperty, value);
 				controller.EpisodeNumberText = value;
+				NotifyPropertyChanged(nameof(EpisodeNumberText));
 			}
 		}
 
@@ -103,6 +104,7 @@ namespace ActCreator.View.Controls
 			{
 				SetValue(BackNumberTextProperty, value);
 				controller.BackNumberText = value;
+				NotifyPropertyChanged(nameof(BackNumberText));
 			}
 		}
 
@@ -113,6 +115,7 @@ namespace ActCreator.View.Controls
 			{
 				SetValue(BackNameProperty, value);
 				controller.BackName = value;
+				NotifyPropertyChanged(nameof(BackName));
 			}
 		}
 
@@ -123,6 +126,7 @@ namespace ActCreator.View.Controls
 			{
 				SetValue(CountRegionsTextProperty, value);
 				controller.BackCountRegionsText = value;
+				NotifyPropertyChanged(nameof(CountRegionsText));
 			}
 		}
 
@@ -135,6 +139,7 @@ namespace ActCreator.View.Controls
 			{
 				SetValue(GameNameProperty, value);
 				controller.GameName = value;
+				NotifyPropertyChanged(nameof(GameName));
 				NotifyPropertyChanged(nameof(EpisodeNumberList));
 			}
 		}
@@ -158,6 +163,7 @@ namespace ActCreator.View.Controls
 			{
 				SetValue(IsReworkProperty, value);
 				controller.IsRework = value;
+				NotifyPropertyChanged(nameof(IsRework));
 			}
 		}
 
@@ -168,6 +174,7 @@ namespace ActCreator.View.Controls
 			{
 				SetValue(IsSketchProperty, value);
 				controller.IsSketch = value;
+				NotifyPropertyChanged(nameof(IsSketch));
 			}
 		}
 
@@ -178,6 +185,7 @@ namespace ActCreator.View.Controls
 			{
 				SetValue(TimeTextProperty, value);
 				controller.SpentTimeText = value;
+				NotifyPropertyChanged(nameof(TimeText));
 			}
 		}
 
@@ -200,6 +208,7 @@ namespace ActCreator.View.Controls
 			{
 				SetValue(OtherTextProperty, value);
 				controller.OtherText = value;
+				NotifyPropertyChanged(nameof(OtherText));
 			}
 		}
 
@@ -254,6 +263,7 @@ namespace ActCreator.View.Controls
 			if (controller != null && sender is ComboBox comboBox && comboBox.SelectedItem is BackDataType dataType)
 			{
 				controller.Type = dataType.Type;
+				NotifyPropertyChanged(nameof(controller.Type));
 				UpdateInputStates();
 			}
 		}

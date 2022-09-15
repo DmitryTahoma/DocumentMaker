@@ -53,17 +53,21 @@ namespace ActCreator
 
 			DataFooter.SubscribeAddition((x) =>
 			{
+				HaveUnsavedChanges = true;
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
 				x.SetGameNameList(controller.GameNameList);
+				x.PropertyChanged += OnBackDataPropertyChanged;
 			});
 			DataFooter.SubscribeRemoving((x) =>
 			{
+				HaveUnsavedChanges = true;
 				controller.BackDataControllers.Remove(x.Controller);
 				DataFooter.UpdateBackDataIds();
 			});
 			DataFooter.SubscribeClearing(() =>
 			{
+				HaveUnsavedChanges = true;
 				controller.BackDataControllers.Clear();
 			});
 
@@ -88,6 +92,7 @@ namespace ActCreator
 				SetValue(SelectedHumanProperty, value);
 				controller.SelectedHuman = value;
 				UpdateDataTableVisibility();
+				HaveUnsavedChanges = true;
 			}
 		}
 
@@ -110,6 +115,16 @@ namespace ActCreator
 		}
 
 		public IList<string> HumanFullNameList => controller.HumanFullNameList;
+
+		public bool HaveUnsavedChanges 
+		{
+			get => controller.HaveUnsavedChanges;
+			set 
+			{
+				controller.HaveUnsavedChanges = value;
+				UpdateTitle();
+			}
+		}
 
 		private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
@@ -134,10 +149,12 @@ namespace ActCreator
 				{
 					OpenFile(controller.GetOpenLaterFile());
 				}
-				ResetHaveUnsavedChanges();
+				controller.IsLoadingLastSession = true;
 				SetDataFromController();
 				AddLoadedBackData();
 				UpdateViewBackData();
+				controller.IsLoadingLastSession = false;
+				ResetHaveUnsavedChanges();
 				UpdateTitle();
 				UpdateFileContentVisibility();
 
@@ -157,6 +174,7 @@ namespace ActCreator
 				});
 #endif
 			}
+			ResetHaveUnsavedChanges();
 		}
 
 		private void ChangedDocumentTemplate(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -165,6 +183,7 @@ namespace ActCreator
 				&& sender is System.Windows.Controls.ComboBox comboBox
 				&& comboBox.SelectedItem is DocumentTemplate documentTemplate)
 			{
+				HaveUnsavedChanges = true;
 				controller.TemplateType = documentTemplate.Type;
 				UpdateViewBackData();
 				UpdateDataTableVisibility();
@@ -209,15 +228,22 @@ namespace ActCreator
 		{
 			if (controller.IsOpenedFile)
 			{
+				CheckNeedSaveBeforeClosing(out DialogResult res);
+				if (res == System.Windows.Forms.DialogResult.Cancel)
+				{
+					return;
+				}
+
 				controller.CloseFile();
 				DataFooter.ClearBackData();
+				ResetHaveUnsavedChanges();
 				UpdateTitle();
 				UpdateFileContentVisibility();
 			}
 			else
 			{
 				MessageBox.Show("Спочатку необхідно відкрити файл.",
-								"DocumentMaker | Закриття файлу",
+								"ActCreator | Закриття файлу",
 								MessageBoxButtons.OK,
 								MessageBoxIcon.Information);
 			}
@@ -225,7 +251,8 @@ namespace ActCreator
 
 		private void CreateFileClick(object sender, RoutedEventArgs e)
 		{
-			controller.CreateFile();
+			controller.CreateFile(); 
+			ResetHaveUnsavedChanges();
 			UpdateTitle();
 			UpdateFileContentVisibility();
 		}
@@ -258,6 +285,15 @@ namespace ActCreator
 
 			e.Effects = isCorrect ? System.Windows.DragDropEffects.All : System.Windows.DragDropEffects.None;
 			e.Handled = true;
+		}
+
+		private void OnBackDataPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if(!controller.IsOpeningFile && !controller.IsLoadingLastSession)
+			{
+				HaveUnsavedChanges = true;
+				UpdateTitle();
+			}
 		}
 
 		private void UpdateViewBackData()
@@ -295,7 +331,8 @@ namespace ActCreator
 			DataFooter.ClearData();
 			foreach (ShortBackDataController backDataController in controller.BackDataControllers)
 			{
-				DataFooter.AddLoadedBackData(backDataController);
+				ShortBackData backData = DataFooter.AddLoadedBackData(backDataController);
+				backData.PropertyChanged += OnBackDataPropertyChanged;
 			}
 			DataFooter.UpdateBackDataIds();
 		}
@@ -311,9 +348,12 @@ namespace ActCreator
 			}
 			else
 			{
+				controller.IsOpeningFile = true;
 				SetDataFromController();
 				AddLoadedBackData();
 				UpdateViewBackData();
+				controller.IsOpeningFile = false;
+				ResetHaveUnsavedChanges();
 				UpdateTitle();
 				UpdateFileContentVisibility();
 			}
@@ -321,7 +361,7 @@ namespace ActCreator
 
 		private void ResetHaveUnsavedChanges()
 		{
-
+			controller.ResetHaveUnsavedChanges();
 		}
 
 		private void UpdateDataTableVisibility()
@@ -331,18 +371,50 @@ namespace ActCreator
 
 		private void UpdateTitle()
 		{
+			if (controller.IsOpeningFile || controller.IsLoadingLastSession) return;
+
 			string fileStr = string.Empty;
 			if(controller.IsOpenedFile)
 			{
-				fileStr = " | " + controller.OpenedFile;
+				if (controller.HaveUnsavedChangesAtAll())
+					fileStr += '*';
+				fileStr += controller.OpenedFile + " | ";
 			}
-			Title = "ActCreator" + fileStr;
+			Title = fileStr + "ActCreator";
 		}
 
 		private void UpdateFileContentVisibility()
 		{
 			FileContentVisibility =		  controller.IsOpenedFile ? Visibility.Visible : Visibility.Collapsed;
 			CreateFileButtonVisibility = !controller.IsOpenedFile ? Visibility.Visible : Visibility.Collapsed;
+		}
+
+		private void CheckNeedSaveBeforeClosing(out DialogResult dialogResult)
+		{
+			dialogResult = System.Windows.Forms.DialogResult.None;
+			if (controller.HaveUnsavedChangesAtAll())
+			{
+				dialogResult = MessageBox.Show("Файл має незбережені зміни. Зберегти файл перед закриттям?",
+					"Закриття файлу",
+					MessageBoxButtons.YesNoCancel,
+					MessageBoxIcon.Question,
+					MessageBoxDefaultButton.Button1);
+
+				if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+				{
+					saveFileDialog.FileName = controller.GetDmxFileName();
+					dialogResult = saveFileDialog.ShowDialog();
+					if (dialogResult == System.Windows.Forms.DialogResult.OK)
+					{
+						controller.ExportDmx(saveFileDialog.FileName);
+
+						MessageBox.Show("Файл збережений.",
+							"ActCreator | Export dcmk",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Information);
+					}
+				}
+			}
 		}
 	}
 }

@@ -52,6 +52,9 @@ namespace ActCreator.Controller
 		public bool HaveOpenLaterFiles => openLaterFilename != null;
 		public string OpenedFile => model.OpenedFileName;
 		public bool IsOpenedFile => OpenedFile != null;
+		public bool HaveUnsavedChanges { get => model.HaveUnsavedChanges; set => model.HaveUnsavedChanges = value; }
+		public bool IsOpeningFile { get; set; } = false;
+		public bool IsLoadingLastSession { get; set; } = false;
 
 		public void Save()
 		{
@@ -95,6 +98,7 @@ namespace ActCreator.Controller
 			}
 
 			model.ExportDmx(path, backDataModels);
+			ResetHaveUnsavedChanges();
 		}
 
 		public bool Validate(out string errorText)
@@ -153,6 +157,29 @@ namespace ActCreator.Controller
 		public void CreateFile()
 		{
 			model.CreateFile();
+		}
+
+		public bool HaveUnsavedChangesAtAll()
+		{
+			if (HaveUnsavedChanges)
+				return true;
+
+			foreach (ShortBackDataController backDataController in BackDataControllers)
+			{
+				if (backDataController.HaveUnsavedChanges)
+					return true;
+			}
+			return false;
+		}
+
+		public void ResetHaveUnsavedChanges()
+		{
+			HaveUnsavedChanges = false;
+
+			foreach (ShortBackDataController backDataController in BackDataControllers)
+			{
+				backDataController.HaveUnsavedChanges = false;
+			}
 		}
 	}
 }

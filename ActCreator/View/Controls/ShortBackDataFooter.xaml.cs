@@ -58,14 +58,16 @@ namespace ActCreator.View.Controls
 			onCleared += action;
 		}
 
-		public void AddLoadedBackData(ShortBackDataController controller)
+		public ShortBackData AddLoadedBackData(ShortBackDataController controller)
 		{
 			if (Data != null)
 			{
 				ShortBackData backData = new ShortBackData() { Controller = controller };
 				AddBackData(backData);
 				backData.SetDataFromController();
+				return backData;
 			}
+			return null;
 		}
 
 		private void AddBtnClick(object sender, RoutedEventArgs e)
