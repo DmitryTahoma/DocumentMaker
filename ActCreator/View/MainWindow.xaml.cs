@@ -150,6 +150,9 @@ namespace ActCreator
 				{
 					OpenFile(controller.GetOpenLaterFile());
 				}
+				controller.IsLoadingLastSession = true;
+				SetDataFromController();
+				controller.IsLoadingLastSession = false;
 				ResetHaveUnsavedChanges();
 				UpdateTitle();
 				UpdateFileContentVisibility();
@@ -248,6 +251,7 @@ namespace ActCreator
 		private void CreateFileClick(object sender, RoutedEventArgs e)
 		{
 			controller.CreateFile(); 
+			UpdateDataTableVisibility();
 			ResetHaveUnsavedChanges();
 			UpdateTitle();
 			UpdateFileContentVisibility();
