@@ -66,7 +66,7 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
-                <RowDefinition x:Name="ContentRow" />
+                <RowDefinition />
             </Grid.RowDefinitions>
 
             <Menu>
@@ -180,14 +180,17 @@
 
             <Button
                 Grid.Row="3"
-                Height="{Binding ElementName=ContentRow, Path=Height}"
+                Height="{Binding ElementName=FileContentGrid, Path=Height}"
                 Click="OpenFileClick"
                 Content="Відкрити файл"
                 FontSize="25"
                 Style="{StaticResource MaterialDesignOutlinedDarkButton}"
                 Visibility="{Binding ElementName=WindowContext, Path=ButtonOpenContentVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <Grid Grid.Row="3" Visibility="{Binding ElementName=WindowContext, Path=ContentVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <Grid
+                x:Name="FileContentGrid"
+                Grid.Row="3"
+                Visibility="{Binding ElementName=WindowContext, Path=ContentVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="5*" />
