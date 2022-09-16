@@ -53,7 +53,7 @@
         </materialDesign:DialogHost.DialogContent>
         <!--  START OF YOUR CONTEXT  -->
 
-        <Grid x:Name="FileContentGrid">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition />
@@ -101,7 +101,10 @@
                 Style="{StaticResource MaterialDesignOutlinedDarkButton}"
                 Visibility="{Binding ElementName=WindowContext, Path=CreateFileButtonVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <Grid Grid.Row="1" Visibility="{Binding ElementName=WindowContext, Path=FileContentVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <Grid
+                x:Name="FileContentGrid"
+                Grid.Row="1"
+                Visibility="{Binding ElementName=WindowContext, Path=FileContentVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition />
