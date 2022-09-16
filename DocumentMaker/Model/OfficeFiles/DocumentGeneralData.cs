@@ -45,8 +45,8 @@ namespace DocumentMaker.Model.OfficeFiles
 			{
 				case DocumentTemplateType.Scripter: AddictionInfo = "Мова програмування С++, скриптувальна мова"; break;
 				case DocumentTemplateType.Cutter: AddictionInfo = "Використання графічного пакету Autodesk 3ds Max Commercial New Single-user ELD Annual Subscription Використання графічного пакету Photoshop CC ALL Multiple Platforms Multi European Languages Licensing Subscription."; break;
-				case DocumentTemplateType.Painter: AddictionInfo = "Використання графічного пакету Autodesk 3ds Max  Commercial New Single-user ELD Annual Subscription"; break;
-				case DocumentTemplateType.Modeller: AddictionInfo = "Використання графічного пакету Photoshop CC ALL Multiple Platforms Multi European Languages Licensing Subscription"; break;
+				case DocumentTemplateType.Painter: AddictionInfo = "Використання графічного пакету Photoshop CC ALL Multiple Platforms Multi European Languages Licensing Subscription"; break;
+				case DocumentTemplateType.Modeller: AddictionInfo = "Використання графічного пакету Autodesk 3ds Max Commercial New Single-user ELD Annual Subscription"; break;
 			}
 		}
 
