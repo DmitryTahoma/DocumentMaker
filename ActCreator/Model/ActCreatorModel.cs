@@ -60,7 +60,7 @@ namespace ActCreator.Model
 		public IList<GameObject> GameNameList => gameNameList;
 		public bool IsNewFile => openedFileName == newFileName;
 
-		[IsNotDmxContent]
+		[IsNotSavingContent]
 		public bool HaveUnsavedChanges { get; set; }
 
 		public void Save(string path, IEnumerable<ShortBackDataModel> backModels)

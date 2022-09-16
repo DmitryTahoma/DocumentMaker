@@ -62,6 +62,7 @@ namespace Dml.Model.Session
 			{
 				if (prop.CanWrite
 					&& (prop.SetMethod.Attributes & MethodAttributes.Public) == MethodAttributes.Public
+					&& Attribute.GetCustomAttribute(prop, typeof(IsNotSavingContentAttribute)) == null
 					&& (!isOnlyDmxContent || (Attribute.GetCustomAttribute(prop, typeof(IsNotDmxContentAttribute)) == null)))
 				{
 					object value = prop.GetValue(obj);

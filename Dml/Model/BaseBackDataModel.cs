@@ -43,7 +43,7 @@ namespace Dml.Model
 		public IList<BackDataType> BackDataTypesList => dataTypesList;
 		public bool IsActionsStackingEnabled => actionsStack?.ActionsStackingEnabled ?? false;
 
-		[IsNotDmxContent]
+		[IsNotSavingContent]
 		public bool HaveUnsavedChanges { get; set; }
 
 		public virtual void SetActionsStack(IUndoRedoActionsStack actionsStack)

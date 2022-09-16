@@ -71,6 +71,7 @@
     <Compile Include="Model\Back\BackType.cs" />
     <Compile Include="Model\Files\DmxFile.cs" />
     <Compile Include="Model\Session\Attributes\IsNotDmxContentAttribute.cs" />
+    <Compile Include="Model\Session\Attributes\IsNotSavingContentAttribute.cs" />
     <Compile Include="Model\Session\XmlConfNames.cs" />
     <Compile Include="Model\Session\XmlLoader.cs" />
     <Compile Include="Model\Session\XmlSaver.cs" />

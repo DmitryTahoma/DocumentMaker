@@ -109,7 +109,7 @@ namespace DocumentMaker.Model
 		public bool CanRedo => actionsStack.CanRedo;
 		public bool CanUndo => actionsStack.CanUndo;
 
-		[IsNotDmxContent]
+		[IsNotSavingContent]
 		public bool HaveUnsavedChanges { get; set; }
 
 		public void Save(string path, IEnumerable<FullBackDataModel> backModels)
