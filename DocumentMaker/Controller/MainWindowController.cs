@@ -53,6 +53,7 @@ namespace DocumentMaker.Controller
 
 		public string CorrectSupportWindow_NumberText { get => model.CorrectSupportWindow_NumberText; set => model.CorrectSupportWindow_NumberText = value; }
 		public bool CorrectSupportWindow_TakeSumFromDevelopment { get => model.CorrectSupportWindow_TakeSumFromDevelopment; set => model.CorrectSupportWindow_TakeSumFromDevelopment = value; }
+		public bool CorrectSupportDialog_IsCreateNewWorks { get => model.CorrectSupportDialog_IsCreateNewWorks; set => model.CorrectSupportDialog_IsCreateNewWorks = value; }
 
 		#endregion
 

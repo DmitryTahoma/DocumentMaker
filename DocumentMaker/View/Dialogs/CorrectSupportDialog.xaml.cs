@@ -24,6 +24,7 @@ namespace DocumentMaker.View.Dialogs
 
 		public bool IsCorrection { get; private set; }
 		public string NumberText { get; set; }
+		public bool IsCreateNewWorks { get; set; }
 		public bool TakeSumFromDevelopment { get; set; }
 
 		private void ControlKeyDown(object sender, KeyEventArgs e)

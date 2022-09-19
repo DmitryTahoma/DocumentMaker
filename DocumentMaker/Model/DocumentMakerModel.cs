@@ -77,6 +77,8 @@ namespace DocumentMaker.Model
 		public string CorrectSupportWindow_NumberText { get; set; } = "2100";
 		[IsNotDmxContent]
 		public bool CorrectSupportWindow_TakeSumFromDevelopment { get; set; } = false;
+		[IsNotDmxContent]
+		public bool CorrectSupportDialog_IsCreateNewWorks { get; set; } = false;
 
 		#endregion
 

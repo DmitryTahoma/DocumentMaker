@@ -821,12 +821,14 @@ namespace DocumentMaker
 			CorrectSupportDialog dialog = new CorrectSupportDialog
 			{
 				NumberText = controller.CorrectSupportWindow_NumberText,
-				TakeSumFromDevelopment = controller.CorrectSupportWindow_TakeSumFromDevelopment
+				TakeSumFromDevelopment = controller.CorrectSupportWindow_TakeSumFromDevelopment,
+				IsCreateNewWorks = controller.CorrectSupportDialog_IsCreateNewWorks,
 			};
 			await DialogHost.Show(dialog);
 
 			controller.CorrectSupportWindow_NumberText = dialog.NumberText;
 			controller.CorrectSupportWindow_TakeSumFromDevelopment = dialog.TakeSumFromDevelopment;
+			controller.CorrectSupportDialog_IsCreateNewWorks = dialog.IsCreateNewWorks;
 
 			if (dialog.IsCorrection && int.TryParse(dialog.NumberText, out int sum))
 			{
