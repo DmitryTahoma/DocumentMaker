@@ -137,7 +137,8 @@
                 Padding="7"
                 AcceptsReturn="True"
                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                Text="{Binding ElementName=ShortBackDataContext, Path=OtherText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                Text="{Binding ElementName=ShortBackDataContext, Path=OtherText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                TextWrapping="Wrap" />
         </Grid>
 
         <TextBox
