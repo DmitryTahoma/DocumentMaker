@@ -57,6 +57,7 @@ namespace ActCreator
 				HaveUnsavedChanges = true;
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
+				x.SetBackDataTypesList(controller.CurrentBackDataTypesList);
 				x.SetGameNameList(controller.GameNameList);
 				x.PropertyChanged += OnBackDataPropertyChanged;
 			});
@@ -326,6 +327,7 @@ namespace ActCreator
 				if (control is ShortBackData backData)
 				{
 					backData.SetViewByTemplate(controller.TemplateType);
+					backData.SetBackDataTypesList(controller.CurrentBackDataTypesList);
 					backData.SetGameNameList(controller.GameNameList);
 				}
 			}

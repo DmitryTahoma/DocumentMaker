@@ -10,7 +10,7 @@ namespace DocumentMaker.Model
 	{
 		private readonly ObservableRangeCollection<WorkObject> workTypesList, reworkWorkTypesList;
 
-		public FullDocumentTemplate() : base()
+		public FullDocumentTemplate(string name, DocumentTemplateType type) : base(name, type)
 		{
 			workTypesList = new ObservableRangeCollection<WorkObject>();
 			reworkWorkTypesList = new ObservableRangeCollection<WorkObject>();

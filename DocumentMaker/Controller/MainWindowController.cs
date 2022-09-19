@@ -81,6 +81,7 @@ namespace DocumentMaker.Controller
 		public bool HasNoMovedFiles => model.HasNoMovedFiles;
 		public IList<WorkObject> CurrentWorkTypesList => DocumentTemplatesList.FirstOrDefault(x => x.Type == TemplateType)?.WorkTypesList;
 		public IList<WorkObject> CurrentReworkWorkTypesList => DocumentTemplatesList.FirstOrDefault(x => x.Type == TemplateType)?.ReworkWorkTypesList;
+		public IList<BackDataType> CurrentBackDataTypesList => DocumentTemplatesList.FirstOrDefault(x => x.Type == TemplateType)?.DataTypesList;
 		public IList<GameObject> GameNameList => model.GameNameList;
 		public bool IsActionsStackingEnabled => model.IsActionsStackingEnabled;
 		public bool CanRedo => model.CanRedo;

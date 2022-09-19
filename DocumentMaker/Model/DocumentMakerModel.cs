@@ -38,10 +38,10 @@ namespace DocumentMaker.Model
 			exporter = new OfficeExporter();
 			documentTemplates = new ObservableCollection<FullDocumentTemplate>
 			{
-				new FullDocumentTemplate { Name = "Скриптувальник", Type = DocumentTemplateType.Scripter, },
-				new FullDocumentTemplate { Name = "Технічний дизайнер", Type = DocumentTemplateType.Cutter, },
-				new FullDocumentTemplate { Name = "Художник", Type = DocumentTemplateType.Painter, },
-				new FullDocumentTemplate { Name = "Моделлер", Type = DocumentTemplateType.Modeller, },
+				new FullDocumentTemplate("Скриптувальник", DocumentTemplateType.Scripter),
+				new FullDocumentTemplate("Технічний дизайнер", DocumentTemplateType.Cutter),
+				new FullDocumentTemplate("Художник", DocumentTemplateType.Painter),
+				new FullDocumentTemplate("Моделлер", DocumentTemplateType.Modeller),
 			};
 			humanFullNameList = new ObservableRangeCollection<HumanData>();
 			openedFilesList = new ObservableRangeCollection<DmxFile>();

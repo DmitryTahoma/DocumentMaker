@@ -68,10 +68,7 @@
                 SelectionChanged="TypeChanged"
                 Style="{StaticResource MaterialDesignOutlinedComboBox}" />
 
-            <Grid
-                x:Name="GridWithGeneralData"
-                Grid.Column="2"
-                IsEnabled="{Binding ElementName=FullBackDataContext, Path=IsNotOtherType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <Grid x:Name="GridWithGeneralData" Grid.Column="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="ColWithWorkTypeComboBox" Width="1.5*" />
                     <ColumnDefinition Width="65" />
@@ -153,7 +150,6 @@
                 Margin="1.5"
                 Padding="7"
                 AcceptsReturn="True"
-                IsEnabled="{Binding ElementName=FullBackDataContext, Path=IsNotOtherType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 MinLines="1"
                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
                 Text="{Binding ElementName=FullBackDataContext, Path=OtherText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

@@ -1,30 +1,18 @@
 ﻿using Dml.Model.Back;
 using Dml.Model.Session.Attributes;
 using Dml.UndoRedo;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Dml.Model
 {
 	public abstract class BaseBackDataModel
 	{
-		private readonly ObservableCollection<BackDataType> dataTypesList;
+		private readonly ObservableRangeCollection<BackDataType> backDataTypesList;
 		private readonly ObservableRangeCollection<GameObject> gameNameList;
 		protected IUndoRedoActionsStack actionsStack = null;
 
 		public BaseBackDataModel()
 		{
-			dataTypesList = new ObservableCollection<BackDataType>
-			{
-				new BackDataType { Name = "Бек", Type = BackType.Back },
-				new BackDataType { Name = "Регіони", Type = BackType.Regions },
-				new BackDataType { Name = "Діалог", Type = BackType.Dialog },
-				new BackDataType { Name = "Мініігра", Type = BackType.Mg },
-				new BackDataType { Name = "Хог", Type = BackType.Hog },
-				new BackDataType { Name = "Хог регіони", Type = BackType.HogRegions },
-				new BackDataType { Name = "Крафт", Type = BackType.Craft },
-				new BackDataType { Name = "Інше", Type = BackType.Other },
-			};
+			backDataTypesList = new ObservableRangeCollection<BackDataType>();
 			gameNameList = new ObservableRangeCollection<GameObject>();
 		}
 
@@ -40,7 +28,7 @@ namespace Dml.Model
 		public bool IsSketch { get; set; }
 		public string SpentTimeText { get; set; }
 		public string OtherText { get; set; }
-		public IList<BackDataType> BackDataTypesList => dataTypesList;
+		public ObservableRangeCollection<BackDataType> BackDataTypesList => backDataTypesList;
 		public bool IsActionsStackingEnabled => actionsStack?.ActionsStackingEnabled ?? false;
 
 		[IsNotSavingContent]

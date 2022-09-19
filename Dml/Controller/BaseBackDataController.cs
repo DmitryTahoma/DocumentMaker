@@ -2,7 +2,6 @@
 using Dml.Model;
 using Dml.Model.Back;
 using Dml.UndoRedo;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Dml.Controller
@@ -30,7 +29,7 @@ namespace Dml.Controller
 		public bool IsSketch { get => model.IsSketch; set => model.IsSketch = value; }
 		public string SpentTimeText { get => model.SpentTimeText; set => model.SpentTimeText = value; }
 		public string OtherText { get => model.OtherText; set => model.OtherText = value; }
-		public IList<BackDataType> BackDataTypesList => model.BackDataTypesList;
+		public ObservableRangeCollection<BackDataType> BackDataTypesList => model.BackDataTypesList;
 		public bool IsActionsStackingEnabled => model.IsActionsStackingEnabled;
 		public bool HaveUnsavedChanges { get => model.HaveUnsavedChanges; set => model.HaveUnsavedChanges = value; }
 

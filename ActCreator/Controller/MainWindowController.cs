@@ -48,6 +48,7 @@ namespace ActCreator.Controller
 		public List<ShortBackDataController> BackDataControllers { get; set; }
 		public IList<DocumentTemplate> DocumentTemplatesList => model.DocumentTemplatesList;
 		public IList<string> HumanFullNameList => model.HumanFullNameList;
+		public IList<BackDataType> CurrentBackDataTypesList => DocumentTemplatesList.FirstOrDefault(x => x.Type == TemplateType)?.DataTypesList;
 		public IList<GameObject> GameNameList => model.GameNameList;
 		public bool HaveOpenLaterFiles => openLaterFilename != null;
 		public string OpenedFile => model.OpenedFileName;

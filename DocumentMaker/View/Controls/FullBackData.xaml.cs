@@ -32,8 +32,6 @@ namespace DocumentMaker.View.Controls
 		public static readonly DependencyProperty GameNameProperty;
 		public static readonly DependencyProperty IsReworkProperty;
 		public static readonly DependencyProperty IsSketchProperty;
-		public static readonly DependencyProperty IsOtherTypeProperty;
-		public static readonly DependencyProperty IsNotOtherTypeProperty;
 		public static readonly DependencyProperty OtherTextProperty;
 		public static readonly DependencyProperty WeightTextProperty;
 		public static readonly DependencyProperty SumTextProperty;
@@ -51,8 +49,6 @@ namespace DocumentMaker.View.Controls
 			GameNameProperty = DependencyProperty.Register("GameName", typeof(string), typeof(FullBackDataController));
 			IsReworkProperty = DependencyProperty.Register("IsRework", typeof(bool), typeof(FullBackDataController));
 			IsSketchProperty = DependencyProperty.Register("IsSketch", typeof(bool), typeof(FullBackDataController));
-			IsOtherTypeProperty = DependencyProperty.Register("IsOtherType", typeof(bool), typeof(FullBackDataController));
-			IsNotOtherTypeProperty = DependencyProperty.Register("IsNotOtherType", typeof(bool), typeof(FullBackDataController));
 			OtherTextProperty = DependencyProperty.Register("OtherText", typeof(string), typeof(FullBackDataController));
 			WeightTextProperty = DependencyProperty.Register("WeightText", typeof(string), typeof(FullBackDataController));
 			SumTextProperty = DependencyProperty.Register("SumText", typeof(string), typeof(FullBackDataController));
@@ -194,18 +190,6 @@ namespace DocumentMaker.View.Controls
 				HaveUnsavedChanges = true;
 				controller.IsSketch = value;
 			}
-		}
-
-		public bool IsOtherType
-		{
-			get => (bool)GetValue(IsOtherTypeProperty);
-			set => SetValue(IsOtherTypeProperty, value);
-		}
-
-		public bool IsNotOtherType
-		{
-			get => (bool)GetValue(IsNotOtherTypeProperty);
-			set => SetValue(IsNotOtherTypeProperty, value);
 		}
 
 		public string OtherText
@@ -397,24 +381,23 @@ namespace DocumentMaker.View.Controls
 				BackNumberTextInput.Text = controller.BackNumberText;
 			}
 
-			IsOtherType = controller.Type == BackType.Other;
 			if (OtherTextInput != null)
 			{
-				OtherTextInput.Visibility = IsOtherType ? Visibility.Visible : Visibility.Collapsed;
+				OtherTextInput.Visibility = controller.Type == BackType.Other ? Visibility.Visible : Visibility.Collapsed;
 			}
-			IsNotOtherType = !IsOtherType;
+
 			if (GridWithGeneralData != null)
 			{
-				GridWithGeneralData.Visibility = IsOtherType ? Visibility.Hidden : Visibility.Visible;
+				GridWithGeneralData.Visibility = controller.Type == BackType.Other ? Visibility.Hidden : Visibility.Visible;
 			}
 
 			if (WorkTypeComboBox != null)
 			{
-				WorkTypeComboBox.Visibility = !controller.IsOtherType ? Visibility.Visible : Visibility.Collapsed;
+				WorkTypeComboBox.Visibility = controller.Type != BackType.Other ? Visibility.Visible : Visibility.Collapsed;
 			}
 			if (ColWithWorkTypeComboBox != null)
 			{
-				ColWithWorkTypeComboBox.Width = !controller.IsOtherType ? new GridLength(1.5, GridUnitType.Star) : GridLength.Auto;
+				ColWithWorkTypeComboBox.Width = controller.Type != BackType.Other ? new GridLength(1.5, GridUnitType.Star) : GridLength.Auto;
 			}
 		}
 
@@ -430,6 +413,18 @@ namespace DocumentMaker.View.Controls
 				IsSketchCheckBox.Visibility = Visibility.Collapsed;
 				IsSketchColumn.Width = GridLength.Auto;
 			}
+		}
+
+		public void SetBackDataTypesList(IList<BackDataType> backDataTypes)
+		{
+			BackType selectedType = controller.Type;
+			controller.BackDataTypesList.Clear();
+			if (backDataTypes != null)
+			{
+				controller.BackDataTypesList.AddRange(backDataTypes);
+			}
+			NotifyPropertyChanged(nameof(BackDataTypesList));
+			BackTypeComboBox.SelectedItem = BackDataTypesList.FirstOrDefault(x => x.Type == selectedType) ?? BackDataTypesList.FirstOrDefault();
 		}
 
 		public void SetWorkTypesList(IList<WorkObject> workObjects)

@@ -30,8 +30,6 @@ namespace ActCreator.View.Controls
 		public static readonly DependencyProperty IsReworkProperty;
 		public static readonly DependencyProperty IsSketchProperty;
 		public static readonly DependencyProperty TimeTextProperty;
-		public static readonly DependencyProperty IsOtherTypeProperty;
-		public static readonly DependencyProperty IsNotOtherTypeProperty;
 		public static readonly DependencyProperty OtherTextProperty;
 
 		static ShortBackData()
@@ -47,8 +45,6 @@ namespace ActCreator.View.Controls
 			IsReworkProperty = DependencyProperty.Register("IsRework", typeof(bool), typeof(ShortBackDataController));
 			IsSketchProperty = DependencyProperty.Register("IsSketch", typeof(bool), typeof(ShortBackDataController));
 			TimeTextProperty = DependencyProperty.Register("TimeText", typeof(string), typeof(ShortBackDataController));
-			IsOtherTypeProperty = DependencyProperty.Register("IsOtherType", typeof(bool), typeof(ShortBackDataController));
-			IsNotOtherTypeProperty = DependencyProperty.Register("IsNotOtherType", typeof(bool), typeof(ShortBackDataController));
 			OtherTextProperty = DependencyProperty.Register("OtherText", typeof(string), typeof(ShortBackDataController));
 		}
 
@@ -187,18 +183,6 @@ namespace ActCreator.View.Controls
 				controller.SpentTimeText = value;
 				NotifyPropertyChanged(nameof(TimeText));
 			}
-		}
-
-		public bool IsOtherType
-		{
-			get => (bool)GetValue(IsOtherTypeProperty);
-			set => SetValue(IsOtherTypeProperty, value);
-		}
-
-		public bool IsNotOtherType
-		{
-			get => (bool)GetValue(IsNotOtherTypeProperty);
-			set => SetValue(IsNotOtherTypeProperty, value);
 		}
 
 		public string OtherText
@@ -351,15 +335,13 @@ namespace ActCreator.View.Controls
 				BackNumberTextInput.Text = controller.BackNumberText;
 			}
 
-			IsOtherType = controller.Type == BackType.Other;
 			if (OtherTextInput != null)
 			{
-				OtherTextInput.Visibility = IsOtherType ? Visibility.Visible : Visibility.Collapsed;
+				OtherTextInput.Visibility = controller.Type == BackType.Other ? Visibility.Visible : Visibility.Collapsed;
 			}
-			IsNotOtherType = !IsOtherType;
 			if (GridWithGeneralData != null)
 			{
-				GridWithGeneralData.Visibility = IsOtherType ? Visibility.Hidden : Visibility.Visible;
+				GridWithGeneralData.Visibility = controller.Type == BackType.Other ? Visibility.Hidden : Visibility.Visible;
 			}
 		}
 
@@ -375,6 +357,18 @@ namespace ActCreator.View.Controls
 				IsSketchCheckBox.Visibility = Visibility.Collapsed;
 				IsSketchColumn.Width = GridLength.Auto;
 			}
+		}
+
+		public void SetBackDataTypesList(IList<BackDataType> backDataTypes)
+		{
+			BackType selectedType = controller.Type;
+			controller.BackDataTypesList.Clear();
+			if (backDataTypes != null)
+			{
+				controller.BackDataTypesList.AddRange(backDataTypes);
+			}
+			NotifyPropertyChanged(nameof(BackDataTypesList));
+			BackTypeComboBox.SelectedItem = BackDataTypesList.FirstOrDefault(x => x.Type == selectedType) ?? BackDataTypesList.FirstOrDefault();
 		}
 
 		public void SetGameNameList(IList<GameObject> gameObjects)

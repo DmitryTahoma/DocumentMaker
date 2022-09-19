@@ -134,6 +134,7 @@ namespace DocumentMaker
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
 				x.SetWorkTypesList(controller.CurrentWorkTypesList);
+				x.SetBackDataTypesList(controller.CurrentBackDataTypesList);
 				x.SetGameNameList(controller.GameNameList);
 				x.SubscribeSelectionChanged(() =>
 				{
@@ -184,6 +185,7 @@ namespace DocumentMaker
 				x.Controller.SetActionsStack(controller.GetActionsStack());
 				controller.BackDataControllers.Add(x.Controller);
 				x.SetViewByTemplate(controller.TemplateType);
+				x.SetBackDataTypesList(controller.CurrentBackDataTypesList);
 				x.SetWorkTypesList(controller.CurrentReworkWorkTypesList);
 				x.SetGameNameList(controller.GameNameList);
 				x.SubscribeSelectionChanged(() =>
@@ -1325,6 +1327,7 @@ namespace DocumentMaker
 					backData.SetViewByTemplate(controller.TemplateType);
 					backData.SetWorkTypesList(currentWorkTypesList);
 					backData.SetGameNameList(controller.GameNameList);
+					backData.SetBackDataTypesList(controller.CurrentBackDataTypesList);
 				}
 			}
 			foreach (UIElement control in ReworkBacksData.Children)
@@ -1334,6 +1337,7 @@ namespace DocumentMaker
 					backData.SetViewByTemplate(controller.TemplateType);
 					backData.SetWorkTypesList(currentReworkWorkTypesList);
 					backData.SetGameNameList(controller.GameNameList);
+					backData.SetBackDataTypesList(controller.CurrentBackDataTypesList);
 				}
 			}
 			foreach (UIElement control in OtherBacksData.Children)
@@ -1342,6 +1346,7 @@ namespace DocumentMaker
 				{
 					backData.SetViewByTemplate(controller.TemplateType);
 					backData.SetGameNameList(controller.GameNameList);
+					backData.SetBackDataTypesList(controller.CurrentBackDataTypesList);
 				}
 			}
 

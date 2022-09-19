@@ -25,10 +25,10 @@ namespace ActCreator.Model
 		{
 			documentTemplates = new ObservableCollection<DocumentTemplate>
 			{
-				new DocumentTemplate { Name = "Скриптувальник", Type = DocumentTemplateType.Scripter, },
-				new DocumentTemplate { Name = "Технічний дизайнер", Type = DocumentTemplateType.Cutter, },
-				new DocumentTemplate { Name = "Художник", Type = DocumentTemplateType.Painter, },
-				new DocumentTemplate { Name = "Моделлер", Type = DocumentTemplateType.Modeller, },
+				new DocumentTemplate("Скриптувальник", DocumentTemplateType.Scripter),
+				new DocumentTemplate("Технічний дизайнер", DocumentTemplateType.Cutter),
+				new DocumentTemplate("Художник", DocumentTemplateType.Painter),
+				new DocumentTemplate("Моделлер", DocumentTemplateType.Modeller),
 			};
 			humanFullNameList = new ObservableRangeCollection<string>();
 			gameNameList = new List<GameObject>();
