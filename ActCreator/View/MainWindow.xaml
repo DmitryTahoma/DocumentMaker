@@ -90,6 +90,16 @@
                         Icon="{materialDesign:PackIcon Kind=SortVariantRemove}"
                         InputGestureText="Alt+Delete" />
                 </MenuItem>
+                <MenuItem Header="Посилання" Icon="{materialDesign:PackIcon Kind=LinkVariant}">
+                    <MenuItem
+                        Click="ShowInstruction"
+                        Header="Інструкція"
+                        Icon="{materialDesign:PackIcon Kind=LinkVariant}" />
+                    <MenuItem
+                        Click="ShowBackNames"
+                        Header="Назви фонів"
+                        Icon="{materialDesign:PackIcon Kind=LinkVariant}" />
+                </MenuItem>
             </Menu>
 
             <Button

@@ -309,6 +309,16 @@ namespace ActCreator
 			}
 		}
 
+		private void ShowInstruction(object sender, RoutedEventArgs e)
+		{
+			Process.Start("https://docs.google.com/document/d/1zyoLFhsY6qsM4e9WHDbU-I-P7sIQVZ5czkKlLs9ef40/edit?usp=sharing");
+		}
+
+		private void ShowBackNames(object sender, RoutedEventArgs e)
+		{
+			Process.Start("https://docs.google.com/spreadsheets/d/1GnTgfIKsk2a0qClfSE7wy2WGLpXWxuuTscPyuCt8Bi0/edit?usp=sharing");
+		}
+
 		private void UpdateViewBackData()
 		{
 			foreach (UIElement control in BacksData.Children)
