@@ -7,5 +7,11 @@
 		Cutter,
 		Painter,
 		Modeller,
+		Tester,
+		Programmer,
+		Soundman,
+		Animator,
+		Translator,
+		Support,
 	}
 }

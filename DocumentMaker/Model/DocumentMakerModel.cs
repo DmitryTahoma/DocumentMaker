@@ -42,6 +42,12 @@ namespace DocumentMaker.Model
 				new FullDocumentTemplate("Технічний дизайнер", DocumentTemplateType.Cutter),
 				new FullDocumentTemplate("Художник", DocumentTemplateType.Painter),
 				new FullDocumentTemplate("Моделлер", DocumentTemplateType.Modeller),
+				new FullDocumentTemplate("Тестувальник", DocumentTemplateType.Tester),
+				new FullDocumentTemplate("Програміст", DocumentTemplateType.Programmer),
+				new FullDocumentTemplate("Звукорежисер", DocumentTemplateType.Soundman),
+				new FullDocumentTemplate("Аніматор", DocumentTemplateType.Animator),
+				new FullDocumentTemplate("Перекладач", DocumentTemplateType.Translator),
+				new FullDocumentTemplate("Підтримка", DocumentTemplateType.Support),
 			};
 			humanFullNameList = new ObservableRangeCollection<HumanData>();
 			openedFilesList = new ObservableRangeCollection<DmxFile>();

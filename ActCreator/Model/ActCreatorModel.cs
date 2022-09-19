@@ -29,6 +29,12 @@ namespace ActCreator.Model
 				new DocumentTemplate("Технічний дизайнер", DocumentTemplateType.Cutter),
 				new DocumentTemplate("Художник", DocumentTemplateType.Painter),
 				new DocumentTemplate("Моделлер", DocumentTemplateType.Modeller),
+				new DocumentTemplate("Тестувальник", DocumentTemplateType.Tester),
+				new DocumentTemplate("Програміст", DocumentTemplateType.Programmer),
+				new DocumentTemplate("Звукорежисер", DocumentTemplateType.Soundman),
+				new DocumentTemplate("Аніматор", DocumentTemplateType.Animator),
+				new DocumentTemplate("Перекладач", DocumentTemplateType.Translator),
+				new DocumentTemplate("Підтримка", DocumentTemplateType.Support),
 			};
 			humanFullNameList = new ObservableRangeCollection<string>();
 			gameNameList = new List<GameObject>();
