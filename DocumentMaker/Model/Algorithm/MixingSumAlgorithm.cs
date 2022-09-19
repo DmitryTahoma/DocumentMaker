@@ -145,11 +145,11 @@ namespace DocumentMaker.Model.Algorithm
 			}
 
 			// Пересчет одинаковых сумм
-			//if (_isRemoveIdenticalNumbers)
-			//{
-			//	RemoveIdenticalNumbers(ref _rozrobka);
-			//	RemoveIdenticalNumbers(ref _pidtrimka);
-			//}
+			if (_isRemoveIdenticalNumbers)
+			{
+				RemoveIdenticalNumbers(ref _rozrobka);
+				RemoveIdenticalNumbers(ref _pidtrimka);
+			}
 		}
 
 		/// <summary>
@@ -159,7 +159,8 @@ namespace DocumentMaker.Model.Algorithm
 		/// <param name="_isTossInRozrobka">Чтобы в конце сортировки, всё что лишнее перекидыввалось в розробку</param>
 		/// <param name="_isRemoveIdenticalNumbers">Чтобы суммы пунктов не повторялись</param>
 		/// <param name="_isAddNewPidtrimka">Чтобы излишки не перекидывались в розробку, а добавлялся пункт в дообробке</param>
-		public static void LessNumber(ref List<int> _rozrobka, ref List<int> _pidtrimka, int _maxNumber, bool _isTossInRozrobka, bool _isRemoveIdenticalNumbers, bool _isAddNewPidtrimka)
+		/// <param name="_countEnableWorks">Максимальное количество добавлений новых пунктов</param>
+		public static void LessNumber(ref List<int> _rozrobka, ref List<int> _pidtrimka, int _maxNumber, bool _isTossInRozrobka, bool _isRemoveIdenticalNumbers, bool _isAddNewPidtrimka, int _countEnableWorks)
 		{
 			//ПЕРЕКИДЫВАЕТ суммы пидтрымки чтобы они были МЕНЬШЕ чем _maxNumber
 			Random rnd = new Random();
@@ -251,11 +252,12 @@ namespace DocumentMaker.Model.Algorithm
 
 					if (!isFlip)
 					{
-						if (_isAddNewPidtrimka)
+						if (_isAddNewPidtrimka && _countEnableWorks > 0)
 						{
 							// Добавляет пустой пункт с 0
 							_pidtrimka.Add(0);
 							isFlip = true;
+							--_countEnableWorks;
 						}
 						else if (minIndexNumberRozrobka != -1 && _isTossInRozrobka)
 						{
@@ -292,11 +294,11 @@ namespace DocumentMaker.Model.Algorithm
 			}
 
 			// Пересчет одинаковых сумм
-			//if (_isRemoveIdenticalNumbers)
-			//{
-			//	RemoveIdenticalNumbers(ref _rozrobka);
-			//	RemoveIdenticalNumbers(ref _pidtrimka);
-			//}
+			if (_isRemoveIdenticalNumbers)
+			{
+				RemoveIdenticalNumbers(ref _rozrobka);
+				RemoveIdenticalNumbers(ref _pidtrimka);
+			}
 		}
 
 		/// <summary>

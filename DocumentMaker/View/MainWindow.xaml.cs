@@ -834,7 +834,7 @@ namespace DocumentMaker
 			{
 				bool isNeedUpdateSum = controller.NeedUpdateSum;
 				DisableUpdatingSum();
-				IEnumerable<int> resultSums = controller.CorrectSupport(sum, dialog.TakeSumFromDevelopment);
+				IEnumerable<int> resultSums = controller.CorrectSupport(sum, dialog.TakeSumFromDevelopment, dialog.IsCreateNewWorks, out List<KeyValuePair<FullBackDataController, int>> newControllers);
 				IEnumerator<FullBackDataController> backDataControllersEnum = controller.BackDataControllers.GetEnumerator();
 				IEnumerator<int> resultSumsEnum = resultSums.GetEnumerator();
 				List<FullBackData> allFullBackDatas = new List<FullBackData>(GetAllFullBacksData());
@@ -861,6 +861,17 @@ namespace DocumentMaker
 						}
 						current.SumTextInput.Text = resultSumsEnum.Current.ToString();
 					}
+				}
+				if (newControllers.Count > 0)
+				{
+					IEnumerable<FullBackData> added = AddNewSupport(newControllers.Select(x => x.Key));
+					IEnumerator<KeyValuePair<FullBackDataController, int>> newControllersEnum = newControllers.GetEnumerator();
+					IEnumerator<FullBackData> addedEnum = added.GetEnumerator();
+					while (addedEnum.MoveNext() && newControllersEnum.MoveNext())
+					{
+						addedEnum.Current.SetSumTextChangesWithLink(newControllersEnum.Current.Value.ToString());
+					}
+					UpdateViewBackData();
 				}
 				controller.EnableActionsStacking();
 
@@ -1458,6 +1469,37 @@ namespace DocumentMaker
 			OtherDataFooter.UpdateBackDataIds();
 
 			if (actionsStackingEnable) controller.EnableActionsStacking();
+		}
+
+		private IEnumerable<FullBackData> AddNewSupport(IEnumerable<FullBackDataController> controllers)
+		{
+			bool actionsStackingEnable = controller.IsActionsStackingEnabled;
+			controller.DisableActionsStacking();
+
+			List<FullBackData> addedNewSupport = new List<FullBackData>();
+			foreach (FullBackDataController backDataController in controllers)
+			{
+				backDataController.SetActionsStack(controller.GetActionsStack());
+				if (!backDataController.IsOtherType && backDataController.IsRework)
+				{
+					controller.BackDataControllers.Add(backDataController);
+					FullBackData backData = ReworkDataFooter.AddLoadedBackData(backDataController);
+					if (backData != null)
+					{
+						backData.SubscribeSelectionChanged(() =>
+						{
+							ReworkDataHeader.UpdateIsCheckedState();
+							UpdateActSumSelected();
+						});
+						addedNewSupport.Add(backData);
+					}
+				}
+			}
+			ReworkDataFooter.UpdateBackDataIds();
+
+			if (actionsStackingEnable) controller.EnableActionsStacking();
+
+			return addedNewSupport;
 		}
 
 		private void SetSelectedFile(string filename)

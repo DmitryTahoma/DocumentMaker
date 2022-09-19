@@ -338,9 +338,11 @@ namespace DocumentMaker.Controller
 			return model.CorrectDevelopment(minSum, takeSumFromSupport, GetModels());
 		}
 
-		public IEnumerable<int> CorrectSupport(int minSum, bool takeSumFromDevelopment)
+		public IEnumerable<int> CorrectSupport(int minSum, bool takeSumFromDevelopment, bool isCreateNewWorks, out List<KeyValuePair<FullBackDataController, int>> newControllers)
 		{
-			return model.CorrectSupport(minSum, takeSumFromDevelopment, GetModels());
+			var res = model.CorrectSupport(minSum, takeSumFromDevelopment, isCreateNewWorks, GetModels(), out List<KeyValuePair<FullBackDataModel, int>> newModels);
+			newControllers = new List<KeyValuePair<FullBackDataController, int>>(newModels.Select(x => new KeyValuePair<FullBackDataController, int>(new FullBackDataController(x.Key), x.Value)));
+			return res;
 		}
 
 		public void RandomizeWorkTypes(IEnumerable<FullBackDataController> checkedBackData)

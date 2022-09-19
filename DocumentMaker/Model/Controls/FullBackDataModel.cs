@@ -18,6 +18,28 @@ namespace DocumentMaker.Model.Controls
 			WorkTypesList = new ObservableRangeCollection<WorkObject>();
 		}
 
+		public FullBackDataModel(FullBackDataModel obj, WorkObject work) : this()
+		{
+			Id = obj.Id;
+			Type = obj.Type;
+			EpisodeNumberText = obj.EpisodeNumberText;
+			BackNumberText = obj.BackNumberText;
+			BackName = obj.BackName;
+			BackCountRegionsText = obj.BackCountRegionsText;
+			GameName = obj.GameName;
+			IsRework = obj.IsRework;
+			IsSketch = obj.IsSketch;
+			SpentTimeText = obj.SpentTimeText;
+			OtherText = obj.OtherText;
+			actionsStack = obj.actionsStack;
+			HaveUnsavedChanges = true;
+			WeightText = obj.WeightText;
+			Weight = obj.Weight;
+			sumText = "0";
+			WorkObjectId = work.Id;
+			IsOtherType = obj.IsOtherType;
+		}
+
 		public string WeightText { get; set; }
 		public double Weight { get; set; }
 		public string SumText

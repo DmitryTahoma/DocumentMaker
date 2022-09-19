@@ -6,12 +6,14 @@ using Dml.Model.Session.Attributes;
 using Dml.Model.Template;
 using Dml.UndoRedo;
 using DocumentMaker.Model.Algorithm;
+using DocumentMaker.Model.Back;
 using DocumentMaker.Model.Controls;
 using DocumentMaker.Model.Files;
 using DocumentMaker.Model.OfficeFiles;
 using DocumentMaker.Model.OfficeFiles.Human;
 using DocumentMaker.Model.Session;
 using DocumentMaker.Resources;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -405,7 +407,7 @@ namespace DocumentMaker.Model
 			foreach (FullBackDataModel model in models)
 				(model.IsRework ? supportInput : developmentInput).Add(int.TryParse(model.SumText, out int s) ? s : 0);
 
-			MixingSumAlgorithm.MoreNumber(ref developmentInput, ref supportInput, minSum, takeSumFromSupport, true, false);
+			MixingSumAlgorithm.MoreNumber(ref developmentInput, ref supportInput, minSum, takeSumFromSupport, false, false);
 
 			List<int> result = new List<int>();
 			IEnumerator<int> developmentInputEnum = developmentInput.GetEnumerator();
@@ -421,7 +423,7 @@ namespace DocumentMaker.Model
 			return result;
 		}
 
-		public IEnumerable<int> CorrectSupport(int minSum, bool takeSumFromSupport, List<FullBackDataModel> models)
+		public IEnumerable<int> CorrectSupport(int minSum, bool takeSumFromSupport, bool isCreateNewWorks, List<FullBackDataModel> models, out List<KeyValuePair<FullBackDataModel, int>> newModels)
 		{
 			List<int> developmentInput = new List<int>();
 			List<int> supportInput = new List<int>();
@@ -429,7 +431,19 @@ namespace DocumentMaker.Model
 			foreach (FullBackDataModel model in models)
 				(model.IsRework ? supportInput : developmentInput).Add(int.TryParse(model.SumText, out int s) ? s : 0);
 
-			MixingSumAlgorithm.LessNumber(ref developmentInput, ref supportInput, minSum, takeSumFromSupport, true, false);
+			List<FullBackDataModel> enableWorks = new List<FullBackDataModel>();
+			if (isCreateNewWorks)
+			{
+				enableWorks.AddRange(GetEnableModelsWithWork(models));
+			}
+			int supportCount = supportInput.Count;
+			MixingSumAlgorithm.LessNumber(ref developmentInput, ref supportInput, minSum, takeSumFromSupport, false, isCreateNewWorks, enableWorks.Count);
+			List<int> newSupport = new List<int>();
+			while (supportInput.Count > supportCount)
+			{
+				newSupport.Insert(0, supportInput[supportInput.Count - 1]);
+				supportInput.RemoveAt(supportInput.Count - 1);
+			}
 
 			List<int> result = new List<int>();
 			IEnumerator<int> developmentInputEnum = developmentInput.GetEnumerator();
@@ -442,7 +456,51 @@ namespace DocumentMaker.Model
 				result.Add(enumerator.Current);
 				enumerator.MoveNext();
 			}
+
+			newModels = new List<KeyValuePair<FullBackDataModel, int>>();
+			if (newSupport.Count > 0)
+			{
+				Random random = new Random();
+
+				List<int>.Enumerator newSupportEnum = newSupport.GetEnumerator();
+				while (newSupportEnum.MoveNext())
+				{
+					int index = random.Next(enableWorks.Count);
+
+					FullBackDataModel model = enableWorks[index];
+					enableWorks.RemoveAt(index);
+					newModels.Add(new KeyValuePair<FullBackDataModel, int>(model, newSupportEnum.Current));
+				}
+			}
+
 			return result;
+		}
+
+		private IEnumerable<FullBackDataModel> GetEnableModelsWithWork(List<FullBackDataModel> models)
+		{
+			foreach (FullBackDataModel model in models)
+			{
+				IEnumerable<WorkObject> enableWorks = GetEnableWorks(model, models);
+				foreach (WorkObject workObject in enableWorks)
+				{
+					yield return new FullBackDataModel(model, workObject);
+				}
+			}
+		}
+
+		private IEnumerable<WorkObject> GetEnableWorks(FullBackDataModel current, List<FullBackDataModel> models)
+		{
+			List<WorkObject> res = new List<WorkObject>(current.WorkTypesList);
+
+			foreach (FullBackDataModel model in models)
+			{
+				if (model == current || current.EqualsWithoutWork(model, TemplateType))
+				{
+					res.RemoveAll(x => x.Id == model.WorkObjectId);
+				}
+			}
+
+			return res;
 		}
 
 		public void RandomizeWorkTypes(IEnumerable<KeyValuePair<bool, FullBackDataModel>> backDatas)
