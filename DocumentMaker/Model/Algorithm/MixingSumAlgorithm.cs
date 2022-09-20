@@ -23,7 +23,7 @@ namespace DocumentMaker.Model.Algorithm
 			int maxPercent = 5; // Погрешность от percent
 
 			if (percent + minPercent < 0)
-				minPercent = -percent;
+				minPercent = -percent + 1;
 
 			int maxIndexNumberPidtrimka = -1;
 			FindMaxIndex(_pidtrimka, ref maxIndexNumberPidtrimka); // Индекс максимальной суммы пидтрымкы
@@ -33,12 +33,23 @@ namespace DocumentMaker.Model.Algorithm
 			int minIndexNumberRozrobka = -1;
 			FindMinIndex(_rozrobka, ref minIndexNumberRozrobka); // Индекс минимальной суммы розробкы
 
-			int maxSumFlip; // Сколько будем перекидывать на другой пукнт
+			int maxSumFlip = minNumber / 2; // Сколько будем перекидывать на другой пукнт
 
 			bool isFlip = true;
 
 			// Ограничение перебросов чтобы не зациклилось
-			int counterFlip = (_pidtrimka.Count * _pidtrimka.Count + _rozrobka.Count * _rozrobka.Count) * (100 / percent);
+			int totalSum = 0;
+			foreach (int sum in _rozrobka)
+			{
+				totalSum += sum;
+			}
+
+			foreach (int sum in _pidtrimka)
+			{
+				totalSum += sum;
+			}
+
+			int counterFlip = (int)(totalSum * 1.5f) / maxSumFlip;
 
 			while (isFlip)
 			{
@@ -60,24 +71,6 @@ namespace DocumentMaker.Model.Algorithm
 						if (maxSum > _minNumber)
 						{
 							maxSumFlip = (int)(maxSum * randomPrecent / 100);
-							if (maxSum - maxSumFlip < _minNumber)
-							{
-								if (randomPrecent > percent)
-								{
-									maxSumFlip = maxSum * percent / 100;
-
-									if (maxSum - maxSumFlip < _minNumber)
-									{
-										randomPrecent = percent + minPercent;
-										maxSumFlip = (int)(maxSum * randomPrecent / 100);
-									}
-								}
-								else
-								{
-									randomPrecent = percent + minPercent;
-									maxSumFlip = (int)(maxSum * randomPrecent / 100);
-								}
-							}
 
 							if (maxSum - maxSumFlip >= _minNumber)
 							{
@@ -93,6 +86,21 @@ namespace DocumentMaker.Model.Algorithm
 								}
 
 								isFlip = true;
+							}
+							else
+							{
+								maxSumFlip = (int)(minNumber * (randomPrecent * 5) / 100);
+
+								if (maxSum - maxSumFlip >= 0)
+								{
+									_rozrobka[maxIndexNumberRozrobka] = maxSum - maxSumFlip;
+									_rozrobka[minIndexNumberRozrobka] = minSum + maxSumFlip;
+								}
+								else
+								{
+									_rozrobka[minIndexNumberRozrobka] += _rozrobka[maxIndexNumberRozrobka];
+									_rozrobka[maxIndexNumberRozrobka] = 0;
+								}
 							}
 						}
 					}
@@ -171,7 +179,7 @@ namespace DocumentMaker.Model.Algorithm
 			int maxPercent = 5; // Погрешность от percent
 
 			if (percent + minPercent < 0)
-				minPercent = -percent;
+				minPercent = -percent + 1;
 
 			int maxIndexNumberPidtrimka = -1;
 			FindMaxIndex(_pidtrimka, ref maxIndexNumberPidtrimka); // Индекс максимальной суммы пидтрымкы
@@ -181,12 +189,23 @@ namespace DocumentMaker.Model.Algorithm
 			int minIndexNumberRozrobka = -1;
 			FindMinIndex(_rozrobka, ref minIndexNumberRozrobka); // Индекс минимальной суммы розробкы
 
-			int minSumFlip; // Сколько будем перекидывать на другой пукнт
+			int minSumFlip = _maxNumber * (percent - minPercent) / 100; // Сколько будем перекидывать на другой пукнт
 
 			bool isFlip = true;
 
 			// Ограничение перебросов чтобы не зациклилось
-			int counterFlip = (_pidtrimka.Count * _pidtrimka.Count + _rozrobka.Count * _rozrobka.Count) * (100 / percent);
+			int totalSum = 0;
+			foreach(int sum in _pidtrimka)
+			{
+				totalSum += sum;
+			}
+
+			foreach (int sum in _rozrobka)
+			{
+				totalSum += sum;
+			}
+
+			int counterFlip = (int)(totalSum * 1.5f) / minSumFlip;
 
 			while (isFlip)
 			{
@@ -211,27 +230,6 @@ namespace DocumentMaker.Model.Algorithm
 						{
 							minSumFlip = (int)(maxSum * randomPrecent / 100);
 
-							// Если сумма минимального пункта и сумма которую должны перекинуть больше чем огрнаничение то пересчитываем сумму перекидывания с минимальным процентом
-							if (minSumFlip + minSum > _maxNumber)
-							{
-								if (randomPrecent > percent)
-								{
-									minSumFlip = maxSum * percent / 100;
-
-									if (minSumFlip + minSum > _maxNumber)
-									{
-										randomPrecent = percent + minPercent;
-										minSumFlip = (int)(maxSum * randomPrecent / 100);
-									}
-								}
-								else
-								{
-									randomPrecent = percent + minPercent;
-									minSumFlip = (int)(maxSum * randomPrecent / 100);
-								}
-							}
-
-
 							if (minSumFlip + minSum <= _maxNumber)
 							{
 								// Если после перекидывания сумма максимального пункта будет меньше 0 то всё из максимального пункта
@@ -246,6 +244,26 @@ namespace DocumentMaker.Model.Algorithm
 									_pidtrimka[maxIndexNumberPidtrimka] = 0;
 								}
 								isFlip = true;
+							}
+							else
+							{
+								minSumFlip = (int)(_maxNumber * randomPrecent / 100);
+
+								if (minSumFlip + minSum <= _maxNumber)
+								{
+									// Если после перекидывания сумма максимального пункта будет меньше 0 то всё из максимального пункта
+									if (maxSum - minSumFlip >= 0)
+									{
+										_pidtrimka[maxIndexNumberPidtrimka] = maxSum - minSumFlip;
+										_pidtrimka[minIndexNumberPidtrimka] = minSum + minSumFlip;
+									}
+									else
+									{
+										_pidtrimka[minIndexNumberPidtrimka] += maxSum;
+										_pidtrimka[maxIndexNumberPidtrimka] = 0;
+									}
+									isFlip = true;
+								}
 							}
 						}
 					}
