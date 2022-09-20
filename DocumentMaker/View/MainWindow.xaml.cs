@@ -109,163 +109,23 @@ namespace DocumentMaker
 			TechnicalTaskDatePicker.Language = XmlLanguage.GetLanguage(System.Globalization.CultureInfo.CurrentCulture.IetfLanguageTag);
 			ActDatePicker.Language = XmlLanguage.GetLanguage(System.Globalization.CultureInfo.CurrentCulture.IetfLanguageTag);
 
-			DataHeader.SubscribeSelectionChanged((b) =>
-			{
-				if (b.HasValue)
-				{
-					foreach (UIElement elem in BacksData.Children)
-					{
-						if (elem is FullBackData backData)
-						{
-							backData.SetIsCheckedWithoutCallback(b.Value);
-						}
-					}
-				}
-				UpdateActSumSelected();
-			});
-			DataFooter.SubscribeAddition((x) =>
-			{
-				HaveUnsavedChanges = true;
-				DisableUpdatingSum();
-				CanUndoNeedUpdateSum = false;
-				x.Controller.IsRework = false;
-				x.Controller.IsOtherType = false;
-				x.Controller.SetActionsStack(controller.GetActionsStack());
-				controller.BackDataControllers.Add(x.Controller);
-				x.SetViewByTemplate(controller.TemplateType);
-				x.SetWorkTypesList(controller.CurrentWorkTypesList);
-				x.SetBackDataTypesList(controller.CurrentBackDataTypesList);
-				x.SetGameNameList(controller.GameNameList);
-				x.SubscribeSelectionChanged(() =>
-				{
-					DataHeader.UpdateIsCheckedState();
-					UpdateActSumSelected();
-				});
-				UpdateActSum();
-				DataHeader.UpdateIsCheckedState();
-
-				DmxFile selectedFile = controller.GetSelectedFile();
-				if (selectedFile != null)
-				{
-					selectedFile.AddBackModel(x.Controller.GetModel());
-				}
-			});
-			DataFooter.SubscribeChangingSum((changedWeight) =>
-			{
-				if (changedWeight)
-				{
-					AddUndoRedoLinkNeedUpdateSumWithCheck(controller.NeedUpdateSum);
-					DisableUpdatingSum();
-				}
-				UpdateSaldo();
-			});
+			DataHeader.SubscribeSelectionChanged((b) => OnSelectionChanged(b, false, false));
+			DataFooter.SubscribeAddition((x) => OnAdded(x, false, false));
+			DataFooter.SubscribeChangingSum(OnSumChanged);
 			DataFooter.ActionsStack = controller.GetActionsStack();
 
-			ReworkDataHeader.SubscribeSelectionChanged((b) =>
-			{
-				if (b.HasValue)
-				{
-					foreach (UIElement elem in ReworkBacksData.Children)
-					{
-						if (elem is FullBackData backData)
-						{
-							backData.SetIsCheckedWithoutCallback(b.Value);
-						}
-					}
-				}
-				UpdateActSumSelected();
-			});
-			ReworkDataFooter.SubscribeAddition((x) =>
-			{
-				HaveUnsavedChanges = true;
-				DisableUpdatingSum();
-				CanUndoNeedUpdateSum = false;
-				x.Controller.IsRework = true;
-				x.Controller.IsOtherType = false;
-				x.Controller.SetActionsStack(controller.GetActionsStack());
-				controller.BackDataControllers.Add(x.Controller);
-				x.SetViewByTemplate(controller.TemplateType);
-				x.SetBackDataTypesList(controller.CurrentBackDataTypesList);
-				x.SetWorkTypesList(controller.CurrentReworkWorkTypesList);
-				x.SetGameNameList(controller.GameNameList);
-				x.SubscribeSelectionChanged(() =>
-				{
-					ReworkDataHeader.UpdateIsCheckedState();
-					UpdateActSumSelected();
-				});
-				UpdateActSum();
-				ReworkDataHeader.UpdateIsCheckedState();
-
-				DmxFile selectedFile = controller.GetSelectedFile();
-				if (selectedFile != null)
-				{
-					selectedFile.AddBackModel(x.Controller.GetModel());
-				}
-				x.UpdateInputStates();
-			});
-			ReworkDataFooter.SubscribeChangingSum((changedWeight) =>
-			{
-				if (changedWeight)
-				{
-					AddUndoRedoLinkNeedUpdateSumWithCheck(controller.NeedUpdateSum);
-					DisableUpdatingSum();
-				}
-				UpdateSaldo();
-			});
+			ReworkDataHeader.SubscribeSelectionChanged((b) => OnSelectionChanged(b, true, false));
+			ReworkDataFooter.SubscribeAddition((x) => OnAdded(x, true, false));
+			ReworkDataFooter.SubscribeChangingSum(OnSumChanged);
 			ReworkDataFooter.ActionsStack = controller.GetActionsStack();
 
 			OtherDataHeader.HideWorkTypeLabel();
-			OtherDataHeader.SubscribeSelectionChanged((b) =>
-			{
-				if (b.HasValue)
-				{
-					foreach (UIElement elem in OtherBacksData.Children)
-					{
-						if (elem is FullBackData backData)
-						{
-							backData.SetIsCheckedWithoutCallback(b.Value);
-						}
-					}
-				}
-				UpdateActSumSelected();
-			});
-			OtherDataFooter.SubscribeAddition((x) =>
-			{
-				HaveUnsavedChanges = true;
-				DisableUpdatingSum();
-				CanUndoNeedUpdateSum = false;
-				x.Controller.IsOtherType = true;
-				x.Controller.SetActionsStack(controller.GetActionsStack());
-				controller.BackDataControllers.Add(x.Controller);
-				x.SetViewByTemplate(controller.TemplateType);
-				x.SetGameNameList(controller.GameNameList);
-				x.SubscribeSelectionChanged(() =>
-				{
-					OtherDataHeader.UpdateIsCheckedState();
-					UpdateActSumSelected();
-				});
-				UpdateActSum();
-				OtherDataHeader.UpdateIsCheckedState();
-
-				DmxFile selectedFile = controller.GetSelectedFile();
-				if (selectedFile != null)
-				{
-					selectedFile.AddBackModel(x.Controller.GetModel());
-				}
-				x.UpdateInputStates();
-			});
-			OtherDataFooter.SubscribeChangingSum((changedWeight) =>
-			{
-				if (changedWeight)
-				{
-					AddUndoRedoLinkNeedUpdateSumWithCheck(controller.NeedUpdateSum);
-					DisableUpdatingSum();
-				}
-				UpdateSaldo();
-			});
+			OtherDataHeader.SubscribeSelectionChanged((b) => OnSelectionChanged(b, false, true));
+			OtherDataFooter.SubscribeAddition((x) => OnAdded(x, false, true));
+			OtherDataFooter.SubscribeChangingSum(OnSumChanged);
 			OtherDataFooter.ActionsStack = controller.GetActionsStack();
 
-			ActSumInput.CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
+			ActSumInput.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
 		}
 
 		#region Properties
@@ -1804,6 +1664,65 @@ namespace DocumentMaker
 					}
 				}
 			}
+		}
+
+		private void OnAdded(FullBackData backData, bool isRework, bool isOtherType)
+		{
+			HaveUnsavedChanges = true;
+			DisableUpdatingSum();
+			CanUndoNeedUpdateSum = false;
+			backData.Controller.IsRework = isRework;
+			backData.Controller.IsOtherType = isOtherType;
+			backData.Controller.SetActionsStack(controller.GetActionsStack());
+			controller.BackDataControllers.Add(backData.Controller);
+			backData.SetViewByTemplate(controller.TemplateType);
+			if (!isOtherType)
+			{
+				backData.SetWorkTypesList(isRework ? controller.CurrentReworkWorkTypesList : controller.CurrentWorkTypesList);
+			}
+			backData.SetBackDataTypesList(controller.CurrentBackDataTypesList);
+			backData.SetGameNameList(controller.GameNameList);
+			FullBackDataHeader header = isOtherType ? OtherDataHeader : (isRework ? ReworkDataHeader : DataHeader);
+			backData.SubscribeSelectionChanged(() =>
+			{
+				header.UpdateIsCheckedState();
+				UpdateActSumSelected();
+			});
+			UpdateActSum();
+			header.UpdateIsCheckedState();
+
+			DmxFile selectedFile = controller.GetSelectedFile();
+			if (selectedFile != null)
+			{
+				selectedFile.AddBackModel(backData.Controller.GetModel());
+			}
+			backData.UpdateInputStates();
+		}
+
+		private void OnSelectionChanged(bool? isSelected, bool isRework, bool isOtherType)
+		{
+			UIElementCollection backsData = (isOtherType ? OtherBacksData : (isRework ? ReworkBacksData : BacksData))?.Children;
+			if (backsData != null && isSelected.HasValue)
+			{
+				foreach (UIElement elem in backsData)
+				{
+					if (elem is FullBackData backData)
+					{
+						backData.SetIsCheckedWithoutCallback(isSelected.Value);
+					}
+				}
+			}
+			UpdateActSumSelected();
+		}
+
+		private void OnSumChanged(bool changedWeight)
+		{
+			if (changedWeight)
+			{
+				AddUndoRedoLinkNeedUpdateSumWithCheck(controller.NeedUpdateSum);
+				DisableUpdatingSum();
+			}
+			UpdateSaldo();
 		}
 
 		#endregion
