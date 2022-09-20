@@ -1476,6 +1476,12 @@ namespace DocumentMaker
 			bool actionsStackingEnable = controller.IsActionsStackingEnabled;
 			controller.DisableActionsStacking();
 
+			DmxFile selectedFile = controller.GetSelectedFile();
+			if(selectedFile != null)
+			{
+				selectedFile.AddRangeBackModel(controllers.Select(x => x.GetModel()));
+			}
+
 			List<FullBackData> addedNewSupport = new List<FullBackData>();
 			foreach (FullBackDataController backDataController in controllers)
 			{

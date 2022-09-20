@@ -72,6 +72,11 @@ namespace DocumentMaker.Model.Files
 			backDataModels.Add(backDataModel);
 		}
 
+		public void AddRangeBackModel(IEnumerable<FullBackDataModel> backDataModels)
+		{
+			this.backDataModels.AddRange(backDataModels);
+		}
+
 		private void SetDefaultWeights()
 		{
 			double totalTime = 0;
