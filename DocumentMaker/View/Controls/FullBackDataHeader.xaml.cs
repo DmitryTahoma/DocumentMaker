@@ -12,11 +12,13 @@ namespace DocumentMaker.View.Controls
 	{
 		public static readonly DependencyProperty DataProperty;
 		public static readonly DependencyProperty IsCheckedProperty;
+		public static readonly DependencyProperty IsOnlyOtherTypeProperty;
 
 		static FullBackDataHeader()
 		{
 			DataProperty = DependencyProperty.Register("Data", typeof(StackPanel), typeof(FullBackDataHeader));
 			IsCheckedProperty = DependencyProperty.Register("IsChecked", typeof(bool?), typeof(FullBackDataHeader));
+			IsOnlyOtherTypeProperty = DependencyProperty.Register("IsOnlyOtherType", typeof(bool), typeof(FullBackDataHeader));
 		}
 
 		private bool isCheckedChangedWithoutCallback;
@@ -44,6 +46,12 @@ namespace DocumentMaker.View.Controls
 			set => SetValue(IsCheckedProperty, value);
 		}
 
+		public bool IsOnlyOtherType
+		{
+			get => (bool)GetValue(IsOnlyOtherTypeProperty);
+			set => SetValue(IsOnlyOtherTypeProperty, value);
+		}
+
 		public void SetViewByTemplate(DocumentTemplateType templateType)
 		{
 			if (templateType == DocumentTemplateType.Painter)
@@ -56,6 +64,8 @@ namespace DocumentMaker.View.Controls
 				IsSketchTextBlock.Visibility = Visibility.Collapsed;
 				IsSketchColumn.Width = GridLength.Auto;
 			}
+
+			IsOnlyOtherType = templateType == DocumentTemplateType.Tester || templateType == DocumentTemplateType.Programmer || templateType == DocumentTemplateType.Soundman || templateType == DocumentTemplateType.Animator || templateType == DocumentTemplateType.Translator || templateType == DocumentTemplateType.Support;
 		}
 
 		public void HideWorkTypeLabel()
