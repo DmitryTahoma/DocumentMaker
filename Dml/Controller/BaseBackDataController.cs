@@ -31,6 +31,7 @@ namespace Dml.Controller
 		public string OtherText { get => model.OtherText; set => model.OtherText = value; }
 		public ObservableRangeCollection<BackDataType> BackDataTypesList => model.BackDataTypesList;
 		public bool IsActionsStackingEnabled => model.IsActionsStackingEnabled;
+		public bool CollapsingActionByTargetEnabled => model.CollapsingActionByTargetEnabled;
 		public bool HaveUnsavedChanges { get => model.HaveUnsavedChanges; set => model.HaveUnsavedChanges = value; }
 
 		public virtual BaseBackDataModel GetModel()

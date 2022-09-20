@@ -5,6 +5,7 @@
 	public interface IUndoRedoActionsStack
 	{
 		bool ActionsStackingEnabled { get; set; }
+		bool CollapsingActionByTargetEnabled { get; set; }
 		bool CanRedo { get; }
 		bool CanUndo { get; }
 		int MaxCapacity { get; }

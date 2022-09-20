@@ -134,6 +134,18 @@ namespace DocumentMaker.Model.Controls
 				actionsStack.ActionsStackingEnabled = false;
 		}
 
+		public void EnableCollapsingActionByTargetEnabled()
+		{
+			if (actionsStack != null)
+				actionsStack.CollapsingActionByTargetEnabled = true;
+		}
+
+		public void DisableCollapsingActionByTargetEnabled()
+		{
+			if (actionsStack != null)
+				actionsStack.CollapsingActionByTargetEnabled = false;
+		}
+
 		public void SetSumTextChangesWithLink(string sumText, params IUndoRedoAction[] links)
 		{
 			IUndoRedoAction action = sumTextActionProvider.CreateAction(this, sumText);

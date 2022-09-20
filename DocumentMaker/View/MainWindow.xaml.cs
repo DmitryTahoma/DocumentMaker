@@ -1477,7 +1477,7 @@ namespace DocumentMaker
 			controller.DisableActionsStacking();
 
 			DmxFile selectedFile = controller.GetSelectedFile();
-			if(selectedFile != null)
+			if (selectedFile != null)
 			{
 				selectedFile.AddRangeBackModel(controllers.Select(x => x.GetModel()));
 			}

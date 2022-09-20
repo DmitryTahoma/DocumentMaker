@@ -16,6 +16,7 @@ namespace Dml.UndoRedo
 		}
 
 		public bool ActionsStackingEnabled { get; set; }
+		public bool CollapsingActionByTargetEnabled { get; set; } = true;
 		public bool CanRedo => redoList.Count > 0;
 		public bool CanUndo => undoList.Count > 0;
 		public int MaxCapacity { get; } = 1000;
@@ -29,7 +30,7 @@ namespace Dml.UndoRedo
 				while (redoList.Count + undoList.Count > MaxCapacity)
 					undoList.RemoveFirst();
 
-				if (CanUndo && action is ITargetValueUndoRedoAction newTargetValueAction && undoList.Last.Value is ITargetValueUndoRedoAction lastTargetValueAction && lastTargetValueAction.GetType() == newTargetValueAction.GetType()
+				if (CanUndo && CollapsingActionByTargetEnabled && action is ITargetValueUndoRedoAction newTargetValueAction && undoList.Last.Value is ITargetValueUndoRedoAction lastTargetValueAction && lastTargetValueAction.GetType() == newTargetValueAction.GetType()
 					&& newTargetValueAction.GetTarget() == lastTargetValueAction.GetTarget() && lastTargetValueAction.GetNewValue() == newTargetValueAction.GetOldValue())
 				{
 					lastTargetValueAction.SetNewValue(newTargetValueAction.GetNewValue());

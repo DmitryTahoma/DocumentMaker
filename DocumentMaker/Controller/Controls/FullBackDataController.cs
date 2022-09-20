@@ -80,6 +80,16 @@ namespace DocumentMaker.Controller.Controls
 			model.DisableActionsStacking();
 		}
 
+		public void EnableCollapsingActionByTargetEnabled()
+		{
+			model.EnableCollapsingActionByTargetEnabled();
+		}
+
+		public void DisableCollapsingActionByTargetEnabled()
+		{
+			model.DisableCollapsingActionByTargetEnabled();
+		}
+
 		public void SetSumTextChangesWithLink(string sumText, params IUndoRedoAction[] links)
 		{
 			model.SetSumTextChangesWithLink(sumText, links);

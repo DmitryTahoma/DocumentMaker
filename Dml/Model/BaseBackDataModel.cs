@@ -30,6 +30,7 @@ namespace Dml.Model
 		public string OtherText { get; set; }
 		public ObservableRangeCollection<BackDataType> BackDataTypesList => backDataTypesList;
 		public bool IsActionsStackingEnabled => actionsStack?.ActionsStackingEnabled ?? false;
+		public bool CollapsingActionByTargetEnabled => actionsStack?.CollapsingActionByTargetEnabled ?? false;
 
 		[IsNotSavingContent]
 		public bool HaveUnsavedChanges { get; set; }

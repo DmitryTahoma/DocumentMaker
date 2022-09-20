@@ -540,8 +540,14 @@ namespace DocumentMaker.View.Controls
 		{
 			bool isActionStackingEnable = controller.IsActionsStackingEnabled;
 			controller.EnableActionsStacking();
+
+			bool isCollapsingActionByTargetEnabled = controller.CollapsingActionByTargetEnabled;
+			controller.DisableCollapsingActionByTargetEnabled();
+
 			controller.SumText = sumText;
+
 			if (!isActionStackingEnable) controller.DisableActionsStacking();
+			if (isCollapsingActionByTargetEnabled) controller.EnableCollapsingActionByTargetEnabled();
 		}
 	}
 }
