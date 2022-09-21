@@ -281,9 +281,9 @@ namespace DocumentMaker
 						UpdateInformer informer = new UpdateInformer();
 						informer.Notify(ref _, isHidden: true);
 					}
-					catch
+					catch (Exception exc)
 					{
-						MessageBox.Show("Невозможно подключиться к шаре!", "ActCreator Update", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+						UpdateLog.WriteLine("DocumentMaker: Невозможно подключиться к шаре!\n" + exc.ToString(), "red");
 					}
 				});
 #endif

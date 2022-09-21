@@ -175,9 +175,9 @@ namespace ActCreator
 						UpdateInformer informer = new UpdateInformer();
 						informer.Notify(ref _, isHidden: true);
 					}
-					catch
+					catch (System.Exception exc)
 					{
-						MessageBox.Show("Невозможно подключиться к шаре!", "ActCreator Update", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+						UpdateLog.WriteLine("ActCreator: Невозможно подключиться к шаре!\n" + exc.ToString(), "red");
 					}
 				});
 #endif
