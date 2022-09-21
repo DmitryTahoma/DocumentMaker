@@ -45,6 +45,8 @@ namespace ActCreator.Model
 		#region Window settings
 
 		[IsNotDmxContent]
+		public string SessionVersion { get; set; }
+		[IsNotDmxContent]
 		public double WindowTop { get; set; } = 0;
 		[IsNotDmxContent]
 		public double WindowLeft { get; set; } = 0;
@@ -72,14 +74,8 @@ namespace ActCreator.Model
 		public void Save(string path, IEnumerable<ShortBackDataModel> backModels)
 		{
 			XmlSaver saver = new XmlSaver();
+			SessionVersion = "1.1";
 			saver.AppendAllProperties(this);
-
-			foreach (ShortBackDataModel backDataModel in backModels)
-			{
-				saver.CreateBackNode();
-				saver.AppendAllBackProperties(backDataModel);
-				saver.PushBackNode();
-			}
 
 			saver.Save(path);
 		}
@@ -93,6 +89,12 @@ namespace ActCreator.Model
 			{
 				loader.SetLoadedProperties(this);
 				loader.SetLoadedListProperties(backModels);
+			}
+
+			if (SessionVersion == null)
+			{
+				backModels.Clear();
+				SessionVersion = "1.1";
 			}
 		}
 
