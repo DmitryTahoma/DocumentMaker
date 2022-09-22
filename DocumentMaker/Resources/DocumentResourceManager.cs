@@ -10,8 +10,8 @@ namespace DocumentMaker.Resources
 			string addictionStr = BackTaskStrings.GetAddictionName(isExportRework);
 			return new List<ResourceInfo>
 			{
-				new ResourceInfo(ResourceType.Docx, "DocumentMakerTemplate01.docx", addictionStr + "Додаток 1 тех. завдання [TTDateStr2] [HumanSecondName].docx"),
-				new ResourceInfo(ResourceType.Docx, "DocumentMakerTemplate02.docx", addictionStr + "акт виконаних роб [ActDate2] [HumanSecondName].docx")
+				new ResourceInfo(ResourceType.Docx, "DocumentMakerTemplate01.docx", addictionStr + "Додаток 1 тех. завдання [TTDateStr2] [HumanName].docx"),
+				new ResourceInfo(ResourceType.Docx, "DocumentMakerTemplate02.docx", addictionStr + "акт виконаних роб [ActDate2] [HumanName].docx")
 			};
 		}
 	}

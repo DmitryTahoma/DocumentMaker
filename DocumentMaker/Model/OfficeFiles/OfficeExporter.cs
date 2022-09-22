@@ -63,6 +63,7 @@ namespace DocumentMaker.Model.OfficeFiles
 		{
 			if (!TemplateLoaded) throw new Exception("Template file didn't loaded!");
 
+			FillInnerPropertiesData(data);
 			string str = xml.InnerXml;
 			FillPropertiesData(data, ref str);
 			xml.InnerXml = str;
@@ -92,6 +93,28 @@ namespace DocumentMaker.Model.OfficeFiles
 				string value = (string)property.GetValue(data);
 
 				xmlStr = xmlStr.Replace(replaceStr, value);
+			}
+		}
+
+		public void FillInnerPropertiesData(object data)
+		{
+			PropertyInfo[] properties = data.GetType().GetProperties();
+			foreach(PropertyInfo property in properties)
+			{
+				MethodInfo setMethod = property.GetSetMethod();
+				if (setMethod != null)
+				{
+					foreach(PropertyInfo innerProperty in properties)
+					{
+						if(innerProperty != property)
+						{
+							string replaceStr = '[' + innerProperty.Name + ']';
+							string value = (string)innerProperty.GetValue(data);
+
+							setMethod.Invoke(data, new object[] { ((string)property.GetValue(data)).Replace(replaceStr, value) });
+						}
+					}
+				}
 			}
 		}
 

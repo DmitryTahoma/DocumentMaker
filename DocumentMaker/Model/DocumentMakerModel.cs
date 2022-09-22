@@ -230,8 +230,13 @@ namespace DocumentMaker.Model
 				DocumentGeneralData generalData = new DocumentGeneralData(this, isExportRework, actSum);
 				DocumentTableData tableData = new DocumentTableData(backModels, TemplateType, isExportRework);
 				if (tableData.Count() <= 0) continue;
+				int j = -1;
 				foreach (ResourceInfo resource in DocumentResourceManager.GetItems(isExportRework))
 				{
+					++j;
+					if (j == 0 && (TemplateType == DocumentTemplateType.Support || TemplateType == DocumentTemplateType.Translator))
+						continue;
+
 					exporter.Clear();
 
 					if (resource.Type == ResourceType.Docx)
