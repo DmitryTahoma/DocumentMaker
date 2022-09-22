@@ -165,10 +165,10 @@ namespace DocumentMaker.Controller
 						errorText = "Строка \"Банк\" не може бути пустою.";
 					else if (!validator.IsFree(MfoText))
 						errorText = "Строка \"МФО\" не може бути пустою.";
-					else if (!validator.IsFree(ContractNumberText))
-						errorText = "Строка \"Номер договору\" не може бути пустою.";
-					else if (!validator.IsFree(ContractDateText))
-						errorText = "Строка \"Дата складання договору\" не може бути пустою.";
+					else if ((!validator.IsFree(ContractNumberText) || !validator.IsFree(ContractDateText)) && BackDataControllers.FirstOrDefault((x) => !x.IsOtherType && !x.IsRework) != null)
+						errorText = "У обраної людини (" + SelectedHuman + ") немає номеру та/або дати договору розробки. Таблиця з розробкою повинна бути пустою.";
+					else if ((!validator.IsFree(ContractReworkNumberText) || !validator.IsFree(ContractReworkDateText)) && BackDataControllers.FirstOrDefault((x) => !x.IsOtherType && x.IsRework) != null)
+						errorText = "У обраної людини (" + SelectedHuman + ") немає номеру та/або дати договору підтримки. Таблиця з підтримкою повинна бути пустою.";
 					else
 						isValidGeneralData = true;
 				}
