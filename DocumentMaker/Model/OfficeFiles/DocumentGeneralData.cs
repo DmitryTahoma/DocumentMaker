@@ -23,14 +23,16 @@ namespace DocumentMaker.Model.OfficeFiles
 				DogovorNum = model.ContractNumberText;
 				DogovorFullDate = model.ContractDateText;
 				NameOfWorkText = "розробки";
-				FirstPartText = "розробки ігрових прикладних програм Замовника";
+				if(model.TemplateType != DocumentTemplateType.Soundman)
+					FirstPartText = " розробки ігрових прикладних програм Замовника";
 			}
 			else
 			{
 				DogovorNum = model.ContractReworkNumberText;
 				DogovorFullDate = model.ContractReworkDateText;
 				NameOfWorkText = "підтримки";
-				FirstPartText = "підтримки ігрових прикладних програм Замовника в придатному для використання стані в межах післяпродажного обслуговування без розширення чи поліпшення їх функціональних характеристик";
+				if (model.TemplateType != DocumentTemplateType.Soundman)
+					FirstPartText = " підтримки ігрових прикладних програм Замовника в придатному для використання стані в межах післяпродажного обслуговування без розширення чи поліпшення їх функціональних характеристик";
 			}
 			ActSum = actSum.ToString();
 			CityName = model.CityName;
@@ -40,7 +42,7 @@ namespace DocumentMaker.Model.OfficeFiles
 				FirstPartText2 = "Замовник надав віддалений доступ до ігрових комп’ютерних програм, а ";
 
 			if (!(model.TemplateType == DocumentTemplateType.Support || model.TemplateType == DocumentTemplateType.Translator || model.TemplateType == DocumentTemplateType.Tester))
-				FirstPartText3 = "з надання послуг [FirstPartText] ";
+				FirstPartText3 = "з надання послуг[FirstPartText] ";
 
 			SecondPartText = (model.TemplateType == DocumentTemplateType.Support || model.TemplateType == DocumentTemplateType.Translator) ?
 				"Виконавцем були виконані наступні роботи (надані такі послуги):" :
@@ -76,7 +78,7 @@ namespace DocumentMaker.Model.OfficeFiles
 
 		public string NameOfWorkText { get; }
 
-		public string FirstPartText { get; }
+		public string FirstPartText { get; } = string.Empty;
 
 		public string FirstPartText2 { get; } = string.Empty;
 
