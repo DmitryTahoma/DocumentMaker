@@ -317,7 +317,7 @@ namespace ActCreator
 
 		private void ShowBackNames(object sender, RoutedEventArgs e)
 		{
-			Process.Start("https://docs.google.com/spreadsheets/d/1GnTgfIKsk2a0qClfSE7wy2WGLpXWxuuTscPyuCt8Bi0/edit?usp=sharing");
+			Process.Start("https://docs.google.com/spreadsheets/d/1GnTgfIKsk2a0qClfSE7wy2WGLpXWxuuTscPyuCt8Bi0/edit#gid=1313072428");
 		}
 
 		private void UpdateViewBackData()
