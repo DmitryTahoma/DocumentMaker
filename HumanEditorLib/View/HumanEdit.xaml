@@ -1,0 +1,293 @@
+﻿<UserControl
+    x:Class="HumanEditorLib.View.HumanEdit"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:HumanEditorLib.View"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/HumanEditorLib;component/ResourceDictionaries/HumanEditDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <materialDesign:Card Grid.ColumnSpan="2" Style="{StaticResource MyCard}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Grid.ColumnSpan="4"
+                    Style="{StaticResource LabelHeaderTextBlock}"
+                    Text="Особисті дані" />
+
+                <TextBox
+                    Grid.Row="1"
+                    materialDesign:HintAssist.Hint="Фамілія"
+                    Style="{StaticResource FirstTextBox}" />
+
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    materialDesign:HintAssist.Hint="Ім'я"
+                    Style="{StaticResource MiddleTextBox}" />
+
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    materialDesign:HintAssist.Hint="По батькові"
+                    Style="{StaticResource MiddleTextBox}" />
+
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="3"
+                    materialDesign:HintAssist.Hint="ІНН"
+                    Style="{StaticResource LastTextBox}" />
+
+            </Grid>
+        </materialDesign:Card>
+
+        <materialDesign:Card
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            Style="{StaticResource MyCard}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Grid.ColumnSpan="6"
+                    Style="{StaticResource LabelHeaderTextBlock}"
+                    Text="Прописка" />
+
+                <ComboBox Grid.Row="1" Style="{StaticResource FirstComboBox}" />
+
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    materialDesign:HintAssist.Hint="Назва"
+                    Style="{StaticResource MiddleTextBox}" />
+
+                <ComboBox
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Style="{StaticResource MiddleComboBox}" />
+
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="3"
+                    materialDesign:HintAssist.Hint="Назва"
+                    Style="{StaticResource MiddleTextBox}" />
+
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="4"
+                    materialDesign:HintAssist.Hint="Дім"
+                    Style="{StaticResource MiddleTextBox}" />
+
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="5"
+                    materialDesign:HintAssist.Hint="Квартира"
+                    Style="{StaticResource LastTextBox}" />
+            </Grid>
+        </materialDesign:Card>
+
+        <materialDesign:Card
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+            Style="{StaticResource MyCard}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Grid.ColumnSpan="6"
+                    Style="{StaticResource LabelHeaderTextBlock}"
+                    Text="Реквізити" />
+
+                <ComboBox
+                    Grid.Row="1"
+                    materialDesign:HintAssist.Hint="Банк"
+                    Style="{StaticResource FirstComboBox}" />
+
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    materialDesign:HintAssist.Hint="Розрахунковий рахунок"
+                    Style="{StaticResource LastTextBox}" />
+
+            </Grid>
+        </materialDesign:Card>
+
+        <materialDesign:Card Grid.Row="3" Style="{StaticResource FirstCard}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Grid.ColumnSpan="2"
+                    Style="{StaticResource LabelHeaderTextBlock}"
+                    Text="Розробка" />
+
+                <TextBox
+                    Grid.Row="1"
+                    materialDesign:HintAssist.Hint="Номер договору"
+                    Style="{StaticResource FirstTextBox}" />
+
+                <DatePicker
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    materialDesign:HintAssist.Hint="Дата складання"
+                    Style="{StaticResource LastDatePicker}" />
+            </Grid>
+        </materialDesign:Card>
+
+        <materialDesign:Card
+            Grid.Row="3"
+            Grid.Column="1"
+            Style="{StaticResource LastCard}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Grid.ColumnSpan="2"
+                    Style="{StaticResource LabelHeaderTextBlock}"
+                    Text="Підтримка" />
+
+                <TextBox
+                    Grid.Row="1"
+                    materialDesign:HintAssist.Hint="Номер договору"
+                    Style="{StaticResource FirstTextBox}" />
+
+                <DatePicker
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    materialDesign:HintAssist.Hint="Дата складання"
+                    Style="{StaticResource LastDatePicker}" />
+            </Grid>
+        </materialDesign:Card>
+
+        <materialDesign:Card
+            Grid.Row="4"
+            Grid.ColumnSpan="2"
+            Style="{StaticResource MyCard}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <DatePicker materialDesign:HintAssist.Hint="Дата прийому на роботу" Style="{StaticResource FirstDatePicker}" />
+
+                <DatePicker
+                    Grid.Column="1"
+                    materialDesign:HintAssist.Hint="Дата звільнення"
+                    IsEnabled="{Binding ElementName=IsFiredToggleButton, Path=IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource LastDatePicker}" />
+
+
+                <Grid Grid.Row="1" Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <ToggleButton
+                        x:Name="IsFiredToggleButton"
+                        Margin="5"
+                        Style="{StaticResource MaterialDesignSwitchToggleButton}">
+                        <materialDesign:ToggleButtonAssist.SwitchTrackOnBackground>
+                            <SolidColorBrush Color="Red" />
+                        </materialDesign:ToggleButtonAssist.SwitchTrackOnBackground>
+                        <materialDesign:ToggleButtonAssist.SwitchTrackOffBackground>
+                            <SolidColorBrush Color="Green" />
+                        </materialDesign:ToggleButtonAssist.SwitchTrackOffBackground>
+                    </ToggleButton>
+
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="5"
+                        Text="Звільнений" />
+                </Grid>
+            </Grid>
+        </materialDesign:Card>
+
+        <Button
+            Grid.Row="7"
+            Content="Скасувати"
+            Style="{StaticResource MaterialDesignFlatDarkButton}" />
+
+        <Button
+            Grid.Row="7"
+            Grid.Column="1"
+            Content="Добавити"
+            Style="{StaticResource MaterialDesignFlatDarkButton}" />
+    </Grid>
+</UserControl>

@@ -13,16 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace HumanEditorLib
+namespace HumanEditorLib.View
 {
-    /// <summary>
-    /// Interaction logic for UserControl1.xaml
-    /// </summary>
-    public partial class UserControl1 : UserControl
-    {
-        public UserControl1()
-        {
-            InitializeComponent();
-        }
-    }
+	/// <summary>
+	/// Interaction logic for HumanEdit.xaml
+	/// </summary>
+	public partial class HumanEdit : UserControl
+	{
+		public HumanEdit()
+		{
+			InitializeComponent();
+		}
+	}
 }
