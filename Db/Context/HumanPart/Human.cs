@@ -1,4 +1,5 @@
 ﻿using Db.Context.ActPart;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -26,6 +27,10 @@ namespace Db.Context.HumanPart
 		public int? AddressId { get; set; }
 		public Address Address { get; set; }
 		public bool IsFired { get; set; }
+		[Column(TypeName = "date")]
+		public DateTime? FiredDate { get; set; }
+		[Column(TypeName = "date")]
+		public DateTime? EmploymentDate { get; set; }
 
 		[InverseProperty("Human")]
 		public List<Act> Acts { get; set; }
