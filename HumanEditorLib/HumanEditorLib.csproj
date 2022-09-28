@@ -71,6 +71,12 @@
     <Compile Include="View\LocalityEdit.xaml.cs">
       <DependentUpon>LocalityEdit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\StreetControl.xaml.cs">
+      <DependentUpon>StreetControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\StreetEdit.xaml.cs">
+      <DependentUpon>StreetEdit.xaml</DependentUpon>
+    </Compile>
     <Page Include="ResourceDictionaries\HumanEditDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -96,6 +102,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\LocalityEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\StreetControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\StreetEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
