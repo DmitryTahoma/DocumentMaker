@@ -25,6 +25,7 @@ namespace HumanEditorLib.ViewModel
 			BindStreetCollection = new Command<UIElementCollection>(OnBindStreetCollectionExecute);
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
 			DeleteStreetType = new Command<StreetControl>(OnDeleteStreetTypeExecute);
+			AddStreetType = new Command(OnAddStreetTypeExecute);
 		}
 
 		public Command<UIElementCollection> BindStreetCollection { get; private set; }
@@ -38,11 +39,7 @@ namespace HumanEditorLib.ViewModel
 		{
 			foreach(StreetType streetType in model.LoadStreets())
 			{
-				StreetControl streetControl = new StreetControl();
-				StreetControlViewModel streetControlViewModel = (StreetControlViewModel)streetControl.DataContext;
-				streetControlViewModel.SetModel(streetType);
-				streetControlViewModel.DeleteStreetType = DeleteStreetType;
-				streetCollection.Add(streetControl);
+				AddStreetTypeToView(streetType);
 			}
 		}
 
@@ -65,6 +62,25 @@ namespace HumanEditorLib.ViewModel
 			{
 				streetCollection.Remove(streetControl);
 			}
+		}
+
+		public Command AddStreetType { get; private set; }
+		private void OnAddStreetTypeExecute()
+		{
+			AddStreetTypeToView(model.AddStreetType());
+		}
+
+		#endregion
+
+		#region Methods
+
+		private void AddStreetTypeToView(StreetType streetType)
+		{
+			StreetControl streetControl = new StreetControl();
+			StreetControlViewModel streetControlViewModel = (StreetControlViewModel)streetControl.DataContext;
+			streetControlViewModel.SetModel(streetType);
+			streetControlViewModel.DeleteStreetType = DeleteStreetType;
+			streetCollection.Add(streetControl);
 		}
 
 		#endregion

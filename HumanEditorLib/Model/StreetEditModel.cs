@@ -35,5 +35,16 @@ namespace HumanEditorLib.Model
 			}
 			return removed;
 		}
+
+		public StreetType AddStreetType()
+		{
+			StreetType streetType = new StreetType();
+			using(DocumentMakerContext db = new DocumentMakerContext())
+			{
+				streetType = db.StreetTypes.Add(streetType);
+				db.SaveChanges();
+			}
+			return streetType;
+		}
 	}
 }

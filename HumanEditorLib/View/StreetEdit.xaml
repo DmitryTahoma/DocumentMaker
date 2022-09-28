@@ -45,7 +45,7 @@
                 Width="60"
                 Padding="19,0,0,0"
                 HorizontalAlignment="Center"
-                ToolTip="Добавити">
+                ToolTip="Добавити" Command="{Binding AddStreetType}">
                 <MenuItem.Header>
                     <materialDesign:PackIcon
                         Width="24"
