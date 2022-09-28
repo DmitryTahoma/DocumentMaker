@@ -29,39 +29,51 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock Style="{StaticResource RowHeaderTextBlock}" Text="Назва" />
+        <Menu>
+            <MenuItem HorizontalAlignment="Center" Command="{Binding AddStreetType}">
+                <MenuItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            Kind="PlusCircleOutline" />
+                        <Label VerticalAlignment="Center" Content="_Добавити" />
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem HorizontalAlignment="Center" Command="{Binding SaveChanges}">
+                <MenuItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            Kind="ContentSaveOutline" />
+                        <Label VerticalAlignment="Center" Content="_Зберегти" />
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
+        </Menu>
+
         <TextBlock
+            Grid.Row="1"
+            Style="{StaticResource RowHeaderTextBlock}"
+            Text="Назва" />
+        <TextBlock
+            Grid.Row="1"
             Grid.Column="1"
             Style="{StaticResource RowHeaderTextBlock}"
             Text="Скорочення" />
 
         <StackPanel
             x:Name="StreetStack"
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.ColumnSpan="3" />
-
-        <Menu Grid.Row="2">
-            <MenuItem
-                Width="60"
-                Padding="19,0,0,0"
-                HorizontalAlignment="Center"
-                ToolTip="Добавити" Command="{Binding AddStreetType}">
-                <MenuItem.Header>
-                    <materialDesign:PackIcon
-                        Width="24"
-                        Height="24"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Kind="PlusCircleOutline" />
-                </MenuItem.Header>
-            </MenuItem>
-        </Menu>
     </Grid>
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding BindStreetCollection}" CommandParameter="{Binding ElementName=StreetStack, Path=Children}" />
-            <i:InvokeCommandAction Command="{Binding LoadFromDatabase}"/>
+            <i:InvokeCommandAction Command="{Binding LoadFromDatabase}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 

@@ -1,5 +1,6 @@
 ﻿using Db.Context;
 using Db.Context.HumanPart;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -45,6 +46,22 @@ namespace HumanEditorLib.Model
 				db.SaveChanges();
 			}
 			return streetType;
+		}
+
+		public void SaveChanges(IEnumerable<StreetType> streetTypes)
+		{
+			using(DocumentMakerContext db = new DocumentMakerContext())
+			{
+				IEnumerator<StreetType> local = streetTypes.GetEnumerator();
+
+				foreach(StreetType streetType in db.StreetTypes)
+				{
+					if (!local.MoveNext()) break;
+					streetType.Set(local.Current);
+				}
+				
+				db.SaveChanges();
+			}
 		}
 	}
 }

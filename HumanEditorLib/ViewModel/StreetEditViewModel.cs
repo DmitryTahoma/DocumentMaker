@@ -3,6 +3,8 @@ using HumanEditorLib.Model;
 using HumanEditorLib.View;
 using Mvvm.Commands;
 using System;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace HumanEditorLib.ViewModel
@@ -26,6 +28,7 @@ namespace HumanEditorLib.ViewModel
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
 			DeleteStreetType = new Command<StreetControl>(OnDeleteStreetTypeExecute);
 			AddStreetType = new Command(OnAddStreetTypeExecute);
+			SaveChanges = new Command(OnSaveChangesExecute);
 		}
 
 		public Command<UIElementCollection> BindStreetCollection { get; private set; }
@@ -70,6 +73,12 @@ namespace HumanEditorLib.ViewModel
 			AddStreetTypeToView(model.AddStreetType());
 		}
 
+		public Command SaveChanges { get; private set; }
+		private void OnSaveChangesExecute()
+		{
+			model.SaveChanges(GetStreetsModels());
+		}
+
 		#endregion
 
 		#region Methods
@@ -81,6 +90,17 @@ namespace HumanEditorLib.ViewModel
 			streetControlViewModel.SetModel(streetType);
 			streetControlViewModel.DeleteStreetType = DeleteStreetType;
 			streetCollection.Add(streetControl);
+		}
+
+		private IEnumerable<StreetType> GetStreetsModels()
+		{
+			foreach(UIElement elem in streetCollection)
+			{
+				if(elem is StreetControl streetControl)
+				{
+					yield return ((StreetControlViewModel)streetControl.DataContext).GetModel();
+				}
+			}
 		}
 
 		#endregion
