@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActGenerator", "ActGenerato
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HumanEditorLib", "HumanEditorLib\HumanEditorLib.csproj", "{11782F60-20F8-4B1D-9AE0-18E456087F7A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm", "Mvvm\Mvvm.csproj", "{12B44B0C-2061-40F6-8835-228785862A79}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,6 +68,12 @@ Global
 		{11782F60-20F8-4B1D-9AE0-18E456087F7A}.Release with UpdaterAPI|Any CPU.Build.0 = Release|Any CPU
 		{11782F60-20F8-4B1D-9AE0-18E456087F7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11782F60-20F8-4B1D-9AE0-18E456087F7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12B44B0C-2061-40F6-8835-228785862A79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12B44B0C-2061-40F6-8835-228785862A79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12B44B0C-2061-40F6-8835-228785862A79}.Release with UpdaterAPI|Any CPU.ActiveCfg = Release|Any CPU
+		{12B44B0C-2061-40F6-8835-228785862A79}.Release with UpdaterAPI|Any CPU.Build.0 = Release|Any CPU
+		{12B44B0C-2061-40F6-8835-228785862A79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12B44B0C-2061-40F6-8835-228785862A79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

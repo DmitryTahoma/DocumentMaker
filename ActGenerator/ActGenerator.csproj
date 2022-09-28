@@ -108,6 +108,10 @@
       <Project>{11782f60-20f8-4b1d-9ae0-18e456087f7a}</Project>
       <Name>HumanEditorLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Mvvm\Mvvm.csproj">
+      <Project>{12b44b0c-2061-40f6-8835-228785862a79}</Project>
+      <Name>Mvvm</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MaterialDesignThemes.4.6.1\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.6.1\build\MaterialDesignThemes.targets')" />
