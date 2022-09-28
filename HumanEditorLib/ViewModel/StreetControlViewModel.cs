@@ -1,4 +1,6 @@
 ﻿using Db.Context.HumanPart;
+using HumanEditorLib.View;
+using Mvvm.Commands;
 using System.Windows;
 
 namespace HumanEditorLib.ViewModel
@@ -9,7 +11,7 @@ namespace HumanEditorLib.ViewModel
 
 		public StreetControlViewModel()
 		{
-
+			DeleteCommand = new Command<StreetControl>(OnDeleteCommandExecute);
 		}
 
 		#region Properties
@@ -30,11 +32,29 @@ namespace HumanEditorLib.ViewModel
 
 		#endregion
 
-		public void SetFromDatabase(StreetType streetType)
+		#region Commands
+
+		public Command<StreetControl> DeleteStreetType { get; set; } = null;
+		public Command<StreetControl> DeleteCommand { get; private set; }
+		private void OnDeleteCommandExecute(StreetControl streetControl)
+		{
+			DeleteStreetType.Execute(streetControl);
+		}
+
+		#endregion
+
+		public void SetModel(StreetType streetType)
 		{
 			model = streetType;
 			Name = streetType.Name;
 			ShortName = streetType.ShortName;
+		}
+
+		public StreetType GetModel()
+		{
+			model.Name = Name;
+			model.ShortName = ShortName;
+			return model;
 		}
 	}
 }

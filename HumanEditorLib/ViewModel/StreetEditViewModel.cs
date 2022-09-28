@@ -2,6 +2,7 @@
 using HumanEditorLib.Model;
 using HumanEditorLib.View;
 using Mvvm.Commands;
+using System;
 using System.Windows.Controls;
 
 namespace HumanEditorLib.ViewModel
@@ -23,6 +24,7 @@ namespace HumanEditorLib.ViewModel
 		{
 			BindStreetCollection = new Command<UIElementCollection>(OnBindStreetCollectionExecute);
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
+			DeleteStreetType = new Command<StreetControl>(OnDeleteStreetTypeExecute);
 		}
 
 		public Command<UIElementCollection> BindStreetCollection { get; private set; }
@@ -38,8 +40,30 @@ namespace HumanEditorLib.ViewModel
 			{
 				StreetControl streetControl = new StreetControl();
 				StreetControlViewModel streetControlViewModel = (StreetControlViewModel)streetControl.DataContext;
-				streetControlViewModel.SetFromDatabase(streetType);
+				streetControlViewModel.SetModel(streetType);
+				streetControlViewModel.DeleteStreetType = DeleteStreetType;
 				streetCollection.Add(streetControl);
+			}
+		}
+
+		public Command<StreetControl> DeleteStreetType { get; private set; }
+		private void OnDeleteStreetTypeExecute(StreetControl streetControl)
+		{
+			StreetControlViewModel streetControlViewModel = (StreetControlViewModel)streetControl.DataContext;
+			StreetType streetType = streetControlViewModel.GetModel();
+			bool removedFromDatabase = false;
+			try
+			{
+				removedFromDatabase = model.DeleteStreetType(streetType);
+			}
+			catch(NullReferenceException) // не найдена запись в базе
+			{
+				removedFromDatabase = true;
+			}
+
+			if(removedFromDatabase)
+			{
+				streetCollection.Remove(streetControl);
 			}
 		}
 
