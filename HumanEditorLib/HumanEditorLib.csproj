@@ -65,6 +65,12 @@
     <Compile Include="View\HumanEdit.xaml.cs">
       <DependentUpon>HumanEdit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\LocalityControl.xaml.cs">
+      <DependentUpon>LocalityControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\LocalityEdit.xaml.cs">
+      <DependentUpon>LocalityEdit.xaml</DependentUpon>
+    </Compile>
     <Page Include="ResourceDictionaries\HumanEditDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -82,6 +88,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\HumanEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\LocalityControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\LocalityEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

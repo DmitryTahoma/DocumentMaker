@@ -12,6 +12,6 @@
     FontSize="15"
     mc:Ignorable="d">
     <Grid>
-        <humanEditor:BankEdit />
+        <humanEditor:LocalityEdit />
     </Grid>
 </Window>
