@@ -12,6 +12,7 @@ namespace HumanEditorLib.ViewModel
 		public LocalityControlViewModel()
 		{
 			DeleteCommand = new Command<LocalityControl>(OnDeleteCommandExecute);
+			SomePropertyChanged = new Command(OnSomePropertyChangedExecute);
 		}
 
 		#region Properties
@@ -39,6 +40,13 @@ namespace HumanEditorLib.ViewModel
 		private void OnDeleteCommandExecute(LocalityControl localityControl)
 		{
 			DeleteLocalityType.Execute(localityControl);
+		}
+
+		public Command PropertyChangedCommand { get; set; } = null;
+		public Command SomePropertyChanged { get; private set; }
+		private void OnSomePropertyChangedExecute()
+		{
+			PropertyChangedCommand.Execute();
 		}
 
 		#endregion

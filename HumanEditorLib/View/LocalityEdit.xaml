@@ -41,7 +41,10 @@
                     </StackPanel>
                 </MenuItem.Header>
             </MenuItem>
-            <MenuItem HorizontalAlignment="Center" Command="{Binding SaveChanges}">
+            <MenuItem
+                HorizontalAlignment="Center"
+                Command="{Binding SaveChanges}"
+                IsEnabled="{Binding HaveUnsavedChanges, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <MenuItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon
