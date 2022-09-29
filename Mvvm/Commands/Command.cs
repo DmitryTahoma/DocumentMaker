@@ -43,5 +43,7 @@ namespace Mvvm.Commands
 			else 
 				action();
 		}
+
+		public void Execute() => Execute(null);
 	}
 }
