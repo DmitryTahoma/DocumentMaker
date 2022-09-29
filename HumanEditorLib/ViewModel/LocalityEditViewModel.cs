@@ -12,6 +12,8 @@ namespace HumanEditorLib.ViewModel
 	public class LocalityEditViewModel : DependencyObject
 	{
 		LocalityEditModel model;
+		bool loaded = false;
+
 		UIElementCollection localityCollection = null;
 
 		public LocalityEditViewModel()
@@ -46,15 +48,22 @@ namespace HumanEditorLib.ViewModel
 		public Command<UIElementCollection> BindLocalityCollection { get; private set; }
 		private void OnBindLocalityCollectionExecute(UIElementCollection collection)
 		{
-			localityCollection = collection;
+			if(!loaded)
+			{
+				localityCollection = collection;
+			}
 		}
 
 		public Command LoadFromDatabase { get; private set; }
 		private void OnLoadFromDatabaseExecute()
 		{
-			foreach(LocalityType localityType in model.LoadLocalities())
+			if (!loaded)
 			{
-				AddLocalityTypeToView(localityType);
+				foreach (LocalityType localityType in model.LoadLocalities())
+				{
+					AddLocalityTypeToView(localityType);
+				}
+				loaded = true;
 			}
 		}
 

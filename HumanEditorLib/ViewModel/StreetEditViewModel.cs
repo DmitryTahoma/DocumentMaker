@@ -12,6 +12,8 @@ namespace HumanEditorLib.ViewModel
 	public class StreetEditViewModel : DependencyObject
 	{
 		StreetEditModel model;
+		bool loaded = false;
+
 		UIElementCollection streetCollection = null;
 
 		public StreetEditViewModel()
@@ -46,15 +48,22 @@ namespace HumanEditorLib.ViewModel
 		public Command<UIElementCollection> BindStreetCollection { get; private set; }
 		private void OnBindStreetCollectionExecute(UIElementCollection collection)
 		{
-			streetCollection = collection;
+			if(!loaded)
+			{
+				streetCollection = collection;
+			}
 		}
 
 		public Command LoadFromDatabase { get; private set; }
 		private void OnLoadFromDatabaseExecute()
 		{
-			foreach(StreetType streetType in model.LoadStreets())
+			if (!loaded)
 			{
-				AddStreetTypeToView(streetType);
+				foreach (StreetType streetType in model.LoadStreets())
+				{
+					AddStreetTypeToView(streetType);
+				}
+				loaded = true;
 			}
 		}
 
