@@ -6,9 +6,14 @@
     xmlns:local="clr-namespace:HumanEditorLib.View"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:HumanEditorLib.ViewModel"
+    x:Name="LocalityControlView"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <UserControl.DataContext>
+        <vm:LocalityControlViewModel />
+    </UserControl.DataContext>
     <UserControl.Resources>
         <ResourceDictionary Source="pack://application:,,,/HumanEditorLib;component/ResourceDictionaries/HumanEditDictionary.xaml" />
     </UserControl.Resources>
@@ -19,8 +24,11 @@
             <ColumnDefinition Width="50" />
         </Grid.ColumnDefinitions>
 
-        <TextBox Style="{StaticResource FirstSmallTextBox}" />
-        <TextBox Grid.Column="1" Style="{StaticResource LastSmallTextBox}" />
+        <TextBox Style="{StaticResource FirstSmallTextBox}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox
+            Grid.Column="1"
+            Style="{StaticResource LastSmallTextBox}"
+            Text="{Binding ShortName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Menu
             Grid.Column="2"
@@ -31,6 +39,8 @@
                 Padding="17,0,0,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
+                Command="{Binding DeleteCommand}"
+                CommandParameter="{Binding ElementName=LocalityControlView}"
                 ToolTip="Видалити">
                 <MenuItem.Header>
                     <materialDesign:PackIcon

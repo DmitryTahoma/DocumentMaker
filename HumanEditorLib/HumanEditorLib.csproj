@@ -67,7 +67,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\LocalityEditModel.cs" />
     <Compile Include="Model\StreetEditModel.cs" />
+    <Compile Include="ViewModel\LocalityControlViewModel.cs" />
+    <Compile Include="ViewModel\LocalityEditViewModel.cs" />
     <Compile Include="ViewModel\StreetControlViewModel.cs" />
     <Compile Include="ViewModel\StreetEditViewModel.cs" />
     <Compile Include="View\BankControl.xaml.cs">
