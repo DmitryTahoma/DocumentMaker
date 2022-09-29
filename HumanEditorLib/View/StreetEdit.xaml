@@ -26,7 +26,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
+            <RowDefinition />
         </Grid.RowDefinitions>
 
         <Menu>
@@ -67,10 +67,12 @@
             Style="{StaticResource RowHeaderTextBlock}"
             Text="Скорочення" />
 
-        <StackPanel
-            x:Name="StreetStack"
+        <ScrollViewer
             Grid.Row="2"
-            Grid.ColumnSpan="3" />
+            Grid.ColumnSpan="3"
+            VerticalScrollBarVisibility="Auto">
+            <StackPanel x:Name="StreetStack" />
+        </ScrollViewer>
     </Grid>
 
     <i:Interaction.Triggers>
