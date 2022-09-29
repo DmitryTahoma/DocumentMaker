@@ -9,7 +9,7 @@ using System.Windows.Controls;
 
 namespace HumanEditorLib.ViewModel
 {
-	public class StreetEditViewModel
+	public class StreetEditViewModel : DependencyObject
 	{
 		StreetEditModel model;
 		UIElementCollection streetCollection = null;
@@ -20,6 +20,17 @@ namespace HumanEditorLib.ViewModel
 			InitCommands();
 		}
 
+		#region Properties
+
+		public bool HaveUnsavedChanges
+		{
+			get { return (bool)GetValue(HaveUnsavedChangesProperty); }
+			set { SetValue(HaveUnsavedChangesProperty, value); }
+		}
+		public static readonly DependencyProperty HaveUnsavedChangesProperty = DependencyProperty.Register(nameof(HaveUnsavedChanges), typeof(bool), typeof(StreetEditViewModel));
+
+		#endregion
+
 		#region Commands
 
 		private void InitCommands()
@@ -29,6 +40,7 @@ namespace HumanEditorLib.ViewModel
 			DeleteStreetType = new Command<StreetControl>(OnDeleteStreetTypeExecute);
 			AddStreetType = new Command(OnAddStreetTypeExecute);
 			SaveChanges = new Command(OnSaveChangesExecute);
+			PropertyChangedCommand = new Command(OnPropertyChangedCommandExecute);
 		}
 
 		public Command<UIElementCollection> BindStreetCollection { get; private set; }
@@ -77,6 +89,13 @@ namespace HumanEditorLib.ViewModel
 		private void OnSaveChangesExecute()
 		{
 			model.SaveChanges(GetStreetsModels());
+			HaveUnsavedChanges = false;
+		}
+
+		public Command PropertyChangedCommand { get; private set; }
+		private void OnPropertyChangedCommandExecute()
+		{
+			HaveUnsavedChanges = true;
 		}
 
 		#endregion
@@ -89,6 +108,7 @@ namespace HumanEditorLib.ViewModel
 			StreetControlViewModel streetControlViewModel = (StreetControlViewModel)streetControl.DataContext;
 			streetControlViewModel.SetModel(streetType);
 			streetControlViewModel.DeleteStreetType = DeleteStreetType;
+			streetControlViewModel.PropertyChangedCommand = PropertyChangedCommand;
 			streetCollection.Add(streetControl);
 		}
 
