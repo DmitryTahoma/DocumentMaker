@@ -7,6 +7,7 @@
     xmlns:local="clr-namespace:HumanEditorLib.View"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:validationRules="clr-namespace:Mvvm.ValidationRules;assembly=Mvvm"
     xmlns:vm="clr-namespace:HumanEditorLib.ViewModel"
     x:Name="BankControlView"
     d:DesignHeight="450"
@@ -25,17 +26,35 @@
             <ColumnDefinition Width="50" />
         </Grid.ColumnDefinitions>
 
-        <TextBox Style="{StaticResource FirstSmallTextBox}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <TextBox Style="{StaticResource FirstSmallTextBox}">
+            <TextBox.Text>
+                <Binding
+                    Mode="TwoWay"
+                    Path="Name"
+                    UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="TextChanged">
                     <i:InvokeCommandAction Command="{Binding SomePropertyChanged}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </TextBox>
-        <TextBox
-            Grid.Column="1"
-            Style="{StaticResource LastSmallTextBox}"
-            Text="{Binding IBT, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <TextBox Grid.Column="1" Style="{StaticResource LastSmallTextBox}">
+            <TextBox.Text>
+                <Binding
+                    Mode="TwoWay"
+                    Path="IBT"
+                    UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                        <validationRules:IntPositiveValidationRule ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="TextChanged">
                     <i:InvokeCommandAction Command="{Binding SomePropertyChanged}" />

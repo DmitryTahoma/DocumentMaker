@@ -13,6 +13,7 @@
                 TargetType="TextBox">
                 <Setter Property="Margin" Value="5,5,2.5,5" />
                 <Setter Property="Padding" Value="5" />
+                <Setter Property="materialDesign:ValidationAssist.OnlyShowOnFocus" Value="True" />
             </Style>
 
             <Style
@@ -21,6 +22,7 @@
                 TargetType="TextBox">
                 <Setter Property="Margin" Value="2.5,5,2.5,5" />
                 <Setter Property="Padding" Value="5" />
+                <Setter Property="materialDesign:ValidationAssist.OnlyShowOnFocus" Value="True" />
             </Style>
 
             <Style
@@ -29,6 +31,7 @@
                 TargetType="TextBox">
                 <Setter Property="Margin" Value="2.5,5,5,5" />
                 <Setter Property="Padding" Value="5" />
+                <Setter Property="materialDesign:ValidationAssist.OnlyShowOnFocus" Value="True" />
             </Style>
 
             <Style
@@ -36,6 +39,7 @@
                 BasedOn="{StaticResource MaterialDesignOutlinedTextBox}"
                 TargetType="TextBox">
                 <Setter Property="Margin" Value="5,2.5,2.5,2.5" />
+                <Setter Property="materialDesign:ValidationAssist.OnlyShowOnFocus" Value="True" />
             </Style>
 
             <Style
@@ -43,6 +47,7 @@
                 BasedOn="{StaticResource MaterialDesignOutlinedTextBox}"
                 TargetType="TextBox">
                 <Setter Property="Margin" Value="2.5,2.5,5,2.5" />
+                <Setter Property="materialDesign:ValidationAssist.OnlyShowOnFocus" Value="True" />
             </Style>
 
             <Style
