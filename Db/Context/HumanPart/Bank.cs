@@ -8,5 +8,11 @@
 		/// Inter-Branch Turnover (МФО Межфилиальный оборот)
 		/// </summary>
 		public int IBT { get; set; }
+
+		public void Set(Bank other)
+		{
+			Name = other.Name;
+			IBT = other.IBT;
+		}
 	}
 }

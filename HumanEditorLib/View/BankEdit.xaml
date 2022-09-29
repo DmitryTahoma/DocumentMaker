@@ -3,12 +3,17 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:HumanEditorLib.View"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:HumanEditorLib.ViewModel"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <UserControl.DataContext>
+        <vm:BankEditViewModel />
+    </UserControl.DataContext>
     <UserControl.Resources>
         <ResourceDictionary Source="pack://application:,,,/HumanEditorLib;component/ResourceDictionaries/HumanEditDictionary.xaml" />
     </UserControl.Resources>
@@ -21,36 +26,60 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
+            <RowDefinition />
         </Grid.RowDefinitions>
 
-        <TextBlock Style="{StaticResource RowHeaderTextBlock}" Text="Назва банку" />
+        <Menu>
+            <MenuItem HorizontalAlignment="Center" Command="{Binding AddBank}">
+                <MenuItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            Kind="PlusCircleOutline" />
+                        <Label VerticalAlignment="Center" Content="_Добавити" />
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem
+                HorizontalAlignment="Center"
+                Command="{Binding SaveChanges}"
+                IsEnabled="{Binding HaveUnsavedChanges, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <MenuItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            Kind="ContentSaveOutline" />
+                        <Label VerticalAlignment="Center" Content="_Зберегти" />
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
+        </Menu>
+
         <TextBlock
+            Grid.Row="1"
+            Style="{StaticResource RowHeaderTextBlock}"
+            Text="Назва банку" />
+        <TextBlock
+            Grid.Row="1"
             Grid.Column="1"
             Style="{StaticResource RowHeaderTextBlock}"
             Text="МФО" />
 
-        <StackPanel Grid.Row="1" Grid.ColumnSpan="3">
-            <local:BankControl />
-            <local:BankControl />
-            <local:BankControl />
-        </StackPanel>
-
-        <Menu Grid.Row="2">
-            <MenuItem
-                Width="60"
-                Padding="19,0,0,0"
-                HorizontalAlignment="Center"
-                ToolTip="Добавити">
-                <MenuItem.Header>
-                    <materialDesign:PackIcon
-                        Width="24"
-                        Height="24"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Kind="PlusCircleOutline" />
-                </MenuItem.Header>
-            </MenuItem>
-        </Menu>
+        <ScrollViewer
+            Grid.Row="2"
+            Grid.ColumnSpan="3"
+            VerticalScrollBarVisibility="Auto">
+            <StackPanel x:Name="BankStack" />
+        </ScrollViewer>
     </Grid>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding BindBankCollection}" CommandParameter="{Binding ElementName=BankStack, Path=Children}" />
+            <i:InvokeCommandAction Command="{Binding LoadFromDatabase}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
 </UserControl>
