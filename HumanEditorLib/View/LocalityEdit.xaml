@@ -44,7 +44,7 @@
             <MenuItem
                 HorizontalAlignment="Center"
                 Command="{Binding SaveChanges}"
-                IsEnabled="{Binding HaveUnsavedChanges, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                CommandParameter="{Binding ElementName=LocalityStack}">
                 <MenuItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon

@@ -1,6 +1,7 @@
 ﻿using Db.Context.HumanPart;
 using HumanEditorLib.Model;
 using HumanEditorLib.View;
+using Mvvm;
 using Mvvm.Commands;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace HumanEditorLib.ViewModel
 	{
 		BankEditModel model;
 		bool loaded = false;
+		bool haveUnsavedChanges = false;
 
 		UIElementCollection bankCollection = null;
 
@@ -24,13 +26,6 @@ namespace HumanEditorLib.ViewModel
 
 		#region Properties
 
-		public bool HaveUnsavedChanges
-		{
-			get { return (bool)GetValue(HaveUnsavedChangesProperty); }
-			set { SetValue(HaveUnsavedChangesProperty, value); }
-		}
-		public static readonly DependencyProperty HaveUnsavedChangesProperty = DependencyProperty.Register(nameof(HaveUnsavedChanges), typeof(bool), typeof(BankEditViewModel));
-
 		#endregion
 
 		#region Commands
@@ -41,7 +36,7 @@ namespace HumanEditorLib.ViewModel
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
 			DeleteBank = new Command<BankControl>(OnDeleteBankExecute);
 			AddBank = new Command(OnAddBankExecute);
-			SaveChanges = new Command(OnSaveChangesExecute);
+			SaveChanges = new Command(OnSaveChangesExecute, CanExecuteSaveChanges);
 			PropertyChangedCommand = new Command(OnPropertyChangedCommandExecute);
 		}
 
@@ -98,13 +93,13 @@ namespace HumanEditorLib.ViewModel
 		private void OnSaveChangesExecute()
 		{
 			model.SaveChanges(GetBanksModels());
-			HaveUnsavedChanges = false;
+			haveUnsavedChanges = false;
 		}
 
 		public Command PropertyChangedCommand { get; private set; }
 		private void OnPropertyChangedCommandExecute()
 		{
-			HaveUnsavedChanges = true;
+			haveUnsavedChanges = true;
 		}
 
 		#endregion
@@ -130,6 +125,11 @@ namespace HumanEditorLib.ViewModel
 					yield return ((BankControlViewModel)bankControl.DataContext).GetModel();
 				}
 			}
+		}
+
+		private bool CanExecuteSaveChanges(object obj)
+		{
+			return haveUnsavedChanges && ValidationHelper.IsValid(obj as DependencyObject);
 		}
 
 		#endregion
