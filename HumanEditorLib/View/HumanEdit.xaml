@@ -67,6 +67,9 @@
             <ComboBox
                 Grid.Row="1"
                 Grid.ColumnSpan="3"
+                DisplayMemberPath="FullName"
+                ItemsSource="{Binding HumanList, Mode=OneWay}"
+                SelectedValuePath="@FullName"
                 Style="{StaticResource MiddleComboBox}"
                 Visibility="{Binding ElementName=ModeToggleButton, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverterHidden}}" />
 

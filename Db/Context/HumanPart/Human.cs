@@ -34,5 +34,7 @@ namespace Db.Context.HumanPart
 
 		[InverseProperty("Human")]
 		public List<Act> Acts { get; set; }
+
+		public string FullName => Surname + ' ' + Name + ' ' + Secondname;
 	}
 }

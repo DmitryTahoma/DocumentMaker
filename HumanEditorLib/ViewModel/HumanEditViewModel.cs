@@ -1,4 +1,6 @@
-﻿using HumanEditorLib.Model;
+﻿using Db.Context.HumanPart;
+using HumanEditorLib.Model;
+using Mvvm;
 using Mvvm.Commands;
 using System.Windows;
 
@@ -23,6 +25,8 @@ namespace HumanEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty ModeSelectedProperty = DependencyProperty.Register(nameof(ModeSelected), typeof(bool), typeof(HumanEditViewModel));
 
+		public ObservableRangeCollection<Human> HumanList { get; private set; } = new ObservableRangeCollection<Human>();
+
 		#endregion
 
 		#region Commands
@@ -37,6 +41,7 @@ namespace HumanEditorLib.ViewModel
 		{
 			if(!loaded)
 			{
+				HumanList.AddRange(model.LoadHumans());
 				loaded = true;
 			}
 		}
