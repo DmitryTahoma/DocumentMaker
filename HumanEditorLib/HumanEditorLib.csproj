@@ -68,10 +68,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\BankEditModel.cs" />
+    <Compile Include="Model\HumanEditModel.cs" />
     <Compile Include="Model\LocalityEditModel.cs" />
     <Compile Include="Model\StreetEditModel.cs" />
     <Compile Include="ViewModel\BankControlViewModel.cs" />
     <Compile Include="ViewModel\BankEditViewModel.cs" />
+    <Compile Include="ViewModel\HumanEditViewModel.cs" />
     <Compile Include="ViewModel\LocalityControlViewModel.cs" />
     <Compile Include="ViewModel\LocalityEditViewModel.cs" />
     <Compile Include="ViewModel\StreetControlViewModel.cs" />
