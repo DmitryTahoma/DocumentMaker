@@ -2,6 +2,7 @@
 using Db.Context.HumanPart;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HumanEditorLib.Model
 {
@@ -12,14 +13,17 @@ namespace HumanEditorLib.Model
 
 		}
 
-		public IEnumerable<LocalityType> LoadLocalities()
+		public async Task<IEnumerable<LocalityType>> LoadLocalities()
 		{
-			List<LocalityType> result;
-			using (DocumentMakerContext db = new DocumentMakerContext())
+			return await Task.Run(() =>
 			{
-				result = new List<LocalityType>(db.LocalityTypes);
-			}
-			return result;
+				List<LocalityType> result;
+				using (DocumentMakerContext db = new DocumentMakerContext())
+				{
+					result = new List<LocalityType>(db.LocalityTypes);
+				}
+				return result;
+			});
 		}
 
 		public bool DeleteLocalityType(LocalityType localityType)

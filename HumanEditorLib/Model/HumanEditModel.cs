@@ -1,6 +1,7 @@
 ﻿using Db.Context;
 using Db.Context.HumanPart;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HumanEditorLib.Model
 {
@@ -11,14 +12,17 @@ namespace HumanEditorLib.Model
 
 		}
 
-		public IEnumerable<Human> LoadHumans()
+		public async Task<IEnumerable<Human>> LoadHumans()
 		{
-			List<Human> result = new List<Human>();
-			using(DocumentMakerContext db = new DocumentMakerContext())
+			return await Task.Run(() =>
 			{
-				result.AddRange(db.Humans);
-			}
-			return result;
+				List<Human> result = new List<Human>();
+				using (DocumentMakerContext db = new DocumentMakerContext())
+				{
+					result.AddRange(db.Humans);
+				}
+				return result;
+			});
 		}
 	}
 }

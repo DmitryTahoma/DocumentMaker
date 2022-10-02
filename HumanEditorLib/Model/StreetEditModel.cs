@@ -3,6 +3,7 @@ using Db.Context.HumanPart;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HumanEditorLib.Model
 {
@@ -12,14 +13,17 @@ namespace HumanEditorLib.Model
 		{
 		}
 
-		public IEnumerable<StreetType> LoadStreets()
+		public async Task<IEnumerable<StreetType>> LoadStreets()
 		{
-			List<StreetType> result;
-			using (DocumentMakerContext db = new DocumentMakerContext())
+			return await Task.Run(() =>
 			{
-				result = new List<StreetType>(db.StreetTypes);
-			}
-			return result;
+				List<StreetType> result;
+				using (DocumentMakerContext db = new DocumentMakerContext())
+				{
+					result = new List<StreetType>(db.StreetTypes);
+				}
+				return result;
+			});
 		}
 
 		public bool DeleteStreetType(StreetType streetType)

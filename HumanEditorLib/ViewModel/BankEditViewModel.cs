@@ -50,15 +50,15 @@ namespace HumanEditorLib.ViewModel
 		}
 
 		public Command LoadFromDatabase { get; private set; }
-		private void OnLoadFromDatabaseExecute()
+		private async void OnLoadFromDatabaseExecute()
 		{
 			if (!loaded)
 			{
-				foreach (Bank streetType in model.LoadBanks())
+				loaded = true;
+				foreach (Bank streetType in await model.LoadBanks())
 				{
 					AddBankToView(streetType);
 				}
-				loaded = true;
 			}
 		}
 

@@ -50,15 +50,15 @@ namespace HumanEditorLib.ViewModel
 		}
 
 		public Command LoadFromDatabase { get; private set; }
-		private void OnLoadFromDatabaseExecute()
+		private async void OnLoadFromDatabaseExecute()
 		{
 			if (!loaded)
 			{
-				foreach (LocalityType localityType in model.LoadLocalities())
+				loaded = true;
+				foreach (LocalityType localityType in await model.LoadLocalities())
 				{
 					AddLocalityTypeToView(localityType);
 				}
-				loaded = true;
 			}
 		}
 

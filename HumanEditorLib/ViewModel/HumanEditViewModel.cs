@@ -2,6 +2,7 @@
 using HumanEditorLib.Model;
 using Mvvm;
 using Mvvm.Commands;
+using System.Collections.Generic;
 using System.Windows;
 
 namespace HumanEditorLib.ViewModel
@@ -37,12 +38,12 @@ namespace HumanEditorLib.ViewModel
 		}
 
 		public Command LoadFromDatabase { get; private set; }
-		public void OnLoadFromDatabaseExecute()
+		public async void OnLoadFromDatabaseExecute()
 		{
 			if(!loaded)
 			{
-				HumanList.AddRange(model.LoadHumans());
 				loaded = true;
+				HumanList.AddRange(await model.LoadHumans());
 			}
 		}
 

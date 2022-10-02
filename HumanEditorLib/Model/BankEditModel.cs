@@ -2,6 +2,7 @@
 using Db.Context.HumanPart;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HumanEditorLib.Model
 {
@@ -12,14 +13,17 @@ namespace HumanEditorLib.Model
 
 		}
 
-		public IEnumerable<Bank> LoadBanks()
+		public async Task<IEnumerable<Bank>> LoadBanks()
 		{
-			List<Bank> result;
-			using (DocumentMakerContext db = new DocumentMakerContext())
+			return await Task.Run(() =>
 			{
-				result = new List<Bank>(db.Banks);
-			}
-			return result;
+				List<Bank> result;
+				using (DocumentMakerContext db = new DocumentMakerContext())
+				{
+					result = new List<Bank>(db.Banks);
+				}
+				return result;
+			});
 		}
 
 		public bool DeleteBank(Bank bank)
