@@ -10,7 +10,7 @@ namespace HumanEditorLib.ViewModel
 	public class HumanEditViewModel : DependencyObject
 	{
 		HumanEditModel model = new HumanEditModel();
-		bool loaded = false;
+		ViewModelState state = ViewModelState.Initialized;
 
 		public HumanEditViewModel()
 		{
@@ -40,10 +40,11 @@ namespace HumanEditorLib.ViewModel
 		public Command LoadFromDatabase { get; private set; }
 		public async void OnLoadFromDatabaseExecute()
 		{
-			if(!loaded)
+			if (state == ViewModelState.Initialized)
 			{
-				loaded = true;
+				state = ViewModelState.Loading;
 				HumanList.AddRange(await model.LoadHumans());
+				state = ViewModelState.Loaded;
 			}
 		}
 

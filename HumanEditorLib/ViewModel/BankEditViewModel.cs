@@ -13,7 +13,7 @@ namespace HumanEditorLib.ViewModel
 	public class BankEditViewModel : DependencyObject
 	{
 		BankEditModel model;
-		bool loaded = false;
+		ViewModelState state = ViewModelState.Initialized;
 		bool haveUnsavedChanges = false;
 
 		UIElementCollection bankCollection = null;
@@ -43,7 +43,7 @@ namespace HumanEditorLib.ViewModel
 		public Command<UIElementCollection> BindBankCollection { get; private set; }
 		private void OnBindBankCollectionExecute(UIElementCollection collection)
 		{
-			if(!loaded)
+			if(bankCollection == null)
 			{
 				bankCollection = collection;
 			}
@@ -52,13 +52,14 @@ namespace HumanEditorLib.ViewModel
 		public Command LoadFromDatabase { get; private set; }
 		private async void OnLoadFromDatabaseExecute()
 		{
-			if (!loaded)
+			if (state == ViewModelState.Initialized)
 			{
-				loaded = true;
+				state = ViewModelState.Loading;
 				foreach (Bank streetType in await model.LoadBanks())
 				{
 					AddBankToView(streetType);
 				}
+				state = ViewModelState.Loaded;
 			}
 		}
 

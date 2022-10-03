@@ -13,7 +13,7 @@ namespace HumanEditorLib.ViewModel
 	public class LocalityEditViewModel : DependencyObject
 	{
 		LocalityEditModel model;
-		bool loaded = false;
+		ViewModelState state = ViewModelState.Initialized;
 		bool haveUnsavedChanges = false;
 
 		UIElementCollection localityCollection = null;
@@ -43,7 +43,7 @@ namespace HumanEditorLib.ViewModel
 		public Command<UIElementCollection> BindLocalityCollection { get; private set; }
 		private void OnBindLocalityCollectionExecute(UIElementCollection collection)
 		{
-			if(!loaded)
+			if(localityCollection == null)
 			{
 				localityCollection = collection;
 			}
@@ -52,13 +52,14 @@ namespace HumanEditorLib.ViewModel
 		public Command LoadFromDatabase { get; private set; }
 		private async void OnLoadFromDatabaseExecute()
 		{
-			if (!loaded)
+			if (state == ViewModelState.Initialized)
 			{
-				loaded = true;
+				state = ViewModelState.Loading;
 				foreach (LocalityType localityType in await model.LoadLocalities())
 				{
 					AddLocalityTypeToView(localityType);
 				}
+				state = ViewModelState.Loaded;
 			}
 		}
 

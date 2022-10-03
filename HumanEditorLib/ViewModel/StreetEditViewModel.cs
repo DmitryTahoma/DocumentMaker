@@ -13,7 +13,7 @@ namespace HumanEditorLib.ViewModel
 	public class StreetEditViewModel : DependencyObject
 	{
 		StreetEditModel model;
-		bool loaded = false;
+		ViewModelState state = ViewModelState.Initialized;
 		bool haveUnsavedChanges = false;
 
 		UIElementCollection streetCollection = null;
@@ -43,7 +43,7 @@ namespace HumanEditorLib.ViewModel
 		public Command<UIElementCollection> BindStreetCollection { get; private set; }
 		private void OnBindStreetCollectionExecute(UIElementCollection collection)
 		{
-			if(!loaded)
+			if(streetCollection == null)
 			{
 				streetCollection = collection;
 			}
@@ -52,13 +52,14 @@ namespace HumanEditorLib.ViewModel
 		public Command LoadFromDatabase { get; private set; }
 		private async void OnLoadFromDatabaseExecute()
 		{
-			if (!loaded)
+			if (state == ViewModelState.Initialized)
 			{
-				loaded = true;
+				state = ViewModelState.Loading;
 				foreach (StreetType streetType in await model.LoadStreets())
 				{
 					AddStreetTypeToView(streetType);
 				}
+				state = ViewModelState.Loaded;
 			}
 		}
 
