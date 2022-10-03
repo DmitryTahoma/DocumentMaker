@@ -30,6 +30,14 @@ namespace Mvvm.Commands
 			this.canExecute = canExecute;
 			haveParameter = false;
 		}
+		public Command(Action<object> actionCommand, Func<bool> canExecute) : this(actionCommand)
+		{
+			SetCanExecuteWithoutParams(canExecute);
+		}
+		public Command(Action actionCommand, Func<bool> canExecute) : this(actionCommand)
+		{
+			SetCanExecuteWithoutParams(canExecute);
+		}
 
 		public bool CanExecute(object parameter)
 		{
@@ -45,5 +53,13 @@ namespace Mvvm.Commands
 		}
 
 		public void Execute() => Execute(null);
+
+		private void SetCanExecuteWithoutParams(Func<bool> func)
+		{
+			if(func != null)
+			{
+				canExecute = (_) => func.Invoke();
+			}
+		}
 	}
 }
