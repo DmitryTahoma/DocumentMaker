@@ -1,12 +1,25 @@
 ﻿using Db.Context.ActPart;
 using Db.Context.BackPart;
 using Db.Context.HumanPart;
+using System;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Db.Context
 {
 	public class DocumentMakerContext : DbContext
 	{
+		static List<PropertyInfo> tables = new List<PropertyInfo>();
+
+		static DocumentMakerContext()
+		{
+			tables = new List<PropertyInfo>(typeof(DocumentMakerContext).GetProperties()
+				.Where(x => x.PropertyType.Name == typeof(DbSet<>).Name));
+		}
+
 		public DocumentMakerContext() : base("Data Source=10.32.16.170,1433;Network Library=DBMSSOCN;Initial Catalog=DocumentMaker;User ID=ProgTest; Password=qwerty123;") { }
 
 		#region ActPart
@@ -45,5 +58,17 @@ namespace Db.Context
 		public DbSet<StreetType> StreetTypes { get; set; }
 
 		#endregion
+
+		public async Task<IEnumerable<T>> GetTable<T>() where T : class, IDbObject
+		{
+			return await Task.Run(new Func<IEnumerable<T>>(() =>
+			{
+				return tables
+					.Where(x => x.PropertyType.GenericTypeArguments
+						.FirstOrDefault(y => y == typeof(T)) != null)
+					.Select(x =>(IEnumerable<T>)x.GetValue(this))
+					.FirstOrDefault();
+			}));
+		}
 	}
 }
