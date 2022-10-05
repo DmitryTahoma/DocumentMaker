@@ -7,11 +7,11 @@ namespace Mvvm
 {
 	public class ObservableRangeCollection<T> : ObservableCollection<T>
 	{
-		private bool suppressNotification = false;
+		public bool SuppressingNotifications { get; set; } = false;
 
 		protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
 		{
-			if (!suppressNotification)
+			if (!SuppressingNotifications)
 				base.OnCollectionChanged(e);
 		}
 
@@ -20,13 +20,19 @@ namespace Mvvm
 			if (list == null)
 				throw new ArgumentNullException("list");
 
-			suppressNotification = true;
+			bool suppressingNotifications = SuppressingNotifications;
+			SuppressingNotifications = true;
 
 			foreach (T item in list)
 			{
 				Add(item);
 			}
-			suppressNotification = false;
+			SuppressingNotifications = suppressingNotifications;
+			UpdateCollection();
+		}
+
+		public void UpdateCollection()
+		{
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 		}
 
