@@ -29,5 +29,23 @@ namespace Mvvm
 			suppressNotification = false;
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 		}
+
+		public int RemoveAll(Predicate<T> match)
+		{
+			Stack<T> removed = new Stack<T>();
+			foreach(T elem in this)
+			{
+				if(match(elem))
+				{
+					removed.Push(elem);
+				}
+			}
+			int counter = removed.Count;
+			while (removed.Count > 0)
+			{
+				Remove(removed.Pop());
+			}
+			return counter;
+		}
 	}
 }
