@@ -68,12 +68,12 @@ namespace HumanEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty SecondNameProperty = DependencyProperty.Register(nameof(SecondName), typeof(string), typeof(HumanEditViewModel));
 
-		public long TIN
+		public string TINText
 		{
-			get { return (long)GetValue(TINProperty); }
-			set { SetValue(TINProperty, value); }
+			get { return (string)GetValue(TINTextProperty); }
+			set { SetValue(TINTextProperty, value); }
 		}
-		public static readonly DependencyProperty TINProperty = DependencyProperty.Register(nameof(TIN), typeof(long), typeof(HumanEditViewModel));
+		public static readonly DependencyProperty TINTextProperty = DependencyProperty.Register(nameof(TINText), typeof(string), typeof(HumanEditViewModel));
 
 		public ObservableRangeCollection<LocalityType> LocalityTypesList { get; private set; } = new ObservableRangeCollection<LocalityType>();
 
@@ -144,12 +144,12 @@ namespace HumanEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty DevelopmentContractNumberProperty = DependencyProperty.Register(nameof(DevelopmentContractNumber), typeof(string), typeof(HumanEditViewModel));
 
-		public DateTime DevelopmentContractDate
+		public string DevelopmentContractDateString
 		{
-			get { return (DateTime)GetValue(DevelopmentContractDateProperty); }
-			set { SetValue(DevelopmentContractDateProperty, value); }
+			get { return (string)GetValue(DevelopmentContractDateStringProperty); }
+			set { SetValue(DevelopmentContractDateStringProperty, value); }
 		}
-		public static readonly DependencyProperty DevelopmentContractDateProperty = DependencyProperty.Register(nameof(DevelopmentContractDate), typeof(DateTime), typeof(HumanEditViewModel));
+		public static readonly DependencyProperty DevelopmentContractDateStringProperty = DependencyProperty.Register(nameof(DevelopmentContractDateString), typeof(string), typeof(HumanEditViewModel));
 
 		public string SupportContractNumber
 		{
@@ -158,26 +158,26 @@ namespace HumanEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty SupportContractNumberProperty = DependencyProperty.Register(nameof(SupportContractNumber), typeof(string), typeof(HumanEditViewModel));
 
-		public DateTime SupportContractDate
+		public string SupportContractDateString
 		{
-			get { return (DateTime)GetValue(SupportContractDateProperty); }
-			set { SetValue(SupportContractDateProperty, value); }
+			get { return (string)GetValue(SupportContractDateStringProperty); }
+			set { SetValue(SupportContractDateStringProperty, value); }
 		}
-		public static readonly DependencyProperty SupportContractDateProperty = DependencyProperty.Register(nameof(SupportContractDate), typeof(DateTime), typeof(HumanEditViewModel));
+		public static readonly DependencyProperty SupportContractDateStringProperty = DependencyProperty.Register(nameof(SupportContractDateString), typeof(string), typeof(HumanEditViewModel));
 
-		public DateTime EmploymentDate
+		public string EmploymentDateString
 		{
-			get { return (DateTime)GetValue(EmploymentDateProperty); }
-			set { SetValue(EmploymentDateProperty, value); }
+			get { return (string)GetValue(EmploymentDateStringProperty); }
+			set { SetValue(EmploymentDateStringProperty, value); }
 		}
-		public static readonly DependencyProperty EmploymentDateProperty = DependencyProperty.Register(nameof(EmploymentDate), typeof(DateTime), typeof(HumanEditViewModel));
+		public static readonly DependencyProperty EmploymentDateStringProperty = DependencyProperty.Register(nameof(EmploymentDateString), typeof(string), typeof(HumanEditViewModel));
 
-		public DateTime FiredDate
+		public string FiredDateString
 		{
-			get { return (DateTime)GetValue(FiredDateProperty); }
-			set { SetValue(FiredDateProperty, value); }
+			get { return (string)GetValue(FiredDateStringProperty); }
+			set { SetValue(FiredDateStringProperty, value); }
 		}
-		public static readonly DependencyProperty FiredDateProperty = DependencyProperty.Register(nameof(FiredDate), typeof(DateTime), typeof(HumanEditViewModel));
+		public static readonly DependencyProperty FiredDateStringProperty = DependencyProperty.Register(nameof(FiredDateString), typeof(string), typeof(HumanEditViewModel));
 
 		public bool IsFired
 		{
@@ -307,20 +307,20 @@ namespace HumanEditorLib.ViewModel
 				ApartmentNumber = ApartmentNumber,
 			};
 			Contract developContract = null, supportContract = null;
-			if(!string.IsNullOrEmpty(DevelopmentContractNumber) && DevelopmentContractDate != default(DateTime))
+			if(!string.IsNullOrEmpty(DevelopmentContractNumber) && !string.IsNullOrEmpty(DevelopmentContractDateString))
 			{
 				developContract = new Contract
 				{
 					Number = DevelopmentContractNumber,
-					PreparationDate = DevelopmentContractDate,
+					PreparationDate = DateTime.Parse(DevelopmentContractDateString),
 				};
 			}
-			if(!string.IsNullOrEmpty(SupportContractNumber) && SupportContractDate != default(DateTime))
+			if(!string.IsNullOrEmpty(SupportContractNumber) && !string.IsNullOrEmpty(SupportContractDateString))
 			{
 				supportContract = new Contract
 				{
 					Number = SupportContractNumber,
-					PreparationDate = SupportContractDate,
+					PreparationDate = DateTime.Parse(SupportContractDateString),
 				};
 			}
 			Human human = new Human
@@ -328,11 +328,10 @@ namespace HumanEditorLib.ViewModel
 				Surname = Surname,
 				Name = Name,
 				Secondname = SecondName,
-				TIN = TIN,
+				TIN = long.Parse(TINText),
 				Address = address,
 				BankId = SelectedBank.Id,
 				CheckingAccount = CheckingAccount,
-				EmploymentDate = EmploymentDate,
 				IsFired = IsFired,
 			};
 			if(developContract != null)
@@ -343,9 +342,13 @@ namespace HumanEditorLib.ViewModel
 			{
 				human.SupportContract = supportContract;
 			}
-			if(IsFired)
+			if(!string.IsNullOrEmpty(EmploymentDateString))
 			{
-				human.FiredDate = FiredDate;
+				human.EmploymentDate = DateTime.Parse(EmploymentDateString);
+			}
+			if(IsFired && !string.IsNullOrEmpty(FiredDateString))
+			{
+				human.FiredDate = DateTime.Parse(FiredDateString);
 			}
 			await model.ConnectDB();
 			human = await model.AddHuman(human);

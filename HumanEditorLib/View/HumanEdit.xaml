@@ -182,7 +182,7 @@
                             <TextBox.Text>
                                 <Binding
                                     Mode="TwoWay"
-                                    Path="TIN"
+                                    Path="TINText"
                                     UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
                                         <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
@@ -377,7 +377,7 @@
                             Grid.Row="1"
                             Grid.Column="1"
                             materialDesign:HintAssist.Hint="Дата складання"
-                            SelectedDate="{Binding DevelopmentContractDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            SelectedDate="{Binding DevelopmentContractDateString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Style="{StaticResource LastDatePicker}" />
                     </Grid>
                 </materialDesign:Card>
@@ -411,7 +411,7 @@
                             Grid.Row="1"
                             Grid.Column="1"
                             materialDesign:HintAssist.Hint="Дата складання"
-                            SelectedDate="{Binding SupportContractDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            SelectedDate="{Binding SupportContractDateString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Style="{StaticResource LastDatePicker}" />
                     </Grid>
                 </materialDesign:Card>
@@ -432,14 +432,14 @@
 
                         <DatePicker
                             materialDesign:HintAssist.Hint="Дата прийому на роботу"
-                            SelectedDate="{Binding EmploymentDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            SelectedDate="{Binding EmploymentDateString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Style="{StaticResource FirstDatePicker}" />
 
                         <DatePicker
                             Grid.Column="1"
                             materialDesign:HintAssist.Hint="Дата звільнення"
                             IsEnabled="{Binding ElementName=IsFiredToggleButton, Path=IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            SelectedDate="{Binding FiredDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            SelectedDate="{Binding FiredDateString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Style="{StaticResource LastDatePicker}" />
 
 

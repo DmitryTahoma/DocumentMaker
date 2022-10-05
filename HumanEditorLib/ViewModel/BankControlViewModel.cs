@@ -57,7 +57,7 @@ namespace HumanEditorLib.ViewModel
 		{
 			model = bank;
 			Name = bank.Name;
-			IBT = bank.IBT.ToString();
+			IBT = bank.IBT == 0 ? "" : bank.IBT.ToString();
 		}
 
 		public Bank GetModel()
