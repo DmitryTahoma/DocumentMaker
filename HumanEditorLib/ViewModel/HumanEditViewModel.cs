@@ -2,6 +2,9 @@
 using HumanEditorLib.Model;
 using Mvvm;
 using Mvvm.Commands;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace HumanEditorLib.ViewModel
@@ -41,6 +44,145 @@ namespace HumanEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty SelectedEditHumanProperty = DependencyProperty.Register(nameof(SelectedEditHuman), typeof(Human), typeof(HumanEditViewModel));
 
+		public string Surname
+		{
+			get { return (string)GetValue(SurnameProperty); }
+			set { SetValue(SurnameProperty, value); }
+		}
+		public static readonly DependencyProperty SurnameProperty = DependencyProperty.Register(nameof(Surname), typeof(string), typeof(HumanEditViewModel));
+
+		public string Name
+		{
+			get { return (string)GetValue(NameProperty); }
+			set { SetValue(NameProperty, value); }
+		}
+		public static readonly DependencyProperty NameProperty = DependencyProperty.Register(nameof(Name), typeof(string), typeof(HumanEditViewModel));
+
+		public string SecondName
+		{
+			get { return (string)GetValue(SecondNameProperty); }
+			set { SetValue(SecondNameProperty, value); }
+		}
+		public static readonly DependencyProperty SecondNameProperty = DependencyProperty.Register(nameof(SecondName), typeof(string), typeof(HumanEditViewModel));
+
+		public long TIN
+		{
+			get { return (long)GetValue(TINProperty); }
+			set { SetValue(TINProperty, value); }
+		}
+		public static readonly DependencyProperty TINProperty = DependencyProperty.Register(nameof(TIN), typeof(long), typeof(HumanEditViewModel));
+
+		public ObservableRangeCollection<LocalityType> LocalityTypesList { get; private set; } = new ObservableRangeCollection<LocalityType>();
+
+		public LocalityType SelectedLocalityType
+		{
+			get { return (LocalityType)GetValue(SelectedLocalityTypeProperty); }
+			set { SetValue(SelectedLocalityTypeProperty, value); }
+		}
+		public static readonly DependencyProperty SelectedLocalityTypeProperty =DependencyProperty.Register(nameof(SelectedLocalityType), typeof(LocalityType), typeof(HumanEditViewModel));
+
+		public string LocalityName
+		{
+			get { return (string)GetValue(LocalityNameProperty); }
+			set { SetValue(LocalityNameProperty, value); }
+		}
+		public static readonly DependencyProperty LocalityNameProperty =DependencyProperty.Register(nameof(LocalityName), typeof(string), typeof(HumanEditViewModel));
+
+		public ObservableRangeCollection<StreetType> StreetTypesList { get; private set; } = new ObservableRangeCollection<StreetType>();
+
+		public StreetType SelectedStreetType
+		{
+			get { return (StreetType)GetValue(SelectedStreetTypeProperty); }
+			set { SetValue(SelectedStreetTypeProperty, value); }
+		}
+		public static readonly DependencyProperty SelectedStreetTypeProperty = DependencyProperty.Register(nameof(SelectedStreetType), typeof(StreetType), typeof(HumanEditViewModel));
+
+		public string StreetName
+		{
+			get { return (string)GetValue(StreetNameProperty); }
+			set { SetValue(StreetNameProperty, value); }
+		}
+		public static readonly DependencyProperty StreetNameProperty = DependencyProperty.Register(nameof(StreetName), typeof(string), typeof(HumanEditViewModel));
+
+		public string HouseNumber
+		{
+			get { return (string)GetValue(HouseNumberProperty); }
+			set { SetValue(HouseNumberProperty, value); }
+		}
+		public static readonly DependencyProperty HouseNumberProperty = DependencyProperty.Register(nameof(HouseNumber), typeof(string), typeof(HumanEditViewModel));
+
+		public string ApartmentNumber
+		{
+			get { return (string)GetValue(ApartmentNumberProperty); }
+			set { SetValue(ApartmentNumberProperty, value); }
+		}
+		public static readonly DependencyProperty ApartmentNumberProperty = DependencyProperty.Register(nameof(ApartmentNumber), typeof(string), typeof(HumanEditViewModel));
+
+		public ObservableRangeCollection<Bank> BanksList { get; private set; } = new ObservableRangeCollection<Bank>();
+
+		public Bank SelectedBank
+		{
+			get { return (Bank)GetValue(SelectedBankProperty); }
+			set { SetValue(SelectedBankProperty, value); }
+		}
+		public static readonly DependencyProperty SelectedBankProperty = DependencyProperty.Register(nameof(SelectedBank), typeof(Bank), typeof(HumanEditViewModel));
+
+		public string CheckingAccount
+		{
+			get { return (string)GetValue(CheckingAccountProperty); }
+			set { SetValue(CheckingAccountProperty, value); }
+		}
+		public static readonly DependencyProperty CheckingAccountProperty = DependencyProperty.Register(nameof(CheckingAccount), typeof(string), typeof(HumanEditViewModel));
+
+		public string DevelopmentContractNumber
+		{
+			get { return (string)GetValue(DevelopmentContractNumberProperty); }
+			set { SetValue(DevelopmentContractNumberProperty, value); }
+		}
+		public static readonly DependencyProperty DevelopmentContractNumberProperty = DependencyProperty.Register(nameof(DevelopmentContractNumber), typeof(string), typeof(HumanEditViewModel));
+
+		public DateTime DevelopmentContractDate
+		{
+			get { return (DateTime)GetValue(DevelopmentContractDateProperty); }
+			set { SetValue(DevelopmentContractDateProperty, value); }
+		}
+		public static readonly DependencyProperty DevelopmentContractDateProperty = DependencyProperty.Register(nameof(DevelopmentContractDate), typeof(DateTime), typeof(HumanEditViewModel));
+
+		public string SupportContractNumber
+		{
+			get { return (string)GetValue(SupportContractNumberProperty); }
+			set { SetValue(SupportContractNumberProperty, value); }
+		}
+		public static readonly DependencyProperty SupportContractNumberProperty = DependencyProperty.Register(nameof(SupportContractNumber), typeof(string), typeof(HumanEditViewModel));
+
+		public DateTime SupportContractDate
+		{
+			get { return (DateTime)GetValue(SupportContractDateProperty); }
+			set { SetValue(SupportContractDateProperty, value); }
+		}
+		public static readonly DependencyProperty SupportContractDateProperty = DependencyProperty.Register(nameof(SupportContractDate), typeof(DateTime), typeof(HumanEditViewModel));
+
+		public DateTime EmploymentDate
+		{
+			get { return (DateTime)GetValue(EmploymentDateProperty); }
+			set { SetValue(EmploymentDateProperty, value); }
+		}
+		public static readonly DependencyProperty EmploymentDateProperty = DependencyProperty.Register(nameof(EmploymentDate), typeof(DateTime), typeof(HumanEditViewModel));
+
+		public DateTime FiredDate
+		{
+			get { return (DateTime)GetValue(FiredDateProperty); }
+			set { SetValue(FiredDateProperty, value); }
+		}
+		public static readonly DependencyProperty FiredDateProperty = DependencyProperty.Register(nameof(FiredDate), typeof(DateTime), typeof(HumanEditViewModel));
+
+		public bool IsFired
+		{
+			get { return (bool)GetValue(IsFiredProperty); }
+			set { SetValue(IsFiredProperty, value); }
+		}
+		public static readonly DependencyProperty IsFiredProperty = DependencyProperty.Register(nameof(IsFired), typeof(bool), typeof(HumanEditViewModel));
+
 		#endregion
 
 		#region Commands
@@ -50,6 +192,7 @@ namespace HumanEditorLib.ViewModel
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
 			SelectMode = new Command(OnSelectModeExecute, CanExecuteSelectMode);
 			UnselectMode = new Command(OnUnselectModeExecute);
+			ActionCommand = new Command(OnActionCommandExecute);
 		}
 
 		public Command LoadFromDatabase { get; private set; }
@@ -80,6 +223,15 @@ namespace HumanEditorLib.ViewModel
 			ModeSelected = false;
 		}
 
+		public Command ActionCommand { get; private set; }
+		public void OnActionCommandExecute()
+		{
+			if (IsEditionMode)
+				SaveHumanChanges();
+			else
+				AddHuman();
+		}
+
 		#endregion
 
 		#region Methods
@@ -95,6 +247,16 @@ namespace HumanEditorLib.ViewModel
 		}
 
 		private void StartHumanCreation()
+		{
+
+		}
+
+		private void SaveHumanChanges()
+		{
+
+		}
+
+		private void AddHuman()
 		{
 
 		}
