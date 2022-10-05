@@ -1,6 +1,8 @@
-﻿namespace Db.Context.HumanPart
+﻿using System;
+
+namespace Db.Context.HumanPart
 {
-	public class LocalityType
+	public class LocalityType : IDbObject
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
@@ -10,6 +12,14 @@
 		{
 			Name = other.Name;
 			ShortName = other.ShortName;
+		}
+
+		public void Set(IDbObject other)
+		{
+			if (other is LocalityType obj)
+				Set(obj);
+			else
+				throw new InvalidOperationException();
 		}
 	}
 }

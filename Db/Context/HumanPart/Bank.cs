@@ -1,6 +1,8 @@
-﻿namespace Db.Context.HumanPart
+﻿using System;
+
+namespace Db.Context.HumanPart
 {
-	public class Bank
+	public class Bank : IDbObject
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
@@ -13,6 +15,14 @@
 		{
 			Name = other.Name;
 			IBT = other.IBT;
+		}
+
+		public void Set(IDbObject other)
+		{
+			if (other is Bank obj)
+				Set(obj);
+			else
+				throw new InvalidOperationException();
 		}
 	}
 }

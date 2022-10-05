@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Db.Context.BackPart
 {
-	public class Project
+	public class Project : IDbObject
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
@@ -12,5 +12,10 @@ namespace Db.Context.BackPart
 		public List<AlternativeProjectName> AlternativeNames { get; set; }
 		[InverseProperty("Project")]
 		public List<Episode> Episodes { get; set; }
+
+		public void Set(IDbObject other)
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

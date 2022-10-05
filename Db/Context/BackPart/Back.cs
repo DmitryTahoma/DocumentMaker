@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Db.Context.BackPart
 {
-	public class Back
+	public class Back : IDbObject
 	{
 		public int Id { get; set; }
 		public int? EpisodeId { get; set; }
@@ -23,5 +23,10 @@ namespace Db.Context.BackPart
 		public List<Back> ChildBacks { get; set; }
 		[InverseProperty("Back")]
 		public List<WorkBackAdapter> WorkBackAdapters { get; set; }
+
+		public void Set(IDbObject other)
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

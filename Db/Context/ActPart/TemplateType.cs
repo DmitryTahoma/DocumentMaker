@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Db.Context.ActPart
 {
-	public class TemplateType
+	public class TemplateType : IDbObject
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
@@ -12,5 +12,10 @@ namespace Db.Context.ActPart
 		public List<Act> Acts { get; set; }
 		[InverseProperty("TemplateType")]
 		public List<WorkType> WorkTypes { get; set; }
+
+		public void Set(IDbObject other)
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿namespace Db.Context.HumanPart
 {
-	public class Address
+	public class Address : IDbObject
 	{
 		public int Id { get; set; }
 		public int? LocalityTypeId { get; set; }
@@ -11,5 +11,10 @@
 		public string StreetName { get; set; }
 		public string HouseNumber { get; set; }
 		public string ApartmentNumber { get; set; }
+
+		public void Set(IDbObject other)
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

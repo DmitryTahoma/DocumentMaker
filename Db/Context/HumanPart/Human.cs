@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Db.Context.HumanPart
 {
-	public class Human
+	public class Human : IDbObject
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
@@ -36,5 +36,10 @@ namespace Db.Context.HumanPart
 		public List<Act> Acts { get; set; }
 
 		public string FullName => Surname + ' ' + Name + ' ' + Secondname;
+
+		public void Set(IDbObject other)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

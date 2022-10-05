@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Db.Context.ActPart
 {
-	public class Act
+	public class Act : IDbObject
 	{
 		public int Id { get; set; }
 		public int? HumanId { get; set; }
@@ -18,5 +18,10 @@ namespace Db.Context.ActPart
 		public List<FullAct> FullActs { get; set; }
 		[InverseProperty("Act")]
 		public List<Work> Works { get; set; }
+
+		public void Set(IDbObject other)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

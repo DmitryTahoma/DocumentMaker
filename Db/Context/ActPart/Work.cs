@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Db.Context.ActPart
 {
-	public class Work
+	public class Work : IDbObject
 	{
 		public int Id { get; set; }
 		[ForeignKey("Act")]
@@ -21,5 +21,10 @@ namespace Db.Context.ActPart
 		public List<FullWork> FullWorks { get; set; }
 		[InverseProperty("Work")]
 		public List<Regions> Regions { get; set; }
+
+		public void Set(IDbObject other)
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

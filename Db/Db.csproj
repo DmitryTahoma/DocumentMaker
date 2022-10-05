@@ -74,6 +74,7 @@
     <Compile Include="Context\HumanPart\Human.cs" />
     <Compile Include="Context\HumanPart\LocalityType.cs" />
     <Compile Include="Context\HumanPart\StreetType.cs" />
+    <Compile Include="Context\IDbObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
