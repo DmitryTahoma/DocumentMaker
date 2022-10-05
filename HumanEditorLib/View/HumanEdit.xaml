@@ -488,10 +488,13 @@
                 </Button>
             </Grid>
         </ScrollViewer>
+
+        <materialDesign:Snackbar x:Name="HumanEditSnackbar" MessageQueue="{materialDesign:MessageQueue}" />
     </Grid>
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding BindSnackbar}" CommandParameter="{Binding ElementName=HumanEditSnackbar}" />
             <i:InvokeCommandAction Command="{Binding LoadFromDatabase}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>

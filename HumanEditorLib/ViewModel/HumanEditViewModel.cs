@@ -1,5 +1,6 @@
 ﻿using Db.Context.HumanPart;
 using HumanEditorLib.Model;
+using MaterialDesignThemes.Wpf;
 using Mvvm;
 using Mvvm.Commands;
 using System;
@@ -13,6 +14,8 @@ namespace HumanEditorLib.ViewModel
 	{
 		HumanEditModel model = new HumanEditModel();
 		ViewModelState state = ViewModelState.Initialized;
+
+		Snackbar snackbar = null;
 
 		public HumanEditViewModel()
 		{
@@ -193,6 +196,7 @@ namespace HumanEditorLib.ViewModel
 			SelectMode = new Command(OnSelectModeExecute, CanExecuteSelectMode);
 			UnselectMode = new Command(OnUnselectModeExecute);
 			ActionCommand = new Command(OnActionCommandExecute);
+			BindSnackbar = new Command<Snackbar>(OnBindSnackbarExecute);
 		}
 
 		public Command LoadFromDatabase { get; private set; }
@@ -256,6 +260,15 @@ namespace HumanEditorLib.ViewModel
 				SaveHumanChanges();
 			else
 				await AddHuman();
+		}
+
+		public Command<Snackbar> BindSnackbar { get; private set; }
+		public void OnBindSnackbarExecute(Snackbar snackbar)
+		{
+			if(this.snackbar == null)
+			{
+				this.snackbar = snackbar;
+			}
 		}
 
 		#endregion
@@ -343,6 +356,8 @@ namespace HumanEditorLib.ViewModel
 			HumanList.Add(human);
 			SelectedEditHuman = human;
 			ModeSelected = false;
+			snackbar.MessageQueue?.Enqueue("Працівник \"" + human.FullName + "\" успішно добавлений.",
+				null, null, null, false, true, TimeSpan.FromSeconds(3));
 		}
 
 		private void UpdateProperty(DependencyProperty prop)
