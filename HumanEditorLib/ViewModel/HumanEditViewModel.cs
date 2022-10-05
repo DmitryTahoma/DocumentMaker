@@ -198,10 +198,36 @@ namespace HumanEditorLib.ViewModel
 		public Command LoadFromDatabase { get; private set; }
 		public async void OnLoadFromDatabaseExecute()
 		{
-			if (state == ViewModelState.Initialized)
+			if(state == ViewModelState.Loaded)
 			{
 				state = ViewModelState.Loading;
+				await model.ConnectDB();
+				await model.SyncCollection(LocalityTypesList);
+				await model.SyncCollection(StreetTypesList);
+				await model.SyncCollection(BanksList);
+				await model.DisconnectDB();
+
+				LocalityTypesList.UpdateCollection();
+				UpdateProperty(SelectedLocalityTypeProperty);
+				StreetTypesList.UpdateCollection();
+				UpdateProperty(SelectedStreetTypeProperty);
+				BanksList.UpdateCollection();
+				UpdateProperty(SelectedBankProperty);
+				state = ViewModelState.Loaded;
+			}
+			else if (state == ViewModelState.Initialized)
+			{
+				state = ViewModelState.Loading;
+				await model.ConnectDB();
 				HumanList.AddRange(await model.LoadHumans());
+				LocalityTypesList.AddRange(await model.LoadLocalities());
+				StreetTypesList.AddRange(await model.LoadStreets());
+				BanksList.AddRange(await model.LoadBanks());
+				await model.DisconnectDB();
+
+				SelectedLocalityType = LocalityTypesList.FirstOrDefault();
+				SelectedStreetType = StreetTypesList.FirstOrDefault();
+				SelectedBank = BanksList.FirstOrDefault();
 				state = ViewModelState.Loaded;
 			}
 		}
@@ -259,6 +285,13 @@ namespace HumanEditorLib.ViewModel
 		private void AddHuman()
 		{
 
+		}
+
+		private void UpdateProperty(DependencyProperty prop)
+		{
+			object propVal = GetValue(prop);
+			SetValue(prop, null);
+			SetValue(prop, propVal);
 		}
 
 		#endregion
