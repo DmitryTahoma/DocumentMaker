@@ -300,10 +300,8 @@ namespace HumanEditorLib.ViewModel
 			Address address = new Address
 			{ 
 				LocalityTypeId = SelectedLocalityType.Id,
-				LocalityType = SelectedLocalityType,
 				LocalityName = LocalityName,
 				StreetTypeId = SelectedStreetType.Id,
-				StreetType = SelectedStreetType,
 				StreetName = StreetName,
 				HouseNumber = HouseNumber,
 				ApartmentNumber = ApartmentNumber,
@@ -333,7 +331,6 @@ namespace HumanEditorLib.ViewModel
 				TIN = TIN,
 				Address = address,
 				BankId = SelectedBank.Id,
-				Bank = SelectedBank,
 				CheckingAccount = CheckingAccount,
 				EmploymentDate = EmploymentDate,
 				IsFired = IsFired,
