@@ -110,6 +110,16 @@ namespace HumanEditorLib.Model
 			});
 		}
 
+		public async Task<Human> AddHuman(Human human)
+		{
+			return await Task.Run(() =>
+			{
+				human = db.Humans.Add(human);
+				db.SaveChanges();
+				return human;
+			});
+		}
+
 		private void ReleaseContext()
 		{
 			if (db != null)

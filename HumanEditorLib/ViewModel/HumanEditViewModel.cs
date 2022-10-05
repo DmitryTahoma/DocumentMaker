@@ -250,12 +250,12 @@ namespace HumanEditorLib.ViewModel
 		}
 
 		public Command ActionCommand { get; private set; }
-		public void OnActionCommandExecute()
+		public async void OnActionCommandExecute()
 		{
 			if (IsEditionMode)
 				SaveHumanChanges();
 			else
-				AddHuman();
+				await AddHuman();
 		}
 
 		#endregion
@@ -282,9 +282,67 @@ namespace HumanEditorLib.ViewModel
 
 		}
 
-		private void AddHuman()
+		private async Task AddHuman()
 		{
-
+			Address address = new Address
+			{ 
+				LocalityTypeId = SelectedLocalityType.Id,
+				LocalityType = SelectedLocalityType,
+				LocalityName = LocalityName,
+				StreetTypeId = SelectedStreetType.Id,
+				StreetType = SelectedStreetType,
+				StreetName = StreetName,
+				HouseNumber = HouseNumber,
+				ApartmentNumber = ApartmentNumber,
+			};
+			Contract developContract = null, supportContract = null;
+			if(!string.IsNullOrEmpty(DevelopmentContractNumber) && DevelopmentContractDate != default(DateTime))
+			{
+				developContract = new Contract
+				{
+					Number = DevelopmentContractNumber,
+					PreparationDate = DevelopmentContractDate,
+				};
+			}
+			if(!string.IsNullOrEmpty(SupportContractNumber) && SupportContractDate != default(DateTime))
+			{
+				supportContract = new Contract
+				{
+					Number = SupportContractNumber,
+					PreparationDate = SupportContractDate,
+				};
+			}
+			Human human = new Human
+			{
+				Surname = Surname,
+				Name = Name,
+				Secondname = SecondName,
+				TIN = TIN,
+				Address = address,
+				BankId = SelectedBank.Id,
+				Bank = SelectedBank,
+				CheckingAccount = CheckingAccount,
+				EmploymentDate = EmploymentDate,
+				IsFired = IsFired,
+			};
+			if(developContract != null)
+			{
+				human.DevelopmentContract = developContract;
+			}
+			if(supportContract != null)
+			{
+				human.SupportContract = supportContract;
+			}
+			if(IsFired)
+			{
+				human.FiredDate = FiredDate;
+			}
+			await model.ConnectDB();
+			human = await model.AddHuman(human);
+			await model.DisconnectDB();
+			HumanList.Add(human);
+			SelectedEditHuman = human;
+			ModeSelected = false;
 		}
 
 		private void UpdateProperty(DependencyProperty prop)
