@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 namespace Mvvm
 {
@@ -43,6 +44,10 @@ namespace Mvvm
 			if(obj is TextBox textBox)
 			{
 				textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+			}
+			else if(obj is Selector selector)
+			{
+				selector.GetBindingExpression(Selector.SelectedItemProperty).UpdateSource();
 			}
 		}
 	}
