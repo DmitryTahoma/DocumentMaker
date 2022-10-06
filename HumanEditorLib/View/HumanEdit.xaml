@@ -90,7 +90,7 @@
         </Grid>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding ModeSelected, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Grid>
+            <Grid x:Name="HumanContentGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
@@ -134,7 +134,7 @@
                                     Path="Surname"
                                     UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
-                                        <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                                        <validationRules:NotEmptyValidationRule />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -151,7 +151,7 @@
                                     Path="Name"
                                     UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
-                                        <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                                        <validationRules:NotEmptyValidationRule />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -168,7 +168,7 @@
                                     Path="SecondName"
                                     UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
-                                        <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                                        <validationRules:NotEmptyValidationRule />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -185,7 +185,7 @@
                                     Path="TINText"
                                     UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
-                                        <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                                        <validationRules:NotEmptyValidationRule />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -235,7 +235,7 @@
                                     Path="LocalityName"
                                     UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
-                                        <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                                        <validationRules:NotEmptyValidationRule />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -260,7 +260,7 @@
                                     Path="StreetName"
                                     UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
-                                        <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                                        <validationRules:NotEmptyValidationRule />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -277,7 +277,7 @@
                                     Path="HouseNumber"
                                     UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
-                                        <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                                        <validationRules:NotEmptyValidationRule />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -287,18 +287,8 @@
                             Grid.Row="1"
                             Grid.Column="5"
                             materialDesign:HintAssist.Hint="Квартира"
-                            Style="{StaticResource LastTextBox}">
-                            <TextBox.Text>
-                                <Binding
-                                    Mode="TwoWay"
-                                    Path="ApartmentNumber"
-                                    UpdateSourceTrigger="PropertyChanged">
-                                    <Binding.ValidationRules>
-                                        <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
+                            Style="{StaticResource LastTextBox}"
+                            Text="{Binding ApartmentNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
                 </materialDesign:Card>
 
@@ -342,7 +332,7 @@
                                     Path="CheckingAccount"
                                     UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
-                                        <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                                        <validationRules:NotEmptyValidationRule />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -480,6 +470,7 @@
                     Grid.Row="7"
                     Grid.Column="1"
                     Command="{Binding ActionCommand}"
+                    CommandParameter="{Binding ElementName=HumanContentGrid}"
                     Style="{StaticResource MaterialDesignFlatDarkButton}">
                     <Grid>
                         <TextBlock Text="{Binding ElementName=AdditionModeTextBlock, Path=Text, Mode=OneWay}" Visibility="{Binding ElementName=ModeToggleButton, Path=IsChecked, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />

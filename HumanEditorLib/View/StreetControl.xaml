@@ -33,7 +33,7 @@
                     Path="Name"
                     UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
-                        <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                        <validationRules:NotEmptyValidationRule />
                     </Binding.ValidationRules>
                 </Binding>
             </TextBox.Text>
@@ -50,7 +50,7 @@
                     Path="ShortName"
                     UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
-                        <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                        <validationRules:NotEmptyValidationRule />
                     </Binding.ValidationRules>
                 </Binding>
             </TextBox.Text>

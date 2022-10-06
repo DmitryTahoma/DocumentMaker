@@ -33,7 +33,7 @@
                     Path="Name"
                     UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
-                        <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                        <validationRules:NotEmptyValidationRule />
                     </Binding.ValidationRules>
                 </Binding>
             </TextBox.Text>
@@ -50,8 +50,8 @@
                     Path="IBT"
                     UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
-                        <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
-                        <validationRules:IntPositiveValidationRule ValidatesOnTargetUpdated="True" />
+                        <validationRules:NotEmptyValidationRule />
+                        <validationRules:IntPositiveValidationRule />
                     </Binding.ValidationRules>
                 </Binding>
             </TextBox.Text>

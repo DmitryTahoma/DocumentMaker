@@ -195,7 +195,7 @@ namespace HumanEditorLib.ViewModel
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
 			SelectMode = new Command(OnSelectModeExecute, CanExecuteSelectMode);
 			UnselectMode = new Command(OnUnselectModeExecute);
-			ActionCommand = new Command(OnActionCommandExecute);
+			ActionCommand = new Command<DependencyObject>(OnActionCommandExecute, CanExecuteActionCommand);
 			BindSnackbar = new Command<Snackbar>(OnBindSnackbarExecute);
 		}
 
@@ -253,13 +253,25 @@ namespace HumanEditorLib.ViewModel
 			ModeSelected = false;
 		}
 
-		public Command ActionCommand { get; private set; }
-		public async void OnActionCommandExecute()
+		public Command<DependencyObject> ActionCommand { get; private set; }
+		public async void OnActionCommandExecute(DependencyObject validateObj)
 		{
-			if (IsEditionMode)
-				SaveHumanChanges();
+			DependencyObject invalid = ValidationHelper.GetFirstInvalid(validateObj, true);
+			if (invalid != null)
+			{
+				(invalid as UIElement)?.Focus();
+			}
 			else
-				await AddHuman();
+			{
+				if (IsEditionMode)
+				{
+					SaveHumanChanges();
+				}
+				else
+				{
+					await AddHuman();
+				}
+			}
 		}
 
 		public Command<Snackbar> BindSnackbar { get; private set; }
@@ -365,6 +377,11 @@ namespace HumanEditorLib.ViewModel
 			object propVal = GetValue(prop);
 			SetValue(prop, null);
 			SetValue(prop, propVal);
+		}
+
+		private bool CanExecuteActionCommand(DependencyObject validateObj)
+		{
+			return ValidationHelper.IsValid(validateObj);
 		}
 
 		#endregion

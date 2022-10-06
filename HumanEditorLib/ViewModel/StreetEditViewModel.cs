@@ -36,7 +36,7 @@ namespace HumanEditorLib.ViewModel
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
 			DeleteStreetType = new Command<StreetControl>(OnDeleteStreetTypeExecute);
 			AddStreetType = new Command(OnAddStreetTypeExecute);
-			SaveChanges = new Command(OnSaveChangesExecute, CanExecuteSaveChanges);
+			SaveChanges = new Command<DependencyObject>(OnSaveChangesExecute, CanExecuteSaveChanges);
 			PropertyChangedCommand = new Command(OnPropertyChangedCommandExecute);
 		}
 
@@ -90,11 +90,19 @@ namespace HumanEditorLib.ViewModel
 			AddStreetTypeToView(model.AddStreetType());
 		}
 
-		public Command SaveChanges { get; private set; }
-		private void OnSaveChangesExecute()
+		public Command<DependencyObject> SaveChanges { get; private set; }
+		private void OnSaveChangesExecute(DependencyObject validateObj)
 		{
-			model.SaveChanges(GetStreetsModels());
-			haveUnsavedChanges = false;
+			DependencyObject invalid = ValidationHelper.GetFirstInvalid(validateObj, true);
+			if(invalid != null)
+			{
+				(invalid as UIElement)?.Focus();
+			}
+			else
+			{
+				model.SaveChanges(GetStreetsModels());
+				haveUnsavedChanges = false;
+			}
 		}
 
 		public Command PropertyChangedCommand { get; private set; }
@@ -128,9 +136,9 @@ namespace HumanEditorLib.ViewModel
 			}
 		}
 
-		private bool CanExecuteSaveChanges(object obj)
+		private bool CanExecuteSaveChanges(DependencyObject validateObj)
 		{
-			return haveUnsavedChanges && ValidationHelper.IsValid(obj as DependencyObject);
+			return haveUnsavedChanges && ValidationHelper.IsValid(validateObj);
 		}
 
 		#endregion
