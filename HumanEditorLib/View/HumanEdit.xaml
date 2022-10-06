@@ -126,7 +126,7 @@
 
                         <TextBox
                             Grid.Row="1"
-                            materialDesign:HintAssist.Hint="Фамілія"
+                            materialDesign:HintAssist.Hint="Призвіще"
                             Style="{StaticResource FirstTextBox}">
                             <TextBox.Text>
                                 <Binding
