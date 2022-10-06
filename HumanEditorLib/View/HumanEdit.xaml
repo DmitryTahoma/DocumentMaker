@@ -74,7 +74,6 @@
                 DisplayMemberPath="FullName"
                 ItemsSource="{Binding HumanList, Mode=OneWay}"
                 SelectedItem="{Binding SelectedEditHuman, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                SelectedValuePath="@FullName"
                 Style="{StaticResource MiddleComboBox}"
                 Visibility="{Binding ElementName=ModeToggleButton, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverterHidden}}" />
 
@@ -410,8 +409,8 @@
                             Grid.Row="1"
                             Grid.Column="1"
                             materialDesign:HintAssist.Hint="Дата складання"
-                            SelectedDate="{Binding DevelopmentContractDateString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource LastDatePicker}" />
+                            Style="{StaticResource LastDatePicker}"
+                            Text="{Binding DevelopmentContractDateString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
                 </materialDesign:Card>
 
@@ -444,8 +443,8 @@
                             Grid.Row="1"
                             Grid.Column="1"
                             materialDesign:HintAssist.Hint="Дата складання"
-                            SelectedDate="{Binding SupportContractDateString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource LastDatePicker}" />
+                            Style="{StaticResource LastDatePicker}"
+                            Text="{Binding SupportContractDateString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
                 </materialDesign:Card>
 
@@ -465,15 +464,15 @@
 
                         <DatePicker
                             materialDesign:HintAssist.Hint="Дата прийому на роботу"
-                            SelectedDate="{Binding EmploymentDateString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource FirstDatePicker}" />
+                            Style="{StaticResource FirstDatePicker}"
+                            Text="{Binding EmploymentDateString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                         <DatePicker
                             Grid.Column="1"
                             materialDesign:HintAssist.Hint="Дата звільнення"
                             IsEnabled="{Binding ElementName=IsFiredToggleButton, Path=IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            SelectedDate="{Binding FiredDateString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource LastDatePicker}" />
+                            Style="{StaticResource LastDatePicker}"
+                            Text="{Binding FiredDateString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
 
                         <Grid Grid.Row="1" Margin="10">
