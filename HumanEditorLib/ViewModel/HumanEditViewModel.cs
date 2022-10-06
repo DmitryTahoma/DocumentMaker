@@ -250,7 +250,8 @@ namespace HumanEditorLib.ViewModel
 		public Command UnselectMode { get; private set; }
 		public void OnUnselectModeExecute()
 		{
-			ModeSelected = false;
+			ModeSelected = false; 
+			ClearFields();
 		}
 
 		public Command<DependencyObject> ActionCommand { get; private set; }
@@ -370,6 +371,7 @@ namespace HumanEditorLib.ViewModel
 			ModeSelected = false;
 			snackbar.MessageQueue?.Enqueue("Працівник \"" + human.FullName + "\" успішно добавлений.",
 				null, null, null, false, true, TimeSpan.FromSeconds(3));
+			ClearFields();
 		}
 
 		private void UpdateProperty(DependencyProperty prop)
@@ -382,6 +384,30 @@ namespace HumanEditorLib.ViewModel
 		private bool CanExecuteActionCommand(DependencyObject validateObj)
 		{
 			return ValidationHelper.IsValid(validateObj);
+		}
+
+		private void ClearFields()
+		{
+			string _ = string.Empty;
+			Surname = _;
+			Name = _;
+			SecondName = _;
+			TINText = _;
+			SelectedLocalityType = LocalityTypesList.FirstOrDefault();
+			LocalityName = _;
+			SelectedStreetType = StreetTypesList.FirstOrDefault();
+			StreetName = _;
+			HouseNumber = _;
+			ApartmentNumber = _;
+			SelectedBank = BanksList.FirstOrDefault();
+			CheckingAccount = _;
+			DevelopmentContractNumber = _;
+			DevelopmentContractDateString = _;
+			SupportContractNumber = _;
+			SupportContractDateString = _;
+			EmploymentDateString = _;
+			FiredDateString = _;
+			IsFired = false;
 		}
 
 		#endregion
