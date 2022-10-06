@@ -2,6 +2,7 @@
     x:Class="HumanEditorLib.View.HumanEdit"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:bindingExtensions="clr-namespace:Mvvm.BindingExtensions;assembly=Mvvm"
     xmlns:converters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
@@ -9,6 +10,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:validationRules="clr-namespace:Mvvm.ValidationRules;assembly=Mvvm"
+    xmlns:validationRulesProps="clr-namespace:Mvvm.ValidationRules.ContentProperties;assembly=Mvvm"
     xmlns:vm="clr-namespace:HumanEditorLib.ViewModel"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -218,12 +220,32 @@
                             Text="Прописка" />
 
                         <ComboBox
+                            x:Name="LocalityTypeComboBox"
                             Grid.Row="1"
+                            materialDesign:HintAssist.Hint="Тип нас. пун."
                             DisplayMemberPath="Name"
                             ItemsSource="{Binding LocalityTypesList, Mode=OneWay}"
-                            SelectedItem="{Binding SelectedLocalityType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource FirstComboBox}" />
-
+                            Style="{StaticResource FirstComboBox}">
+                            <ComboBox.Resources>
+                                <bindingExtensions:BindingProxy x:Key="LocalityTypeComboBoxItemsSourceTargetProxy" Data="{Binding ElementName=LocalityTypeComboBox, Path=ItemsSource, Mode=TwoWay}" />
+                                <bindingExtensions:BindingProxy x:Key="LocalityTypeComboBoxItemsSourceSourceProxy" Data="{Binding ElementName=LocalityTypeComboBox, Path=ItemsSource}" />
+                            </ComboBox.Resources>
+                            <ComboBox.SelectedItem>
+                                <Binding
+                                    Mode="TwoWay"
+                                    Path="SelectedLocalityType"
+                                    UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <validationRules:NotNullValidationRule />
+                                        <validationRules:SourceContainsValidationRule>
+                                            <validationRules:SourceContainsValidationRule.ItemsSource>
+                                                <validationRulesProps:ItemsSource BindingToTrigger="{Binding Data, Source={StaticResource LocalityTypeComboBoxItemsSourceSourceProxy}}" Value="{Binding Data, Source={StaticResource LocalityTypeComboBoxItemsSourceTargetProxy}}" />
+                                            </validationRules:SourceContainsValidationRule.ItemsSource>
+                                        </validationRules:SourceContainsValidationRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ComboBox.SelectedItem>
+                        </ComboBox>
                         <TextBox
                             Grid.Row="1"
                             Grid.Column="1"
@@ -242,12 +264,33 @@
                         </TextBox>
 
                         <ComboBox
+                            x:Name="StreetTypeComboBox"
                             Grid.Row="1"
                             Grid.Column="2"
+                            materialDesign:HintAssist.Hint="Тип вулиці"
                             DisplayMemberPath="Name"
                             ItemsSource="{Binding StreetTypesList, Mode=OneWay}"
-                            SelectedItem="{Binding SelectedStreetType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource MiddleComboBox}" />
+                            Style="{StaticResource MiddleComboBox}">
+                            <ComboBox.Resources>
+                                <bindingExtensions:BindingProxy x:Key="StreetTypeComboBoxItemsSourceTargetProxy" Data="{Binding ElementName=StreetTypeComboBox, Path=ItemsSource, Mode=TwoWay}" />
+                                <bindingExtensions:BindingProxy x:Key="StreetTypeComboBoxItemsSourceSourceProxy" Data="{Binding ElementName=StreetTypeComboBox, Path=ItemsSource}" />
+                            </ComboBox.Resources>
+                            <ComboBox.SelectedItem>
+                                <Binding
+                                    Mode="TwoWay"
+                                    Path="SelectedStreetType"
+                                    UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <validationRules:NotNullValidationRule />
+                                        <validationRules:SourceContainsValidationRule>
+                                            <validationRules:SourceContainsValidationRule.ItemsSource>
+                                                <validationRulesProps:ItemsSource BindingToTrigger="{Binding Data, Source={StaticResource StreetTypeComboBoxItemsSourceSourceProxy}}" Value="{Binding Data, Source={StaticResource StreetTypeComboBoxItemsSourceTargetProxy}}" />
+                                            </validationRules:SourceContainsValidationRule.ItemsSource>
+                                        </validationRules:SourceContainsValidationRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ComboBox.SelectedItem>
+                        </ComboBox>
 
                         <TextBox
                             Grid.Row="1"
