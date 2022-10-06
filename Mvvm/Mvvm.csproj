@@ -51,6 +51,7 @@
     <Compile Include="ValidationHelper.cs" />
     <Compile Include="ValidationRules\NotEmptyValidationRule.cs" />
     <Compile Include="ValidationRules\IntPositiveValidationRule.cs" />
+    <Compile Include="ValidationRules\NotNullValidationRule.cs" />
     <Compile Include="ViewModelState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
