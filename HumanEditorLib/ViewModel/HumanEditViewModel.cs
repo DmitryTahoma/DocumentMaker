@@ -237,10 +237,10 @@ namespace HumanEditorLib.ViewModel
 		}
 
 		public Command SelectMode { get; private set; }
-		public void OnSelectModeExecute()
+		public async void OnSelectModeExecute()
 		{
 			if (IsEditionMode) 
-				StartHumanEdition();
+				await StartHumanEdition();
 			else 
 				StartHumanCreation();
 
@@ -266,12 +266,15 @@ namespace HumanEditorLib.ViewModel
 			{
 				if (IsEditionMode)
 				{
-					SaveHumanChanges();
+					await SaveHumanChanges();
 				}
 				else
 				{
 					await AddHuman();
 				}
+
+				ModeSelected = false;
+				ClearFields();
 			}
 		}
 
@@ -293,9 +296,56 @@ namespace HumanEditorLib.ViewModel
 			return !ModeSelected && (!IsEditionMode || SelectedEditHuman != null);
 		}
 
-		private void StartHumanEdition()
+		private async Task StartHumanEdition()
 		{
+			await model.ConnectDB();
+			await model.LoadHuman(SelectedEditHuman);
+			await model.DisconnectDB();
 
+			Address address = SelectedEditHuman.Address;
+			Contract developContract = SelectedEditHuman.DevelopmentContract, supportContract = SelectedEditHuman.SupportContract;
+			Bank bank = SelectedEditHuman.Bank;
+
+			if (address != null)
+			{
+				if(address.LocalityType != null)
+				{
+					SelectedLocalityType = LocalityTypesList.FirstOrDefault(x => x.Id == address.LocalityType.Id)
+						?? address.LocalityType;
+				}
+				LocalityName = address.LocalityName;
+				if(address.StreetType != null)
+				{
+					SelectedStreetType = StreetTypesList.FirstOrDefault(x => x.Id == address.StreetType.Id)
+						?? address.StreetType;
+				}
+				StreetName = address.StreetName;
+				HouseNumber = address.HouseNumber;
+				ApartmentNumber = address.ApartmentNumber;
+			}
+			if(developContract != null)
+			{
+				DevelopmentContractNumber = developContract.Number;
+				DevelopmentContractDateString = developContract.PreparationDate.ToString();
+			}
+			if(supportContract != null)
+			{
+				SupportContractNumber = supportContract.Number;
+				SupportContractDateString = supportContract.PreparationDate.ToString();
+			}
+			if(bank != null)
+			{
+				SelectedBank = BanksList.FirstOrDefault(x => x.Id == bank.Id)
+					?? bank;
+			}
+			Surname = SelectedEditHuman.Surname;
+			Name = SelectedEditHuman.Name;
+			SecondName = SelectedEditHuman.Secondname;
+			TINText = SelectedEditHuman.TIN.ToString();
+			CheckingAccount = SelectedEditHuman.CheckingAccount;
+			EmploymentDateString = SelectedEditHuman.EmploymentDate?.ToString();
+			FiredDateString = SelectedEditHuman.FiredDate?.ToString();
+			IsFired = SelectedEditHuman.IsFired;
 		}
 
 		private void StartHumanCreation()
@@ -303,75 +353,33 @@ namespace HumanEditorLib.ViewModel
 
 		}
 
-		private void SaveHumanChanges()
+		private async Task SaveHumanChanges()
 		{
+			Human human = new Human(SelectedEditHuman);
+			human.Set(GetHumanFromFields());
+			await model.ConnectDB();
+			Human savedHuman = await model.SaveHumanChanges(human);
+			await model.DisconnectDB();
 
+			int selectedIndex = HumanList.IndexOf(SelectedEditHuman);
+			HumanList.Remove(SelectedEditHuman);
+			HumanList.Insert(selectedIndex, savedHuman);
+			SelectedEditHuman = savedHuman;
+
+			snackbar.MessageQueue?.Enqueue("Зміни успішно збережені.",
+				null, null, null, false, true, TimeSpan.FromSeconds(3));
 		}
 
 		private async Task AddHuman()
 		{
-			Address address = new Address
-			{ 
-				LocalityTypeId = SelectedLocalityType.Id,
-				LocalityName = LocalityName,
-				StreetTypeId = SelectedStreetType.Id,
-				StreetName = StreetName,
-				HouseNumber = HouseNumber,
-				ApartmentNumber = ApartmentNumber,
-			};
-			Contract developContract = null, supportContract = null;
-			if(!string.IsNullOrEmpty(DevelopmentContractNumber) && !string.IsNullOrEmpty(DevelopmentContractDateString))
-			{
-				developContract = new Contract
-				{
-					Number = DevelopmentContractNumber,
-					PreparationDate = DateTime.Parse(DevelopmentContractDateString),
-				};
-			}
-			if(!string.IsNullOrEmpty(SupportContractNumber) && !string.IsNullOrEmpty(SupportContractDateString))
-			{
-				supportContract = new Contract
-				{
-					Number = SupportContractNumber,
-					PreparationDate = DateTime.Parse(SupportContractDateString),
-				};
-			}
-			Human human = new Human
-			{
-				Surname = Surname,
-				Name = Name,
-				Secondname = SecondName,
-				TIN = long.Parse(TINText),
-				Address = address,
-				BankId = SelectedBank.Id,
-				CheckingAccount = CheckingAccount,
-				IsFired = IsFired,
-			};
-			if(developContract != null)
-			{
-				human.DevelopmentContract = developContract;
-			}
-			if(supportContract != null)
-			{
-				human.SupportContract = supportContract;
-			}
-			if(!string.IsNullOrEmpty(EmploymentDateString))
-			{
-				human.EmploymentDate = DateTime.Parse(EmploymentDateString);
-			}
-			if(IsFired && !string.IsNullOrEmpty(FiredDateString))
-			{
-				human.FiredDate = DateTime.Parse(FiredDateString);
-			}
+			Human human = GetHumanFromFields();
 			await model.ConnectDB();
 			human = await model.AddHuman(human);
 			await model.DisconnectDB();
 			HumanList.Add(human);
 			SelectedEditHuman = human;
-			ModeSelected = false;
 			snackbar.MessageQueue?.Enqueue("Працівник \"" + human.FullName + "\" успішно добавлений.",
 				null, null, null, false, true, TimeSpan.FromSeconds(3));
-			ClearFields();
 		}
 
 		private void UpdateProperty(DependencyProperty prop)
@@ -408,6 +416,64 @@ namespace HumanEditorLib.ViewModel
 			EmploymentDateString = _;
 			FiredDateString = _;
 			IsFired = false;
+		}
+
+		private Human GetHumanFromFields()
+		{
+			Address address = new Address
+			{
+				LocalityTypeId = SelectedLocalityType.Id,
+				LocalityName = LocalityName,
+				StreetTypeId = SelectedStreetType.Id,
+				StreetName = StreetName,
+				HouseNumber = HouseNumber,
+				ApartmentNumber = ApartmentNumber,
+			};
+			Contract developContract = null, supportContract = null;
+			if (!string.IsNullOrEmpty(DevelopmentContractNumber) && !string.IsNullOrEmpty(DevelopmentContractDateString))
+			{
+				developContract = new Contract
+				{
+					Number = DevelopmentContractNumber,
+					PreparationDate = DateTime.Parse(DevelopmentContractDateString),
+				};
+			}
+			if (!string.IsNullOrEmpty(SupportContractNumber) && !string.IsNullOrEmpty(SupportContractDateString))
+			{
+				supportContract = new Contract
+				{
+					Number = SupportContractNumber,
+					PreparationDate = DateTime.Parse(SupportContractDateString),
+				};
+			}
+			Human human = new Human
+			{
+				Surname = Surname,
+				Name = Name,
+				Secondname = SecondName,
+				TIN = long.Parse(TINText),
+				Address = address,
+				BankId = SelectedBank.Id,
+				CheckingAccount = CheckingAccount,
+				IsFired = IsFired,
+			};
+			if (developContract != null)
+			{
+				human.DevelopmentContract = developContract;
+			}
+			if (supportContract != null)
+			{
+				human.SupportContract = supportContract;
+			}
+			if (!string.IsNullOrEmpty(EmploymentDateString))
+			{
+				human.EmploymentDate = DateTime.Parse(EmploymentDateString);
+			}
+			if (IsFired && !string.IsNullOrEmpty(FiredDateString))
+			{
+				human.FiredDate = DateTime.Parse(FiredDateString);
+			}
+			return human;
 		}
 
 		#endregion

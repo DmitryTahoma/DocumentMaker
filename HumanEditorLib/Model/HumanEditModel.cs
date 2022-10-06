@@ -128,5 +128,76 @@ namespace HumanEditorLib.Model
 				db = null;
 			}
 		}
+
+		public async Task LoadHuman(Human human)
+		{
+			await Task.Run(() =>
+			{
+				if (human.Address == null && human.AddressId != null)
+					human.Address = db.Addresses.FirstOrDefault(x => x.Id == human.AddressId);
+
+				if (human.DevelopmentContract == null && human.DevelopmentContractId != null)
+					human.DevelopmentContract = db.Contracts.FirstOrDefault(x => x.Id == human.DevelopmentContractId);
+
+				if (human.SupportContract == null && human.SupportContractId != null)
+					human.SupportContract = db.Contracts.FirstOrDefault(x => x.Id == human.SupportContractId);
+
+				if (human.Bank == null && human.BankId != null)
+					human.Bank = db.Banks.FirstOrDefault(x => x.Id == human.BankId);
+			});
+		}
+
+		public async Task<Human> SaveHumanChanges(Human human)
+		{
+			return await Task.Run(() => 
+			{
+				Human dbHuman = db.Humans.FirstOrDefault(x => x.Id == human.Id);
+				dbHuman.Set(human);
+				Bank dbBank = db.Banks.FirstOrDefault(x => x.Id == human.BankId);
+				if (dbBank != null)
+				{
+					dbHuman.Bank = dbBank;
+				}
+				dbHuman.Address = db.Addresses.Where(x => x.Id == human.Address.Id).FirstOrDefault();
+				if(dbHuman.Address == null)
+				{
+					dbHuman.Address = human.Address;
+				}
+				else
+				{
+					dbHuman.Address.Set(human.Address);
+				}
+
+				if(human.DevelopmentContract != null)
+				{
+					dbHuman.DevelopmentContract = db.Contracts.FirstOrDefault(x => x.Id == human.DevelopmentContract.Id);
+
+					if (dbHuman.DevelopmentContract == null)
+					{
+						dbHuman.DevelopmentContract = human.DevelopmentContract;
+					}
+					else
+					{
+						dbHuman.DevelopmentContract.Set(human.DevelopmentContract);
+					}
+				}
+
+				if (human.SupportContract != null)
+				{
+					dbHuman.SupportContract = db.Contracts.FirstOrDefault(x => x.Id == human.SupportContract.Id);
+					if (dbHuman.SupportContract == null)
+					{
+						dbHuman.SupportContract = human.SupportContract;
+					}
+					else
+					{
+						dbHuman.SupportContract.Set(human.SupportContract);
+					}
+				}
+
+				db.SaveChanges();
+				return dbHuman;
+			});
+		}
 	}
 }

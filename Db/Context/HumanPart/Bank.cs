@@ -4,6 +4,15 @@ namespace Db.Context.HumanPart
 {
 	public class Bank : IDbObject
 	{
+		public Bank() { }
+
+		public Bank(Bank other)
+		{
+			Id = other.Id;
+			Name = other.Name;
+			IBT = other.IBT;
+		}
+
 		public int Id { get; set; }
 		public string Name { get; set; }
 		/// <summary>
