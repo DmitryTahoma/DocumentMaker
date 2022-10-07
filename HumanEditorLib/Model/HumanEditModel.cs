@@ -136,6 +136,12 @@ namespace HumanEditorLib.Model
 				if (human.Address == null && human.AddressId != null)
 					human.Address = db.Addresses.FirstOrDefault(x => x.Id == human.AddressId);
 
+				if (human.Address != null && human.Address.StreetType == null && human.Address.StreetTypeId != null)
+					human.Address.StreetType = db.StreetTypes.FirstOrDefault(x => x.Id == human.Address.StreetTypeId);
+
+				if (human.Address != null && human.Address.LocalityType == null && human.Address.LocalityTypeId != null)
+					human.Address.LocalityType = db.LocalityTypes.FirstOrDefault(x => x.Id == human.Address.LocalityTypeId);
+
 				if (human.DevelopmentContract == null && human.DevelopmentContractId != null)
 					human.DevelopmentContract = db.Contracts.FirstOrDefault(x => x.Id == human.DevelopmentContractId);
 
