@@ -7,6 +7,7 @@
     xmlns:local="clr-namespace:ActGenerator"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:projectEditor="clr-namespace:ProjectEditorLib.View;assembly=ProjectEditorLib"
     Title="MainWindow"
     Width="800"
     Height="450"
@@ -17,6 +18,9 @@
     </Window.Resources>
     <materialDesign:Card>
         <TabControl Margin="0" materialDesign:ColorZoneAssist.Mode="PrimaryMid">
+            <TabItem Header="РЕДАКТОР ПРОЕКТІВ">
+                <projectEditor:ProjectEdit />
+            </TabItem>
             <TabItem Header="ПРАЦІВНИК">
                 <humanEditor:HumanEdit />
             </TabItem>
