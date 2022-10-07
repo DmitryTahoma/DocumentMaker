@@ -99,14 +99,6 @@
     <Compile Include="View\StreetEdit.xaml.cs">
       <DependentUpon>StreetEdit.xaml</DependentUpon>
     </Compile>
-    <Page Include="ResourceDictionaries\HumanEditDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ResourceDictionaries\MaterialDesignThemes.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\BankControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -165,6 +157,10 @@
     <ProjectReference Include="..\Db\Db.csproj">
       <Project>{e5dda9a3-7f76-4b4b-84af-a4dd3a9ffe5e}</Project>
       <Name>Db</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DocumentMakerThemes\DocumentMakerThemes.csproj">
+      <Project>{a3c2f18e-b57e-4c71-a2dd-bce3cff24574}</Project>
+      <Name>DocumentMakerThemes</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mvvm\Mvvm.csproj">
       <Project>{12b44b0c-2061-40f6-8835-228785862a79}</Project>
