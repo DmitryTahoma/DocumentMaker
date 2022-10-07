@@ -14,7 +14,7 @@
     FontSize="15"
     mc:Ignorable="d">
     <Window.Resources>
-        <ResourceDictionary Source="pack://application:,,,/HumanEditorLib;component/ResourceDictionaries/HumanEditDictionary.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
     </Window.Resources>
     <materialDesign:Card>
         <TabControl Margin="0" materialDesign:ColorZoneAssist.Mode="PrimaryMid">
