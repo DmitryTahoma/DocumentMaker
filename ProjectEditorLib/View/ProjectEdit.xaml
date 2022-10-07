@@ -142,5 +142,7 @@
                 </TreeViewItem>
             </TreeViewItem>
         </TreeView>
+
+        <local:ProjectView Grid.Column="1" />
     </Grid>
 </UserControl>

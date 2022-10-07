@@ -83,6 +83,9 @@
     <Compile Include="View\ProjectEdit.xaml.cs">
       <DependentUpon>ProjectEdit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ProjectView.xaml.cs">
+      <DependentUpon>ProjectView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\TreeItemHeader.xaml.cs">
       <DependentUpon>TreeItemHeader.xaml</DependentUpon>
     </Compile>
@@ -117,6 +120,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="View\ProjectEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ProjectView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
