@@ -20,7 +20,7 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <TextBlock Style="{StaticResource FirstTextBlock}" Text="Назва:" />
+        <TextBlock Style="{StaticResource FirstRightTextBlock}" Text="Назва:" />
         <TextBox Grid.Column="1" Style="{StaticResource LastSmallTextBox}" />
     </Grid>
 </UserControl>
