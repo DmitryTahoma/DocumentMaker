@@ -67,6 +67,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\ProjectNodeTypeToPackIconKindConverter.cs" />
+    <Compile Include="Model\ProjectEditModel.cs" />
+    <Compile Include="Model\ProjectNode.cs" />
+    <Compile Include="Model\ProjectNodeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -80,6 +84,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ViewModel\ProjectEditViewModel.cs" />
     <Compile Include="View\BackView.xaml.cs">
       <DependentUpon>BackView.xaml</DependentUpon>
     </Compile>
@@ -123,10 +128,7 @@
       <Name>Mvvm</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-    <Folder Include="ViewModel\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Page Include="View\BackView.xaml">
       <SubType>Designer</SubType>

@@ -6,9 +6,14 @@
     xmlns:local="clr-namespace:ProjectEditorLib.View"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:myConverters="clr-namespace:ProjectEditorLib.Converters"
+    xmlns:vm="clr-namespace:ProjectEditorLib.ViewModel"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <UserControl.DataContext>
+        <vm:ProjectEditViewModel />
+    </UserControl.DataContext>
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -65,8 +70,9 @@
                     <ContextMenu x:Key="RegionsContextMenu">
                         <MenuItem Header="Видалити регіони" />
                     </ContextMenu>
-                </ResourceDictionary>
 
+                    <myConverters:ProjectNodeTypeToPackIconKindConverter x:Key="ProjectNodeTypeToPackIconKindConverter" />
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -75,72 +81,15 @@
             <ColumnDefinition Width="auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <TreeView MinWidth="220" Background="#f9f9f9">
-            <TreeViewItem ContextMenu="{StaticResource ProjectContextMenuWithEpisodes}">
-                <TreeViewItem.Header>
-                    <local:TreeItemHeader IconKind="AlphaPBoxOutline" Text="Escape" />
-                </TreeViewItem.Header>
-                <TreeViewItem ContextMenu="{StaticResource EpisodeContextMenu}">
-                    <TreeViewItem.Header>
-                        <local:TreeItemHeader IconKind="AlphaEBoxOutline" Text="1. Котедж" />
-                    </TreeViewItem.Header>
-                    <TreeViewItem ContextMenu="{StaticResource BackContextMenu}">
-                        <TreeViewItem.Header>
-                            <local:TreeItemHeader IconKind="AlphaBBoxOutline" Text="1. Вітальня" />
-                        </TreeViewItem.Header>
-                        <TreeViewItem ContextMenu="{StaticResource MinigameContextMenu}">
-                            <TreeViewItem.Header>
-                                <local:TreeItemHeader IconKind="AlphaMBoxOutline" Text="1. Скриня" />
-                            </TreeViewItem.Header>
-                        </TreeViewItem>
-                        <TreeViewItem ContextMenu="{StaticResource MinigameContextMenu}">
-                            <TreeViewItem.Header>
-                                <local:TreeItemHeader IconKind="AlphaMBoxOutline" Text="2. Шахмати" />
-                            </TreeViewItem.Header>
-                        </TreeViewItem>
-                        <TreeViewItem ContextMenu="{StaticResource MinigameContextMenu}">
-                            <TreeViewItem.Header>
-                                <local:TreeItemHeader IconKind="AlphaMBoxOutline" Text="3. Замок до пiдвалу" />
-                            </TreeViewItem.Header>
-                        </TreeViewItem>
-                    </TreeViewItem>
-                    <TreeViewItem ContextMenu="{StaticResource BackContextMenu}">
-                        <TreeViewItem.Header>
-                            <local:TreeItemHeader IconKind="AlphaBBoxOutline" Text="2. Кухня" />
-                        </TreeViewItem.Header>
-                        <TreeViewItem ContextMenu="{StaticResource MinigameContextMenu}">
-                            <TreeViewItem.Header>
-                                <local:TreeItemHeader IconKind="AlphaMBoxOutline" Text="1. Мiкрохвильова пiч" />
-                            </TreeViewItem.Header>
-                            <TreeViewItem ContextMenu="{StaticResource RegionsContextMenu}">
-                                <TreeViewItem.Header>
-                                    <local:TreeItemHeader IconKind="AlphaRBoxOutline" Text="Регіони" />
-                                </TreeViewItem.Header>
-                            </TreeViewItem>
-                        </TreeViewItem>
-                        <TreeViewItem ContextMenu="{StaticResource HogContextMenu}">
-                            <TreeViewItem.Header>
-                                <local:TreeItemHeader IconKind="AlphaHBoxOutline" Text="1. Хог" />
-                            </TreeViewItem.Header>
-                        </TreeViewItem>
-                        <TreeViewItem ContextMenu="{StaticResource DialogContextMenu}">
-                            <TreeViewItem.Header>
-                                <local:TreeItemHeader IconKind="AlphaDBoxOutline" Text="1. Діалог" />
-                            </TreeViewItem.Header>
-                        </TreeViewItem>
-                    </TreeViewItem>
-                    <TreeViewItem ContextMenu="{StaticResource CraftContextMenu}">
-                        <TreeViewItem.Header>
-                            <local:TreeItemHeader IconKind="AlphaCBoxOutline" Text="Магніт на мотузці" />
-                        </TreeViewItem.Header>
-                    </TreeViewItem>
-                    <TreeViewItem ContextMenu="{StaticResource CraftContextMenu}">
-                        <TreeViewItem.Header>
-                            <local:TreeItemHeader IconKind="AlphaCBoxOutline" Text="Шуруповерт" />
-                        </TreeViewItem.Header>
-                    </TreeViewItem>
-                </TreeViewItem>
-            </TreeViewItem>
+        <TreeView
+            MinWidth="220"
+            Background="#f9f9f9"
+            ItemsSource="{Binding ProjectNodes}">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Path=ProjectNodes}">
+                    <local:TreeItemHeader IconKind="{Binding Type, Converter={StaticResource ProjectNodeTypeToPackIconKindConverter}}" Text="{Binding Text}" />
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
         </TreeView>
 
         <local:CraftView Grid.Column="1" />
