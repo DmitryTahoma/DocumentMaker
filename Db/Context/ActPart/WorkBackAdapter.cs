@@ -10,6 +10,8 @@ namespace Db.Context.ActPart
 		public int? BackId { get; set; }
 		public Back Back { get; set; }
 		public string Text { get; set; }
+		public int? AlternativeProjectNameId { get; set; }
+		public AlternativeProjectName AlternativeProjectName { get; set; }
 
 		[InverseProperty("WorkBackAdapter")]
 		public List<Work> Works { get; set; }

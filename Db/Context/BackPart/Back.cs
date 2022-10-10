@@ -14,9 +14,8 @@ namespace Db.Context.BackPart
 		public string Name { get; set; }
 		public int? BaseBackId { get; set; }
 		public Back BaseBack { get; set; }
+		public float Number { get; set; }
 
-		[InverseProperty("Back")]
-		public List<Minigame> Minigames { get; set; }
 		[InverseProperty("Back")]
 		public List<CountRegions> Regions { get; set; }
 		[InverseProperty("BaseBack")]

@@ -64,7 +64,6 @@
     <Compile Include="Context\BackPart\Back.cs" />
     <Compile Include="Context\BackPart\BackType.cs" />
     <Compile Include="Context\BackPart\Episode.cs" />
-    <Compile Include="Context\BackPart\Minigame.cs" />
     <Compile Include="Context\BackPart\Project.cs" />
     <Compile Include="Context\BackPart\CountRegions.cs" />
     <Compile Include="Context\DocumentMakerContext.cs" />
@@ -79,6 +78,10 @@
     <Compile Include="Migrations\202209280832373_InitialCreate.designer.cs">
       <DependentUpon>202209280832373_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202210100825351_Migration1.cs" />
+    <Compile Include="Migrations\202210100825351_Migration1.designer.cs">
+      <DependentUpon>202210100825351_Migration1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -89,6 +92,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202209280832373_InitialCreate.resx">
       <DependentUpon>202209280832373_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202210100825351_Migration1.resx">
+      <DependentUpon>202210100825351_Migration1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

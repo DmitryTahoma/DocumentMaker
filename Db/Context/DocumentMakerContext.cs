@@ -43,7 +43,6 @@ namespace Db.Context
 		public DbSet<BackType> BackTypes { get; set; }
 		public DbSet<CountRegions> CountRegions { get; set; }
 		public DbSet<Episode> Episodes { get; set; }
-		public DbSet<Minigame> Minigames { get; set; }
 		public DbSet<Project> Projects { get; set; }
 
 		#endregion
