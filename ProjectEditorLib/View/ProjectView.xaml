@@ -21,6 +21,6 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Style="{StaticResource FirstTextBlock}" Text="Назва:" />
-        <TextBox Grid.Column="1" Style="{StaticResource LastTextBox}" />
+        <TextBox Grid.Column="1" Style="{StaticResource LastSmallTextBox}" />
     </Grid>
 </UserControl>
