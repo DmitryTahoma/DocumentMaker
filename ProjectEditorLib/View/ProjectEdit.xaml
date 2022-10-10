@@ -143,6 +143,6 @@
             </TreeViewItem>
         </TreeView>
 
-        <local:BackView Grid.Column="1" />
+        <local:CraftView Grid.Column="1" />
     </Grid>
 </UserControl>
