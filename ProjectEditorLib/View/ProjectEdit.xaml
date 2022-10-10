@@ -143,6 +143,6 @@
             </TreeViewItem>
         </TreeView>
 
-        <local:ProjectView Grid.Column="1" />
+        <local:BackView Grid.Column="1" />
     </Grid>
 </UserControl>
