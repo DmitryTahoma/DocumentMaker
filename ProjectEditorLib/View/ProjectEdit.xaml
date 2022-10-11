@@ -34,12 +34,14 @@
             ItemsSource="{Binding ProjectNodes}">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=ProjectNodes}">
-                    <local:TreeItemHeader
-                        ContextMenu="{Binding ContextMenu}"
-                        IconKind="{Binding Type, Converter={StaticResource ProjectNodeTypeToPackIconKindConverter}}"
-                        Text="{Binding Text}" />
+                    <local:TreeItemHeader IconKind="{Binding Type, Converter={StaticResource ProjectNodeTypeToPackIconKindConverter}}" Text="{Binding Text}" />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
+            <TreeView.ItemContainerStyle>
+                <Style BasedOn="{StaticResource MaterialDesignTreeViewItem}" TargetType="TreeViewItem">
+                    <Setter Property="ContextMenu" Value="{Binding ContextMenu}" />
+                </Style>
+            </TreeView.ItemContainerStyle>
         </TreeView>
 
         <local:CraftView Grid.Column="1" />
