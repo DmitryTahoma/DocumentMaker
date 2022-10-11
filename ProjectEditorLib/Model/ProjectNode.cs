@@ -8,24 +8,10 @@ namespace ProjectEditorLib.Model
 {
 	public class ProjectNode
 	{
-		private ProjectNode()
-		{
-			AddEpisode = ConvertCommand(AddEpisodeCommand);
-			AddBack = ConvertCommand(AddBackCommand);
-			AddCraft = ConvertCommand(AddCraftCommand);
-			AddMinigame = ConvertCommand(AddMinigameCommand);
-			AddDialog = ConvertCommand(AddDialogCommand);
-			AddHog = ConvertCommand(AddHogCommand);
-			AddRegions = ConvertCommand(AddRegionsCommand);
-			Remove = ConvertCommand(RemoveCommand);
-		}
-
-		public ProjectNode(ProjectNodeType type, string text) : this()
+		public ProjectNode(ProjectNodeType type, string text)
 		{
 			Type = type;
 			Text = text;
-
-			InitContextMenu();
 		}
 
 		public ProjectNodeType Type { get; set; }
@@ -38,86 +24,66 @@ namespace ProjectEditorLib.Model
 
 		#region Commands
 
-		private Command ConvertCommand(Command<ProjectNode> command)
-		{
-			return new Command(() => command?.Execute(this));
-		}
-
-		public Command<ProjectNode> AddEpisodeCommand { get; set; }
-		private Command AddEpisode { get; }
-
-		public Command<ProjectNode> AddBackCommand { get; set; }
-		private Command AddBack { get; }
-
-		public Command<ProjectNode> AddCraftCommand { get; set; }
-		private Command AddCraft { get; }
-
-		public Command<ProjectNode> AddMinigameCommand { get; set; }
-		private Command AddMinigame { get; }
-
-		public Command<ProjectNode> AddDialogCommand { get; set; }
-		private Command AddDialog { get; }
-
-		public Command<ProjectNode> AddHogCommand { get; set; }
-		private Command AddHog { get; }
-
-		public Command<ProjectNode> AddRegionsCommand { get; set; }
-		private Command AddRegions { get; }
-
-		public Command<ProjectNode> RemoveCommand { get; set; }
-		private Command Remove { get; }
+		public Command AddEpisodeCommand { get; set; }
+		public Command AddBackCommand { get; set; }
+		public Command AddCraftCommand { get; set; }
+		public Command AddMinigameCommand { get; set; }
+		public Command AddDialogCommand { get; set; }
+		public Command AddHogCommand { get; set; }
+		public Command AddRegionsCommand { get; set; }
+		public Command RemoveCommand { get; set; }
 
 		#endregion
 
 		#region ContextMenu
 
-		private void InitContextMenu()
+		public void InitContextMenu()
 		{
 			ContextMenu = new ContextMenu();
 			List<Control> itemsSource = new List<Control>();
 			switch (Type)
 			{
 				case ProjectNodeType.Project:
-					itemsSource.Add(new MenuItem { Header = "Додати епізод", Command = AddEpisode });
+					itemsSource.Add(new MenuItem { Header = "Додати епізод", Command = AddEpisodeCommand });
 					break;
 				case ProjectNodeType.ProjectWithoutEpisodes:
-					itemsSource.Add(new MenuItem { Header = "Додати бек", Command = AddBack });
-					itemsSource.Add(new MenuItem { Header = "Додати крафт", Command = AddCraft });
+					itemsSource.Add(new MenuItem { Header = "Додати бек", Command = AddBackCommand });
+					itemsSource.Add(new MenuItem { Header = "Додати крафт", Command = AddCraftCommand });
 					break;
 				case ProjectNodeType.Episode:
-					itemsSource.Add(new MenuItem { Header = "Додати бек", Command = AddBack });
-					itemsSource.Add(new MenuItem { Header = "Додати крафт", Command = AddCraft });
+					itemsSource.Add(new MenuItem { Header = "Додати бек", Command = AddBackCommand });
+					itemsSource.Add(new MenuItem { Header = "Додати крафт", Command = AddCraftCommand });
 					itemsSource.Add(new Separator());
-					itemsSource.Add(new MenuItem { Header = "Видалити епізод", Command = Remove });
+					itemsSource.Add(new MenuItem { Header = "Видалити епізод", Command = RemoveCommand });
 					break;
 				case ProjectNodeType.Back:
-					itemsSource.Add(new MenuItem { Header = "Додати мініігру", Command = AddMinigame });
-					itemsSource.Add(new MenuItem { Header = "Додати діалог", Command = AddDialog });
-					itemsSource.Add(new MenuItem { Header = "Додати хог", Command = AddHog });
+					itemsSource.Add(new MenuItem { Header = "Додати мініігру", Command = AddMinigameCommand });
+					itemsSource.Add(new MenuItem { Header = "Додати діалог", Command = AddDialogCommand });
+					itemsSource.Add(new MenuItem { Header = "Додати хог", Command = AddHogCommand });
 					itemsSource.Add(new Separator());
-					itemsSource.Add(new MenuItem { Header = "Видалити бек", Command = Remove });
+					itemsSource.Add(new MenuItem { Header = "Видалити бек", Command = RemoveCommand });
 					break;
 				case ProjectNodeType.Craft:
-					itemsSource.Add(new MenuItem { Header = "Додати мініігру", Command = AddMinigame });
-					itemsSource.Add(new MenuItem { Header = "Додати хог", Command = AddHog });
+					itemsSource.Add(new MenuItem { Header = "Додати мініігру", Command = AddMinigameCommand });
+					itemsSource.Add(new MenuItem { Header = "Додати хог", Command = AddHogCommand });
 					itemsSource.Add(new Separator());
-					itemsSource.Add(new MenuItem { Header = "Видалити крафт", Command = Remove });
+					itemsSource.Add(new MenuItem { Header = "Видалити крафт", Command = RemoveCommand });
 					break;
 				case ProjectNodeType.Dialog:
-					itemsSource.Add(new MenuItem { Header = "Видалити діалог", Command = Remove });
+					itemsSource.Add(new MenuItem { Header = "Видалити діалог", Command = RemoveCommand });
 					break;
 				case ProjectNodeType.Hog:
-					itemsSource.Add(new MenuItem { Header = "Додати мініігру", Command = AddMinigame });
+					itemsSource.Add(new MenuItem { Header = "Додати мініігру", Command = AddMinigameCommand });
 					itemsSource.Add(new Separator());
-					itemsSource.Add(new MenuItem { Header = "Видалити хог", Command = Remove });
+					itemsSource.Add(new MenuItem { Header = "Видалити хог", Command = RemoveCommand });
 					break;
 				case ProjectNodeType.Minigame:
-					itemsSource.Add(new MenuItem { Header = "Додати регіони", Command = AddRegions });
+					itemsSource.Add(new MenuItem { Header = "Додати регіони", Command = AddRegionsCommand });
 					itemsSource.Add(new Separator());
-					itemsSource.Add(new MenuItem { Header = "Видалити мінігру", Command = Remove });
+					itemsSource.Add(new MenuItem { Header = "Видалити мінігру", Command = RemoveCommand });
 					break;
 				case ProjectNodeType.Regions:
-					itemsSource.Add(new MenuItem { Header = "Видалити регіони", Command = Remove });
+					itemsSource.Add(new MenuItem { Header = "Видалити регіони", Command = RemoveCommand });
 					break;
 			}
 			ContextMenu.ItemsSource = itemsSource;

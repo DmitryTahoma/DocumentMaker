@@ -1,5 +1,8 @@
 ﻿using Mvvm;
+using Mvvm.Commands;
 using ProjectEditorLib.Model;
+using System;
+using System.Windows.Controls;
 
 namespace ProjectEditorLib.ViewModel
 {
@@ -9,48 +12,9 @@ namespace ProjectEditorLib.ViewModel
 
 		public ProjectEditViewModel()
 		{
-			ProjectNodes = new ObservableRangeCollection<ProjectNode>
-			{
-				new ProjectNode(ProjectNodeType.Project, "Escape")
-				{
-					ProjectNodes = new ObservableRangeCollection<ProjectNode>
-					{
-						new ProjectNode(ProjectNodeType.Episode, "1. Котедж")
-						{
-							ProjectNodes = new ObservableRangeCollection<ProjectNode>()
-							{
-								new ProjectNode(ProjectNodeType.Back, "1. Вітальня")
-								{
-									ProjectNodes = new ObservableRangeCollection<ProjectNode>()
-									{
-										new ProjectNode(ProjectNodeType.Minigame, "1. Скриня"),
-										new ProjectNode(ProjectNodeType.Minigame, "2. Шахмати"),
-										new ProjectNode(ProjectNodeType.Minigame, "3. Замок до підвалу"),
-									},
-								},
-								new ProjectNode(ProjectNodeType.Back, "2. Кухня")
-								{
-									ProjectNodes = new ObservableRangeCollection<ProjectNode>
-									{
-										new ProjectNode(ProjectNodeType.Minigame, "1. Мікрохвильова піч")
-										{
-											ProjectNodes = new ObservableRangeCollection<ProjectNode>
-											{
-												new ProjectNode(ProjectNodeType.Regions, "Регіони"),
-											},
-										},
-										new ProjectNode(ProjectNodeType.Hog, "1. Хог"),
-										new ProjectNode(ProjectNodeType.Dialog, "1. Ділог"),
-									},
-								},
-								new ProjectNode(ProjectNodeType.Craft, "Магніт на мотузці"),
-								new ProjectNode(ProjectNodeType.Craft, "Шуруповерт"),
-								new ProjectNode(ProjectNodeType.Craft, "Test"),
-							},
-						},
-					},
-				}
-			};
+			ProjectNode proj = new ProjectNode(ProjectNodeType.Project, "Escape");
+			InitProjectNodeCommands(proj);
+			ProjectNodes.Add(proj);
 		}
 
 		#region Properties
@@ -61,9 +25,84 @@ namespace ProjectEditorLib.ViewModel
 
 		#region Commands
 
+		#region ProjectNodeCommands
+
+		private Command CreateCommand(Action<ProjectNode> action, ProjectNode param)
+		{
+			return new Command(() => action?.Invoke(param));
+		}
+
+		private void InitProjectNodeCommands(ProjectNode node)
+		{
+			node.AddEpisodeCommand = CreateCommand(OnAddEpisodeCommandExecute, node);
+			node.AddBackCommand = CreateCommand(OnAddBackCommandExecute, node);
+			node.AddCraftCommand = CreateCommand(OnAddCraftCommandExecute, node);
+			node.AddMinigameCommand = CreateCommand(OnAddMinigameCommandExecute, node);
+			node.AddDialogCommand = CreateCommand(OnAddDialogCommandExecute, node);
+			node.AddHogCommand = CreateCommand(OnAddHogCommandExecute, node);
+			node.AddRegionsCommand = CreateCommand(OnAddRegionsCommandExecute, node);
+			node.RemoveCommand = CreateCommand(OnRemoveCommandExecute, node);
+			node.InitContextMenu();
+		}
+
+		private void OnAddEpisodeCommandExecute(ProjectNode sender)
+		{
+			AddNodeToTree(sender, ProjectNodeType.Episode);
+		}
+
+		private void OnAddBackCommandExecute(ProjectNode sender)
+		{
+			AddNodeToTree(sender, ProjectNodeType.Back);
+		}
+
+		private void OnAddCraftCommandExecute(ProjectNode sender)
+		{
+			AddNodeToTree(sender, ProjectNodeType.Craft);
+		}
+
+		private void OnAddMinigameCommandExecute(ProjectNode sender)
+		{
+			AddNodeToTree(sender, ProjectNodeType.Minigame);
+		}
+
+		private void OnAddDialogCommandExecute(ProjectNode sender)
+		{
+			AddNodeToTree(sender, ProjectNodeType.Dialog);
+		}
+
+		private void OnAddHogCommandExecute(ProjectNode sender)
+		{
+			AddNodeToTree(sender, ProjectNodeType.Hog);
+		}
+
+		private void OnAddRegionsCommandExecute(ProjectNode sender)
+		{
+			AddNodeToTree(sender, ProjectNodeType.Regions);
+		}
+
+		private void OnRemoveCommandExecute(ProjectNode sender)
+		{
+
+		}
+
+		#endregion
+
 		#endregion
 
 		#region Methods
+
+		private void AddNodeToTree(ProjectNode parent, ProjectNodeType type)
+		{
+			ProjectNode node = new ProjectNode(type, type.ToString());
+			InitProjectNodeCommands(node);
+			if (parent.ProjectNodes == null)
+			{
+				parent.ProjectNodes = new ObservableRangeCollection<ProjectNode>();
+			}
+			parent.ProjectNodes.Add(node);
+
+			ProjectNodes.UpdateCollection();
+		}
 
 		#endregion
 	}

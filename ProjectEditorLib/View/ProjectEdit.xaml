@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:ProjectEditorLib.View"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -11,9 +12,11 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
     <UserControl.DataContext>
         <vm:ProjectEditViewModel />
     </UserControl.DataContext>
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -23,12 +26,14 @@
             <myConverters:ProjectNodeTypeToPackIconKindConverter x:Key="ProjectNodeTypeToPackIconKindConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <TreeView
+            x:Name="ProjectEplorer"
             MinWidth="220"
             Background="#f9f9f9"
             ItemsSource="{Binding ProjectNodes}">
@@ -46,4 +51,5 @@
 
         <local:CraftView Grid.Column="1" />
     </Grid>
+
 </UserControl>
