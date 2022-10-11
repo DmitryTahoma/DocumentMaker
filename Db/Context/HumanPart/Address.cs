@@ -35,8 +35,14 @@ namespace Db.Context.HumanPart
 			StreetName = obj.StreetName;
 			HouseNumber = obj.HouseNumber;
 			ApartmentNumber = obj.ApartmentNumber;
-			SetLocalityType(obj.LocalityType, obj.LocalityTypeId);
-			SetStreetType(obj.StreetType, obj.StreetTypeId);
+			if (obj.LocalityTypeId != null)
+			{
+				LocalityTypeId = obj.LocalityTypeId;
+			}
+			if (obj.StreetTypeId != null)
+			{
+				StreetTypeId = obj.StreetTypeId;
+			}
 		}
 
 		public void Set(IDbObject other)
@@ -45,32 +51,6 @@ namespace Db.Context.HumanPart
 				Set(obj);
 			else
 				throw new InvalidOperationException();
-		}
-
-		private void SetLocalityType(LocalityType localityType, int? localityTypeId)
-		{
-			if (localityType != null)
-			{
-				LocalityType = localityType;
-				LocalityTypeId = localityType.Id;
-			}
-			else if (localityTypeId != null)
-			{
-				LocalityTypeId = localityTypeId;
-			}
-		}
-
-		private void SetStreetType(StreetType streetType, int? streetTypeId)
-		{
-			if(streetType != null)
-			{
-				StreetType = streetType;
-				StreetTypeId = streetType.Id;
-			}
-			else if(streetTypeId != null)
-			{
-				StreetTypeId = streetTypeId;
-			}
 		}
 	}
 }
