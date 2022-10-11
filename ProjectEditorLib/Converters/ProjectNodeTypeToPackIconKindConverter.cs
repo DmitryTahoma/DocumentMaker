@@ -15,7 +15,8 @@ namespace ProjectEditorLib.Converters
 			{
 				switch (projectNodeType)
 				{
-					case ProjectNodeType.Project: return PackIconKind.AlphaPBoxOutline;
+					case ProjectNodeType.Project:
+					case ProjectNodeType.ProjectWithoutEpisodes: return PackIconKind.AlphaPBoxOutline;
 					case ProjectNodeType.Episode: return PackIconKind.AlphaEBoxOutline;
 					case ProjectNodeType.Back: return PackIconKind.AlphaBBoxOutline;
 					case ProjectNodeType.Craft: return PackIconKind.AlphaCBoxOutline;
@@ -31,22 +32,7 @@ namespace ProjectEditorLib.Converters
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (value is PackIconKind packIconKind)
-			{
-				switch (packIconKind)
-				{
-					case PackIconKind.AlphaPBoxOutline: return ProjectNodeType.Project;
-					case PackIconKind.AlphaEBoxOutline: return ProjectNodeType.Episode;
-					case PackIconKind.AlphaBBoxOutline: return ProjectNodeType.Back;
-					case PackIconKind.AlphaCBoxOutline: return ProjectNodeType.Craft;
-					case PackIconKind.AlphaDBoxOutline: return ProjectNodeType.Dialog;
-					case PackIconKind.AlphaHBoxOutline: return ProjectNodeType.Hog;
-					case PackIconKind.AlphaMBoxOutline: return ProjectNodeType.Minigame;
-					case PackIconKind.AlphaRBoxOutline: return ProjectNodeType.Regions;
-				}
-			}
-
-			throw new ArgumentException();
+			return Binding.DoNothing;
 		}
 	}
 }

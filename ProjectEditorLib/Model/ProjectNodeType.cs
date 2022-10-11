@@ -3,6 +3,7 @@
 	public enum ProjectNodeType
 	{
 		Project,
+		ProjectWithoutEpisodes,
 		Episode,
 		Back,
 		Craft,

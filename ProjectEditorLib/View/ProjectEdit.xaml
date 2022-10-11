@@ -18,62 +18,9 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
-
-                <ResourceDictionary>
-                    <ContextMenu x:Key="ProjectContextMenuWithEpisodes">
-                        <MenuItem Header="Додати епізод" />
-                    </ContextMenu>
-
-                    <ContextMenu x:Key="ProjectContextMenuWithoutEpisodes">
-                        <MenuItem Header="Додати бек" />
-                        <MenuItem Header="Додати крафт" />
-                    </ContextMenu>
-
-                    <ContextMenu x:Key="EpisodeContextMenu">
-                        <MenuItem Header="Додати бек" />
-                        <MenuItem Header="Додати крафт" />
-                        <Separator />
-                        <MenuItem Header="Видалити епізод" />
-                    </ContextMenu>
-
-                    <ContextMenu x:Key="BackContextMenu">
-                        <MenuItem Header="Додати мініігру" />
-                        <MenuItem Header="Додати діалог" />
-                        <MenuItem Header="Додати хог" />
-                        <Separator />
-                        <MenuItem Header="Видалити бек" />
-                    </ContextMenu>
-
-                    <ContextMenu x:Key="CraftContextMenu">
-                        <MenuItem Header="Додати мінігру" />
-                        <MenuItem Header="Додати хог" />
-                        <Separator />
-                        <MenuItem Header="Видалити крафт" />
-                    </ContextMenu>
-
-                    <ContextMenu x:Key="MinigameContextMenu">
-                        <MenuItem Header="Додати регіони" />
-                        <Separator />
-                        <MenuItem Header="Видалити мінігру" />
-                    </ContextMenu>
-
-                    <ContextMenu x:Key="HogContextMenu">
-                        <MenuItem Header="Додати мінігру" />
-                        <Separator />
-                        <MenuItem Header="Видалити хог" />
-                    </ContextMenu>
-
-                    <ContextMenu x:Key="DialogContextMenu">
-                        <MenuItem Header="Видалити діалог" />
-                    </ContextMenu>
-
-                    <ContextMenu x:Key="RegionsContextMenu">
-                        <MenuItem Header="Видалити регіони" />
-                    </ContextMenu>
-
-                    <myConverters:ProjectNodeTypeToPackIconKindConverter x:Key="ProjectNodeTypeToPackIconKindConverter" />
-                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
+
+            <myConverters:ProjectNodeTypeToPackIconKindConverter x:Key="ProjectNodeTypeToPackIconKindConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -87,7 +34,10 @@
             ItemsSource="{Binding ProjectNodes}">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=ProjectNodes}">
-                    <local:TreeItemHeader IconKind="{Binding Type, Converter={StaticResource ProjectNodeTypeToPackIconKindConverter}}" Text="{Binding Text}" />
+                    <local:TreeItemHeader
+                        ContextMenu="{Binding ContextMenu}"
+                        IconKind="{Binding Type, Converter={StaticResource ProjectNodeTypeToPackIconKindConverter}}"
+                        Text="{Binding Text}" />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
