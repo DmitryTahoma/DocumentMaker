@@ -24,14 +24,18 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <TreeView
-            MinWidth="220"
-            Background="#f9f9f9"
-            ItemsSource="{Binding TreeItems}" />
+        <TreeView MinWidth="220" ItemsSource="{Binding TreeItems}" />
 
-        <Grid x:Name="OptionsView" Grid.Column="1">
+        <GridSplitter
+            Grid.Column="1"
+            Width="5"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Stretch" />
+
+        <Grid x:Name="OptionsView" Grid.Column="2">
             <local:ProjectView />
             <local:EpisodeView />
             <local:BackView />
