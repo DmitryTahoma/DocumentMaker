@@ -27,12 +27,26 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <TreeView
-            x:Name="ProjectEplorer"
             MinWidth="220"
             Background="#f9f9f9"
             ItemsSource="{Binding TreeItems}" />
 
-        <local:CraftView Grid.Column="1" />
+        <Grid x:Name="OptionsView" Grid.Column="1">
+            <local:ProjectView />
+            <local:EpisodeView />
+            <local:BackView />
+            <local:CraftView />
+            <!--<local:DialogView/>-->
+            <!--<local:HogView/>-->
+            <!--<local:MinigameView/>-->
+            <!--<local:RegionsView/>-->
+        </Grid>
     </Grid>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding BindOptionsView}" CommandParameter="{Binding ElementName=OptionsView, Path=Children}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
 </UserControl>

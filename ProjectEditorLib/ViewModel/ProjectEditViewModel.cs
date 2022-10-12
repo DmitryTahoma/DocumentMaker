@@ -11,9 +11,12 @@ using System.Windows.Data;
 
 namespace ProjectEditorLib.ViewModel
 {
-	public class ProjectEditViewModel
+	public class ProjectEditViewModel : DependencyObject
 	{
 		ProjectEditModel model = new ProjectEditModel();
+
+		UIElementCollection optionsView = null;
+		int selectedViewTabIndex = -1;
 
 		public ProjectEditViewModel()
 		{
@@ -25,6 +28,7 @@ namespace ProjectEditorLib.ViewModel
 			TreeViewItem treeViewItem = new TreeViewItem { Header = project };
 			projectViewModel.AddCommand = ConvertAddingCommand(treeViewItem, AddTreeViewItemCommand);
 			projectViewModel.RemoveCommand = ConvertRemovingCommand(treeViewItem, RemoveTreeViewItemCommand);
+			treeViewItem.Selected += (s, e) => { ChangeNodeOptionsView.Execute((TreeViewItem)s); };
 
 			Binding contextMenuBinding = new Binding(nameof(TreeItemHeaderViewModel.ContextMenuProperty))
 			{
@@ -42,6 +46,21 @@ namespace ProjectEditorLib.ViewModel
 
 		public ObservableRangeCollection<TreeViewItem> TreeItems { get; private set; } = new ObservableRangeCollection<TreeViewItem>();
 
+		public int SelectedViewTabIndex
+		{
+			get => selectedViewTabIndex;
+			set
+			{
+				selectedViewTabIndex = value < 0 ? -1 : value;
+				int i = 0;
+				foreach(UIElement elem in optionsView)
+				{
+					elem.Visibility = i == selectedViewTabIndex ? Visibility.Visible : Visibility.Collapsed;
+					++i;
+				}
+			}
+		}
+
 		#endregion
 
 		#region Commands
@@ -50,6 +69,8 @@ namespace ProjectEditorLib.ViewModel
 		{
 			AddTreeViewItemCommand = new Command<KeyValuePair<TreeViewItem, ProjectNodeType>>(OnAddTreeViewItemCommandExecute);
 			RemoveTreeViewItemCommand = new Command<TreeViewItem>(OnRemoveTreeViewItemCommandExecute);
+			ChangeNodeOptionsView = new Command<TreeViewItem>(OnChangeNodeOptionsViewExecute);
+			BindOptionsView = new Command<UIElementCollection>(OnBindOptionsViewExecute);
 		}
 
 		public Command<KeyValuePair<TreeViewItem, ProjectNodeType>> AddTreeViewItemCommand { get; private set; }
@@ -61,6 +82,7 @@ namespace ProjectEditorLib.ViewModel
 			TreeViewItem treeViewItem = new TreeViewItem { Header = nodeHeader };
 			nodeHeaderViewModel.AddCommand = ConvertAddingCommand(treeViewItem, AddTreeViewItemCommand);
 			nodeHeaderViewModel.RemoveCommand = ConvertRemovingCommand(treeViewItem, RemoveTreeViewItemCommand);
+			treeViewItem.Selected += (s, e) => { ChangeNodeOptionsView.Execute((TreeViewItem)s); };
 
 			Binding contextMenuBinding = new Binding(nameof(TreeItemHeaderViewModel.ContextMenuProperty))
 			{
@@ -98,6 +120,25 @@ namespace ProjectEditorLib.ViewModel
 		private Command ConvertRemovingCommand(TreeViewItem sender, Command<TreeViewItem> command)
 		{
 			return new Command(() => command.Execute(sender));
+		}
+
+		public Command<TreeViewItem> ChangeNodeOptionsView { get; private set; }
+		private void OnChangeNodeOptionsViewExecute(TreeViewItem selectedNode)
+		{
+			if (!selectedNode.IsSelected) return;
+
+			TreeItemHeader nodeHeader = (TreeItemHeader)selectedNode.Header;
+			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)nodeHeader.DataContext;
+			int selectedView = (int)nodeHeaderViewModel.NodeType - 1;
+			if (selectedView < 0) selectedView = 0;
+			SelectedViewTabIndex = selectedView;
+		}
+
+		public Command<UIElementCollection> BindOptionsView { get; private set; }
+		private void OnBindOptionsViewExecute(UIElementCollection collection)
+		{
+			optionsView = collection;
+			SelectedViewTabIndex = -1;
 		}
 
 		#endregion
