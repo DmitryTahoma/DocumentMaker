@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace Mvvm.Commands
 {
-	public class Command<T> : ICommand where T : class
+	public class Command<T> : ICommand
 	{
 		Action<T> action;
 		Func<T, bool> canExecute;
@@ -27,7 +27,7 @@ namespace Mvvm.Commands
 
 		public void Execute(object parameter)
 		{
-			action(parameter as T);
+			action((T)parameter);
 		}
 	}
 }
