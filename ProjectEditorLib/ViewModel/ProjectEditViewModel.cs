@@ -1,8 +1,13 @@
 ﻿using Mvvm;
 using Mvvm.Commands;
 using ProjectEditorLib.Model;
+using ProjectEditorLib.View;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace ProjectEditorLib.ViewModel
 {
@@ -12,96 +17,109 @@ namespace ProjectEditorLib.ViewModel
 
 		public ProjectEditViewModel()
 		{
-			ProjectNode proj = new ProjectNode(ProjectNodeType.Project, "Escape");
-			InitProjectNodeCommands(proj);
-			ProjectNodes.Add(proj);
+			InitCommands();
+
+			TreeItemHeader project = new TreeItemHeader();
+			TreeItemHeaderViewModel projectViewModel = (TreeItemHeaderViewModel)project.DataContext;
+			projectViewModel.SetModel(new ProjectNode(ProjectNodeType.Project, "Escape"));
+			TreeViewItem treeViewItem = new TreeViewItem { Header = project };
+			projectViewModel.AddCommand = ConvertAddingCommand(treeViewItem, AddTreeViewItemCommand);
+			projectViewModel.RemoveCommand = ConvertRemovingCommand(treeViewItem, RemoveTreeViewItemCommand);
+
+			Binding contextMenuBinding = new Binding(nameof(TreeItemHeaderViewModel.ContextMenuProperty))
+			{
+				Source = projectViewModel,
+				Path = new PropertyPath(nameof(projectViewModel.ContextMenu)),
+				Mode = BindingMode.OneWay,
+				UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+			};
+			treeViewItem.SetBinding(FrameworkElement.ContextMenuProperty, contextMenuBinding);
+
+			TreeItems.Add(treeViewItem);
 		}
 
 		#region Properties
 
-		public ObservableRangeCollection<ProjectNode> ProjectNodes { get; private set; } = new ObservableRangeCollection<ProjectNode>();
+		public ObservableRangeCollection<TreeViewItem> TreeItems { get; private set; } = new ObservableRangeCollection<TreeViewItem>();
 
 		#endregion
 
 		#region Commands
 
-		#region ProjectNodeCommands
-
-		private Command CreateCommand(Action<ProjectNode> action, ProjectNode param)
+		private void InitCommands()
 		{
-			return new Command(() => action?.Invoke(param));
+			AddTreeViewItemCommand = new Command<KeyValuePair<TreeViewItem, ProjectNodeType>>(OnAddTreeViewItemCommandExecute);
+			RemoveTreeViewItemCommand = new Command<TreeViewItem>(OnRemoveTreeViewItemCommandExecute);
 		}
 
-		private void InitProjectNodeCommands(ProjectNode node)
+		public Command<KeyValuePair<TreeViewItem, ProjectNodeType>> AddTreeViewItemCommand { get; private set; }
+		private void OnAddTreeViewItemCommandExecute(KeyValuePair<TreeViewItem, ProjectNodeType> addingInfo)
 		{
-			node.AddEpisodeCommand = CreateCommand(OnAddEpisodeCommandExecute, node);
-			node.AddBackCommand = CreateCommand(OnAddBackCommandExecute, node);
-			node.AddCraftCommand = CreateCommand(OnAddCraftCommandExecute, node);
-			node.AddMinigameCommand = CreateCommand(OnAddMinigameCommandExecute, node);
-			node.AddDialogCommand = CreateCommand(OnAddDialogCommandExecute, node);
-			node.AddHogCommand = CreateCommand(OnAddHogCommandExecute, node);
-			node.AddRegionsCommand = CreateCommand(OnAddRegionsCommandExecute, node);
-			node.RemoveCommand = CreateCommand(OnRemoveCommandExecute, node);
-			node.InitContextMenu();
+			TreeItemHeader nodeHeader = new TreeItemHeader();
+			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)nodeHeader.DataContext;
+			nodeHeaderViewModel.SetModel(new ProjectNode(addingInfo.Value, addingInfo.Value.ToString()));
+			TreeViewItem treeViewItem = new TreeViewItem { Header = nodeHeader };
+			nodeHeaderViewModel.AddCommand = ConvertAddingCommand(treeViewItem, AddTreeViewItemCommand);
+			nodeHeaderViewModel.RemoveCommand = ConvertRemovingCommand(treeViewItem, RemoveTreeViewItemCommand);
+
+			Binding contextMenuBinding = new Binding(nameof(TreeItemHeaderViewModel.ContextMenuProperty))
+			{
+				Source = nodeHeaderViewModel,
+				Path = new PropertyPath(nameof(nodeHeaderViewModel.ContextMenu)),
+				Mode = BindingMode.OneWay,
+				UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+			};
+			treeViewItem.SetBinding(FrameworkElement.ContextMenuProperty, contextMenuBinding);
+
+			TreeViewItem sender = addingInfo.Key;
+			TreeItemHeader senderHeader = (TreeItemHeader)sender.Header;
+			TreeItemHeaderViewModel senderHeaderViewModel = (TreeItemHeaderViewModel)senderHeader.DataContext;
+			senderHeaderViewModel.AddChild(nodeHeaderViewModel);
+			sender.Items.Add(treeViewItem);
+			sender.IsExpanded = true;
+			treeViewItem.IsSelected = true;
 		}
 
-		private void OnAddEpisodeCommandExecute(ProjectNode sender)
+		public Command<TreeViewItem> RemoveTreeViewItemCommand { get; private set; }
+		private void OnRemoveTreeViewItemCommandExecute(TreeViewItem sender)
 		{
-			AddNodeToTree(sender, ProjectNodeType.Episode);
+			TreeItemHeader senderHeader = (TreeItemHeader)sender.Header;
+			TreeItemHeaderViewModel senderHeaderViewModel = (TreeItemHeaderViewModel)senderHeader.DataContext;
+			senderHeaderViewModel.Remove();
+			TreeViewItem parrent = GetParent(TreeItems, sender);
+			parrent.Items.Remove(sender);
 		}
 
-		private void OnAddBackCommandExecute(ProjectNode sender)
+		private Command<ProjectNodeType> ConvertAddingCommand(TreeViewItem sender, Command<KeyValuePair<TreeViewItem, ProjectNodeType>> command)
 		{
-			AddNodeToTree(sender, ProjectNodeType.Back);
+			return new Command<ProjectNodeType>((projectNodeType) => command.Execute(new KeyValuePair<TreeViewItem, ProjectNodeType>(sender, projectNodeType)));
 		}
 
-		private void OnAddCraftCommandExecute(ProjectNode sender)
+		private Command ConvertRemovingCommand(TreeViewItem sender, Command<TreeViewItem> command)
 		{
-			AddNodeToTree(sender, ProjectNodeType.Craft);
+			return new Command(() => command.Execute(sender));
 		}
-
-		private void OnAddMinigameCommandExecute(ProjectNode sender)
-		{
-			AddNodeToTree(sender, ProjectNodeType.Minigame);
-		}
-
-		private void OnAddDialogCommandExecute(ProjectNode sender)
-		{
-			AddNodeToTree(sender, ProjectNodeType.Dialog);
-		}
-
-		private void OnAddHogCommandExecute(ProjectNode sender)
-		{
-			AddNodeToTree(sender, ProjectNodeType.Hog);
-		}
-
-		private void OnAddRegionsCommandExecute(ProjectNode sender)
-		{
-			AddNodeToTree(sender, ProjectNodeType.Regions);
-		}
-
-		private void OnRemoveCommandExecute(ProjectNode sender)
-		{
-
-		}
-
-		#endregion
 
 		#endregion
 
 		#region Methods
 
-		private void AddNodeToTree(ProjectNode parent, ProjectNodeType type)
+		private TreeViewItem GetParent(IEnumerable enumerable, TreeViewItem treeViewItem)
 		{
-			ProjectNode node = new ProjectNode(type, type.ToString());
-			InitProjectNodeCommands(node);
-			if (parent.ProjectNodes == null)
+			foreach(TreeViewItem treeItem in enumerable)
 			{
-				parent.ProjectNodes = new ObservableRangeCollection<ProjectNode>();
-			}
-			parent.ProjectNodes.Add(node);
+				if(treeItem.Items.Contains(treeViewItem))
+				{
+					return treeItem;
+				}
 
-			ProjectNodes.UpdateCollection();
+				TreeViewItem parrent = GetParent(treeItem.Items, treeViewItem);
+				if(parrent != null)
+				{
+					return parrent;
+				}
+			}
+			return null;
 		}
 
 		#endregion

@@ -6,17 +6,31 @@
     xmlns:local="clr-namespace:ProjectEditorLib.View"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:myConverters="clr-namespace:ProjectEditorLib.Converters"
+    xmlns:vm="clr-namespace:ProjectEditorLib.ViewModel"
     x:Name="TreeItemHeaderView"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
+    <UserControl.DataContext>
+        <vm:TreeItemHeaderViewModel />
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <myConverters:ProjectNodeTypeToPackIconKindConverter x:Key="ProjectNodeTypeToPackIconKindConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid>
         <StackPanel Orientation="Horizontal">
             <materialDesign:PackIcon
                 Width="20"
                 Height="20"
-                Kind="{Binding ElementName=TreeItemHeaderView, Path=IconKind}" />
-            <TextBlock Margin="7,0,0,0" Text="{Binding ElementName=TreeItemHeaderView, Path=Text}" />
+                Kind="{Binding NodeType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ProjectNodeTypeToPackIconKindConverter}}" />
+            <TextBlock Margin="7,0,0,0" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
     </Grid>
+
 </UserControl>

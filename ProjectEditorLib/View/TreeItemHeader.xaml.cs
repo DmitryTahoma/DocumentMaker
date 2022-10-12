@@ -25,19 +25,5 @@ namespace ProjectEditorLib.View
 		{
 			InitializeComponent();
 		}
-
-		public PackIconKind IconKind
-		{
-			get { return (PackIconKind)GetValue(IconKindProperty); }
-			set { SetValue(IconKindProperty, value); }
-		}
-		public static readonly DependencyProperty IconKindProperty = DependencyProperty.Register(nameof(IconKind), typeof(PackIconKind), typeof(TreeItemHeader));
-
-		public string Text
-		{
-			get { return (string)GetValue(TextProperty); }
-			set { SetValue(TextProperty, value); }
-		}
-		public static readonly DependencyProperty TextProperty = DependencyProperty.Register(nameof(Text), typeof(string), typeof(TreeItemHeader));
 	}
 }

@@ -85,6 +85,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="ViewModel\ProjectEditViewModel.cs" />
+    <Compile Include="ViewModel\TreeItemHeaderViewModel.cs" />
     <Compile Include="View\BackView.xaml.cs">
       <DependentUpon>BackView.xaml</DependentUpon>
     </Compile>
