@@ -92,6 +92,7 @@ namespace ProjectEditorLib.ViewModel
 			BindDependedObjCreateProject = new Command<DependencyObject>(OnBindDependedObjCreateProjectExecute);
 			BindDependedObjEditProject = new Command<DependencyObject>(OnBindDependedObjEditProjectExecute);
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
+			BackToProjectSelecting = new Command(OnBackToProjectSelectingExecute);
 		}
 
 		public Command<KeyValuePair<TreeViewItem, ProjectNodeType>> AddTreeViewItemCommand { get; private set; }
@@ -179,7 +180,7 @@ namespace ProjectEditorLib.ViewModel
 		}
 
 		public Command LoadFromDatabase { get; private set; }
-		public async void OnLoadFromDatabaseExecute()
+		private async void OnLoadFromDatabaseExecute()
 		{
 			if(state == ViewModelState.Initialized)
 			{
@@ -189,6 +190,13 @@ namespace ProjectEditorLib.ViewModel
 				await model.DisconnectDB();
 				state = ViewModelState.Loaded;
 			}
+		}
+
+		public Command BackToProjectSelecting { get; private set; }
+		private void OnBackToProjectSelectingExecute()
+		{
+			TreeItems.Clear();
+			ProjectSelected = false;
 		}
 
 		#endregion

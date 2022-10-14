@@ -139,7 +139,10 @@
 
             <ToolBarTray IsLocked="True">
                 <ToolBar Style="{StaticResource MaterialDesignToolBar}">
-                    <Button Style="{StaticResource ToolBarButton}" ToolTip="Повернутися">
+                    <Button
+                        Command="{Binding BackToProjectSelecting}"
+                        Style="{StaticResource ToolBarButton}"
+                        ToolTip="Повернутися">
                         <materialDesign:PackIcon
                             Width="18"
                             Height="18"
