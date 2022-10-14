@@ -110,6 +110,9 @@
     <Compile Include="View\ProjectView.xaml.cs">
       <DependentUpon>ProjectView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\RegionsView.xaml.cs">
+      <DependentUpon>RegionsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\TreeItemHeader.xaml.cs">
       <DependentUpon>TreeItemHeader.xaml</DependentUpon>
     </Compile>
@@ -169,6 +172,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ProjectView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\RegionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -43,7 +43,7 @@
             <local:DialogView />
             <local:HogView />
             <local:MinigameView />
-            <!--<local:RegionsView/>-->
+            <local:RegionsView />
         </Grid>
     </Grid>
 
