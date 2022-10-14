@@ -27,25 +27,6 @@ namespace ProjectEditorLib.ViewModel
 		public ProjectEditViewModel()
 		{
 			InitCommands();
-
-			TreeItemHeader project = new TreeItemHeader();
-			TreeItemHeaderViewModel projectViewModel = (TreeItemHeaderViewModel)project.DataContext;
-			projectViewModel.SetModel(new ProjectNode(ProjectNodeType.Project, "Escape"));
-			TreeViewItem treeViewItem = new TreeViewItem { Header = project };
-			projectViewModel.AddCommand = ConvertAddingCommand(treeViewItem, AddTreeViewItemCommand);
-			projectViewModel.RemoveCommand = ConvertRemovingCommand(treeViewItem, RemoveTreeViewItemCommand);
-			treeViewItem.Selected += (s, e) => { ChangeNodeOptionsView.Execute((TreeViewItem)s); };
-
-			Binding contextMenuBinding = new Binding(nameof(TreeItemHeaderViewModel.ContextMenuProperty))
-			{
-				Source = projectViewModel,
-				Path = new PropertyPath(nameof(projectViewModel.ContextMenu)),
-				Mode = BindingMode.OneWay,
-				UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-			};
-			treeViewItem.SetBinding(FrameworkElement.ContextMenuProperty, contextMenuBinding);
-
-			TreeItems.Add(treeViewItem);
 		}
 
 		#region Properties
@@ -116,22 +97,8 @@ namespace ProjectEditorLib.ViewModel
 		public Command<KeyValuePair<TreeViewItem, ProjectNodeType>> AddTreeViewItemCommand { get; private set; }
 		private void OnAddTreeViewItemCommandExecute(KeyValuePair<TreeViewItem, ProjectNodeType> addingInfo)
 		{
-			TreeItemHeader nodeHeader = new TreeItemHeader();
-			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)nodeHeader.DataContext;
-			nodeHeaderViewModel.SetModel(new ProjectNode(addingInfo.Value, addingInfo.Value.ToString()));
-			TreeViewItem treeViewItem = new TreeViewItem { Header = nodeHeader };
-			nodeHeaderViewModel.AddCommand = ConvertAddingCommand(treeViewItem, AddTreeViewItemCommand);
-			nodeHeaderViewModel.RemoveCommand = ConvertRemovingCommand(treeViewItem, RemoveTreeViewItemCommand);
-			treeViewItem.Selected += (s, e) => { ChangeNodeOptionsView.Execute((TreeViewItem)s); };
-
-			Binding contextMenuBinding = new Binding(nameof(TreeItemHeaderViewModel.ContextMenuProperty))
-			{
-				Source = nodeHeaderViewModel,
-				Path = new PropertyPath(nameof(nodeHeaderViewModel.ContextMenu)),
-				Mode = BindingMode.OneWay,
-				UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-			};
-			treeViewItem.SetBinding(FrameworkElement.ContextMenuProperty, contextMenuBinding);
+			TreeViewItem treeViewItem = CreateTreeViewItem(addingInfo.Value, addingInfo.Value.ToString());
+			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)((TreeItemHeader)treeViewItem.Header).DataContext;
 
 			TreeViewItem sender = addingInfo.Key;
 			TreeItemHeader senderHeader = (TreeItemHeader)sender.Header;
@@ -193,8 +160,8 @@ namespace ProjectEditorLib.ViewModel
 			{
 				if (NeedCreateProject)
 					await CreateProject();
-				else
-					EditSelectedProject();
+
+				EditSelectedProject();
 				ProjectSelected = true;
 			}
 		}
@@ -266,7 +233,31 @@ namespace ProjectEditorLib.ViewModel
 
 		private void EditSelectedProject()
 		{
+			TreeItems.SuppressingNotifications = true;
+			TreeItems.Clear();
+			TreeItems.SuppressingNotifications = false;
+			TreeItems.Add(CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject.Name));
+		}
 
+		private TreeViewItem CreateTreeViewItem(ProjectNodeType nodeType, string text)
+		{
+			TreeItemHeader nodeHeader = new TreeItemHeader();
+			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)nodeHeader.DataContext;
+			nodeHeaderViewModel.SetModel(new ProjectNode(nodeType, text));
+			TreeViewItem treeViewItem = new TreeViewItem { Header = nodeHeader };
+			nodeHeaderViewModel.AddCommand = ConvertAddingCommand(treeViewItem, AddTreeViewItemCommand);
+			nodeHeaderViewModel.RemoveCommand = ConvertRemovingCommand(treeViewItem, RemoveTreeViewItemCommand);
+			treeViewItem.Selected += (s, e) => { ChangeNodeOptionsView.Execute((TreeViewItem)s); };
+
+			Binding contextMenuBinding = new Binding(nameof(TreeItemHeaderViewModel.ContextMenuProperty))
+			{
+				Source = nodeHeaderViewModel,
+				Path = new PropertyPath(nameof(nodeHeaderViewModel.ContextMenu)),
+				Mode = BindingMode.OneWay,
+				UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+			};
+			treeViewItem.SetBinding(FrameworkElement.ContextMenuProperty, contextMenuBinding);
+			return treeViewItem;
 		}
 
 		#endregion
