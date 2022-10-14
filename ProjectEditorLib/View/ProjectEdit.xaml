@@ -148,7 +148,10 @@
                             Height="18"
                             Kind="ArrowLeftCircle" />
                     </Button>
-                    <Button Style="{StaticResource ToolBarButton}" ToolTip="Згорнути все">
+                    <Button
+                        Command="{Binding CollapseAllTree}"
+                        Style="{StaticResource ToolBarButton}"
+                        ToolTip="Згорнути все">
                         <materialDesign:PackIcon
                             Width="18"
                             Height="18"

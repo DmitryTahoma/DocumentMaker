@@ -93,6 +93,7 @@ namespace ProjectEditorLib.ViewModel
 			BindDependedObjEditProject = new Command<DependencyObject>(OnBindDependedObjEditProjectExecute);
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
 			BackToProjectSelecting = new Command(OnBackToProjectSelectingExecute);
+			CollapseAllTree = new Command(OnCollapseAllTreeExecute);
 		}
 
 		public Command<KeyValuePair<TreeViewItem, ProjectNodeType>> AddTreeViewItemCommand { get; private set; }
@@ -199,6 +200,12 @@ namespace ProjectEditorLib.ViewModel
 			ProjectSelected = false;
 		}
 
+		public Command CollapseAllTree { get; private set; }
+		private void OnCollapseAllTreeExecute()
+		{
+			CollapseTreeItems(TreeItems);
+		}
+
 		#endregion
 
 		#region Methods
@@ -266,6 +273,15 @@ namespace ProjectEditorLib.ViewModel
 			};
 			treeViewItem.SetBinding(FrameworkElement.ContextMenuProperty, contextMenuBinding);
 			return treeViewItem;
+		}
+
+		private void CollapseTreeItems(IEnumerable treeItems)
+		{
+			foreach(TreeViewItem item in treeItems)
+			{
+				item.IsExpanded = false;
+				CollapseTreeItems(item.Items);
+			}
 		}
 
 		#endregion
