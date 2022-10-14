@@ -115,6 +115,10 @@
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
 
+            <Style x:Key="ToolBarButton" TargetType="Button">
+                <Setter Property="Padding" Value="5" />
+            </Style>
+
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

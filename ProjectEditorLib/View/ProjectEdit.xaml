@@ -128,19 +128,59 @@
         </Grid>
         <Grid Visibility="{Binding ProjectSelected, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
+                <ColumnDefinition />
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <TreeView MinWidth="220" ItemsSource="{Binding TreeItems}" />
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <ToolBarTray IsLocked="True">
+                <ToolBar Style="{StaticResource MaterialDesignToolBar}">
+                    <Button Style="{StaticResource ToolBarButton}" ToolTip="Повернутися">
+                        <materialDesign:PackIcon
+                            Width="18"
+                            Height="18"
+                            Kind="ArrowLeftCircle" />
+                    </Button>
+                    <Button Style="{StaticResource ToolBarButton}" ToolTip="Згорнути все">
+                        <materialDesign:PackIcon
+                            Width="18"
+                            Height="18"
+                            Kind="CollapseAllOutline" />
+                    </Button>
+                </ToolBar>
+            </ToolBarTray>
+
+            <TreeView
+                Grid.Row="1"
+                MinWidth="220"
+                ItemsSource="{Binding TreeItems}" />
 
             <GridSplitter
+                Grid.RowSpan="2"
                 Grid.Column="1"
                 Width="5"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Stretch" />
 
-            <Grid x:Name="OptionsView" Grid.Column="2">
+            <ToolBarTray Grid.Column="2" IsLocked="True">
+                <ToolBar Style="{StaticResource MaterialDesignToolBar}">
+                    <Button Style="{StaticResource ToolBarButton}" ToolTip="Зберегти">
+                        <materialDesign:PackIcon
+                            Width="18"
+                            Height="18"
+                            Kind="ContentSaveOutline" />
+                    </Button>
+                </ToolBar>
+            </ToolBarTray>
+
+            <Grid
+                x:Name="OptionsView"
+                Grid.Row="1"
+                Grid.Column="2">
                 <local:ProjectView />
                 <local:EpisodeView />
                 <local:BackView />
