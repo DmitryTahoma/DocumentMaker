@@ -158,6 +158,7 @@
             <i:InvokeCommandAction Command="{Binding BindOptionsView}" CommandParameter="{Binding ElementName=OptionsView, Path=Children}" />
             <i:InvokeCommandAction Command="{Binding BindDependedObjCreateProject}" CommandParameter="{Binding ElementName=CreationProjectNameTextBox}" />
             <i:InvokeCommandAction Command="{Binding BindDependedObjEditProject}" CommandParameter="{Binding ElementName=EditProjectComboBox}" />
+            <i:InvokeCommandAction Command="{Binding LoadFromDatabase}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 

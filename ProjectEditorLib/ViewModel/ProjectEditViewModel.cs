@@ -15,6 +15,7 @@ namespace ProjectEditorLib.ViewModel
 	public class ProjectEditViewModel : DependencyObject
 	{
 		ProjectEditModel model = new ProjectEditModel();
+		ViewModelState state = ViewModelState.Initialized;
 
 		UIElementCollection optionsView = null;
 		int selectedViewTabIndex = -1;
@@ -108,6 +109,7 @@ namespace ProjectEditorLib.ViewModel
 			EditProject = new Command(OnEditProjectExecute, CanExecuteEditProject);
 			BindDependedObjCreateProject = new Command<DependencyObject>(OnBindDependedObjCreateProjectExecute);
 			BindDependedObjEditProject = new Command<DependencyObject>(OnBindDependedObjEditProjectExecute);
+			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
 		}
 
 		public Command<KeyValuePair<TreeViewItem, ProjectNodeType>> AddTreeViewItemCommand { get; private set; }
@@ -206,6 +208,19 @@ namespace ProjectEditorLib.ViewModel
 		private void OnBindDependedObjEditProjectExecute(DependencyObject dependencyObject)
 		{
 			dependedObjEditProject = dependencyObject;
+		}
+
+		public Command LoadFromDatabase { get; private set; }
+		public async void OnLoadFromDatabaseExecute()
+		{
+			if(state == ViewModelState.Initialized)
+			{
+				state = ViewModelState.Loading;
+				await model.ConnectDB();
+				ProjectList.AddRange(await model.LoadProjects());
+				await model.DisconnectDB();
+				state = ViewModelState.Loaded;
+			}
 		}
 
 		#endregion
