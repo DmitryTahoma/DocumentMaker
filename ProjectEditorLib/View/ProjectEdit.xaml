@@ -40,7 +40,7 @@
             <local:EpisodeView />
             <local:BackView />
             <local:CraftView />
-            <!--<local:DialogView/>-->
+            <local:DialogView />
             <!--<local:HogView/>-->
             <!--<local:MinigameView/>-->
             <!--<local:RegionsView/>-->
