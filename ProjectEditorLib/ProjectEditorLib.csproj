@@ -101,6 +101,9 @@
     <Compile Include="View\HogView.xaml.cs">
       <DependentUpon>HogView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\MinigameView.xaml.cs">
+      <DependentUpon>MinigameView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ProjectEdit.xaml.cs">
       <DependentUpon>ProjectEdit.xaml</DependentUpon>
     </Compile>
@@ -154,6 +157,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\HogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MinigameView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

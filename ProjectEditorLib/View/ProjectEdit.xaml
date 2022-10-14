@@ -42,7 +42,7 @@
             <local:CraftView />
             <local:DialogView />
             <local:HogView />
-            <!--<local:MinigameView/>-->
+            <local:MinigameView />
             <!--<local:RegionsView/>-->
         </Grid>
     </Grid>
