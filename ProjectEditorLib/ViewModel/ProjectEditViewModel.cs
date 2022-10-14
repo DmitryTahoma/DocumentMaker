@@ -1,4 +1,5 @@
-﻿using Mvvm;
+﻿using Db.Context.BackPart;
+using Mvvm;
 using Mvvm.Commands;
 using ProjectEditorLib.Model;
 using ProjectEditorLib.View;
@@ -17,6 +18,9 @@ namespace ProjectEditorLib.ViewModel
 
 		UIElementCollection optionsView = null;
 		int selectedViewTabIndex = -1;
+
+		DependencyObject dependedObjCreateProject = null;
+		DependencyObject dependedObjEditProject = null;
 
 		public ProjectEditViewModel()
 		{
@@ -61,6 +65,36 @@ namespace ProjectEditorLib.ViewModel
 			}
 		}
 
+		public bool ProjectSelected
+		{
+			get { return (bool)GetValue(ProjectSelectedProperty); }
+			set { SetValue(ProjectSelectedProperty, value); }
+		}
+		public static readonly DependencyProperty ProjectSelectedProperty = DependencyProperty.Register(nameof(ProjectSelected), typeof(bool), typeof(ProjectEditViewModel));
+
+		public bool NeedCreateProject
+		{
+			get { return (bool)GetValue(NeedCreateProjectProperty); }
+			set { SetValue(NeedCreateProjectProperty, value); }
+		}
+		public static readonly DependencyProperty NeedCreateProjectProperty = DependencyProperty.Register(nameof(NeedCreateProject), typeof(bool), typeof(ProjectEditViewModel));
+
+		public ObservableRangeCollection<Project> ProjectList { get; private set; } = new ObservableRangeCollection<Project>();
+
+		public Project SelectedEditProject
+		{
+			get { return (Project)GetValue(SelectedEditProjectProperty); }
+			set { SetValue(SelectedEditProjectProperty, value); }
+		}
+		public static readonly DependencyProperty SelectedEditProjectProperty = DependencyProperty.Register(nameof(SelectedEditProject), typeof(Project), typeof(ProjectEditViewModel));
+
+		public string CreationProjectName
+		{
+			get { return (string)GetValue(CreationProjectNameProperty); }
+			set { SetValue(CreationProjectNameProperty, value); }
+		}
+		public static readonly DependencyProperty CreationProjectNameProperty = DependencyProperty.Register(nameof(CreationProjectName), typeof(string), typeof(ProjectEditViewModel));
+
 		#endregion
 
 		#region Commands
@@ -71,6 +105,9 @@ namespace ProjectEditorLib.ViewModel
 			RemoveTreeViewItemCommand = new Command<TreeViewItem>(OnRemoveTreeViewItemCommandExecute);
 			ChangeNodeOptionsView = new Command<TreeViewItem>(OnChangeNodeOptionsViewExecute);
 			BindOptionsView = new Command<UIElementCollection>(OnBindOptionsViewExecute);
+			EditProject = new Command(OnEditProjectExecute, CanExecuteEditProject);
+			BindDependedObjCreateProject = new Command<DependencyObject>(OnBindDependedObjCreateProjectExecute);
+			BindDependedObjEditProject = new Command<DependencyObject>(OnBindDependedObjEditProjectExecute);
 		}
 
 		public Command<KeyValuePair<TreeViewItem, ProjectNodeType>> AddTreeViewItemCommand { get; private set; }
@@ -141,6 +178,36 @@ namespace ProjectEditorLib.ViewModel
 			SelectedViewTabIndex = -1;
 		}
 
+		public Command EditProject { get; private set; }
+		private void OnEditProjectExecute()
+		{
+			DependencyObject invalid = ValidationHelper.GetFirstInvalid(NeedCreateProject ? dependedObjCreateProject : dependedObjEditProject, true);
+			if (invalid != null)
+			{
+				(invalid as UIElement)?.Focus();
+			}
+			else 
+			{
+				if (NeedCreateProject)
+					CreateProject();
+				else
+					EditSelectedProject();
+				ProjectSelected = true;
+			}
+		}
+
+		public Command<DependencyObject> BindDependedObjCreateProject { get; private set; }
+		private void OnBindDependedObjCreateProjectExecute(DependencyObject dependencyObject)
+		{
+			dependedObjCreateProject = dependencyObject;
+		}
+
+		public Command<DependencyObject> BindDependedObjEditProject { get; private set; }
+		private void OnBindDependedObjEditProjectExecute(DependencyObject dependencyObject)
+		{
+			dependedObjEditProject = dependencyObject;
+		}
+
 		#endregion
 
 		#region Methods
@@ -161,6 +228,22 @@ namespace ProjectEditorLib.ViewModel
 				}
 			}
 			return null;
+		}
+
+		private bool CanExecuteEditProject()
+		{
+			DependencyObject currentDependedObj = NeedCreateProject ? dependedObjCreateProject : dependedObjEditProject;
+			return currentDependedObj != null && ValidationHelper.IsValid(currentDependedObj);
+		}
+
+		private void CreateProject()
+		{
+
+		}
+
+		private void EditSelectedProject()
+		{
+
 		}
 
 		#endregion

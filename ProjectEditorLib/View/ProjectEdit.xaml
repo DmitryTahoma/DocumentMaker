@@ -2,12 +2,15 @@
     x:Class="ProjectEditorLib.View.ProjectEdit"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:ProjectEditorLib.View"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mvvmConverters="clr-namespace:Mvvm.Converters;assembly=Mvvm"
     xmlns:myConverters="clr-namespace:ProjectEditorLib.Converters"
+    xmlns:validationRules="clr-namespace:Mvvm.ValidationRules;assembly=Mvvm"
     xmlns:vm="clr-namespace:ProjectEditorLib.ViewModel"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -18,38 +21,143 @@
     </UserControl.DataContext>
 
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters:BooleanToVisibilityConverter
+                x:Key="InverseBooleanToVisibilityConverter"
+                FalseValue="Visible"
+                TrueValue="Collapsed" />
+            <converters:BooleanToVisibilityConverter
+                x:Key="BooleanToVisibilityConverterHidden"
+                FalseValue="Hidden"
+                TrueValue="Visible" />
+            <converters:BooleanToVisibilityConverter
+                x:Key="InverseBooleanToVisibilityConverterHidden"
+                FalseValue="Visible"
+                TrueValue="Hidden" />
+            <mvvmConverters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <TreeView MinWidth="220" ItemsSource="{Binding TreeItems}" />
-
-        <GridSplitter
-            Grid.Column="1"
-            Width="5"
+        <Grid
             HorizontalAlignment="Center"
-            VerticalAlignment="Stretch" />
+            VerticalAlignment="Center"
+            Visibility="{Binding ProjectSelected, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-        <Grid x:Name="OptionsView" Grid.Column="2">
-            <local:ProjectView />
-            <local:EpisodeView />
-            <local:BackView />
-            <local:CraftView />
-            <local:DialogView />
-            <local:HogView />
-            <local:MinigameView />
-            <local:RegionsView />
+            <TextBlock
+                x:Name="CreateProjectTextBlock"
+                Margin="5"
+                Text="Створити" />
+            <ToggleButton
+                x:Name="ChooseProjectToggleButton"
+                Grid.Column="1"
+                Margin="5"
+                IsChecked="{Binding NeedCreateProject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
+                Style="{StaticResource MaterialDesignSwitchToggleButton}" />
+            <TextBlock
+                x:Name="EditProjectTextBlock"
+                Grid.Column="2"
+                Margin="5"
+                Text="Редагувати" />
+
+            <ComboBox
+                x:Name="EditProjectComboBox"
+                Grid.Row="1"
+                Grid.ColumnSpan="3"
+                materialDesign:HintAssist.Hint="Оберіть проект"
+                DisplayMemberPath="Name"
+                ItemsSource="{Binding ProjectList, Mode=OneWay}"
+                Style="{StaticResource MiddleComboBox}"
+                Visibility="{Binding ElementName=ChooseProjectToggleButton, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverterHidden}}">
+                <ComboBox.SelectedItem>
+                    <Binding
+                        Mode="TwoWay"
+                        Path="SelectedEditProject"
+                        UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <validationRules:NotNullValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </ComboBox.SelectedItem>
+            </ComboBox>
+            <TextBox
+                x:Name="CreationProjectNameTextBox"
+                Grid.Row="1"
+                Grid.ColumnSpan="3"
+                materialDesign:HintAssist.Hint="Назва проекту"
+                Style="{StaticResource MiddleTextBox}"
+                Visibility="{Binding ElementName=ChooseProjectToggleButton, Path=IsChecked, Converter={StaticResource InverseBooleanToVisibilityConverterHidden}}">
+                <TextBox.Text>
+                    <Binding
+                        Mode="TwoWay"
+                        Path="CreationProjectName"
+                        UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <validationRules:NotEmptyValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+            <Button
+                Grid.Row="2"
+                Grid.ColumnSpan="3"
+                Command="{Binding EditProject}"
+                Style="{StaticResource MaterialDesignPaperDarkButton}">
+                <Grid>
+                    <TextBlock Text="{Binding ElementName=CreateProjectTextBlock, Path=Text, Mode=OneWay}" Visibility="{Binding ElementName=ChooseProjectToggleButton, Path=IsChecked, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                    <TextBlock Text="{Binding ElementName=EditProjectTextBlock, Path=Text, Mode=OneWay}" Visibility="{Binding ElementName=ChooseProjectToggleButton, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                </Grid>
+            </Button>
+
+        </Grid>
+        <Grid Visibility="{Binding ProjectSelected, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TreeView MinWidth="220" ItemsSource="{Binding TreeItems}" />
+
+            <GridSplitter
+                Grid.Column="1"
+                Width="5"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Stretch" />
+
+            <Grid x:Name="OptionsView" Grid.Column="2">
+                <local:ProjectView />
+                <local:EpisodeView />
+                <local:BackView />
+                <local:CraftView />
+                <local:DialogView />
+                <local:HogView />
+                <local:MinigameView />
+                <local:RegionsView />
+            </Grid>
         </Grid>
     </Grid>
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding BindOptionsView}" CommandParameter="{Binding ElementName=OptionsView, Path=Children}" />
+            <i:InvokeCommandAction Command="{Binding BindDependedObjCreateProject}" CommandParameter="{Binding ElementName=CreationProjectNameTextBox}" />
+            <i:InvokeCommandAction Command="{Binding BindDependedObjEditProject}" CommandParameter="{Binding ElementName=EditProjectComboBox}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
