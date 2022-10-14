@@ -6,6 +6,7 @@ using ProjectEditorLib.View;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -181,7 +182,7 @@ namespace ProjectEditorLib.ViewModel
 		}
 
 		public Command EditProject { get; private set; }
-		private void OnEditProjectExecute()
+		private async void OnEditProjectExecute()
 		{
 			DependencyObject invalid = ValidationHelper.GetFirstInvalid(NeedCreateProject ? dependedObjCreateProject : dependedObjEditProject, true);
 			if (invalid != null)
@@ -191,7 +192,7 @@ namespace ProjectEditorLib.ViewModel
 			else 
 			{
 				if (NeedCreateProject)
-					CreateProject();
+					await CreateProject();
 				else
 					EditSelectedProject();
 				ProjectSelected = true;
@@ -251,9 +252,16 @@ namespace ProjectEditorLib.ViewModel
 			return currentDependedObj != null && ValidationHelper.IsValid(currentDependedObj);
 		}
 
-		private void CreateProject()
+		private async Task CreateProject()
 		{
-
+			Project project = new Project { Name = CreationProjectName };
+			await model.ConnectDB();
+			project = await model.CreateProject(project);
+			await model.DisconnectDB();
+			CreationProjectName = string.Empty;
+			ProjectList.Add(project);
+			SelectedEditProject = project;
+			NeedCreateProject = false;
 		}
 
 		private void EditSelectedProject()

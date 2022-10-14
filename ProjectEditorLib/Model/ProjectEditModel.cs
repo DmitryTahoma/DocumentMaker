@@ -29,6 +29,16 @@ namespace ProjectEditorLib.Model
 			return await Task.Run(() => new List<Project>(db.Projects));
 		}
 
+		public async Task<Project> CreateProject(Project project)
+		{
+			return await Task.Run(() =>
+			{
+				project = db.Projects.Add(project);
+				db.SaveChanges();
+				return project;
+			});
+		}
+
 		private void ReleaseContext()
 		{
 			if(db != null)
