@@ -245,6 +245,10 @@ namespace ProjectEditorLib.ViewModel
 					switch (nodeModel.Type)
 					{
 						case ProjectNodeType.Episode: ((Episode)nodeModel.Context).ProjectId = SelectedEditProject.Id; break;
+						case ProjectNodeType.Back:
+							Back backContext = (Back)nodeModel.Context;
+							backContext.EpisodeId = nodeViewModel.GetParrent().GetModel().Context.Id;
+							break;
 					}
 				}
 

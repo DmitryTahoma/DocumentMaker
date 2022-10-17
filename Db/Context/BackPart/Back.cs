@@ -1,4 +1,5 @@
 ﻿using Db.Context.ActPart;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -23,9 +24,35 @@ namespace Db.Context.BackPart
 		[InverseProperty("Back")]
 		public List<WorkBackAdapter> WorkBackAdapters { get; set; }
 
+		public void Set(Back obj)
+		{
+			Name = obj.Name;
+			Number = obj.Number;
+			if(obj.EpisodeId != null)
+			{
+				EpisodeId = obj.EpisodeId;
+			}
+			if(obj.BackTypeId != null)
+			{
+				BackTypeId = obj.BackTypeId;
+			}
+			if(obj.BaseBackId != null)
+			{
+				BaseBackId = obj.BaseBackId;
+			}
+		}
+
 		public void Set(IDbObject other)
 		{
-			throw new System.NotImplementedException();
+			if (other is Back obj)
+				Set(obj);
+			else
+				throw new InvalidOperationException();
+		}
+
+		public override string ToString()
+		{
+			return Number.ToString() + ". " + Name;
 		}
 	}
 }

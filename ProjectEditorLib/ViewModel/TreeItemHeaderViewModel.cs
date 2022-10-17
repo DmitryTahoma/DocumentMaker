@@ -159,6 +159,11 @@ namespace ProjectEditorLib.ViewModel
 			Text = model.Context == null ? "?" : model.Context.ToString();
 		}
 
+		public TreeItemHeaderViewModel GetParrent()
+		{
+			return parrent;
+		}
+
 		#endregion
 
 	}
