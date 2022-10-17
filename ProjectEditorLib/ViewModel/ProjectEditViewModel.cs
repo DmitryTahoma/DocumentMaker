@@ -253,6 +253,13 @@ namespace ProjectEditorLib.ViewModel
 				await model.ConnectDB();
 				await model.SaveNodeChanges(nodeModel);
 				await model.DisconnectDB();
+
+				if(nodeModel.Type == ProjectNodeType.Project)
+				{
+					SelectedEditProject = null;
+					SelectedEditProject = (Project)nodeModel.Context;
+					ProjectList.UpdateCollection();
+				}
 			}
 		}
 

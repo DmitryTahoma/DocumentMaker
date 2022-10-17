@@ -51,21 +51,40 @@ namespace ProjectEditorLib.Model
 
 		public Task SaveNodeChanges(ProjectNode projectNode)
 		{
+			return Task.Run(async () =>
+			{
+				switch (projectNode.Type)
+				{
+					case ProjectNodeType.Project: await SaveProjectChanges((Project)projectNode.Context); break;
+					case ProjectNodeType.Episode: await SaveEpisodeChanges((Episode)projectNode.Context); break;
+				}
+			});
+		}
+
+		private Task SaveProjectChanges(Project project)
+		{
 			return Task.Run(() =>
 			{
-				if (projectNode.Type == ProjectNodeType.Episode)
+				Project dbProject = db.Projects.First(x => x.Id == project.Id);
+				dbProject.Set(project);
+				db.SaveChanges();
+			});
+		}
+
+		private Task SaveEpisodeChanges(Episode episode)
+		{
+			return Task.Run(() =>
+			{
+				Episode dbEpisode = db.Episodes.FirstOrDefault(x => x.Id == episode.Id);
+				if (dbEpisode == null)
 				{
-					Episode episode = db.Episodes.FirstOrDefault(x => x.Id == projectNode.Context.Id);
-					if (episode == null)
-					{
-						episode = db.Episodes.Add((Episode)projectNode.Context);
-					}
-					else
-					{
-						episode.Set(projectNode.Context);
-					}
-					db.SaveChanges();
+					episode = db.Episodes.Add(episode);
 				}
+				else
+				{
+					dbEpisode.Set(episode);
+				}
+				db.SaveChanges();
 			});
 		}
 

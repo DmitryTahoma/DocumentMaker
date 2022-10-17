@@ -87,6 +87,7 @@
     <Compile Include="ViewModel\EpisodeViewModel.cs" />
     <Compile Include="ViewModel\IDbObjectViewModel.cs" />
     <Compile Include="ViewModel\ProjectEditViewModel.cs" />
+    <Compile Include="ViewModel\ProjectViewModel.cs" />
     <Compile Include="ViewModel\TreeItemHeaderViewModel.cs" />
     <Compile Include="View\BackView.xaml.cs">
       <DependentUpon>BackView.xaml</DependentUpon>

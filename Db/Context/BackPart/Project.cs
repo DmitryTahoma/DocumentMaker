@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Db.Context.BackPart
@@ -13,9 +14,17 @@ namespace Db.Context.BackPart
 		[InverseProperty("Project")]
 		public List<Episode> Episodes { get; set; }
 
+		public void Set(Project obj)
+		{
+			Name = obj.Name;
+		}
+
 		public void Set(IDbObject other)
 		{
-			throw new System.NotImplementedException();
+			if (other is Project obj)
+				Set(obj);
+			else
+				throw new InvalidOperationException();
 		}
 
 		public override string ToString()
