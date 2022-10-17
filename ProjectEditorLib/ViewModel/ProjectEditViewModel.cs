@@ -1,4 +1,5 @@
-﻿using Db.Context.BackPart;
+﻿using Db.Context;
+using Db.Context.BackPart;
 using Mvvm;
 using Mvvm.Commands;
 using ProjectEditorLib.Model;
@@ -6,6 +7,7 @@ using ProjectEditorLib.View;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -42,11 +44,21 @@ namespace ProjectEditorLib.ViewModel
 				int i = 0;
 				foreach(UIElement elem in optionsView)
 				{
-					elem.Visibility = i == selectedViewTabIndex ? Visibility.Visible : Visibility.Collapsed;
+					if(i == selectedViewTabIndex)
+					{
+						elem.Visibility = Visibility.Visible;
+						SelectedOptionsView = elem as FrameworkElement;
+					}
+					else
+					{
+						elem.Visibility = Visibility.Collapsed;
+					}
 					++i;
 				}
 			}
 		}
+
+		public FrameworkElement SelectedOptionsView { get; private set; }
 
 		public bool ProjectSelected
 		{
@@ -78,6 +90,8 @@ namespace ProjectEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty CreationProjectNameProperty = DependencyProperty.Register(nameof(CreationProjectName), typeof(string), typeof(ProjectEditViewModel));
 
+		public TreeViewItem SelectedTreeViewItem { get; private set; } = null;
+
 		#endregion
 
 		#region Commands
@@ -94,12 +108,13 @@ namespace ProjectEditorLib.ViewModel
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
 			BackToProjectSelecting = new Command(OnBackToProjectSelectingExecute);
 			CollapseAllTree = new Command(OnCollapseAllTreeExecute);
+			Save = new Command(OnSaveExecute);
 		}
 
 		public Command<KeyValuePair<TreeViewItem, ProjectNodeType>> AddTreeViewItemCommand { get; private set; }
 		private void OnAddTreeViewItemCommandExecute(KeyValuePair<TreeViewItem, ProjectNodeType> addingInfo)
 		{
-			TreeViewItem treeViewItem = CreateTreeViewItem(addingInfo.Value, addingInfo.Value.ToString());
+			TreeViewItem treeViewItem = CreateTreeViewItem(addingInfo.Value, null);
 			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)((TreeItemHeader)treeViewItem.Header).DataContext;
 
 			TreeViewItem sender = addingInfo.Key;
@@ -135,6 +150,7 @@ namespace ProjectEditorLib.ViewModel
 		private void OnChangeNodeOptionsViewExecute(TreeViewItem selectedNode)
 		{
 			if (!selectedNode.IsSelected) return;
+			SelectedTreeViewItem = selectedNode;
 
 			TreeItemHeader nodeHeader = (TreeItemHeader)selectedNode.Header;
 			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)nodeHeader.DataContext;
@@ -206,6 +222,38 @@ namespace ProjectEditorLib.ViewModel
 			CollapseTreeItems(TreeItems);
 		}
 
+		public Command Save { get; private set; }
+		private async void OnSaveExecute()
+		{
+			DependencyObject invalid = ValidationHelper.GetFirstInvalid(SelectedTreeViewItem, true);
+			if (invalid != null)
+			{
+				(invalid as UIElement)?.Focus();
+			}
+			else
+			{
+				TreeItemHeaderViewModel nodeViewModel = (TreeItemHeaderViewModel)((TreeItemHeader)SelectedTreeViewItem.Header).DataContext;
+				ProjectNode nodeModel = nodeViewModel.GetModel();
+
+				IDbObjectViewModel dboVm = SelectedOptionsView?.DataContext as IDbObjectViewModel;
+				bool isNewNode = nodeModel.Context == null;
+				nodeModel.Context = dboVm.UpdateContext(nodeModel.Context);
+				if(isNewNode)
+				{
+					switch (nodeModel.Type)
+					{
+						case ProjectNodeType.Episode: ((Episode)nodeModel.Context).ProjectId = SelectedEditProject.Id; break;
+					}
+				}
+
+				nodeViewModel.UpdateText();
+
+				await model.ConnectDB();
+				await model.SaveNodeChanges(nodeModel);
+				await model.DisconnectDB();
+			}
+		}
+
 		#endregion
 
 		#region Methods
@@ -251,14 +299,14 @@ namespace ProjectEditorLib.ViewModel
 			TreeItems.SuppressingNotifications = true;
 			TreeItems.Clear();
 			TreeItems.SuppressingNotifications = false;
-			TreeItems.Add(CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject.Name));
+			TreeItems.Add(CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject));
 		}
 
-		private TreeViewItem CreateTreeViewItem(ProjectNodeType nodeType, string text)
+		private TreeViewItem CreateTreeViewItem(ProjectNodeType nodeType, IDbObject context)
 		{
 			TreeItemHeader nodeHeader = new TreeItemHeader();
 			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)nodeHeader.DataContext;
-			nodeHeaderViewModel.SetModel(new ProjectNode(nodeType, text));
+			nodeHeaderViewModel.SetModel(new ProjectNode(nodeType, context));
 			TreeViewItem treeViewItem = new TreeViewItem { Header = nodeHeader };
 			nodeHeaderViewModel.AddCommand = ConvertAddingCommand(treeViewItem, AddTreeViewItemCommand);
 			nodeHeaderViewModel.RemoveCommand = ConvertRemovingCommand(treeViewItem, RemoveTreeViewItemCommand);

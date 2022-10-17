@@ -17,5 +17,10 @@ namespace Db.Context.BackPart
 		{
 			throw new System.NotImplementedException();
 		}
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 }

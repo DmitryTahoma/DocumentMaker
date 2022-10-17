@@ -8,13 +8,13 @@ namespace ProjectEditorLib.Model
 {
 	public class ProjectNode
 	{
-		public ProjectNode(ProjectNodeType type, string text)
+		public ProjectNode(ProjectNodeType type, IDbObject context)
 		{
 			Type = type;
-			Text = text;
+			Context = context;
 		}
 
 		public ProjectNodeType Type { get; set; }
-		public string Text { get; set; }
+		public IDbObject Context { get; set; }
 	}
 }

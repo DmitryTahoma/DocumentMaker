@@ -1,6 +1,7 @@
 ﻿using Db.Context;
 using Db.Context.BackPart;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ProjectEditorLib.Model
@@ -46,6 +47,26 @@ namespace ProjectEditorLib.Model
 				db.Dispose();
 				db = null;
 			}
+		}
+
+		public Task SaveNodeChanges(ProjectNode projectNode)
+		{
+			return Task.Run(() =>
+			{
+				if (projectNode.Type == ProjectNodeType.Episode)
+				{
+					Episode episode = db.Episodes.FirstOrDefault(x => x.Id == projectNode.Context.Id);
+					if (episode == null)
+					{
+						episode = db.Episodes.Add((Episode)projectNode.Context);
+					}
+					else
+					{
+						episode.Set(projectNode.Context);
+					}
+					db.SaveChanges();
+				}
+			});
 		}
 	}
 }

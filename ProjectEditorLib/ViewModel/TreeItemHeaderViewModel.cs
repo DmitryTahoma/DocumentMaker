@@ -133,9 +133,14 @@ namespace ProjectEditorLib.ViewModel
 		{
 			this.model = model;
 			NodeType = model.Type;
-			Text = model.Text;
+			Text = model.Context == null ? "?" : model.Context.ToString();
 
 			ReInitContextMenu();
+		}
+
+		public ProjectNode GetModel()
+		{
+			return model;
 		}
 
 		public void AddChild(TreeItemHeaderViewModel child)
@@ -147,6 +152,11 @@ namespace ProjectEditorLib.ViewModel
 		public void Remove()
 		{
 			parrent.childs.Remove(this);
+		}
+
+		public void UpdateText()
+		{
+			Text = model.Context == null ? "?" : model.Context.ToString();
 		}
 
 		#endregion

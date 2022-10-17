@@ -174,7 +174,10 @@
 
             <ToolBarTray Grid.Column="2" IsLocked="True">
                 <ToolBar Style="{StaticResource MaterialDesignToolBar}">
-                    <Button Style="{StaticResource ToolBarButton}" ToolTip="Зберегти">
+                    <Button
+                        Command="{Binding Save}"
+                        Style="{StaticResource ToolBarButton}"
+                        ToolTip="Зберегти">
                         <materialDesign:PackIcon
                             Width="18"
                             Height="18"

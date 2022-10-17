@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Db.Context.BackPart
@@ -14,9 +15,23 @@ namespace Db.Context.BackPart
 		[InverseProperty("Episode")]
 		public List<Back> Backs { get; set; }
 
+		public void Set(Episode obj)
+		{
+			Name = obj.Name;
+			Number = obj.Number;
+		}
+
 		public void Set(IDbObject other)
 		{
-			throw new System.NotImplementedException();
+			if (other is Episode obj)
+				Set(obj);
+			else
+				throw new InvalidOperationException();
+		}
+
+		public override string ToString()
+		{
+			return Number.ToString() + ". " + Name;
 		}
 	}
 }
