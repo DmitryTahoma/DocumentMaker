@@ -41,7 +41,7 @@ namespace ProjectEditorLib.ViewModel
 			{
 				BackNumberText = back.Number.ToString();
 				BackName = back.Name;
-				CountRegionsText = back.Regions.FirstOrDefault().Count.ToString();
+				CountRegionsText = back.Regions?.FirstOrDefault().Count.ToString();
 			}
 		}
 

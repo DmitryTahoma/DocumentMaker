@@ -319,8 +319,18 @@ namespace ProjectEditorLib.ViewModel
 			Project project = await model.LoadProject(SelectedEditProject);
 			foreach(Episode episode in project.Episodes)
 			{
-				projectTreeItem.Items.Add(CreateTreeViewItem(ProjectNodeType.Episode, episode));
+				TreeViewItem episodeTreeItem = CreateTreeViewItem(ProjectNodeType.Episode, episode);
+				projectTreeItem.Items.Add(episodeTreeItem);
+
+				foreach(Back back in episode.Backs)
+				{
+					if(ProjectNodeType.Back.ToString() == back.BackType.Name)
+					{
+						episodeTreeItem.Items.Add(CreateTreeViewItem(ProjectNodeType.Back, back));
+					}
+				}
 			}
+			await model.DisconnectDB();
 		}
 
 		private TreeViewItem CreateTreeViewItem(ProjectNodeType nodeType, IDbObject context)

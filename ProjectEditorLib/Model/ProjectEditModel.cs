@@ -136,6 +136,15 @@ namespace ProjectEditorLib.Model
 			{
 				Project dbProject = db.Projects.First(x => x.Id == project.Id);
 				project.Episodes = new List<Episode>(db.Episodes.Where(x => x.ProjectId == project.Id));
+				foreach(Episode episode in project.Episodes)
+				{
+					episode.Backs = new List<Back>(db.Backs.Where(x => x.EpisodeId == episode.Id));
+					foreach(Back back in episode.Backs)
+					{
+						back.BackType = db.BackTypes.FirstOrDefault(x => x.Id == back.BackTypeId);
+						back.Regions = new List<CountRegions>(db.CountRegions.Where(x => x.BackId == back.Id));
+					}
+				}
 				return project;
 			});
 		}
