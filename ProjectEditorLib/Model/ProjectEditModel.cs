@@ -68,5 +68,15 @@ namespace ProjectEditorLib.Model
 				}
 			});
 		}
+
+		public Task<Project> LoadProject(Project project)
+		{
+			return Task.Run(() =>
+			{
+				Project dbProject = db.Projects.First(x => x.Id == project.Id);
+				project.Episodes = new List<Episode>(db.Episodes.Where(x => x.ProjectId == project.Id));
+				return project;
+			});
+		}
 	}
 }

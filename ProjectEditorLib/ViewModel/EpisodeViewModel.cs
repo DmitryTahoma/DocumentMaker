@@ -49,6 +49,15 @@ namespace ProjectEditorLib.ViewModel
 			return dbObject;
 		}
 
+		public void SetFromContext(IDbObject dbObject)
+		{
+			if(dbObject is Episode episode)
+			{
+				EpisodeName = episode.Name;
+				EpisodeNumber = episode.Number.ToString();
+			}
+		}
+
 		#endregion
 	}
 }

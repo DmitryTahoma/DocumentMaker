@@ -157,6 +157,8 @@ namespace ProjectEditorLib.ViewModel
 			int selectedView = (int)nodeHeaderViewModel.NodeType - 1;
 			if (selectedView < 0) selectedView = 0;
 			SelectedViewTabIndex = selectedView;
+			IDbObjectViewModel dboVm = SelectedOptionsView?.DataContext as IDbObjectViewModel;
+			dboVm.SetFromContext(nodeHeaderViewModel.GetModel().Context);
 		}
 
 		public Command<UIElementCollection> BindOptionsView { get; private set; }
@@ -179,7 +181,7 @@ namespace ProjectEditorLib.ViewModel
 				if (NeedCreateProject)
 					await CreateProject();
 
-				EditSelectedProject();
+				await EditSelectedProject();
 				ProjectSelected = true;
 			}
 		}
@@ -294,12 +296,20 @@ namespace ProjectEditorLib.ViewModel
 			NeedCreateProject = false;
 		}
 
-		private void EditSelectedProject()
+		private async Task EditSelectedProject()
 		{
 			TreeItems.SuppressingNotifications = true;
 			TreeItems.Clear();
 			TreeItems.SuppressingNotifications = false;
-			TreeItems.Add(CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject));
+			TreeViewItem projectTreeItem = CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject);
+			TreeItems.Add(projectTreeItem);
+
+			await model.ConnectDB();
+			Project project = await model.LoadProject(SelectedEditProject);
+			foreach(Episode episode in project.Episodes)
+			{
+				projectTreeItem.Items.Add(CreateTreeViewItem(ProjectNodeType.Episode, episode));
+			}
 		}
 
 		private TreeViewItem CreateTreeViewItem(ProjectNodeType nodeType, IDbObject context)
