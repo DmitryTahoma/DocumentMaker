@@ -135,7 +135,7 @@ namespace ProjectEditorLib.Model
 
 		public Task<Project> LoadProject(Project project)
 		{
-			return Task.Run(() =>
+			return Task.Run(async () =>
 			{
 				Project dbProject = db.Projects.First(x => x.Id == project.Id);
 				project.Episodes = new List<Episode>(db.Episodes.Where(x => x.ProjectId == project.Id));
@@ -144,11 +144,25 @@ namespace ProjectEditorLib.Model
 					episode.Backs = new List<Back>(db.Backs.Where(x => x.EpisodeId == episode.Id));
 					foreach(Back back in episode.Backs)
 					{
-						back.BackType = db.BackTypes.FirstOrDefault(x => x.Id == back.BackTypeId);
-						back.Regions = new List<CountRegions>(db.CountRegions.Where(x => x.BackId == back.Id));
+						await LoadBack(back);
 					}
 				}
 				return project;
+			});
+		}
+
+		private async Task LoadBack(Back back)
+		{
+			await Task.Run(async () =>
+			{
+				back.BackType = db.BackTypes.FirstOrDefault(x => x.Id == back.BackTypeId);
+				back.Regions = new List<CountRegions>(db.CountRegions.Where(x => x.BackId == back.Id));
+				back.ChildBacks = new List<Back>(db.Backs.Where(x => x.BaseBackId == back.Id));
+
+				foreach (Back childBack in back.ChildBacks)
+				{
+					await LoadBack(childBack);
+				}
 			});
 		}
 	}

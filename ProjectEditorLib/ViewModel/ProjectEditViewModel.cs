@@ -340,16 +340,33 @@ namespace ProjectEditorLib.ViewModel
 
 				foreach(Back back in episode.Backs)
 				{
-					if(ProjectNodeType.Back.ToString() == back.BackType.Name)
+					TreeViewItem backNode = CreateNodeByType(back);
+					if(backNode != null)
 					{
-						episodeTreeItem.Items.Add(CreateTreeViewItem(ProjectNodeType.Back, back));
-					}
-					else if(ProjectNodeType.Craft.ToString() == back.BackType.Name)
-					{
-						episodeTreeItem.Items.Add(CreateTreeViewItem(ProjectNodeType.Craft, back));
+						episodeTreeItem.Items.Add(backNode);
+						await SetChildsBacks(backNode, back);
 					}
 				}
 			}
+		}
+
+		private async Task SetChildsBacks(TreeViewItem parrentNode, Back back)
+		{
+			foreach(Back childBack in back.ChildBacks)
+			{
+				TreeViewItem childBackNode = CreateNodeByType(childBack);
+
+				if(childBackNode != null)
+				{
+					parrentNode.Items.Add(childBackNode);
+					await SetChildsBacks(childBackNode, childBack);
+				}
+			}
+		}
+
+		private TreeViewItem CreateNodeByType(Back back)
+		{
+			return CreateTreeViewItem((ProjectNodeType)Enum.Parse(typeof(ProjectNodeType), back.BackType.Name), back);
 		}
 
 		private TreeViewItem CreateTreeViewItem(ProjectNodeType nodeType, IDbObject context)
