@@ -57,7 +57,9 @@ namespace ProjectEditorLib.Model
 				{
 					case ProjectNodeType.Project: await SaveProjectChanges((Project)projectNode.Context); break;
 					case ProjectNodeType.Episode: await SaveEpisodeChanges((Episode)projectNode.Context); break;
-					case ProjectNodeType.Back: await SaveBackChanges((Back)projectNode.Context, projectNode.Type); break;
+					case ProjectNodeType.Back:
+					case ProjectNodeType.Craft:
+						await SaveBackChanges((Back)projectNode.Context, projectNode.Type); break;
 				}
 			});
 		}
@@ -109,7 +111,7 @@ namespace ProjectEditorLib.Model
 				{
 					dbBack.Set(back);
 
-					if (back.Regions.Count > 0)
+					if (back.Regions != null && back.Regions.Count > 0)
 					{
 						CountRegions regions = db.CountRegions.FirstOrDefault(x => x.Id == dbBack.Id);
 						if (regions == null)
