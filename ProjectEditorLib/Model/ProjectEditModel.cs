@@ -117,7 +117,7 @@ namespace ProjectEditorLib.Model
 
 					if (back.Regions != null && back.Regions.Count > 0)
 					{
-						CountRegions regions = db.CountRegions.FirstOrDefault(x => x.Id == dbBack.Id);
+						CountRegions regions = db.CountRegions.FirstOrDefault(x => x.BackId == dbBack.Id);
 						if (regions == null)
 						{
 							regions = db.CountRegions.Add(new CountRegions());
