@@ -46,7 +46,7 @@ namespace ProjectEditorLib.ViewModel
 		{
 			if (dbObject is Back back)
 			{
-				back.Name = CraftName;
+				CraftName = back.Name;
 			}
 		}
 

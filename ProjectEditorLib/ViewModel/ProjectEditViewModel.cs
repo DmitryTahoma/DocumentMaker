@@ -246,6 +246,7 @@ namespace ProjectEditorLib.ViewModel
 					{
 						case ProjectNodeType.Episode: ((Episode)nodeModel.Context).ProjectId = SelectedEditProject.Id; break;
 						case ProjectNodeType.Back:
+						case ProjectNodeType.Craft:
 							Back backContext = (Back)nodeModel.Context;
 							backContext.EpisodeId = nodeViewModel.GetParrent().GetModel().Context.Id;
 							break;
@@ -317,7 +318,8 @@ namespace ProjectEditorLib.ViewModel
 
 			await model.ConnectDB();
 			Project project = await model.LoadProject(SelectedEditProject);
-			foreach(Episode episode in project.Episodes)
+			await model.DisconnectDB();
+			foreach (Episode episode in project.Episodes)
 			{
 				TreeViewItem episodeTreeItem = CreateTreeViewItem(ProjectNodeType.Episode, episode);
 				projectTreeItem.Items.Add(episodeTreeItem);
@@ -328,9 +330,12 @@ namespace ProjectEditorLib.ViewModel
 					{
 						episodeTreeItem.Items.Add(CreateTreeViewItem(ProjectNodeType.Back, back));
 					}
+					else if(ProjectNodeType.Craft.ToString() == back.BackType.Name)
+					{
+						episodeTreeItem.Items.Add(CreateTreeViewItem(ProjectNodeType.Craft, back));
+					}
 				}
 			}
-			await model.DisconnectDB();
 		}
 
 		private TreeViewItem CreateTreeViewItem(ProjectNodeType nodeType, IDbObject context)
