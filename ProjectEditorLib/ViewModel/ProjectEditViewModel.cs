@@ -252,6 +252,7 @@ namespace ProjectEditorLib.ViewModel
 							break;
 						case ProjectNodeType.Minigame:
 						case ProjectNodeType.Dialog:
+						case ProjectNodeType.Hog:
 							Back minigameContext = (Back)nodeModel.Context;
 							TreeItemHeaderViewModel parrentBackNodeViewModel = nodeViewModel.GetParrent();
 							minigameContext.BaseBackId = parrentBackNodeViewModel.GetModel().Context.Id;

@@ -61,6 +61,7 @@ namespace ProjectEditorLib.Model
 					case ProjectNodeType.Craft:
 					case ProjectNodeType.Minigame:
 					case ProjectNodeType.Dialog:
+					case ProjectNodeType.Hog:
 						await SaveBackChanges((Back)projectNode.Context, projectNode.Type); break;
 				}
 			});
