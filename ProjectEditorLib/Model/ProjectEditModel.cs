@@ -142,11 +142,12 @@ namespace ProjectEditorLib.Model
 				project.Episodes = new List<Episode>(db.Episodes.Where(x => x.ProjectId == project.Id));
 				foreach(Episode episode in project.Episodes)
 				{
-					episode.Backs = new List<Back>(db.Backs.Where(x => x.EpisodeId == episode.Id));
-					foreach(Back back in episode.Backs)
+					List<Back> backs = new List<Back>(db.Backs.Where(x => x.EpisodeId == episode.Id && x.BaseBackId == null));
+					foreach (Back back in backs)
 					{
 						await LoadBack(back);
 					}
+					episode.Backs = backs;
 				}
 				return project;
 			});
