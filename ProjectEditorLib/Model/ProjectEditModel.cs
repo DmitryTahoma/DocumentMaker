@@ -59,6 +59,7 @@ namespace ProjectEditorLib.Model
 					case ProjectNodeType.Episode: await SaveEpisodeChanges((Episode)projectNode.Context); break;
 					case ProjectNodeType.Back:
 					case ProjectNodeType.Craft:
+					case ProjectNodeType.Minigame:
 						await SaveBackChanges((Back)projectNode.Context, projectNode.Type); break;
 				}
 			});

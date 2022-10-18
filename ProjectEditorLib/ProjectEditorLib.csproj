@@ -88,6 +88,7 @@
     <Compile Include="ViewModel\CraftViewModel.cs" />
     <Compile Include="ViewModel\EpisodeViewModel.cs" />
     <Compile Include="ViewModel\IDbObjectViewModel.cs" />
+    <Compile Include="ViewModel\MinigameViewModel.cs" />
     <Compile Include="ViewModel\ProjectEditViewModel.cs" />
     <Compile Include="ViewModel\ProjectViewModel.cs" />
     <Compile Include="ViewModel\TreeItemHeaderViewModel.cs" />
