@@ -361,6 +361,8 @@ namespace ProjectEditorLib.ViewModel
 					}
 				}
 			}
+			projectTreeItem.IsExpanded = true;
+			projectTreeItem.IsSelected = true;
 		}
 
 		private async Task SetChildsBacks(TreeViewItem parrentNode, Back back)
