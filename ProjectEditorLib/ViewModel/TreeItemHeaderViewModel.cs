@@ -1,4 +1,5 @@
-﻿using MaterialDesignThemes.Wpf;
+﻿using Db.Context.BackPart;
+using MaterialDesignThemes.Wpf;
 using Mvvm;
 using Mvvm.Commands;
 using ProjectEditorLib.Model;
@@ -133,7 +134,7 @@ namespace ProjectEditorLib.ViewModel
 		{
 			this.model = model;
 			NodeType = model.Type;
-			Text = model.Context == null ? "?" : model.Context.ToString();
+			UpdateText();
 
 			ReInitContextMenu();
 		}
@@ -156,7 +157,21 @@ namespace ProjectEditorLib.ViewModel
 
 		public void UpdateText()
 		{
-			Text = model.Context == null ? "?" : model.Context.ToString();
+			if (model.Context == null)
+			{
+				Text = "?";
+			}
+			else
+			{
+				if(NodeType == ProjectNodeType.Craft && model.Context is Back craft)
+				{
+					Text = craft.Name;
+				}
+				else
+				{
+					Text = model.Context.ToString();
+				}
+			}
 		}
 
 		public TreeItemHeaderViewModel GetParrent()
