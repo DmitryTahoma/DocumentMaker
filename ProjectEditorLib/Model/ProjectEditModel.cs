@@ -63,6 +63,7 @@ namespace ProjectEditorLib.Model
 					case ProjectNodeType.Dialog:
 					case ProjectNodeType.Hog:
 						await SaveBackChanges((Back)projectNode.Context, projectNode.Type); break;
+					case ProjectNodeType.Regions: await SaveCountRegionsChanges((CountRegions)projectNode.Context); break;
 				}
 			});
 		}
@@ -131,6 +132,23 @@ namespace ProjectEditorLib.Model
 				else
 					dbBack.BackTypeId = backType.Id;
 
+				db.SaveChanges();
+			});
+		}
+
+		private Task SaveCountRegionsChanges(CountRegions countRegions)
+		{
+			return Task.Run(() =>
+			{
+				CountRegions dbCountRegions = db.CountRegions.FirstOrDefault(x => x.Id == countRegions.Id);
+				if(dbCountRegions == null)
+				{
+					dbCountRegions = db.CountRegions.Add(countRegions);
+				}
+				else
+				{
+					dbCountRegions.Set(countRegions);
+				}
 				db.SaveChanges();
 			});
 		}

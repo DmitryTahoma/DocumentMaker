@@ -163,7 +163,11 @@ namespace ProjectEditorLib.ViewModel
 			}
 			else
 			{
-				if(NodeType == ProjectNodeType.Craft && model.Context is Back craft)
+				if(NodeType == ProjectNodeType.Regions && model.Context is CountRegions regions)
+				{
+					Text = "Регіони (" + regions.Count.ToString() + ")";
+				}
+				else if(NodeType == ProjectNodeType.Craft && model.Context is Back craft)
 				{
 					Text = craft.Name;
 				}

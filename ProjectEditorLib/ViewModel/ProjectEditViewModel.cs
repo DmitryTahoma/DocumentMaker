@@ -266,6 +266,10 @@ namespace ProjectEditorLib.ViewModel
 								parrentBackNodeViewModel = parrentBackNodeViewModel.GetParrent();
 							}
 							break;
+						case ProjectNodeType.Regions:
+							CountRegions regionsContext = (CountRegions)nodeModel.Context;
+							regionsContext.BackId = nodeViewModel.GetParrent().GetModel().Context.Id;
+							break;
 					}
 				}
 
@@ -342,8 +346,15 @@ namespace ProjectEditorLib.ViewModel
 
 				foreach(Back back in episode.Backs)
 				{
-					TreeViewItem backNode = CreateNodeByType(back);
-					if(backNode != null)
+					TreeViewItem backNode = CreateNodeByType(back, out ProjectNodeType nodeType);
+					if (nodeType == ProjectNodeType.Minigame)
+					{
+						foreach (CountRegions regions in back.Regions)
+						{
+							backNode.Items.Add(CreateTreeViewItem(ProjectNodeType.Regions, regions));
+						}
+					}
+					if (backNode != null)
 					{
 						episodeTreeItem.Items.Add(backNode);
 						await SetChildsBacks(backNode, back);
@@ -356,9 +367,16 @@ namespace ProjectEditorLib.ViewModel
 		{
 			foreach(Back childBack in back.ChildBacks)
 			{
-				TreeViewItem childBackNode = CreateNodeByType(childBack);
+				TreeViewItem childBackNode = CreateNodeByType(childBack, out ProjectNodeType nodeType);
+				if (nodeType == ProjectNodeType.Minigame)
+				{
+					foreach(CountRegions regions in childBack.Regions)
+					{
+						childBackNode.Items.Add(CreateTreeViewItem(ProjectNodeType.Regions, regions));
+					}
+				}
 
-				if(childBackNode != null)
+				if (childBackNode != null)
 				{
 					parrentNode.Items.Add(childBackNode);
 					await SetChildsBacks(childBackNode, childBack);
@@ -366,9 +384,10 @@ namespace ProjectEditorLib.ViewModel
 			}
 		}
 
-		private TreeViewItem CreateNodeByType(Back back)
+		private TreeViewItem CreateNodeByType(Back back, out ProjectNodeType nodeType)
 		{
-			return CreateTreeViewItem((ProjectNodeType)Enum.Parse(typeof(ProjectNodeType), back.BackType.Name), back);
+			nodeType = (ProjectNodeType)Enum.Parse(typeof(ProjectNodeType), back.BackType.Name);
+			return CreateTreeViewItem(nodeType, back);
 		}
 
 		private TreeViewItem CreateTreeViewItem(ProjectNodeType nodeType, IDbObject context)
