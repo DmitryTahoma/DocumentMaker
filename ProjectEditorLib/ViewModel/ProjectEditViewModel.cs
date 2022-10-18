@@ -251,6 +251,7 @@ namespace ProjectEditorLib.ViewModel
 							backContext.EpisodeId = nodeViewModel.GetParrent().GetModel().Context.Id;
 							break;
 						case ProjectNodeType.Minigame:
+						case ProjectNodeType.Dialog:
 							Back minigameContext = (Back)nodeModel.Context;
 							TreeItemHeaderViewModel parrentBackNodeViewModel = nodeViewModel.GetParrent();
 							minigameContext.BaseBackId = parrentBackNodeViewModel.GetModel().Context.Id;

@@ -86,6 +86,7 @@
     </Compile>
     <Compile Include="ViewModel\BackViewModel.cs" />
     <Compile Include="ViewModel\CraftViewModel.cs" />
+    <Compile Include="ViewModel\DialogViewModel.cs" />
     <Compile Include="ViewModel\EpisodeViewModel.cs" />
     <Compile Include="ViewModel\IDbObjectViewModel.cs" />
     <Compile Include="ViewModel\MinigameViewModel.cs" />

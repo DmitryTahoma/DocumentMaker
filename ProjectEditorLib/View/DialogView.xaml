@@ -5,12 +5,19 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectEditorLib.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:ProjectEditorLib.ViewModel"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
+    <UserControl.DataContext>
+        <vm:DialogViewModel />
+    </UserControl.DataContext>
+
     <UserControl.Resources>
         <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
     </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -22,7 +29,10 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Style="{StaticResource FirstRightTextBlock}" Text="Номер:" />
-        <TextBox Grid.Column="1" Style="{StaticResource LastSmallTextBox}" />
+        <TextBox
+            Grid.Column="1"
+            Style="{StaticResource LastSmallTextBox}"
+            Text="{Binding DialogNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBlock
             Grid.Row="1"
             Style="{StaticResource FirstRightTextBlock}"
@@ -30,6 +40,8 @@
         <TextBox
             Grid.Row="1"
             Grid.Column="1"
-            Style="{StaticResource LastSmallTextBox}" />
+            Style="{StaticResource LastSmallTextBox}"
+            Text="{Binding DialogName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </Grid>
+
 </UserControl>
