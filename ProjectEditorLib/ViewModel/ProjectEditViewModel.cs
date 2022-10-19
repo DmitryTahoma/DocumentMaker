@@ -114,26 +114,34 @@ namespace ProjectEditorLib.ViewModel
 		public Command<KeyValuePair<TreeViewItem, ProjectNodeType>> AddTreeViewItemCommand { get; private set; }
 		private void OnAddTreeViewItemCommandExecute(KeyValuePair<TreeViewItem, ProjectNodeType> addingInfo)
 		{
-			TreeViewItem treeViewItem = CreateTreeViewItem(addingInfo.Value, null);
-			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)((TreeItemHeader)treeViewItem.Header).DataContext;
+			TreeViewItem treeViewItem = CreateTreeViewItem(addingInfo.Value, null, addingInfo.Key);
 
-			TreeViewItem sender = addingInfo.Key;
-			TreeItemHeader senderHeader = (TreeItemHeader)sender.Header;
-			TreeItemHeaderViewModel senderHeaderViewModel = (TreeItemHeaderViewModel)senderHeader.DataContext;
-			senderHeaderViewModel.AddChild(nodeHeaderViewModel);
-			sender.Items.Add(treeViewItem);
-			sender.IsExpanded = true;
+			addingInfo.Key.Items.Add(treeViewItem);
+			addingInfo.Key.IsExpanded = true;
 			treeViewItem.IsSelected = true;
 		}
 
 		public Command<TreeViewItem> RemoveTreeViewItemCommand { get; private set; }
-		private void OnRemoveTreeViewItemCommandExecute(TreeViewItem sender)
+		private async void OnRemoveTreeViewItemCommandExecute(TreeViewItem sender)
 		{
 			TreeItemHeader senderHeader = (TreeItemHeader)sender.Header;
 			TreeItemHeaderViewModel senderHeaderViewModel = (TreeItemHeaderViewModel)senderHeader.DataContext;
-			senderHeaderViewModel.Remove();
-			TreeViewItem parrent = GetParent(TreeItems, sender);
-			parrent.Items.Remove(sender);
+			IDbObject nodeModel = senderHeaderViewModel.GetModel()?.Context;
+			bool removed = nodeModel == null;
+
+			if(!removed)
+			{
+				await model.ConnectDB();
+				removed = await model.RemoveNode(nodeModel);
+				await model.DisconnectDB();
+			}
+
+			if(removed)
+			{
+				senderHeaderViewModel.Remove();
+				TreeViewItem parrent = GetParent(TreeItems, sender);
+				parrent.Items.Remove(sender);
+			}
 		}
 
 		private Command<ProjectNodeType> ConvertAddingCommand(TreeViewItem sender, Command<KeyValuePair<TreeViewItem, ProjectNodeType>> command)
@@ -333,7 +341,7 @@ namespace ProjectEditorLib.ViewModel
 			TreeItems.SuppressingNotifications = true;
 			TreeItems.Clear();
 			TreeItems.SuppressingNotifications = false;
-			TreeViewItem projectTreeItem = CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject);
+			TreeViewItem projectTreeItem = CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject, null);
 			TreeItems.Add(projectTreeItem);
 
 			await model.ConnectDB();
@@ -341,17 +349,17 @@ namespace ProjectEditorLib.ViewModel
 			await model.DisconnectDB();
 			foreach (Episode episode in project.Episodes)
 			{
-				TreeViewItem episodeTreeItem = CreateTreeViewItem(ProjectNodeType.Episode, episode);
+				TreeViewItem episodeTreeItem = CreateTreeViewItem(ProjectNodeType.Episode, episode, projectTreeItem);
 				projectTreeItem.Items.Add(episodeTreeItem);
 
 				foreach(Back back in episode.Backs)
 				{
-					TreeViewItem backNode = CreateNodeByType(back, out ProjectNodeType nodeType);
+					TreeViewItem backNode = CreateNodeByType(back, episodeTreeItem, out ProjectNodeType nodeType);
 					if (nodeType == ProjectNodeType.Minigame)
 					{
 						foreach (CountRegions regions in back.Regions)
 						{
-							backNode.Items.Add(CreateTreeViewItem(ProjectNodeType.Regions, regions));
+							backNode.Items.Add(CreateTreeViewItem(ProjectNodeType.Regions, regions, backNode));
 						}
 					}
 					if (backNode != null)
@@ -369,12 +377,12 @@ namespace ProjectEditorLib.ViewModel
 		{
 			foreach(Back childBack in back.ChildBacks)
 			{
-				TreeViewItem childBackNode = CreateNodeByType(childBack, out ProjectNodeType nodeType);
+				TreeViewItem childBackNode = CreateNodeByType(childBack, parrentNode, out ProjectNodeType nodeType);
 				if (nodeType == ProjectNodeType.Minigame)
 				{
 					foreach(CountRegions regions in childBack.Regions)
 					{
-						childBackNode.Items.Add(CreateTreeViewItem(ProjectNodeType.Regions, regions));
+						childBackNode.Items.Add(CreateTreeViewItem(ProjectNodeType.Regions, regions, childBackNode));
 					}
 				}
 
@@ -386,13 +394,13 @@ namespace ProjectEditorLib.ViewModel
 			}
 		}
 
-		private TreeViewItem CreateNodeByType(Back back, out ProjectNodeType nodeType)
+		private TreeViewItem CreateNodeByType(Back back, TreeViewItem parrent, out ProjectNodeType nodeType)
 		{
 			nodeType = (ProjectNodeType)Enum.Parse(typeof(ProjectNodeType), back.BackType.Name);
-			return CreateTreeViewItem(nodeType, back);
+			return CreateTreeViewItem(nodeType, back, parrent);
 		}
 
-		private TreeViewItem CreateTreeViewItem(ProjectNodeType nodeType, IDbObject context)
+		private TreeViewItem CreateTreeViewItem(ProjectNodeType nodeType, IDbObject context, TreeViewItem parrent)
 		{
 			TreeItemHeader nodeHeader = new TreeItemHeader();
 			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)nodeHeader.DataContext;
@@ -410,6 +418,14 @@ namespace ProjectEditorLib.ViewModel
 				UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
 			};
 			treeViewItem.SetBinding(FrameworkElement.ContextMenuProperty, contextMenuBinding);
+
+			if (parrent != null)
+			{
+				TreeItemHeader parrentHeader = (TreeItemHeader)parrent.Header;
+				TreeItemHeaderViewModel parrentHeaderViewModel = (TreeItemHeaderViewModel)parrentHeader.DataContext;
+				parrentHeaderViewModel.AddChild(nodeHeaderViewModel);
+			}
+
 			return treeViewItem;
 		}
 

@@ -1,4 +1,5 @@
 ﻿using Db.Context;
+using Db.Context.ActPart;
 using Db.Context.BackPart;
 using System.Collections.Generic;
 using System.Linq;
@@ -185,6 +186,125 @@ namespace ProjectEditorLib.Model
 					await LoadBack(childBack);
 				}
 			});
+		}
+
+		public Task<bool> RemoveNode(IDbObject node)
+		{
+			return Task.Run(() =>
+			{
+				List<Back> removingBacks = null;
+
+				Episode episode = node as Episode;
+				if (episode != null)
+				{
+					removingBacks = episode.Backs;
+				}
+				else if (node is Back back)
+				{
+					removingBacks = new List<Back> { back };
+				}
+
+				if (removingBacks == null)
+				{
+					if(node is CountRegions regions)
+					{
+						CountRegions dbRegions = db.CountRegions
+							.FirstOrDefault(x => x.Id == regions.Id);
+
+						db.CountRegions.Remove(dbRegions);
+						db.SaveChanges();
+						return true;
+					}
+				}
+				else
+				{
+					PushChildBacks(ref removingBacks);
+
+					bool canRemove = CanRemoveAll(removingBacks);
+
+					if (canRemove)
+					{
+						List<CountRegions> removingDbRegions = new List<CountRegions>(GetDbRegionsOfBacks(removingBacks));
+						List<Back> removingDbBacks = new List<Back>(GetDbBacksOfBacks(removingBacks));
+
+						db.CountRegions.RemoveRange(removingDbRegions);
+						db.Backs.RemoveRange(removingDbBacks);
+
+						if (episode != null)
+						{
+							db.Episodes
+							.Remove(db.Episodes
+								.FirstOrDefault(x => x.Id == episode.Id));
+						}
+
+						db.SaveChanges();
+					}
+
+					return canRemove;
+				}
+				return false;
+			});
+		}
+
+		private bool CanRemoveAll(IEnumerable<Back> backs)
+		{
+			foreach (WorkBackAdapter workBackAdapter in db.WorkBackAdapters)
+			{
+				foreach (Back removingBack in backs)
+				{
+					if (workBackAdapter.BackId == removingBack.Id)
+					{
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+
+		private IEnumerable<CountRegions> GetDbRegionsOfBacks(IEnumerable<Back> back)
+		{
+			foreach (CountRegions regions in db.CountRegions)
+			{
+				foreach (Back removingBack in back)
+				{
+					if (regions.BackId == removingBack.Id)
+					{
+						yield return regions;
+						break;
+					}
+				}
+			}
+		}
+
+		private IEnumerable<Back> GetDbBacksOfBacks(IEnumerable<Back> back)
+		{
+			foreach (Back dbBack in db.Backs)
+			{
+				foreach (Back removingBack in back)
+				{
+					if (dbBack.Id == removingBack.Id)
+					{
+						yield return dbBack;
+						break;
+					}
+				}
+			}
+		}
+
+		private void PushChildBacks(ref List<Back> backs)
+		{
+			backs = GetChildBacks(backs);
+		}
+
+		private List<Back> GetChildBacks(List<Back> backs)
+		{
+			List<Back> result = new List<Back>();
+			foreach(Back back in backs)
+			{
+				result.AddRange(GetChildBacks(back.ChildBacks));
+			}
+			result.AddRange(backs);
+			return result;
 		}
 	}
 }
