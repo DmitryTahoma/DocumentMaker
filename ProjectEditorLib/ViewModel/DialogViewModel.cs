@@ -33,6 +33,11 @@ namespace ProjectEditorLib.ViewModel
 				DialogNumberText = dialog.Number.ToString();
 				DialogName = dialog.Name;
 			}
+			else
+			{
+				DialogNumberText = string.Empty;
+				DialogName = string.Empty;
+			}
 		}
 
 		public IDbObject UpdateContext(IDbObject dbObject)

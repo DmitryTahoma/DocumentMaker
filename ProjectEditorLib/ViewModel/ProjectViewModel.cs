@@ -25,6 +25,10 @@ namespace ProjectEditorLib.ViewModel
 			{
 				ProjectName = project.Name;
 			}
+			else
+			{
+				ProjectName = string.Empty;
+			}
 		}
 
 		public IDbObject UpdateContext(IDbObject dbObject)

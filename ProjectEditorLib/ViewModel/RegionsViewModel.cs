@@ -25,6 +25,10 @@ namespace ProjectEditorLib.ViewModel
 			{
 				CountText = regions.Count.ToString();
 			}
+			else
+			{
+				CountText = string.Empty;
+			}
 		}
 
 		public IDbObject UpdateContext(IDbObject dbObject)

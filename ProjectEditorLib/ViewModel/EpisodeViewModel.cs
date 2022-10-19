@@ -56,6 +56,11 @@ namespace ProjectEditorLib.ViewModel
 				EpisodeName = episode.Name;
 				EpisodeNumber = episode.Number.ToString();
 			}
+			else
+			{
+				EpisodeName = string.Empty;
+				EpisodeNumber = string.Empty;
+			}
 		}
 
 		#endregion

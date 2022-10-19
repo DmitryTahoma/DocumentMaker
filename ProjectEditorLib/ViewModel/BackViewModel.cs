@@ -43,6 +43,12 @@ namespace ProjectEditorLib.ViewModel
 				BackName = back.Name;
 				CountRegionsText = back.Regions?.FirstOrDefault().Count.ToString();
 			}
+			else
+			{
+				BackNumberText = string.Empty;
+				BackName = string.Empty;
+				CountRegionsText = string.Empty;
+			}
 		}
 
 		public IDbObject UpdateContext(IDbObject dbObject)

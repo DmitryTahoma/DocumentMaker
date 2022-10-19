@@ -48,6 +48,10 @@ namespace ProjectEditorLib.ViewModel
 			{
 				CraftName = back.Name;
 			}
+			else
+			{
+				CraftName = string.Empty;
+			}
 		}
 
 		#endregion

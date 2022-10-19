@@ -33,6 +33,11 @@ namespace ProjectEditorLib.ViewModel
 				MinigameName = minigame.Name;
 				MinigameNumberText = minigame.Number.ToString();
 			}
+			else
+			{
+				MinigameName = string.Empty;
+				MinigameNumberText = string.Empty;
+			}
 		}
 
 		public IDbObject UpdateContext(IDbObject dbObject)

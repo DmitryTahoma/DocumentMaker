@@ -43,6 +43,12 @@ namespace ProjectEditorLib.ViewModel
 				HogName = hog.Name;
 				CountRegionsText = hog.Regions?.FirstOrDefault().Count.ToString();
 			}
+			else
+			{
+				HogNumberText = string.Empty;
+				HogName = string.Empty;
+				CountRegionsText = string.Empty;
+			}
 		}
 
 		public IDbObject UpdateContext(IDbObject dbObject)
