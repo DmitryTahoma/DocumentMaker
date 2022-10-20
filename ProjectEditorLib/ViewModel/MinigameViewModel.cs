@@ -22,6 +22,13 @@ namespace ProjectEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty MinigameNameProperty = DependencyProperty.Register(nameof(MinigameName), typeof(string), typeof(MinigameViewModel));
 
+		public bool HaveUnsavedChanges
+		{
+			get { return (bool)GetValue(HaveUnsavedChangesProperty); }
+			set { SetValue(HaveUnsavedChangesProperty, value); }
+		}
+		public static readonly DependencyProperty HaveUnsavedChangesProperty = DependencyProperty.Register(nameof(HaveUnsavedChanges), typeof(bool), typeof(MinigameViewModel));
+
 		#endregion
 
 		#region Methods

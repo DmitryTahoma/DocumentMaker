@@ -31,6 +31,13 @@ namespace ProjectEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty CountRegionsTextProperty = DependencyProperty.Register(nameof(CountRegionsText), typeof(string), typeof(BackViewModel));
 
+		public bool HaveUnsavedChanges
+		{
+			get { return (bool)GetValue(HaveUnsavedChangesProperty); }
+			set { SetValue(HaveUnsavedChangesProperty, value); }
+		}
+		public static readonly DependencyProperty HaveUnsavedChangesProperty = DependencyProperty.Register(nameof(HaveUnsavedChanges), typeof(bool), typeof(BackViewModel));
+
 		#endregion
 
 		#region Methods

@@ -15,6 +15,13 @@ namespace ProjectEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty CraftNameProperty = DependencyProperty.Register(nameof(CraftName), typeof(string), typeof(CraftViewModel));
 
+		public bool HaveUnsavedChanges
+		{
+			get { return (bool)GetValue(HaveUnsavedChangesProperty); }
+			set { SetValue(HaveUnsavedChangesProperty, value); }
+		}
+		public static readonly DependencyProperty HaveUnsavedChangesProperty = DependencyProperty.Register(nameof(HaveUnsavedChanges), typeof(bool), typeof(CraftViewModel));
+
 		#endregion
 
 		#region Methods

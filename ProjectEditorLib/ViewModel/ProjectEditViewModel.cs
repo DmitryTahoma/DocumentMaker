@@ -47,7 +47,7 @@ namespace ProjectEditorLib.ViewModel
 					if(i == selectedViewTabIndex)
 					{
 						elem.Visibility = Visibility.Visible;
-						SelectedOptionsView = elem as FrameworkElement;
+						SelectedOptionsViewModel = (IDbObjectViewModel)((FrameworkElement)elem).DataContext;
 					}
 					else
 					{
@@ -58,7 +58,7 @@ namespace ProjectEditorLib.ViewModel
 			}
 		}
 
-		public FrameworkElement SelectedOptionsView { get; private set; }
+		public IDbObjectViewModel SelectedOptionsViewModel { get; private set; }
 
 		public bool ProjectSelected
 		{
@@ -166,8 +166,9 @@ namespace ProjectEditorLib.ViewModel
 			int selectedView = (int)nodeHeaderViewModel.NodeType - 1;
 			if (selectedView < 0) selectedView = 0;
 			SelectedViewTabIndex = selectedView;
-			IDbObjectViewModel dboVm = SelectedOptionsView?.DataContext as IDbObjectViewModel;
-			dboVm.SetFromContext(nodeHeaderViewModel.GetModel().Context);
+			IDbObject modelContext = nodeHeaderViewModel.GetModel().Context;
+			SelectedOptionsViewModel.SetFromContext(modelContext);
+			SelectedOptionsViewModel.HaveUnsavedChanges = modelContext == null;
 		}
 
 		public Command<UIElementCollection> BindOptionsView { get; private set; }
@@ -245,10 +246,10 @@ namespace ProjectEditorLib.ViewModel
 			{
 				TreeItemHeaderViewModel nodeViewModel = (TreeItemHeaderViewModel)((TreeItemHeader)SelectedTreeViewItem.Header).DataContext;
 				ProjectNode nodeModel = nodeViewModel.GetModel();
-				IDbObjectViewModel dboVm = SelectedOptionsView?.DataContext as IDbObjectViewModel;
 				bool isNewNode = nodeModel.Context == null;
-				nodeModel.Context = dboVm.UpdateContext(nodeModel.Context);
-				if(isNewNode)
+				nodeModel.Context = SelectedOptionsViewModel.UpdateContext(nodeModel.Context);
+				SelectedOptionsViewModel.HaveUnsavedChanges = false;
+				if (isNewNode)
 				{
 					switch (nodeModel.Type)
 					{

@@ -22,6 +22,13 @@ namespace ProjectEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty DialogNameProperty = DependencyProperty.Register(nameof(DialogName), typeof(string), typeof(DialogViewModel));
 
+		public bool HaveUnsavedChanges
+		{
+			get { return (bool)GetValue(HaveUnsavedChangesProperty); }
+			set { SetValue(HaveUnsavedChangesProperty, value); }
+		}
+		public static readonly DependencyProperty HaveUnsavedChangesProperty = DependencyProperty.Register(nameof(HaveUnsavedChanges), typeof(bool), typeof(DialogViewModel));
+
 		#endregion
 
 		#region Methods
