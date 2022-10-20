@@ -198,6 +198,10 @@ namespace ProjectEditorLib.Model
 				if (episode != null)
 				{
 					removingBacks = episode.Backs;
+					if(removingBacks == null)
+					{
+						removingBacks = new List<Back>();
+					}
 				}
 				else if (node is Back back)
 				{
