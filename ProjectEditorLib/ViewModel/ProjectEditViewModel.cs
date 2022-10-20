@@ -174,8 +174,11 @@ namespace ProjectEditorLib.ViewModel
 		public Command<UIElementCollection> BindOptionsView { get; private set; }
 		private void OnBindOptionsViewExecute(UIElementCollection collection)
 		{
-			optionsView = collection;
-			SelectedViewTabIndex = -1;
+			if(optionsView == null)
+			{
+				optionsView = collection;
+				SelectedViewTabIndex = -1;
+			}
 		}
 
 		public Command EditProject { get; private set; }
