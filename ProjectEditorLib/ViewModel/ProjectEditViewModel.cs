@@ -114,10 +114,11 @@ namespace ProjectEditorLib.ViewModel
 		public Command<KeyValuePair<TreeViewItem, ProjectNodeType>> AddTreeViewItemCommand { get; private set; }
 		private void OnAddTreeViewItemCommandExecute(KeyValuePair<TreeViewItem, ProjectNodeType> addingInfo)
 		{
-			TreeViewItem treeViewItem = CreateTreeViewItem(addingInfo.Value, null, addingInfo.Key);
+			TreeViewItem parrent = addingInfo.Key;
+			TreeViewItem treeViewItem = CreateTreeViewItem(addingInfo.Value, null, parrent);
 
-			addingInfo.Key.Items.Add(treeViewItem);
-			addingInfo.Key.IsExpanded = true;
+			parrent.Items.Add(treeViewItem);
+			parrent.IsExpanded = true;
 			treeViewItem.IsSelected = true;
 		}
 
@@ -244,7 +245,6 @@ namespace ProjectEditorLib.ViewModel
 			{
 				TreeItemHeaderViewModel nodeViewModel = (TreeItemHeaderViewModel)((TreeItemHeader)SelectedTreeViewItem.Header).DataContext;
 				ProjectNode nodeModel = nodeViewModel.GetModel();
-
 				IDbObjectViewModel dboVm = SelectedOptionsView?.DataContext as IDbObjectViewModel;
 				bool isNewNode = nodeModel.Context == null;
 				nodeModel.Context = dboVm.UpdateContext(nodeModel.Context);
@@ -252,32 +252,13 @@ namespace ProjectEditorLib.ViewModel
 				{
 					switch (nodeModel.Type)
 					{
-						case ProjectNodeType.Episode: ((Episode)nodeModel.Context).ProjectId = SelectedEditProject.Id; break;
+						case ProjectNodeType.Episode: BindNewEpisode(nodeModel.Context); break;
 						case ProjectNodeType.Back:
-						case ProjectNodeType.Craft:
-							Back backContext = (Back)nodeModel.Context;
-							backContext.EpisodeId = nodeViewModel.GetParrent().GetModel().Context.Id;
-							break;
+						case ProjectNodeType.Craft: BindNewBack(nodeModel.Context, nodeViewModel); break;
 						case ProjectNodeType.Minigame:
 						case ProjectNodeType.Dialog:
-						case ProjectNodeType.Hog:
-							Back minigameContext = (Back)nodeModel.Context;
-							TreeItemHeaderViewModel parrentBackNodeViewModel = nodeViewModel.GetParrent();
-							minigameContext.BaseBackId = parrentBackNodeViewModel.GetModel().Context.Id;
-							while (parrentBackNodeViewModel != null)
-							{
-								if (parrentBackNodeViewModel.GetModel().Context is Back back)
-								{
-									minigameContext.EpisodeId = back.EpisodeId;
-									break;
-								}
-								parrentBackNodeViewModel = parrentBackNodeViewModel.GetParrent();
-							}
-							break;
-						case ProjectNodeType.Regions:
-							CountRegions regionsContext = (CountRegions)nodeModel.Context;
-							regionsContext.BackId = nodeViewModel.GetParrent().GetModel().Context.Id;
-							break;
+						case ProjectNodeType.Hog: BindNewChildBack(nodeModel.Context, nodeViewModel); break;
+						case ProjectNodeType.Regions: BindNewRegions(nodeModel.Context, nodeViewModel); break;
 					}
 				}
 
@@ -436,6 +417,58 @@ namespace ProjectEditorLib.ViewModel
 				item.IsExpanded = false;
 				CollapseTreeItems(item.Items);
 			}
+		}
+
+		private void BindNewEpisode(IDbObject episodeContext)
+		{
+			Episode newEpisode = (Episode)episodeContext;
+			newEpisode.ProjectId = SelectedEditProject.Id;
+			SelectedEditProject.Episodes.Add(newEpisode);
+		}
+
+		private void BindNewBack(IDbObject backContext, TreeItemHeaderViewModel nodeViewModel)
+		{
+			Back back = (Back)backContext;
+			back.EpisodeId = nodeViewModel.GetParrent().GetModel().Context.Id;
+			Episode parrentEpisode = (Episode)nodeViewModel.GetParrent().GetModel().Context;
+			if (parrentEpisode.Backs == null)
+			{
+				parrentEpisode.Backs = new List<Back>();
+			}
+			parrentEpisode.Backs.Add(back);
+		}
+
+		private void BindNewChildBack(IDbObject childBackContext, TreeItemHeaderViewModel nodeViewModel)
+		{
+			Back childBack = (Back)childBackContext;
+			TreeItemHeaderViewModel parrentBackNodeViewModel = nodeViewModel.GetParrent();
+			childBack.BaseBackId = parrentBackNodeViewModel.GetModel().Context.Id;
+			while (parrentBackNodeViewModel != null)
+			{
+				if (parrentBackNodeViewModel.GetModel().Context is Back back)
+				{
+					childBack.EpisodeId = back.EpisodeId;
+					if (back.ChildBacks == null)
+					{
+						back.ChildBacks = new List<Back>();
+					}
+					back.ChildBacks.Add(childBack);
+					break;
+				}
+				parrentBackNodeViewModel = parrentBackNodeViewModel.GetParrent();
+			}
+		}
+
+		private void BindNewRegions(IDbObject regionsContext, TreeItemHeaderViewModel nodeViewModel)
+		{
+			CountRegions regions= (CountRegions)regionsContext;
+			regions.BackId = nodeViewModel.GetParrent().GetModel().Context.Id;
+			Back parrentBackContext = (Back)nodeViewModel.GetParrent().GetModel().Context;
+			if (parrentBackContext.Regions == null)
+			{
+				parrentBackContext.Regions = new List<CountRegions>();
+			}
+			parrentBackContext.Regions.Add(regions);
 		}
 
 		#endregion

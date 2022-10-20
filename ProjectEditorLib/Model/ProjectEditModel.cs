@@ -299,11 +299,14 @@ namespace ProjectEditorLib.Model
 		private List<Back> GetChildBacks(List<Back> backs)
 		{
 			List<Back> result = new List<Back>();
-			foreach(Back back in backs)
+			if (backs != null)
 			{
-				result.AddRange(GetChildBacks(back.ChildBacks));
+				foreach (Back back in backs)
+				{
+					result.AddRange(GetChildBacks(back.ChildBacks));
+				}
+				result.AddRange(backs);
 			}
-			result.AddRange(backs);
 			return result;
 		}
 	}
