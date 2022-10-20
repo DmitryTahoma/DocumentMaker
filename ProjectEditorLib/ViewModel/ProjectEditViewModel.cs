@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace ProjectEditorLib.ViewModel
 {
@@ -394,6 +395,8 @@ namespace ProjectEditorLib.ViewModel
 			nodeHeaderViewModel.AddCommand = ConvertAddingCommand(treeViewItem, AddTreeViewItemCommand);
 			nodeHeaderViewModel.RemoveCommand = ConvertRemovingCommand(treeViewItem, RemoveTreeViewItemCommand);
 			treeViewItem.Selected += (s, e) => { ChangeNodeOptionsView.Execute((TreeViewItem)s); };
+			treeViewItem.PreviewMouseDown += BeforeTreeViewItemSelected;
+			treeViewItem.PreviewMouseUp += BeforeTreeViewItemShowContextMenu;
 
 			Binding contextMenuBinding = new Binding(nameof(TreeItemHeaderViewModel.ContextMenuProperty))
 			{
@@ -473,6 +476,59 @@ namespace ProjectEditorLib.ViewModel
 				parrentBackContext.Regions = new List<CountRegions>();
 			}
 			parrentBackContext.Regions.Add(regions);
+		}
+
+		private void BeforeTreeViewItemSelected(object sender, MouseButtonEventArgs e) // TreeViewItem.PreviewMouseDown
+		{
+			if(e.ChangedButton == MouseButton.Left && e.LeftButton == MouseButtonState.Pressed && SelectedViewTabIndex != -1 && SelectedOptionsViewModel.HaveUnsavedChanges)
+			{
+				MessageBoxResult res = MessageBox.Show(
+					"Обраний елемент має незбережені зміни. Зберегти зміни?",
+					"Зміна елементу",
+					MessageBoxButton.YesNoCancel,
+					MessageBoxImage.Question,
+					MessageBoxResult.Yes);
+
+				if (res == MessageBoxResult.No)
+				{
+					TreeItemHeaderViewModel nodeViewModel = (TreeItemHeaderViewModel)((TreeItemHeader)SelectedTreeViewItem.Header).DataContext;
+					ProjectNode nodeModel = nodeViewModel.GetModel();
+					if(nodeModel.Context == null)
+					{
+						RemoveTreeViewItemCommand.Execute(SelectedTreeViewItem);
+					}
+					return;
+				}
+
+				if (res == MessageBoxResult.Yes)
+				{
+					Save.Execute();
+
+					if (SelectedOptionsViewModel.HaveUnsavedChanges)
+					{
+						e.Handled = true;
+					}
+				}
+				else
+				{
+					e.Handled = true;
+				}
+			}
+		}
+
+		private void BeforeTreeViewItemShowContextMenu(object sender, MouseButtonEventArgs e) // TreeViewItem.PreviewMouseUp
+		{
+			if (e.ChangedButton == MouseButton.Right && e.RightButton == MouseButtonState.Released && sender is TreeViewItem treeViewItem)
+			{
+				bool canAdd = SelectedViewTabIndex == -1 || !SelectedOptionsViewModel.HaveUnsavedChanges;
+				foreach (UIElement elem in treeViewItem.ContextMenu.Items)
+				{
+					if (elem is MenuItem menuItem && menuItem.DataContext is NodeContextMenuItemType menuType && menuType == NodeContextMenuItemType.Adding)
+					{
+						menuItem.IsEnabled = canAdd;
+					}
+				}
+			}
 		}
 
 		#endregion
