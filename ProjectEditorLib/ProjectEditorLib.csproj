@@ -86,6 +86,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="ViewModel\BackViewModel.cs" />
+    <Compile Include="ViewModel\BaseDbObjectViewModel.cs" />
     <Compile Include="ViewModel\CraftViewModel.cs" />
     <Compile Include="ViewModel\DialogViewModel.cs" />
     <Compile Include="ViewModel\EpisodeViewModel.cs" />

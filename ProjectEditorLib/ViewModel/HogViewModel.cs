@@ -6,8 +6,10 @@ using System.Windows;
 
 namespace ProjectEditorLib.ViewModel
 {
-	public class HogViewModel : DependencyObject, IDbObjectViewModel
+	public class HogViewModel : BaseDbObjectViewModel, IDbObjectViewModel
 	{
+		public HogViewModel() : base() { }
+
 		#region Properties
 
 		public string HogNumberText
@@ -31,18 +33,11 @@ namespace ProjectEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty CountRegionsTextProperty = DependencyProperty.Register(nameof(CountRegionsText), typeof(string), typeof(HogViewModel));
 
-		public bool HaveUnsavedChanges
-		{
-			get { return (bool)GetValue(HaveUnsavedChangesProperty); }
-			set { SetValue(HaveUnsavedChangesProperty, value); }
-		}
-		public static readonly DependencyProperty HaveUnsavedChangesProperty = DependencyProperty.Register(nameof(HaveUnsavedChanges), typeof(bool), typeof(HogViewModel));
-
 		#endregion
 
 		#region Methods
 
-		public void SetFromContext(IDbObject dbObject)
+		public override void SetFromContext(IDbObject dbObject)
 		{
 			if(dbObject is Back hog)
 			{
@@ -58,7 +53,7 @@ namespace ProjectEditorLib.ViewModel
 			}
 		}
 
-		public IDbObject UpdateContext(IDbObject dbObject)
+		public override IDbObject UpdateContext(IDbObject dbObject)
 		{
 			Back hog;
 

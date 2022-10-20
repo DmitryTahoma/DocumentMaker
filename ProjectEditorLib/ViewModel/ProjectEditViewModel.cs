@@ -48,6 +48,7 @@ namespace ProjectEditorLib.ViewModel
 					if(i == selectedViewTabIndex)
 					{
 						elem.Visibility = Visibility.Visible;
+						SelectedOptionsView = elem;
 						SelectedOptionsViewModel = (IDbObjectViewModel)((FrameworkElement)elem).DataContext;
 					}
 					else
@@ -58,6 +59,8 @@ namespace ProjectEditorLib.ViewModel
 				}
 			}
 		}
+
+		public UIElement SelectedOptionsView { get; private set; }
 
 		public IDbObjectViewModel SelectedOptionsViewModel { get; private set; }
 
@@ -109,7 +112,7 @@ namespace ProjectEditorLib.ViewModel
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
 			BackToProjectSelecting = new Command(OnBackToProjectSelectingExecute);
 			CollapseAllTree = new Command(OnCollapseAllTreeExecute);
-			Save = new Command(OnSaveExecute);
+			Save = new Command(OnSaveExecute, CanExecuteSave);
 		}
 
 		public Command<KeyValuePair<TreeViewItem, ProjectNodeType>> AddTreeViewItemCommand { get; private set; }
@@ -529,6 +532,11 @@ namespace ProjectEditorLib.ViewModel
 					}
 				}
 			}
+		}
+
+		private bool CanExecuteSave()
+		{
+			return SelectedViewTabIndex != -1 && SelectedOptionsViewModel.HaveUnsavedChanges && ValidationHelper.IsValid(SelectedOptionsView);
 		}
 
 		#endregion

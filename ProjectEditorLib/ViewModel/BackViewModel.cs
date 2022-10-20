@@ -6,8 +6,10 @@ using System.Windows;
 
 namespace ProjectEditorLib.ViewModel
 {
-	public class BackViewModel : DependencyObject, IDbObjectViewModel
+	public class BackViewModel : BaseDbObjectViewModel, IDbObjectViewModel
 	{
+		public BackViewModel() : base() { }
+
 		#region Properties
 
 		public string BackNumberText
@@ -31,18 +33,11 @@ namespace ProjectEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty CountRegionsTextProperty = DependencyProperty.Register(nameof(CountRegionsText), typeof(string), typeof(BackViewModel));
 
-		public bool HaveUnsavedChanges
-		{
-			get { return (bool)GetValue(HaveUnsavedChangesProperty); }
-			set { SetValue(HaveUnsavedChangesProperty, value); }
-		}
-		public static readonly DependencyProperty HaveUnsavedChangesProperty = DependencyProperty.Register(nameof(HaveUnsavedChanges), typeof(bool), typeof(BackViewModel));
-
 		#endregion
 
 		#region Methods
 
-		public void SetFromContext(IDbObject dbObject)
+		public override void SetFromContext(IDbObject dbObject)
 		{
 			if(dbObject is Back back)
 			{
@@ -58,7 +53,7 @@ namespace ProjectEditorLib.ViewModel
 			}
 		}
 
-		public IDbObject UpdateContext(IDbObject dbObject)
+		public override IDbObject UpdateContext(IDbObject dbObject)
 		{
 			Back back;
 
@@ -74,7 +69,7 @@ namespace ProjectEditorLib.ViewModel
 			if (back != null)
 			{
 				back.Name = BackName;
-				back.Number = int.Parse(BackNumberText);
+				back.Number = float.Parse(BackNumberText);
 
 				CountRegions regions = back.Regions?.FirstOrDefault();
 				if(regions == null)

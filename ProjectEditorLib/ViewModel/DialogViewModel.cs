@@ -4,8 +4,10 @@ using System.Windows;
 
 namespace ProjectEditorLib.ViewModel
 {
-	public class DialogViewModel : DependencyObject, IDbObjectViewModel
+	public class DialogViewModel : BaseDbObjectViewModel, IDbObjectViewModel
 	{
+		public DialogViewModel() : base() { }
+
 		#region Properties
 
 		public string DialogNumberText
@@ -22,18 +24,11 @@ namespace ProjectEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty DialogNameProperty = DependencyProperty.Register(nameof(DialogName), typeof(string), typeof(DialogViewModel));
 
-		public bool HaveUnsavedChanges
-		{
-			get { return (bool)GetValue(HaveUnsavedChangesProperty); }
-			set { SetValue(HaveUnsavedChangesProperty, value); }
-		}
-		public static readonly DependencyProperty HaveUnsavedChangesProperty = DependencyProperty.Register(nameof(HaveUnsavedChanges), typeof(bool), typeof(DialogViewModel));
-
 		#endregion
 
 		#region Methods
 
-		public void SetFromContext(IDbObject dbObject)
+		public override void SetFromContext(IDbObject dbObject)
 		{
 			if(dbObject is Back dialog)
 			{
@@ -47,7 +42,7 @@ namespace ProjectEditorLib.ViewModel
 			}
 		}
 
-		public IDbObject UpdateContext(IDbObject dbObject)
+		public override IDbObject UpdateContext(IDbObject dbObject)
 		{
 			Back dialog;
 

@@ -4,8 +4,10 @@ using System.Windows;
 
 namespace ProjectEditorLib.ViewModel
 {
-	public class MinigameViewModel : DependencyObject, IDbObjectViewModel
+	public class MinigameViewModel : BaseDbObjectViewModel, IDbObjectViewModel
 	{
+		public MinigameViewModel() : base() { }
+
 		#region Properties
 
 		public string MinigameNumberText
@@ -22,18 +24,11 @@ namespace ProjectEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty MinigameNameProperty = DependencyProperty.Register(nameof(MinigameName), typeof(string), typeof(MinigameViewModel));
 
-		public bool HaveUnsavedChanges
-		{
-			get { return (bool)GetValue(HaveUnsavedChangesProperty); }
-			set { SetValue(HaveUnsavedChangesProperty, value); }
-		}
-		public static readonly DependencyProperty HaveUnsavedChangesProperty = DependencyProperty.Register(nameof(HaveUnsavedChanges), typeof(bool), typeof(MinigameViewModel));
-
 		#endregion
 
 		#region Methods
 
-		public void SetFromContext(IDbObject dbObject)
+		public override void SetFromContext(IDbObject dbObject)
 		{
 			if(dbObject is Back minigame)
 			{
@@ -47,7 +42,7 @@ namespace ProjectEditorLib.ViewModel
 			}
 		}
 
-		public IDbObject UpdateContext(IDbObject dbObject)
+		public override IDbObject UpdateContext(IDbObject dbObject)
 		{
 			Back minigame;
 

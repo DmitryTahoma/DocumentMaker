@@ -4,8 +4,10 @@ using System.Windows;
 
 namespace ProjectEditorLib.ViewModel
 {
-	public class ProjectViewModel : DependencyObject, IDbObjectViewModel
+	public class ProjectViewModel : BaseDbObjectViewModel, IDbObjectViewModel
 	{
+		public ProjectViewModel() : base() { }
+
 		#region Properties
 
 		public string ProjectName
@@ -15,18 +17,11 @@ namespace ProjectEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty ProjectNameProperty = DependencyProperty.Register(nameof(ProjectName), typeof(string), typeof(ProjectViewModel));
 
-		public bool HaveUnsavedChanges
-		{
-			get { return (bool)GetValue(HaveUnsavedChangesProperty); }
-			set { SetValue(HaveUnsavedChangesProperty, value); }
-		}
-		public static readonly DependencyProperty HaveUnsavedChangesProperty = DependencyProperty.Register(nameof(HaveUnsavedChanges), typeof(bool), typeof(ProjectViewModel));
-
 		#endregion
 
 		#region Methods
 
-		public void SetFromContext(IDbObject dbObject)
+		public override void SetFromContext(IDbObject dbObject)
 		{
 			if(dbObject is Project project)
 			{
@@ -38,7 +33,7 @@ namespace ProjectEditorLib.ViewModel
 			}
 		}
 
-		public IDbObject UpdateContext(IDbObject dbObject)
+		public override IDbObject UpdateContext(IDbObject dbObject)
 		{
 			Project project;
 

@@ -4,8 +4,10 @@ using System.Windows;
 
 namespace ProjectEditorLib.ViewModel
 {
-	public class EpisodeViewModel : DependencyObject, IDbObjectViewModel
+	public class EpisodeViewModel : BaseDbObjectViewModel, IDbObjectViewModel
 	{
+		public EpisodeViewModel() : base() { }
+
 		#region Properties
 
 		public string EpisodeNumber
@@ -22,18 +24,11 @@ namespace ProjectEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty EpisodeNameProperty = DependencyProperty.Register(nameof(EpisodeName), typeof(string), typeof(EpisodeViewModel));
 
-		public bool HaveUnsavedChanges
-		{
-			get { return (bool)GetValue(HaveUnsavedChangesProperty); }
-			set { SetValue(HaveUnsavedChangesProperty, value); }
-		}
-		public static readonly DependencyProperty HaveUnsavedChangesProperty = DependencyProperty.Register(nameof(HaveUnsavedChanges), typeof(bool), typeof(EpisodeViewModel));
-
 		#endregion
 
 		#region Methods
 
-		public IDbObject UpdateContext(IDbObject dbObject)
+		public override IDbObject UpdateContext(IDbObject dbObject)
 		{
 			Episode episode;
 
@@ -56,7 +51,7 @@ namespace ProjectEditorLib.ViewModel
 			return dbObject;
 		}
 
-		public void SetFromContext(IDbObject dbObject)
+		public override void SetFromContext(IDbObject dbObject)
 		{
 			if(dbObject is Episode episode)
 			{
