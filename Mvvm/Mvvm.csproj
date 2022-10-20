@@ -54,6 +54,7 @@
     <Compile Include="ValidationHelper.cs" />
     <Compile Include="ValidationRules\ContentProperties\ItemsSource.cs" />
     <Compile Include="ValidationRules\FloatPositiveValidationRule.cs" />
+    <Compile Include="ValidationRules\IntZeroOrPositiveValidationRule.cs" />
     <Compile Include="ValidationRules\NotEmptyValidationRule.cs" />
     <Compile Include="ValidationRules\IntPositiveValidationRule.cs" />
     <Compile Include="ValidationRules\NotNullValidationRule.cs" />
