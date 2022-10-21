@@ -50,10 +50,12 @@ namespace DocumentMaker.Controller
 
 		public string CorrectDevelopmentWindow_NumberText { get => model.CorrectDevelopmentWindow_NumberText; set => model.CorrectDevelopmentWindow_NumberText = value; }
 		public bool CorrectDevelopmentWindow_TakeSumFromSupport { get => model.CorrectDevelopmentWindow_TakeSumFromSupport; set => model.CorrectDevelopmentWindow_TakeSumFromSupport = value; }
+		public bool CorrectDevelopmentDialog_IsRemoveIdenticalNumbers { get => model.CorrectDevelopmentDialog_IsRemoveIdenticalNumbers; set => model.CorrectDevelopmentDialog_IsRemoveIdenticalNumbers = value; }
 
 		public string CorrectSupportWindow_NumberText { get => model.CorrectSupportWindow_NumberText; set => model.CorrectSupportWindow_NumberText = value; }
 		public bool CorrectSupportWindow_TakeSumFromDevelopment { get => model.CorrectSupportWindow_TakeSumFromDevelopment; set => model.CorrectSupportWindow_TakeSumFromDevelopment = value; }
 		public bool CorrectSupportDialog_IsCreateNewWorks { get => model.CorrectSupportDialog_IsCreateNewWorks; set => model.CorrectSupportDialog_IsCreateNewWorks = value; }
+		public bool CorrectSupportDialog_IsRemoveIdenticalNumbers { get => model.CorrectSupportDialog_IsRemoveIdenticalNumbers; set => model.CorrectSupportDialog_IsRemoveIdenticalNumbers = value; }
 
 		#endregion
 
@@ -333,14 +335,14 @@ namespace DocumentMaker.Controller
 			return backDataModels;
 		}
 
-		public IEnumerable<int> CorrectDevelopment(int minSum, bool takeSumFromSupport)
+		public IEnumerable<int> CorrectDevelopment(int minSum, bool takeSumFromSupport, bool isRemoveIdenticalNumbers)
 		{
-			return model.CorrectDevelopment(minSum, takeSumFromSupport, GetModels());
+			return model.CorrectDevelopment(minSum, takeSumFromSupport, isRemoveIdenticalNumbers, GetModels());
 		}
 
-		public IEnumerable<int> CorrectSupport(int minSum, bool takeSumFromDevelopment, bool isCreateNewWorks, out List<KeyValuePair<FullBackDataController, int>> newControllers)
+		public IEnumerable<int> CorrectSupport(int minSum, bool takeSumFromDevelopment, bool isCreateNewWorks, bool isRemoveIdenticalNumbers, out List<KeyValuePair<FullBackDataController, int>> newControllers)
 		{
-			var res = model.CorrectSupport(minSum, takeSumFromDevelopment, isCreateNewWorks, GetModels(), out List<KeyValuePair<FullBackDataModel, int>> newModels);
+			var res = model.CorrectSupport(minSum, takeSumFromDevelopment, isCreateNewWorks, isRemoveIdenticalNumbers, GetModels(), out List<KeyValuePair<FullBackDataModel, int>> newModels);
 			newControllers = new List<KeyValuePair<FullBackDataController, int>>(newModels.Select(x => new KeyValuePair<FullBackDataController, int>(new FullBackDataController(x.Key), x.Value)));
 			return res;
 		}

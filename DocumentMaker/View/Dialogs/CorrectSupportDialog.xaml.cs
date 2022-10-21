@@ -26,6 +26,7 @@ namespace DocumentMaker.View.Dialogs
 		public string NumberText { get; set; }
 		public bool IsCreateNewWorks { get; set; }
 		public bool TakeSumFromDevelopment { get; set; }
+		public bool IsRemoveIdenticalNumbers { get; set; }
 
 		private void ControlKeyDown(object sender, KeyEventArgs e)
 		{

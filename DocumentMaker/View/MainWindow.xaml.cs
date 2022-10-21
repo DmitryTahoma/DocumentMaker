@@ -621,17 +621,19 @@ namespace DocumentMaker
 			{
 				NumberText = controller.CorrectDevelopmentWindow_NumberText,
 				TakeSumFromSupport = controller.CorrectDevelopmentWindow_TakeSumFromSupport,
+				IsRemoveIdenticalNumbers = controller.CorrectDevelopmentDialog_IsRemoveIdenticalNumbers,
 			};
 			await DialogHost.Show(dialog);
 
 			controller.CorrectDevelopmentWindow_NumberText = dialog.NumberText;
 			controller.CorrectDevelopmentWindow_TakeSumFromSupport = dialog.TakeSumFromSupport;
+			controller.CorrectDevelopmentDialog_IsRemoveIdenticalNumbers = dialog.IsRemoveIdenticalNumbers;
 
 			if (dialog.IsCorrection && int.TryParse(dialog.NumberText, out int sum))
 			{
 				bool isNeedUpdateSum = controller.NeedUpdateSum;
 				DisableUpdatingSum();
-				IEnumerable<int> resultSums = controller.CorrectDevelopment(sum, dialog.TakeSumFromSupport);
+				IEnumerable<int> resultSums = controller.CorrectDevelopment(sum, dialog.TakeSumFromSupport, dialog.IsRemoveIdenticalNumbers);
 				IEnumerator<FullBackDataController> backDataControllersEnum = controller.BackDataControllers.GetEnumerator();
 				IEnumerator<int> resultSumsEnum = resultSums.GetEnumerator();
 				List<FullBackData> allFullBackDatas = new List<FullBackData>(GetAllFullBacksData());
@@ -683,18 +685,20 @@ namespace DocumentMaker
 				NumberText = controller.CorrectSupportWindow_NumberText,
 				TakeSumFromDevelopment = controller.CorrectSupportWindow_TakeSumFromDevelopment,
 				IsCreateNewWorks = controller.CorrectSupportDialog_IsCreateNewWorks,
+				IsRemoveIdenticalNumbers = controller.CorrectSupportDialog_IsRemoveIdenticalNumbers,
 			};
 			await DialogHost.Show(dialog);
 
 			controller.CorrectSupportWindow_NumberText = dialog.NumberText;
 			controller.CorrectSupportWindow_TakeSumFromDevelopment = dialog.TakeSumFromDevelopment;
 			controller.CorrectSupportDialog_IsCreateNewWorks = dialog.IsCreateNewWorks;
+			controller.CorrectSupportDialog_IsRemoveIdenticalNumbers = dialog.IsRemoveIdenticalNumbers;
 
 			if (dialog.IsCorrection && int.TryParse(dialog.NumberText, out int sum))
 			{
 				bool isNeedUpdateSum = controller.NeedUpdateSum;
 				DisableUpdatingSum();
-				IEnumerable<int> resultSums = controller.CorrectSupport(sum, dialog.TakeSumFromDevelopment, dialog.IsCreateNewWorks, out List<KeyValuePair<FullBackDataController, int>> newControllers);
+				IEnumerable<int> resultSums = controller.CorrectSupport(sum, dialog.TakeSumFromDevelopment, dialog.IsCreateNewWorks, dialog.IsRemoveIdenticalNumbers, out List<KeyValuePair<FullBackDataController, int>> newControllers);
 				IEnumerator<FullBackDataController> backDataControllersEnum = controller.BackDataControllers.GetEnumerator();
 				IEnumerator<int> resultSumsEnum = resultSums.GetEnumerator();
 				List<FullBackData> allFullBackDatas = new List<FullBackData>(GetAllFullBacksData());

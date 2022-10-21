@@ -74,6 +74,8 @@ namespace DocumentMaker.Model
 		public string CorrectDevelopmentWindow_NumberText { get; set; } = "2500";
 		[IsNotDmxContent]
 		public bool CorrectDevelopmentWindow_TakeSumFromSupport { get; set; } = false;
+		[IsNotDmxContent]
+		public bool CorrectDevelopmentDialog_IsRemoveIdenticalNumbers { get; set; } = false;
 
 		[IsNotDmxContent]
 		public string CorrectSupportWindow_NumberText { get; set; } = "2100";
@@ -81,6 +83,8 @@ namespace DocumentMaker.Model
 		public bool CorrectSupportWindow_TakeSumFromDevelopment { get; set; } = false;
 		[IsNotDmxContent]
 		public bool CorrectSupportDialog_IsCreateNewWorks { get; set; } = false;
+		[IsNotDmxContent]
+		public bool CorrectSupportDialog_IsRemoveIdenticalNumbers { get; set; } = false;
 
 		#endregion
 
@@ -404,7 +408,7 @@ namespace DocumentMaker.Model
 			return openList.Select(x => (int)x);
 		}
 
-		public IEnumerable<int> CorrectDevelopment(int minSum, bool takeSumFromSupport, List<FullBackDataModel> models)
+		public IEnumerable<int> CorrectDevelopment(int minSum, bool takeSumFromSupport, bool isRemoveIdenticalNumbers, List<FullBackDataModel> models)
 		{
 			List<int> developmentInput = new List<int>();
 			List<int> supportInput = new List<int>();
@@ -412,7 +416,7 @@ namespace DocumentMaker.Model
 			foreach (FullBackDataModel model in models)
 				(model.IsRework ? supportInput : developmentInput).Add(int.TryParse(model.SumText, out int s) ? s : 0);
 
-			MixingSumAlgorithm.MoreNumber(ref developmentInput, ref supportInput, minSum, takeSumFromSupport, false, false);
+			MixingSumAlgorithm.MoreNumber(ref developmentInput, ref supportInput, minSum, takeSumFromSupport, isRemoveIdenticalNumbers, false);
 
 			List<int> result = new List<int>();
 			IEnumerator<int> developmentInputEnum = developmentInput.GetEnumerator();
@@ -428,7 +432,7 @@ namespace DocumentMaker.Model
 			return result;
 		}
 
-		public IEnumerable<int> CorrectSupport(int minSum, bool takeSumFromSupport, bool isCreateNewWorks, List<FullBackDataModel> models, out List<KeyValuePair<FullBackDataModel, int>> newModels)
+		public IEnumerable<int> CorrectSupport(int minSum, bool takeSumFromSupport, bool isCreateNewWorks, bool isRemoveIdenticalNumbers, List<FullBackDataModel> models, out List<KeyValuePair<FullBackDataModel, int>> newModels)
 		{
 			List<int> developmentInput = new List<int>();
 			List<int> supportInput = new List<int>();
@@ -442,7 +446,7 @@ namespace DocumentMaker.Model
 				enableWorks.AddRange(GetEnableModelsWithWork(models));
 			}
 			int supportCount = supportInput.Count;
-			MixingSumAlgorithm.LessNumber(ref developmentInput, ref supportInput, minSum, takeSumFromSupport, false, isCreateNewWorks, enableWorks.Count);
+			MixingSumAlgorithm.LessNumber(ref developmentInput, ref supportInput, minSum, takeSumFromSupport, isRemoveIdenticalNumbers, isCreateNewWorks, enableWorks.Count);
 			List<int> newSupport = new List<int>();
 			while (supportInput.Count > supportCount)
 			{

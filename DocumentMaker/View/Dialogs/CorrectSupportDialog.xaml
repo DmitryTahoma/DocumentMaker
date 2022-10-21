@@ -21,6 +21,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
@@ -50,8 +51,15 @@
             Content="перекидати надлишки в розробку"
             IsChecked="{Binding TakeSumFromDevelopment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
+        <CheckBox
+            Grid.Row="3"
+            Grid.ColumnSpan="2"
+            Margin="5"
+            Content="прибрати однакові суми"
+            IsChecked="{Binding IsRemoveIdenticalNumbers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
         <Grid
-            Grid.Row="4"
+            Grid.Row="5"
             Grid.ColumnSpan="2"
             Margin="0,20,0,0">
             <Grid.ColumnDefinitions>

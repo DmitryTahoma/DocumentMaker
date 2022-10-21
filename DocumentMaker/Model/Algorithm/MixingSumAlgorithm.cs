@@ -33,7 +33,7 @@ namespace DocumentMaker.Model.Algorithm
 			int minIndexNumberRozrobka = -1;
 			FindMinIndex(_rozrobka, ref minIndexNumberRozrobka); // Индекс минимальной суммы розробкы
 
-			int maxSumFlip = minNumber / 2; // Сколько будем перекидывать на другой пукнт
+			int sumFlip = 300; // Сколько будем перекидывать на другой пукнт
 
 			bool isFlip = true;
 
@@ -49,7 +49,7 @@ namespace DocumentMaker.Model.Algorithm
 				totalSum += sum;
 			}
 
-			int counterFlip = (int)(totalSum * 1.5f) / maxSumFlip;
+			int counterFlip = (int)(totalSum * 1.5f) / (sumFlip * (percent + minPercent) / 100);
 
 			while (isFlip)
 			{
@@ -70,7 +70,7 @@ namespace DocumentMaker.Model.Algorithm
 
 						if (maxSum > _minNumber)
 						{
-							maxSumFlip = (int)(maxSum * randomPrecent / 100);
+							int maxSumFlip = (int)(sumFlip * randomPrecent / 100);
 
 							if (maxSum - maxSumFlip >= _minNumber)
 							{
@@ -87,21 +87,6 @@ namespace DocumentMaker.Model.Algorithm
 
 								isFlip = true;
 							}
-							else
-							{
-								maxSumFlip = (int)(minNumber * (randomPrecent * 5) / 100);
-
-								if (maxSum - maxSumFlip >= 0)
-								{
-									_rozrobka[maxIndexNumberRozrobka] = maxSum - maxSumFlip;
-									_rozrobka[minIndexNumberRozrobka] = minSum + maxSumFlip;
-								}
-								else
-								{
-									_rozrobka[minIndexNumberRozrobka] += _rozrobka[maxIndexNumberRozrobka];
-									_rozrobka[maxIndexNumberRozrobka] = 0;
-								}
-							}
 						}
 					}
 
@@ -110,7 +95,7 @@ namespace DocumentMaker.Model.Algorithm
 						if (maxIndexNumberPidtrimka != -1 && _isTossOutPidtrimka)
 						{
 							int maxSum = _pidtrimka[maxIndexNumberPidtrimka];
-							maxSumFlip = (int)(maxSum * randomPrecent / 100);
+							int maxSumFlip = (int)(sumFlip * randomPrecent / 100);
 							if (maxSum > minNumber && _pidtrimka[maxIndexNumberPidtrimka] - maxSumFlip >= 0)
 							{
 
@@ -155,8 +140,11 @@ namespace DocumentMaker.Model.Algorithm
 			// Пересчет одинаковых сумм
 			if (_isRemoveIdenticalNumbers)
 			{
-				RemoveIdenticalNumbers(ref _rozrobka);
-				RemoveIdenticalNumbers(ref _pidtrimka);
+				RemoveIdenticalNumbers(ref _rozrobka, false, _minNumber);
+				if (_isTossOutPidtrimka)
+				{
+					RemoveIdenticalNumbers(ref _pidtrimka, false, _minNumber);
+				}
 			}
 		}
 
@@ -189,13 +177,13 @@ namespace DocumentMaker.Model.Algorithm
 			int minIndexNumberRozrobka = -1;
 			FindMinIndex(_rozrobka, ref minIndexNumberRozrobka); // Индекс минимальной суммы розробкы
 
-			int minSumFlip = _maxNumber * (percent - minPercent) / 100; // Сколько будем перекидывать на другой пукнт
+			int sumFlip = 300; // Сколько будем перекидывать на другой пукнт
 
 			bool isFlip = true;
 
 			// Ограничение перебросов чтобы не зациклилось
 			int totalSum = 0;
-			foreach(int sum in _pidtrimka)
+			foreach (int sum in _pidtrimka)
 			{
 				totalSum += sum;
 			}
@@ -205,7 +193,7 @@ namespace DocumentMaker.Model.Algorithm
 				totalSum += sum;
 			}
 
-			int counterFlip = (int)(totalSum * 1.5f) / minSumFlip;
+			int counterFlip = (int)(totalSum * 1.5f) / (sumFlip * (percent + minPercent) / 100);
 
 			while (isFlip)
 			{
@@ -228,7 +216,7 @@ namespace DocumentMaker.Model.Algorithm
 						// Если минимальная сумма меньше чем ограничение то не нужно перекидывать
 						if (minSum < _maxNumber)
 						{
-							minSumFlip = (int)(maxSum * randomPrecent / 100);
+							int minSumFlip = (int)(sumFlip * randomPrecent / 100);
 
 							if (minSumFlip + minSum <= _maxNumber)
 							{
@@ -245,26 +233,6 @@ namespace DocumentMaker.Model.Algorithm
 								}
 								isFlip = true;
 							}
-							else
-							{
-								minSumFlip = (int)(_maxNumber * randomPrecent / 100);
-
-								if (minSumFlip + minSum <= _maxNumber)
-								{
-									// Если после перекидывания сумма максимального пункта будет меньше 0 то всё из максимального пункта
-									if (maxSum - minSumFlip >= 0)
-									{
-										_pidtrimka[maxIndexNumberPidtrimka] = maxSum - minSumFlip;
-										_pidtrimka[minIndexNumberPidtrimka] = minSum + minSumFlip;
-									}
-									else
-									{
-										_pidtrimka[minIndexNumberPidtrimka] += maxSum;
-										_pidtrimka[maxIndexNumberPidtrimka] = 0;
-									}
-									isFlip = true;
-								}
-							}
 						}
 					}
 
@@ -280,7 +248,7 @@ namespace DocumentMaker.Model.Algorithm
 						else if (minIndexNumberRozrobka != -1 && _isTossInRozrobka)
 						{
 							// Перекидывает рандомную сумму излишка из пидтрымки в розробку
-							minSumFlip = (int)(maxSum * randomPrecent / 100);
+							int minSumFlip = (int)(sumFlip * randomPrecent / 100);
 
 							if (maxSum - minSumFlip >= 0)
 							{
@@ -314,59 +282,130 @@ namespace DocumentMaker.Model.Algorithm
 			// Пересчет одинаковых сумм
 			if (_isRemoveIdenticalNumbers)
 			{
-				RemoveIdenticalNumbers(ref _rozrobka);
-				RemoveIdenticalNumbers(ref _pidtrimka);
+				if (_isTossInRozrobka)
+				{
+					RemoveIdenticalNumbers(ref _rozrobka, true, _maxNumber);
+				}
+				RemoveIdenticalNumbers(ref _pidtrimka, true, _maxNumber);
 			}
 		}
 
 		/// <summary>
 		/// Если разница между суммами меньше чем "sumSpread" то перебрасывает эту разницу и процент от неё для рандома 0..1
 		/// </summary>
-		private static void RemoveIdenticalNumbers(ref List<int> _array)
+		private static void RemoveIdenticalNumbers(ref List<int> _array, bool _isLess, int _opornSum)
 		{
-			Random rnd = new Random();
-			int sumSpread = 75; // Разница между пунктами
-			int percent = 100; // Какой процент от суммы перекидывать 
-			int minPercent = 3 * 100 / sumSpread; // Погрешность от percent
-			int maxPercent = 100; // Погрешность от percent
-			float randomPrecent; // Смещение процента от percent
-
-			if (percent + minPercent < 0)
-				minPercent = -percent;
-
-			for (int i = 0; i < _array.Count; i++)
+			List<KeyValuePair<int, List<int>>> pairs = new List<KeyValuePair<int, List<int>>>();
+			for (int i = 0; i < _array.Count; ++i)
 			{
-				if (_array[i] == 0)
-					continue;
-
-				for (int j = 0; j < _array.Count; j++)
+				bool havePair = false;
+				for (int j = 0; j < pairs.Count; ++j)
 				{
-					if (i != j)
+					if (_array[i] == pairs[j].Key)
 					{
-						if (_array[j] == 0)
-							continue;
-
-						// Если разница в суммах меньше чем "sumSpread" то перекидывает "sumSpread + рандомную сумму от sumSpread"
-						int sumDiff = Math.Abs(_array[j] - _array[i]);
-						if (sumDiff <= sumSpread)
-						{
-							randomPrecent = percent + ((float)rnd.NextDouble() * (maxPercent + (minPercent * -1)) + minPercent);
-							int sumFlip = (int)(sumSpread * randomPrecent / 100);
-
-							if (_array[i] - sumFlip >= 0)
-							{
-								_array[i] -= sumFlip;
-								_array[j] += sumFlip;
-								break;
-							}
-							else
-							{
-								_array[j] += _array[i];
-								_array[i] = 0;
-								break;
-							}
-						}
+						havePair = true;
+						break;
 					}
+				}
+				if (havePair) continue;
+
+				KeyValuePair<int, List<int>> pair = new KeyValuePair<int, List<int>>(_array[i], new List<int>() { i });
+				for (int j = i + 1; j < _array.Count; ++j)
+				{
+					if (_array[i] == _array[j])
+					{
+						pair.Value.Add(j);
+					}
+				}
+				if (pair.Value.Count > 1)
+				{
+					pairs.Add(pair);
+				}
+			}
+
+			Random random = new Random();
+			int dir = _isLess ? -1 : 1;
+			int prevPairCount = -1;
+			for (int counter = _array.Count; pairs.Count != 0 && counter > 0;)
+			{
+				int maxInd = -1;
+				if (_isLess)
+				{
+					FindMinIndex(_array, ref maxInd);
+				}
+				else
+				{
+					FindMaxIndex(_array, ref maxInd);
+				}
+				int rndStep = random.Next(1, 9) * dir;
+
+				for (int i = 1; i < pairs[0].Value.Count; ++i)
+				{
+					int nextMaxSum = _array[maxInd] - (i * rndStep);
+
+					if ((_isLess && nextMaxSum >= _opornSum)
+					|| (!_isLess && nextMaxSum <= _opornSum))
+						continue;
+
+					_array[maxInd] = nextMaxSum;
+					_array[pairs[0].Value[i]] += i * rndStep;
+				}
+
+				UpdateIndexOnPairs(_array, pairs, maxInd);
+
+				for (int i = 1; pairs.Count > 0 && i < pairs[0].Value.Count; ++i)
+				{
+					UpdateIndexOnPairs(_array, pairs, pairs[0].Value[i]);
+				}
+
+				if (prevPairCount == pairs.Count)
+				{
+					--counter;
+				}
+				prevPairCount = pairs.Count;
+			}
+		}
+
+		private static void UpdateIndexOnPairs(List<int> _array, List<KeyValuePair<int, List<int>>> pairs, int index)
+		{
+			bool pairCreated = false;
+			for (int i = 0; i < pairs.Count; ++i)
+			{
+				if (pairs[i].Value.Contains(index))
+				{
+					pairs[i].Value.Remove(index);
+
+					if (pairs[i].Value.Count < 2)
+					{
+						pairs.RemoveAt(i);
+					}
+					break;
+				}
+			}
+
+			for (int i = 0; i < pairs.Count; ++i)
+			{
+				if (pairs[i].Key == _array[index])
+				{
+					pairs[i].Value.Add(index);
+					pairCreated = true;
+					break;
+				}
+			}
+
+			if (!pairCreated)
+			{
+				KeyValuePair<int, List<int>> pair = new KeyValuePair<int, List<int>>(_array[index], new List<int> { index });
+				for (int i = 0; i < _array.Count; ++i)
+				{
+					if (i != index && pair.Key == _array[i])
+					{
+						pair.Value.Add(i);
+					}
+				}
+				if (pair.Value.Count > 1)
+				{
+					pairs.Add(pair);
 				}
 			}
 		}
