@@ -18,19 +18,19 @@
     </Window.Resources>
     <materialDesign:Card>
         <TabControl Margin="0" materialDesign:ColorZoneAssist.Mode="PrimaryMid">
-            <TabItem Header="РЕДАКТОР ПРОЕКТІВ">
+            <TabItem Header="ПРОЕКТИ">
                 <projectEditor:ProjectEdit />
             </TabItem>
-            <TabItem Header="ПРАЦІВНИК">
+            <TabItem Header="РОБІТНИКИ">
                 <humanEditor:HumanEdit />
             </TabItem>
-            <TabItem Header="БАНК">
+            <TabItem Header="БАНКИ">
                 <humanEditor:BankEdit />
             </TabItem>
-            <TabItem Header="ВУЛИЦЯ">
+            <TabItem Header="ВУЛИЦІ">
                 <humanEditor:StreetEdit />
             </TabItem>
-            <TabItem Header="МІСТО">
+            <TabItem Header="МІСТА">
                 <humanEditor:LocalityEdit />
             </TabItem>
         </TabControl>
