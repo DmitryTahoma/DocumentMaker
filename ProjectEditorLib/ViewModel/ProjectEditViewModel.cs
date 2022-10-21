@@ -231,14 +231,20 @@ namespace ProjectEditorLib.ViewModel
 		public Command BackToProjectSelecting { get; private set; }
 		private void OnBackToProjectSelectingExecute()
 		{
-			TreeItems.Clear();
-			ProjectSelected = false;
+			if (CheckHaveUnsavedChangesAndSave())
+			{
+				TreeItems.Clear();
+				ProjectSelected = false;
+			}
 		}
 
 		public Command CollapseAllTree { get; private set; }
 		private void OnCollapseAllTreeExecute()
 		{
-			CollapseTreeItems(TreeItems);
+			if(CheckHaveUnsavedChangesAndSave())
+			{
+				CollapseTreeItems(TreeItems);
+			}
 		}
 
 		public Command Save { get; private set; }
@@ -483,39 +489,9 @@ namespace ProjectEditorLib.ViewModel
 
 		private void BeforeTreeViewItemSelected(object sender, MouseButtonEventArgs e) // TreeViewItem.PreviewMouseDown
 		{
-			if(e.ChangedButton == MouseButton.Left && e.LeftButton == MouseButtonState.Pressed && SelectedViewTabIndex != -1 && SelectedOptionsViewModel.HaveUnsavedChanges)
+			if(e.ChangedButton == MouseButton.Left && e.LeftButton == MouseButtonState.Pressed && !CheckHaveUnsavedChangesAndSave())
 			{
-				MessageBoxResult res = MessageBox.Show(
-					"Обраний елемент має незбережені зміни. Зберегти зміни?",
-					"Зміна елементу",
-					MessageBoxButton.YesNoCancel,
-					MessageBoxImage.Question,
-					MessageBoxResult.Yes);
-
-				if (res == MessageBoxResult.No)
-				{
-					TreeItemHeaderViewModel nodeViewModel = (TreeItemHeaderViewModel)((TreeItemHeader)SelectedTreeViewItem.Header).DataContext;
-					ProjectNode nodeModel = nodeViewModel.GetModel();
-					if(nodeModel.Context == null)
-					{
-						RemoveTreeViewItemCommand.Execute(SelectedTreeViewItem);
-					}
-					return;
-				}
-
-				if (res == MessageBoxResult.Yes)
-				{
-					Save.Execute();
-
-					if (SelectedOptionsViewModel.HaveUnsavedChanges)
-					{
-						e.Handled = true;
-					}
-				}
-				else
-				{
-					e.Handled = true;
-				}
+				e.Handled = true;
 			}
 		}
 
@@ -537,6 +513,43 @@ namespace ProjectEditorLib.ViewModel
 		private bool CanExecuteSave()
 		{
 			return SelectedViewTabIndex != -1 && SelectedOptionsViewModel.HaveUnsavedChanges && ValidationHelper.IsValid(SelectedOptionsView);
+		}
+
+		private bool CheckHaveUnsavedChangesAndSave()
+		{
+			if(SelectedViewTabIndex != -1 && SelectedOptionsViewModel.HaveUnsavedChanges)
+			{
+				MessageBoxResult res = MessageBox.Show(
+					"Обраний елемент має незбережені зміни. Зберегти зміни?",
+					"Зміна елементу",
+					MessageBoxButton.YesNoCancel,
+					MessageBoxImage.Question,
+					MessageBoxResult.Yes);
+
+				if (res == MessageBoxResult.No)
+				{
+					TreeItemHeaderViewModel nodeViewModel = (TreeItemHeaderViewModel)((TreeItemHeader)SelectedTreeViewItem.Header).DataContext;
+					ProjectNode nodeModel = nodeViewModel.GetModel();
+					if (nodeModel.Context == null)
+					{
+						RemoveTreeViewItemCommand.Execute(SelectedTreeViewItem);
+					}
+				}
+				else if (res == MessageBoxResult.Yes)
+				{
+					Save.Execute();
+
+					if (SelectedOptionsViewModel.HaveUnsavedChanges)
+					{
+						return false;
+					}
+				}
+				else
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 
 		#endregion
