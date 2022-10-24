@@ -81,9 +81,40 @@
                 <Setter Property="Padding" Value="5" />
             </Style>
 
+            <Style x:Key="TopFirstCard" TargetType="materialDesign:Card">
+                <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth1" />
+                <Setter Property="Margin" Value="5,5,2.5,2.5" />
+                <Setter Property="Padding" Value="5" />
+            </Style>
+
+            <Style x:Key="TopLastCard" TargetType="materialDesign:Card">
+                <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth1" />
+                <Setter Property="Margin" Value="2.5,5,5,2.5" />
+                <Setter Property="Padding" Value="5" />
+            </Style>
+
+            <Style x:Key="BottomFirstCard" TargetType="materialDesign:Card">
+                <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth1" />
+                <Setter Property="Margin" Value="5,2.5,2.5,5" />
+                <Setter Property="Padding" Value="5" />
+            </Style>
+
+            <Style x:Key="BottomLastCard" TargetType="materialDesign:Card">
+                <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth1" />
+                <Setter Property="Margin" Value="2.5,2.5,5,5" />
+                <Setter Property="Padding" Value="5" />
+            </Style>
+
             <Style x:Key="LabelHeaderTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="17" />
                 <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style x:Key="LabelTopHeaderTextBlock" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="FontWeight" Value="Bold" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
@@ -117,6 +148,20 @@
 
             <Style x:Key="ToolBarButton" TargetType="Button">
                 <Setter Property="Padding" Value="5" />
+            </Style>
+
+            <Style
+                x:Key="PlacedCheckBox"
+                BasedOn="{StaticResource MaterialDesignCheckBox}"
+                TargetType="CheckBox">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+
+            <Style
+                x:Key="PlacedMaterialDesignOutlinedDarkButton"
+                BasedOn="{StaticResource MaterialDesignOutlinedDarkButton}"
+                TargetType="Button">
+                <Setter Property="Margin" Value="10" />
             </Style>
 
         </ResourceDictionary>

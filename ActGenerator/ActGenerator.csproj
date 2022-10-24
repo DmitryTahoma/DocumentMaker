@@ -74,7 +74,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
+    <Page Include="View\ActGeneratorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -82,7 +86,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Model\HumanDataContext.cs" />
+    <Compile Include="ViewModel\ActGeneratorViewModel.cs" />
+    <Compile Include="View\ActGeneratorView.xaml.cs">
+      <DependentUpon>ActGeneratorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -115,6 +124,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Dml\Dml.csproj">
+      <Project>{ac730979-6d09-406a-bfdf-e9f3f4d296e0}</Project>
+      <Name>Dml</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DocumentMakerThemes\DocumentMakerThemes.csproj">
       <Project>{a3c2f18e-b57e-4c71-a2dd-bce3cff24574}</Project>
       <Name>DocumentMakerThemes</Name>

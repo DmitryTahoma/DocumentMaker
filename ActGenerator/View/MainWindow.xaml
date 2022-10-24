@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:humanEditor="clr-namespace:HumanEditorLib.View;assembly=HumanEditorLib"
-    xmlns:local="clr-namespace:ActGenerator"
+    xmlns:local="clr-namespace:ActGenerator.View"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:projectEditor="clr-namespace:ProjectEditorLib.View;assembly=ProjectEditorLib"
@@ -18,6 +18,9 @@
     </Window.Resources>
     <materialDesign:Card>
         <TabControl Margin="0" materialDesign:ColorZoneAssist.Mode="PrimaryMid">
+            <TabItem Header="ГЕНЕРАЦІЯ">
+                <local:ActGeneratorView />
+            </TabItem>
             <TabItem Header="ПРОЕКТИ">
                 <projectEditor:ProjectEdit />
             </TabItem>

@@ -1,0 +1,164 @@
+﻿<UserControl
+    x:Class="ActGenerator.View.ActGeneratorView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ActGenerator.View"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:vm="clr-namespace:ActGenerator.ViewModel"
+    MinWidth="850"
+    MinHeight="400"
+    d:DesignHeight="400"
+    d:DesignWidth="850"
+    mc:Ignorable="d">
+
+    <UserControl.DataContext>
+        <vm:ActGeneratorViewModel />
+    </UserControl.DataContext>
+
+    <materialDesign:DialogHost CloseOnClickAway="True">
+
+        <Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <materialDesign:Card Style="{StaticResource TopFirstCard}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Список проектів" />
+
+                            <Menu Grid.Row="1">
+                                <MenuItem Header="Додати" Icon="{materialDesign:PackIcon Kind=PlusCircleOutline}" />
+                                <MenuItem Header="Видалити" Icon="{materialDesign:PackIcon Kind=SortVariantRemove}" />
+                            </Menu>
+
+                            <ListView Grid.Row="2" ItemsSource="{Binding ProjectsList, Mode=OneWay}" />
+                        </Grid>
+                    </materialDesign:Card>
+
+                    <materialDesign:Card Grid.Row="1" Style="{StaticResource BottomFirstCard}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Налаштування сум" />
+
+                            <Grid Grid.Row="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Style="{StaticResource FirstRightTextBlock}" Text="Мінімум:" />
+                                <TextBox Grid.Column="1" Style="{StaticResource LastTextBox}" />
+
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Style="{StaticResource FirstRightTextBlock}"
+                                    Text="Максимум:" />
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Style="{StaticResource LastTextBox}" />
+
+                                <CheckBox
+                                    Grid.Row="2"
+                                    Grid.ColumnSpan="2"
+                                    Content="неповторні суми"
+                                    Style="{StaticResource PlacedCheckBox}" />
+                            </Grid>
+
+                        </Grid>
+                    </materialDesign:Card>
+
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <materialDesign:Card Style="{StaticResource TopLastCard}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Список робітників" />
+
+                            <Menu Grid.Row="1">
+                                <MenuItem Header="Додати" Icon="{materialDesign:PackIcon Kind=PlusCircleOutline}" />
+                                <MenuItem Header="Видалити" Icon="{materialDesign:PackIcon Kind=SortVariantRemove}" />
+                            </Menu>
+
+                            <ListView Grid.Row="2" ItemsSource="{Binding HumanList, Mode=OneWay}">
+                                <ListView.Resources>
+                                    <CollectionViewSource x:Key="DocumentTemplatesCollection" Source="{Binding DocumentTemplates, Mode=OneWay}" />
+                                </ListView.Resources>
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn DisplayMemberBinding="{Binding FullName}" Header="ПІБ" />
+                                        <GridViewColumn Header="Сума">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBox MinWidth="75" Text="{Binding SumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Шаблон">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <ComboBox
+                                                        MinWidth="150"
+                                                        ItemsSource="{Binding Source={StaticResource DocumentTemplatesCollection}}"
+                                                        SelectedIndex="0"
+                                                        SelectedItem="{Binding Template, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </Grid>
+                    </materialDesign:Card>
+
+                    <Button
+                        Grid.Row="1"
+                        Margin="5"
+                        Content="Згенерувати"
+                        Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
+
+                </Grid>
+
+            </Grid>
+        </Grid>
+
+    </materialDesign:DialogHost>
+</UserControl>
