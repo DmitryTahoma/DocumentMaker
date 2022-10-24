@@ -78,6 +78,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Dialogs\ListSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -88,8 +92,12 @@
     </Compile>
     <Compile Include="Model\HumanDataContext.cs" />
     <Compile Include="ViewModel\ActGeneratorViewModel.cs" />
+    <Compile Include="ViewModel\Dialogs\ListSelectorViewModel.cs" />
     <Compile Include="View\ActGeneratorView.xaml.cs">
       <DependentUpon>ActGeneratorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\ListSelector.xaml.cs">
+      <DependentUpon>ListSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -124,6 +132,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Db\Db.csproj">
+      <Project>{E5DDA9A3-7F76-4B4B-84AF-A4DD3A9FFE5E}</Project>
+      <Name>Db</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Dml\Dml.csproj">
       <Project>{ac730979-6d09-406a-bfdf-e9f3f4d296e0}</Project>
       <Name>Dml</Name>
