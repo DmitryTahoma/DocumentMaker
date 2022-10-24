@@ -36,6 +36,22 @@ namespace Mvvm
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 		}
 
+		public void RemoveRange(IEnumerable<T> list)
+		{
+			if (list == null)
+				throw new ArgumentNullException("list");
+
+			bool suppressingNotifications = SuppressingNotifications;
+			SuppressingNotifications = true;
+
+			foreach (T item in list)
+			{
+				Remove(item);
+			}
+			SuppressingNotifications = suppressingNotifications;
+			UpdateCollection();
+		}
+
 		public int RemoveAll(Predicate<T> match)
 		{
 			Stack<T> removed = new Stack<T>();
