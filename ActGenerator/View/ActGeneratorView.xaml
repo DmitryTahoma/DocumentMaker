@@ -50,10 +50,18 @@
                                     Command="{Binding AddProjectCommand}"
                                     Header="Додати"
                                     Icon="{materialDesign:PackIcon Kind=PlusCircleOutline}" />
-                                <MenuItem Header="Видалити" Icon="{materialDesign:PackIcon Kind=SortVariantRemove}" />
+                                <MenuItem
+                                    Command="{Binding RemoveProjectCommand}"
+                                    CommandParameter="{Binding ElementName=ProjectsListView, Path=SelectedItems}"
+                                    Header="Видалити"
+                                    Icon="{materialDesign:PackIcon Kind=SortVariantRemove}" />
                             </Menu>
 
-                            <ListView Grid.Row="2" ItemsSource="{Binding ProjectsList, Mode=OneWay}" />
+                            <ListView
+                                x:Name="ProjectsListView"
+                                Grid.Row="2"
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding ProjectsList, Mode=OneWay}" />
                         </Grid>
                     </materialDesign:Card>
 
@@ -171,5 +179,11 @@
         </i:Interaction.Triggers>
 
     </materialDesign:DialogHost>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadFromDatabase}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
 </UserControl>

@@ -6,23 +6,21 @@ using Dml.Model.Template;
 using MaterialDesignThemes.Wpf;
 using Mvvm;
 using Mvvm.Commands;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ActGenerator.ViewModel
 {
 	class ActGeneratorViewModel
 	{
+		ActGeneratorModel model = new ActGeneratorModel();
+		List<Project> dbProjects = null;
+
 		public ActGeneratorViewModel()
 		{
 			InitCommands();
 
-			ProjectsList = new ObservableRangeCollection<string>
-			{
-				"Lost Lands 8",
-				"Tricky doors",
-				"Lost Lands Stories",
-				"Legendary Tales 3",
-			};
 			HumanList = new ObservableRangeCollection<HumanDataContext>
 			{
 				new HumanDataContext("Алєйникова Марина"),
@@ -36,7 +34,7 @@ namespace ActGenerator.ViewModel
 
 		public string DialogHostId { get; } = "ActGeneratorDialogHost";
 
-		public ObservableRangeCollection<string> ProjectsList { get; private set; } = new ObservableRangeCollection<string>();
+		public ObservableRangeCollection<Project> ProjectsList { get; private set; } = new ObservableRangeCollection<Project>();
 
 		public ObservableRangeCollection<HumanDataContext> HumanList { get; private set; } = new ObservableRangeCollection<HumanDataContext>();
 
@@ -56,6 +54,8 @@ namespace ActGenerator.ViewModel
 		{
 			AddProjectCommand = new Command(OnAddProjectCommandExecute);
 			CloseOpenedDialog = new Command(OnCloseOpenedDialogExecute);
+			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
+			RemoveProjectCommand = new Command<IList>(OnRemoveProjectCommandExecute);
 		}
 
 		public Command AddProjectCommand { get; private set; }
@@ -64,14 +64,20 @@ namespace ActGenerator.ViewModel
 			ListSelector listSelector = new ListSelector();
 			ListSelectorViewModel listSelectorViewModel = (ListSelectorViewModel)listSelector.DataContext;
 			listSelectorViewModel.ItemsDisplayMemberPath = nameof(Project.Name);
-			listSelectorViewModel.SetItems(new List<Project> 
-			{
-				new Project { Name="Project1" }, 
-				new Project { Name="Project2" }, 
-				new Project { Name="Project3" }, 
-				new Project { Name="Project4" }, 
-			});
+			List<Project> projects = new List<Project>(dbProjects.Where(x => !ProjectsList.Contains(x)));
+			projects.RemoveAll(x => ProjectsList.Contains(x));
+			listSelectorViewModel.SetItems(projects);
 			await DialogHost.Show(listSelector, DialogHostId);
+			if(listSelectorViewModel.SelectedItems != null)
+			{
+				ProjectsList.AddRange(listSelectorViewModel.SelectedItems.Cast<Project>());
+			}
+		}
+
+		public Command<IList> RemoveProjectCommand { get; private set; }
+		private void OnRemoveProjectCommandExecute(IList selectedItems)
+		{
+			ProjectsList.RemoveRange(selectedItems.Cast<Project>());
 		}
 
 		public Command CloseOpenedDialog { get; private set; }
@@ -80,6 +86,17 @@ namespace ActGenerator.ViewModel
 			if(DialogHost.IsDialogOpen(DialogHostId))
 			{
 				DialogHost.Close(DialogHostId);
+			}
+		}
+
+		public Command LoadFromDatabase { get; private set; }
+		private async void OnLoadFromDatabaseExecute()
+		{
+			if (dbProjects == null)
+			{
+				await model.ConnectDB();
+				dbProjects = await model.LoadProjects();
+				await model.DisconnectDB();
 			}
 		}
 
