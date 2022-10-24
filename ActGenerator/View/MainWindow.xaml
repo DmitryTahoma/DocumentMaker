@@ -9,8 +9,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:projectEditor="clr-namespace:ProjectEditorLib.View;assembly=ProjectEditorLib"
     Title="MainWindow"
-    Width="800"
-    Height="450"
+    Width="900"
+    Height="500"
     FontSize="15"
     mc:Ignorable="d">
     <Window.Resources>
