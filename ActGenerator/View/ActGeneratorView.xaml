@@ -78,27 +78,21 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
                                     <RowDefinition />
-                                    <RowDefinition />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition />
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Style="{StaticResource FirstRightTextBlock}" Text="Мінімум:" />
-                                <TextBox Grid.Column="1" Style="{StaticResource LastTextBox}" />
+                                <TextBox materialDesign:HintAssist.Hint="Мінімум" Style="{StaticResource FirstTextBox}" />
 
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Style="{StaticResource FirstRightTextBlock}"
-                                    Text="Максимум:" />
                                 <TextBox
-                                    Grid.Row="1"
                                     Grid.Column="1"
+                                    materialDesign:HintAssist.Hint="Максимум"
                                     Style="{StaticResource LastTextBox}" />
 
                                 <CheckBox
-                                    Grid.Row="2"
+                                    Grid.Row="1"
                                     Grid.ColumnSpan="2"
                                     Content="неповторні суми"
                                     Style="{StaticResource PlacedCheckBox}" />
@@ -171,11 +165,37 @@
                         </Grid>
                     </materialDesign:Card>
 
-                    <Button
-                        Grid.Row="1"
-                        Margin="5"
-                        Content="Згенерувати"
-                        Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
+                    <Grid Grid.Row="1">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <CheckBox Style="{StaticResource CheckBoxWithComboBox}">
+                            <StackPanel Orientation="Horizontal">
+
+                                <TextBlock Text="використовувати роботи, що вже були в актах" />
+
+                                <ComboBox SelectedIndex="0" Style="{StaticResource ComboBoxInCheckBox}">
+                                    <ComboBoxItem>тиждень</ComboBoxItem>
+                                    <ComboBoxItem>місяць</ComboBoxItem>
+                                    <ComboBoxItem>3 місяці</ComboBoxItem>
+                                    <ComboBoxItem>пів року</ComboBoxItem>
+                                    <ComboBoxItem>рік</ComboBoxItem>
+                                </ComboBox>
+
+                                <TextBlock Text="тому або раніше" />
+
+                            </StackPanel>
+                        </CheckBox>
+
+                        <Button
+                            Grid.Row="1"
+                            Content="Згенерувати"
+                            Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
+
+                    </Grid>
 
                 </Grid>
 

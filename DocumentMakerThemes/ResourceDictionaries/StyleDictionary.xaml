@@ -164,6 +164,21 @@
                 <Setter Property="Margin" Value="10" />
             </Style>
 
+            <Style
+                x:Key="CheckBoxWithComboBox"
+                BasedOn="{StaticResource MaterialDesignCheckBox}"
+                TargetType="CheckBox">
+                <Setter Property="Margin" Value="10" />
+            </Style>
+
+            <Style
+                x:Key="ComboBoxInCheckBox"
+                BasedOn="{StaticResource MaterialDesignComboBox}"
+                TargetType="ComboBox">
+                <Setter Property="Margin" Value="5,0" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
+
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
