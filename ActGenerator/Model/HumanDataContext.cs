@@ -3,7 +3,7 @@ using Dml.Model.Template;
 
 namespace ActGenerator.Model
 {
-	class HumanDataContext
+	public class HumanDataContext
 	{
 		public HumanDataContext(Human context)
 		{

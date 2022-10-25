@@ -7,13 +7,15 @@ using Dml.Model.Template;
 using MaterialDesignThemes.Wpf;
 using Mvvm;
 using Mvvm.Commands;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace ActGenerator.ViewModel
 {
-	class ActGeneratorViewModel
+	class ActGeneratorViewModel : DependencyObject
 	{
 		ActGeneratorModel model = new ActGeneratorModel();
 		List<Project> dbProjects = null;
@@ -21,6 +23,9 @@ namespace ActGenerator.ViewModel
 
 		ListSelector listSelector;
 		ListSelectorViewModel listSelectorViewModel;
+
+		List<int> savedProjectList = null;
+		List<ActGeneratorSession.HumanDataContextSave> savedHumanList = null;
 
 		public ActGeneratorViewModel()
 		{
@@ -45,6 +50,50 @@ namespace ActGenerator.ViewModel
 			new DocumentTemplate("Художник", DocumentTemplateType.Painter),
 			new DocumentTemplate("Моделлер", DocumentTemplateType.Modeller),
 		};
+
+		public ObservableRangeCollection<DateTimeItem> DateTimeItems { get; private set; } = new ObservableRangeCollection<DateTimeItem>()
+		{
+			new DateTimeItem{ Text = "тиждень", DateTime = new DateTime(1, 1, 8) },
+			new DateTimeItem{ Text = "місяць", DateTime = new DateTime(1, 2, 1) },
+			new DateTimeItem{ Text = "3 місяці", DateTime = new DateTime(1, 4, 1) },
+			new DateTimeItem{ Text = "пів року", DateTime = new DateTime(1, 7, 1) },
+			new DateTimeItem{ Text = "рік", DateTime = new DateTime(2, 1, 1) },
+		};
+
+		public string MinSumText
+		{
+			get { return (string)GetValue(MinSumTextProperty); }
+			set { SetValue(MinSumTextProperty, value); }
+		}
+		public static readonly DependencyProperty MinSumTextProperty = DependencyProperty.Register(nameof(MinSumText), typeof(string), typeof(ActGeneratorViewModel));
+
+		public string MaxSumText
+		{
+			get { return (string)GetValue(MaxSumTextProperty); }
+			set { SetValue(MaxSumTextProperty, value); }
+		}
+		public static readonly DependencyProperty MaxSumTextProperty = DependencyProperty.Register(nameof(MaxSumText), typeof(string), typeof(ActGeneratorViewModel));
+
+		public bool IsUniqueNumbers
+		{
+			get { return (bool)GetValue(IsUniqueNumbersProperty); }
+			set { SetValue(IsUniqueNumbersProperty, value); }
+		}
+		public static readonly DependencyProperty IsUniqueNumbersProperty = DependencyProperty.Register(nameof(IsUniqueNumbers), typeof(bool), typeof(ActGeneratorViewModel));
+
+		public bool CanUseOldWorks
+		{
+			get { return (bool)GetValue(CanUseOldWorksProperty); }
+			set { SetValue(CanUseOldWorksProperty, value); }
+		}
+		public static readonly DependencyProperty CanUseOldWorksProperty = DependencyProperty.Register(nameof(CanUseOldWorks), typeof(bool), typeof(ActGeneratorViewModel));
+
+		public DateTimeItem SelectedDateTimeItem
+		{
+			get { return (DateTimeItem)GetValue(SelectedDateTimeItemProperty); }
+			set { SetValue(SelectedDateTimeItemProperty, value); }
+		}
+		public static readonly DependencyProperty SelectedDateTimeItemProperty = DependencyProperty.Register(nameof(SelectedDateTimeItem), typeof(DateTimeItem), typeof(ActGeneratorViewModel));
 
 		#endregion
 
@@ -98,6 +147,23 @@ namespace ActGenerator.ViewModel
 				dbProjects = await model.LoadProjects();
 				dbHumans = await model.LoadHumen();
 				await model.DisconnectDB();
+
+				if(savedProjectList != null)
+				{
+					ProjectsList.AddRange(dbProjects.Where(x => savedProjectList.Contains(x.Id)));
+				}
+				if (savedHumanList != null)
+				{
+					HumanList.AddRange(savedHumanList
+						.Select(x => 
+							new HumanDataContext(dbHumans
+								.FirstOrDefault(y => y.Id == x.ContextId))
+							{
+								SumText = x.SumText,
+								Template = DocumentTemplates
+									.FirstOrDefault(y => y.Type == x.TemplateType)
+							}));
+				}
 			}
 		}
 
@@ -119,6 +185,22 @@ namespace ActGenerator.ViewModel
 		private void OnRemoveHumanCommandExecute(IList selectedItems)
 		{
 			HumanList.RemoveRange(selectedItems.Cast<HumanDataContext>());
+		}
+
+		#endregion
+
+		#region Methods
+
+		public void LoadFromSession(ActGeneratorSession actGeneratorSession)
+		{
+			savedProjectList = actGeneratorSession.ProjectsList;
+			savedHumanList = actGeneratorSession.HumanList;
+			MinSumText = actGeneratorSession.MinSumText;
+			MaxSumText = actGeneratorSession.MaxSumText;
+			IsUniqueNumbers = actGeneratorSession.IsUniqueNumbers;
+			CanUseOldWorks = actGeneratorSession.CanUseOldWorks;
+			SelectedDateTimeItem = DateTimeItems?.FirstOrDefault(x => x.DateTime == actGeneratorSession.SelectedDateTimeItem?.DateTime)
+				?? DateTimeItems?.FirstOrDefault();
 		}
 
 		#endregion

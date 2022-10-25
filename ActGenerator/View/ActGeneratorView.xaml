@@ -84,17 +84,22 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
 
-                                <TextBox materialDesign:HintAssist.Hint="Мінімум" Style="{StaticResource FirstTextBox}" />
+                                <TextBox
+                                    materialDesign:HintAssist.Hint="Мінімум"
+                                    Style="{StaticResource FirstTextBox}"
+                                    Text="{Binding MinSumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                                 <TextBox
                                     Grid.Column="1"
                                     materialDesign:HintAssist.Hint="Максимум"
-                                    Style="{StaticResource LastTextBox}" />
+                                    Style="{StaticResource LastTextBox}"
+                                    Text="{Binding MaxSumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                                 <CheckBox
                                     Grid.Row="1"
                                     Grid.ColumnSpan="2"
                                     Content="неповторні суми"
+                                    IsChecked="{Binding IsUniqueNumbers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Style="{StaticResource PlacedCheckBox}" />
                             </Grid>
 
@@ -172,18 +177,17 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
 
-                        <CheckBox Style="{StaticResource CheckBoxWithComboBox}">
+                        <CheckBox IsChecked="{Binding CanUseOldWorks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CheckBoxWithComboBox}">
                             <StackPanel Orientation="Horizontal">
 
                                 <TextBlock Text="використовувати роботи, що вже були в актах" />
 
-                                <ComboBox SelectedIndex="0" Style="{StaticResource ComboBoxInCheckBox}">
-                                    <ComboBoxItem>тиждень</ComboBoxItem>
-                                    <ComboBoxItem>місяць</ComboBoxItem>
-                                    <ComboBoxItem>3 місяці</ComboBoxItem>
-                                    <ComboBoxItem>пів року</ComboBoxItem>
-                                    <ComboBoxItem>рік</ComboBoxItem>
-                                </ComboBox>
+                                <ComboBox
+                                    DisplayMemberPath="Text"
+                                    ItemsSource="{Binding DateTimeItems, Mode=OneWay}"
+                                    SelectedIndex="0"
+                                    SelectedItem="{Binding SelectedDateTimeItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Style="{StaticResource ComboBoxInCheckBox}" />
 
                                 <TextBlock Text="тому або раніше" />
 

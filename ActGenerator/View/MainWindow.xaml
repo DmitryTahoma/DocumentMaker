@@ -30,7 +30,7 @@
     <materialDesign:Card>
         <TabControl Margin="0" materialDesign:ColorZoneAssist.Mode="PrimaryMid">
             <TabItem Header="ГЕНЕРАЦІЯ">
-                <local:ActGeneratorView />
+                <local:ActGeneratorView x:Name="ActGeneratorControl" />
             </TabItem>
             <TabItem Header="ПРОЕКТИ">
                 <projectEditor:ProjectEdit />
@@ -52,6 +52,7 @@
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding BindActGenerator}" CommandParameter="{Binding ElementName=ActGeneratorControl, Path=DataContext}" />
             <i:InvokeCommandAction Command="{Binding LoadSession}" CommandParameter="{Binding ElementName=WindowView}" />
         </i:EventTrigger>
         <i:EventTrigger EventName="Closed">

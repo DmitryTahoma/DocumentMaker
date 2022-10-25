@@ -1,6 +1,8 @@
 ﻿using ActGenerator.Model;
 using Dml.Controller.Validation;
 using Mvvm.Commands;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace ActGenerator.ViewModel
@@ -8,6 +10,7 @@ namespace ActGenerator.ViewModel
 	class MainWindowViewModel
 	{
 		ActGeneratorSession model = new ActGeneratorSession();
+		ActGeneratorViewModel actGeneratorViewModel = null;
 
 		public MainWindowViewModel()
 		{
@@ -20,6 +23,7 @@ namespace ActGenerator.ViewModel
 		{
 			LoadSession = new Command<MainWindow>(OnLoadSessionExecute);
 			SaveSession = new Command<MainWindow>(OnSaveSessionExecute);
+			BindActGenerator = new Command<ActGeneratorViewModel>(OnBindActGeneratorExecute);
 		}
 
 		public Command<MainWindow> LoadSession { get; private set; }
@@ -43,6 +47,8 @@ namespace ActGenerator.ViewModel
 			window.WindowState = model.WindowState;
 			window.Height = model.WindowHeight;
 			window.Width = model.WindowWidth;
+
+			actGeneratorViewModel.LoadFromSession(model);
 		}
 
 		public Command<MainWindow> SaveSession { get; private set; }
@@ -54,7 +60,21 @@ namespace ActGenerator.ViewModel
 			model.WindowWidth = window.Width;
 			model.WindowState = window.WindowState == WindowState.Minimized ? WindowState.Normal : window.WindowState;
 
+			model.ProjectsList = new List<int>(actGeneratorViewModel.ProjectsList.Select(x => x.Id));
+			model.HumanList = new List<ActGeneratorSession.HumanDataContextSave>(actGeneratorViewModel.HumanList.Select(x => new ActGeneratorSession.HumanDataContextSave(x)));
+			model.MinSumText = actGeneratorViewModel.MinSumText;
+			model.MaxSumText = actGeneratorViewModel.MaxSumText;
+			model.IsUniqueNumbers = actGeneratorViewModel.IsUniqueNumbers;
+			model.CanUseOldWorks = actGeneratorViewModel.CanUseOldWorks;
+			model.SelectedDateTimeItem = actGeneratorViewModel.SelectedDateTimeItem;
+
 			model.Save();
+		}
+
+		public Command<ActGeneratorViewModel> BindActGenerator { get; private set; }
+		private void OnBindActGeneratorExecute(ActGeneratorViewModel actGenerator)
+		{
+			actGeneratorViewModel = actGenerator;
 		}
 
 		#endregion

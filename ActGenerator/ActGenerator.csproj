@@ -93,6 +93,8 @@
     <Compile Include="Model\ActGeneratorModel.cs" />
     <Compile Include="Model\ActGeneratorSession.cs" />
     <Compile Include="Model\HumanDataContext.cs" />
+    <Compile Include="Model\HumanDataContextSave.cs" />
+    <Compile Include="Model\DateTimeItem.cs" />
     <Compile Include="ViewModel\ActGeneratorViewModel.cs" />
     <Compile Include="ViewModel\Dialogs\ListSelectorViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />

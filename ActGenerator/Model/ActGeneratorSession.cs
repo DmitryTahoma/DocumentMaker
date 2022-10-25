@@ -1,11 +1,12 @@
 ﻿using Dml;
-using Dml.Model.Session;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using System.Xml.Serialization;
 
 namespace ActGenerator.Model
 {
-	class ActGeneratorSession
+	public partial class ActGeneratorSession
 	{
 		public static string SaveFileName => "session_act_generator.xml";
 		public static string CurrentSaveFileName => Path.Combine(PathHelper.ExecutingAssemblyPath, SaveFileName);
@@ -16,20 +17,48 @@ namespace ActGenerator.Model
 		public double WindowWidth { get; set; } = 900;
 		public WindowState WindowState { get; set; } = WindowState.Normal;
 
+		public List<int> ProjectsList { get; set; } = null;
+		public List<HumanDataContextSave> HumanList { get; set; } = null;
+		public string MinSumText { get; set; } = "2500";
+		public string MaxSumText { get; set; } = "1200";
+		public bool IsUniqueNumbers { get; set; } = true;
+		public bool CanUseOldWorks { get; set; } = true;
+		public DateTimeItem SelectedDateTimeItem { get; set; } = null;
+
 		public void Load()
 		{
-			XmlLoader loader = new XmlLoader();
-			if(loader.TryLoad(CurrentSaveFileName))
+			if (File.Exists(CurrentSaveFileName))
 			{
-				loader.SetLoadedProperties(this);
+				XmlSerializer loader = new XmlSerializer(typeof(ActGeneratorSession));
+				using (FileStream fstream = new FileStream(CurrentSaveFileName, FileMode.Open))
+				{
+					if(loader.Deserialize(fstream) is ActGeneratorSession loadedObj)
+					{
+						WindowTop = loadedObj.WindowTop;
+						WindowLeft = loadedObj.WindowLeft;
+						WindowHeight = loadedObj.WindowHeight;
+						WindowWidth = loadedObj.WindowWidth;
+						WindowState = loadedObj.WindowState;
+
+						ProjectsList = loadedObj.ProjectsList;
+						HumanList = loadedObj.HumanList;
+						MinSumText = loadedObj.MinSumText;
+						MaxSumText = loadedObj.MaxSumText;
+						IsUniqueNumbers = loadedObj.IsUniqueNumbers;
+						CanUseOldWorks = loadedObj.CanUseOldWorks;
+						SelectedDateTimeItem = loadedObj.SelectedDateTimeItem;
+					}
+				}
 			}
 		}
 
 		public void Save()
 		{
-			XmlSaver saver = new XmlSaver();
-			saver.AppendAllProperties(this);
-			saver.Save(Path.Combine(CurrentSaveFileName));
+			XmlSerializer saver = new XmlSerializer(typeof(ActGeneratorSession));
+			using(FileStream fstream = new FileStream(CurrentSaveFileName, FileMode.Create))
+			{
+				saver.Serialize(fstream, this);
+			}
 		}
 	}
 }
