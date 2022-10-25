@@ -126,11 +126,21 @@
                             <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Список робітників" />
 
                             <Menu Grid.Row="1">
-                                <MenuItem Header="Додати" Icon="{materialDesign:PackIcon Kind=PlusCircleOutline}" />
-                                <MenuItem Header="Видалити" Icon="{materialDesign:PackIcon Kind=SortVariantRemove}" />
+                                <MenuItem
+                                    Command="{Binding AddHumanCommand}"
+                                    Header="Додати"
+                                    Icon="{materialDesign:PackIcon Kind=PlusCircleOutline}" />
+                                <MenuItem
+                                    Command="{Binding RemoveHumanCommand}"
+                                    CommandParameter="{Binding ElementName=HumenListView, Path=SelectedItems}"
+                                    Header="Видалити"
+                                    Icon="{materialDesign:PackIcon Kind=SortVariantRemove}" />
                             </Menu>
 
-                            <ListView Grid.Row="2" ItemsSource="{Binding HumanList, Mode=OneWay}">
+                            <ListView
+                                x:Name="HumenListView"
+                                Grid.Row="2"
+                                ItemsSource="{Binding HumanList, Mode=OneWay}">
                                 <ListView.Resources>
                                     <CollectionViewSource x:Key="DocumentTemplatesCollection" Source="{Binding DocumentTemplates, Mode=OneWay}" />
                                 </ListView.Resources>

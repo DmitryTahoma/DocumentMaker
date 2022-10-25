@@ -2,6 +2,7 @@
 using ActGenerator.View.Dialogs;
 using ActGenerator.ViewModel.Dialogs;
 using Db.Context.BackPart;
+using Db.Context.HumanPart;
 using Dml.Model.Template;
 using MaterialDesignThemes.Wpf;
 using Mvvm;
@@ -16,18 +17,17 @@ namespace ActGenerator.ViewModel
 	{
 		ActGeneratorModel model = new ActGeneratorModel();
 		List<Project> dbProjects = null;
+		List<Human> dbHumans = null;
+
+		ListSelector listSelector;
+		ListSelectorViewModel listSelectorViewModel;
 
 		public ActGeneratorViewModel()
 		{
 			InitCommands();
 
-			HumanList = new ObservableRangeCollection<HumanDataContext>
-			{
-				new HumanDataContext("Алєйникова Марина"),
-				new HumanDataContext("Баєв Олександр"),
-				new HumanDataContext("Байдуж Максим"),
-				new HumanDataContext("Байдуж Марина"),
-			};
+			listSelector = new ListSelector();
+			listSelectorViewModel = (ListSelectorViewModel)listSelector.DataContext;
 		}
 
 		#region Properties
@@ -56,13 +56,13 @@ namespace ActGenerator.ViewModel
 			CloseOpenedDialog = new Command(OnCloseOpenedDialogExecute);
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
 			RemoveProjectCommand = new Command<IList>(OnRemoveProjectCommandExecute);
+			AddHumanCommand = new Command(OnAddHumanCommandExecute);
+			RemoveHumanCommand = new Command<IList>(OnRemoveHumanCommandExecute);
 		}
 
 		public Command AddProjectCommand { get; private set; }
 		private async void OnAddProjectCommandExecute()
 		{
-			ListSelector listSelector = new ListSelector();
-			ListSelectorViewModel listSelectorViewModel = (ListSelectorViewModel)listSelector.DataContext;
 			listSelectorViewModel.ItemsDisplayMemberPath = nameof(Project.Name);
 			List<Project> projects = new List<Project>(dbProjects.Where(x => !ProjectsList.Contains(x)));
 			projects.RemoveAll(x => ProjectsList.Contains(x));
@@ -96,8 +96,29 @@ namespace ActGenerator.ViewModel
 			{
 				await model.ConnectDB();
 				dbProjects = await model.LoadProjects();
+				dbHumans = await model.LoadHumen();
 				await model.DisconnectDB();
 			}
+		}
+
+		public Command AddHumanCommand { get; private set; }
+		private async void OnAddHumanCommandExecute()
+		{
+			listSelectorViewModel.ItemsDisplayMemberPath = nameof(Human.FullName);
+			List<Human> humen = new List<Human>(dbHumans.Where(x => !HumanList.Select(y => y.Context).Contains(x)));
+			humen.RemoveAll(x => HumanList.Select(y => y.Context).Contains(x));
+			listSelectorViewModel.SetItems(humen);
+			await DialogHost.Show(listSelector, DialogHostId);
+			if(listSelectorViewModel.SelectedItems != null)
+			{
+				HumanList.AddRange(listSelectorViewModel.SelectedItems.Cast<Human>().Select(x => new HumanDataContext(x)));
+			}
+		}
+
+		public Command<IList> RemoveHumanCommand { get; private set; }
+		private void OnRemoveHumanCommandExecute(IList selectedItems)
+		{
+			HumanList.RemoveRange(selectedItems.Cast<HumanDataContext>());
 		}
 
 		#endregion
