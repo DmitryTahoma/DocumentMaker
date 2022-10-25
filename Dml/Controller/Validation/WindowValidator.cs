@@ -23,5 +23,11 @@ namespace Dml.Controller.Validation
 				window.Left = SystemParameters.VirtualScreenLeft;
 			}
 		}
+
+		public static void MoveToPrimaryScreenCenterPosition(Window window)
+		{
+			window.Top = SystemParameters.PrimaryScreenHeight / 2 - window.Height / 2;
+			window.Left = SystemParameters.PrimaryScreenWidth / 2 - window.Width / 2;
+		}
 	}
 }
