@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace ActGenerator.ViewModel.Dialogs
 {
@@ -30,6 +31,8 @@ namespace ActGenerator.ViewModel.Dialogs
 
 		public IList SelectedItems { get; private set; } = null;
 
+		public bool IsAddingPressed { get; private set; } = false;
+
 		#endregion
 
 		#region Commands
@@ -37,6 +40,7 @@ namespace ActGenerator.ViewModel.Dialogs
 		private void InitCommands()
 		{
 			AddCommand = new Command<IList>(OnAddCommandExecute);
+			UnselectAllObjectsList = new Command<ListView>(OnUnselectAllObjectsListExecute);
 		}
 
 		public Command<IList> AddCommand { get; private set; }
@@ -44,6 +48,14 @@ namespace ActGenerator.ViewModel.Dialogs
 		{
 			DialogHost.CloseDialogCommand.Execute(null, null);
 			SelectedItems = selectedItems;
+			IsAddingPressed = true;
+		}
+
+		public Command<ListView> UnselectAllObjectsList { get; private set; }
+		private void OnUnselectAllObjectsListExecute(ListView listView)
+		{
+			listView.UnselectAll();
+			IsAddingPressed = false;
 		}
 
 		#endregion

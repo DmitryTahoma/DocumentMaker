@@ -68,7 +68,7 @@ namespace ActGenerator.ViewModel
 			projects.RemoveAll(x => ProjectsList.Contains(x));
 			listSelectorViewModel.SetItems(projects);
 			await DialogHost.Show(listSelector, DialogHostId);
-			if(listSelectorViewModel.SelectedItems != null)
+			if(listSelectorViewModel.IsAddingPressed && listSelectorViewModel.SelectedItems != null)
 			{
 				ProjectsList.AddRange(listSelectorViewModel.SelectedItems.Cast<Project>());
 			}
@@ -109,7 +109,7 @@ namespace ActGenerator.ViewModel
 			humen.RemoveAll(x => HumanList.Select(y => y.Context).Contains(x));
 			listSelectorViewModel.SetItems(humen);
 			await DialogHost.Show(listSelector, DialogHostId);
-			if(listSelectorViewModel.SelectedItems != null)
+			if(listSelectorViewModel.IsAddingPressed && listSelectorViewModel.SelectedItems != null)
 			{
 				HumanList.AddRange(listSelectorViewModel.SelectedItems.Cast<Human>().Select(x => new HumanDataContext(x)));
 			}
