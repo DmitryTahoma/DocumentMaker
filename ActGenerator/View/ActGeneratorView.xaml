@@ -4,10 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:local="clr-namespace:ActGenerator.View"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:vm="clr-namespace:ActGenerator.ViewModel"
     MinWidth="850"
     MinHeight="400"
@@ -16,7 +14,7 @@
     mc:Ignorable="d">
 
     <UserControl.DataContext>
-        <vm:ActGeneratorViewModel />
+        <vm:ActGeneratorViewModel x:Name="ViewModel" />
     </UserControl.DataContext>
 
     <materialDesign:DialogHost CloseOnClickAway="True" Identifier="{Binding DialogHostId}">
@@ -140,9 +138,6 @@
                                 x:Name="HumenListView"
                                 Grid.Row="2"
                                 ItemsSource="{Binding HumanList, Mode=OneWay}">
-                                <ListView.Resources>
-                                    <CollectionViewSource x:Key="DocumentTemplatesCollection" Source="{Binding DocumentTemplates, Mode=OneWay}" />
-                                </ListView.Resources>
                                 <ListView.View>
                                     <GridView>
                                         <GridViewColumn DisplayMemberBinding="{Binding FullName}" Header="ПІБ" />
@@ -158,8 +153,7 @@
                                                 <DataTemplate>
                                                     <ComboBox
                                                         MinWidth="150"
-                                                        ItemsSource="{Binding Source={StaticResource DocumentTemplatesCollection}}"
-                                                        SelectedIndex="0"
+                                                        ItemsSource="{Binding DocumentTemplates, Mode=OneWay, ElementName=ViewModel}"
                                                         SelectedItem="{Binding Template, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
