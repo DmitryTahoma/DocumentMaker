@@ -29,10 +29,11 @@ namespace ProjectEditorLib.ViewModel
 			DeleteCommand = new Command<AlternativeProjectNameView>(OnDeleteCommandExecute);
 		}
 
+		public Command<AlternativeProjectNameView> DeleteAltProjectName { get; set; } = null;
 		public Command<AlternativeProjectNameView> DeleteCommand { get; private set; }
 		private void OnDeleteCommandExecute(AlternativeProjectNameView view)
 		{
-
+			DeleteAltProjectName.Execute(view);
 		}
 
 		#endregion

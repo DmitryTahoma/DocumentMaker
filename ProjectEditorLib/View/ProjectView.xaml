@@ -67,19 +67,14 @@
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Vertical">
-
-                    <local:AlternativeProjectNameView />
-                    <local:AlternativeProjectNameView />
-                    <local:AlternativeProjectNameView />
-
-                </StackPanel>
+                <StackPanel x:Name="AltProjectNamesStackPanel" Orientation="Vertical" />
 
                 <Menu Grid.Row="1">
                     <MenuItem
                         Width="60"
                         Padding="19,0,0,0"
                         HorizontalAlignment="Center"
+                        Command="{Binding AddAltProjectName}"
                         ToolTip="Додати">
                         <MenuItem.Header>
                             <materialDesign:PackIcon
@@ -96,5 +91,11 @@
         </ScrollViewer>
 
     </Grid>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding BindAltProjectNamesCollection}" CommandParameter="{Binding ElementName=AltProjectNamesStackPanel, Path=Children}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
 </UserControl>
