@@ -8,6 +8,8 @@ namespace ProjectEditorLib.ViewModel
 {
 	public class AlternativeProjectNameViewModel : BaseDbObjectViewModel, IDbObjectViewModel
 	{
+		int model = 0;
+
 		public AlternativeProjectNameViewModel() : base() { }
 
 		#region Properties
@@ -46,6 +48,7 @@ namespace ProjectEditorLib.ViewModel
 			if(dbObject is AlternativeProjectName alternativeName)
 			{
 				AltProjectName = alternativeName.Name;
+				model = alternativeName.Id;
 			}
 			else
 			{
@@ -56,6 +59,11 @@ namespace ProjectEditorLib.ViewModel
 		public override IDbObject UpdateContext(IDbObject dbObject)
 		{
 			throw new System.NotImplementedException();
+		}
+
+		public int GetModel()
+		{
+			return model;
 		}
 
 		#endregion

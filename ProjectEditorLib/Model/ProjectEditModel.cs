@@ -75,6 +75,30 @@ namespace ProjectEditorLib.Model
 			{
 				Project dbProject = db.Projects.First(x => x.Id == project.Id);
 				dbProject.Set(project);
+
+				List<AlternativeProjectName> dbAltNames = db.AlternativeProjectNames.Where(x => x.ProjectId == project.Id).ToList();
+				List<AlternativeProjectName> altNamesToRemove = dbAltNames.ToList();
+				foreach(AlternativeProjectName projName in dbAltNames)
+				{
+					if(project.AlternativeNames.FirstOrDefault(x => x.Id == projName.Id) != null)
+					{
+						altNamesToRemove.Remove(projName);
+					}
+				}
+				db.AlternativeProjectNames.RemoveRange(altNamesToRemove);
+
+				foreach (AlternativeProjectName projName in project.AlternativeNames)
+				{
+					if (projName.Id == 0)
+					{
+						db.AlternativeProjectNames.Add(projName);
+					}
+					else
+					{
+						db.AlternativeProjectNames.FirstOrDefault(x => x.Id == projName.Id).Set(projName);
+					}
+				}
+
 				db.SaveChanges();
 			});
 		}

@@ -286,6 +286,7 @@ namespace ProjectEditorLib.ViewModel
 				{
 					SelectedEditProject = null;
 					SelectedEditProject = (Project)nodeModel.Context;
+					SelectedOptionsViewModel.SetFromContext(nodeModel.Context);
 					ProjectList.UpdateCollection();
 				}
 			}

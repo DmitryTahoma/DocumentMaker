@@ -1,4 +1,6 @@
-﻿namespace Db.Context.BackPart
+﻿using System;
+
+namespace Db.Context.BackPart
 {
 	public class AlternativeProjectName : IDbObject
 	{
@@ -7,9 +9,21 @@
 		public Project Project { get; set; }
 		public string Name { get; set; }
 
+		public void Set(AlternativeProjectName obj)
+		{
+			Name = obj.Name;
+			if(obj.ProjectId != null)
+			{
+				ProjectId = obj.ProjectId;
+			}
+		}
+
 		public void Set(IDbObject other)
 		{
-			throw new System.NotImplementedException();
+			if (other is AlternativeProjectName obj)
+				Set(obj);
+			else
+				throw new InvalidOperationException();
 		}
 	}
 }
