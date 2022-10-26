@@ -1,4 +1,5 @@
 ﻿using Db.Context;
+using Db.Context.BackPart;
 using Mvvm.Commands;
 using ProjectEditorLib.View;
 using System.Windows;
@@ -42,7 +43,14 @@ namespace ProjectEditorLib.ViewModel
 
 		public override void SetFromContext(IDbObject dbObject)
 		{
-			throw new System.NotImplementedException();
+			if(dbObject is AlternativeProjectName alternativeName)
+			{
+				AltProjectName = alternativeName.Name;
+			}
+			else
+			{
+				AltProjectName = string.Empty;
+			}
 		}
 
 		public override IDbObject UpdateContext(IDbObject dbObject)

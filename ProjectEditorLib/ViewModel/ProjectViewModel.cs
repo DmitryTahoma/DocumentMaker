@@ -44,10 +44,7 @@ namespace ProjectEditorLib.ViewModel
 		public Command AddAltProjectName { get; private set; }
 		private void OnAddAltProjectNameExecute()
 		{
-			AlternativeProjectNameView altProjectName = new AlternativeProjectNameView();
-			AlternativeProjectNameViewModel altProjectNameViewModel = (AlternativeProjectNameViewModel)altProjectName.DataContext;
-			altProjectNameViewModel.DeleteAltProjectName = DeleteAltProjectName;
-			projectNamesCollection.Add(altProjectName);
+			AddAlternativeProjectName();
 		}
 
 		public Command<AlternativeProjectNameView> DeleteAltProjectName { get; private set; }
@@ -65,6 +62,15 @@ namespace ProjectEditorLib.ViewModel
 			if(dbObject is Project project)
 			{
 				ProjectName = project.Name;
+
+				projectNamesCollection.Clear();
+				if (project.AlternativeNames != null)
+				{
+					foreach(AlternativeProjectName alternativeName in project.AlternativeNames)
+					{
+						AddAlternativeProjectName(alternativeName);
+					}
+				}
 			}
 			else
 			{
@@ -92,6 +98,18 @@ namespace ProjectEditorLib.ViewModel
 			}
 
 			return dbObject;
+		}
+
+		private void AddAlternativeProjectName(AlternativeProjectName context = null)
+		{
+			AlternativeProjectNameView altProjectName = new AlternativeProjectNameView();
+			AlternativeProjectNameViewModel altProjectNameViewModel = (AlternativeProjectNameViewModel)altProjectName.DataContext;
+			altProjectNameViewModel.DeleteAltProjectName = DeleteAltProjectName;
+			if(context != null)
+			{
+				altProjectNameViewModel.SetFromContext(context);
+			}
+			projectNamesCollection.Add(altProjectName);
 		}
 
 		#endregion

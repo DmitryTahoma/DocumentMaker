@@ -160,6 +160,7 @@ namespace ProjectEditorLib.Model
 			{
 				Project dbProject = db.Projects.First(x => x.Id == project.Id);
 				project.Episodes = new List<Episode>(db.Episodes.Where(x => x.ProjectId == project.Id));
+				project.AlternativeNames = new List<AlternativeProjectName>(db.AlternativeProjectNames.Where(x => x.ProjectId == project.Id));
 				foreach(Episode episode in project.Episodes)
 				{
 					List<Back> backs = new List<Back>(db.Backs.Where(x => x.EpisodeId == episode.Id && x.BaseBackId == null));
