@@ -24,7 +24,7 @@ namespace ProjectEditorLib.ViewModel
 
 		#region Commands
 
-		protected void InitCommands()
+		protected virtual void InitCommands()
 		{
 			ChangesMade = new Command(OnChangesMadeExecute);
 		}

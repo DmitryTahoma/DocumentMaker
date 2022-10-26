@@ -85,6 +85,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ViewModel\AlternativeProjectNameViewModel.cs" />
     <Compile Include="ViewModel\BackViewModel.cs" />
     <Compile Include="ViewModel\BaseDbObjectViewModel.cs" />
     <Compile Include="ViewModel\CraftViewModel.cs" />
@@ -97,6 +98,9 @@
     <Compile Include="ViewModel\ProjectViewModel.cs" />
     <Compile Include="ViewModel\RegionsViewModel.cs" />
     <Compile Include="ViewModel\TreeItemHeaderViewModel.cs" />
+    <Compile Include="View\AlternativeProjectNameView.xaml.cs">
+      <DependentUpon>AlternativeProjectNameView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\BackView.xaml.cs">
       <DependentUpon>BackView.xaml</DependentUpon>
     </Compile>
@@ -154,6 +158,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Page Include="View\AlternativeProjectNameView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\BackView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
