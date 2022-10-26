@@ -11,7 +11,7 @@ namespace ActGenerator.Model
 			public HumanDataContextSave(HumanDataContext humanDataContext)
 			{
 				SumText = humanDataContext.SumText;
-				TemplateType = humanDataContext.Template.Type;
+				TemplateType = humanDataContext.Template?.Type ?? DocumentTemplateType.Empty;
 				ContextId = humanDataContext.Context?.Id ?? -1;
 			}
 
