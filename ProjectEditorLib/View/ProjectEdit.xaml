@@ -190,7 +190,7 @@
                 x:Name="OptionsView"
                 Grid.Row="1"
                 Grid.Column="2">
-                <local:ProjectView />
+                <local:ProjectView x:Name="ProjectViewControl" />
                 <local:EpisodeView />
                 <local:BackView />
                 <local:CraftView />
@@ -200,6 +200,8 @@
                 <local:RegionsView />
             </Grid>
         </Grid>
+
+        <materialDesign:Snackbar x:Name="ProjectEditSnackbar" MessageQueue="{materialDesign:MessageQueue}" />
     </Grid>
 
     <i:Interaction.Triggers>
@@ -208,6 +210,9 @@
             <i:InvokeCommandAction Command="{Binding BindDependedObjCreateProject}" CommandParameter="{Binding ElementName=CreationProjectNameTextBox}" />
             <i:InvokeCommandAction Command="{Binding BindDependedObjEditProject}" CommandParameter="{Binding ElementName=EditProjectComboBox}" />
             <i:InvokeCommandAction Command="{Binding LoadFromDatabase}" />
+
+            <i:InvokeCommandAction Command="{Binding BindSnackbar}" CommandParameter="{Binding ElementName=ProjectEditSnackbar}" />
+            <i:InvokeCommandAction Command="{Binding SendSnackbar}" CommandParameter="{Binding ElementName=ProjectViewControl}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 

@@ -1,5 +1,7 @@
 ﻿using Db.Context;
 using Db.Context.BackPart;
+using DocumentMakerThemes.ViewModel;
+using MaterialDesignThemes.Wpf;
 using Mvvm;
 using Mvvm.Commands;
 using ProjectEditorLib.Model;
@@ -7,7 +9,6 @@ using ProjectEditorLib.View;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,6 +27,8 @@ namespace ProjectEditorLib.ViewModel
 
 		DependencyObject dependedObjCreateProject = null;
 		DependencyObject dependedObjEditProject = null;
+
+		Snackbar snackbar = null;
 
 		public ProjectEditViewModel()
 		{
@@ -113,6 +116,8 @@ namespace ProjectEditorLib.ViewModel
 			BackToProjectSelecting = new Command(OnBackToProjectSelectingExecute);
 			CollapseAllTree = new Command(OnCollapseAllTreeExecute);
 			Save = new Command(OnSaveExecute, CanExecuteSave);
+			BindSnackbar = new Command<Snackbar>(OnBindSnackbarExecute);
+			SendSnackbar = new Command<FrameworkElement>(OnSendSnackbarExecute);
 		}
 
 		public Command<KeyValuePair<TreeViewItem, ProjectNodeType>> AddTreeViewItemCommand { get; private set; }
@@ -289,6 +294,21 @@ namespace ProjectEditorLib.ViewModel
 					SelectedOptionsViewModel.SetFromContext(nodeModel.Context);
 					ProjectList.UpdateCollection();
 				}
+			}
+		}
+
+		public Command<Snackbar> BindSnackbar { get; private set; }
+		private void OnBindSnackbarExecute(Snackbar snackbar)
+		{
+			this.snackbar = snackbar;
+		}
+
+		public Command<FrameworkElement> SendSnackbar { get; private set; }
+		private void OnSendSnackbarExecute(FrameworkElement target)
+		{
+			if(target.DataContext is ISnackbarRequired targetObj)
+			{
+				targetObj.SetSnackbar(snackbar);
 			}
 		}
 

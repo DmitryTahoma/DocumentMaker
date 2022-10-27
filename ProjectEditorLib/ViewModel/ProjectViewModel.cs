@@ -1,5 +1,7 @@
 ﻿using Db.Context;
 using Db.Context.BackPart;
+using DocumentMakerThemes.ViewModel;
+using MaterialDesignThemes.Wpf;
 using Mvvm.Commands;
 using ProjectEditorLib.View;
 using System.Collections;
@@ -10,10 +12,12 @@ using System.Windows.Data;
 
 namespace ProjectEditorLib.ViewModel
 {
-	public class ProjectViewModel : BaseDbObjectViewModel, IDbObjectViewModel
+	public class ProjectViewModel : BaseDbObjectViewModel, IDbObjectViewModel, ISnackbarRequired
 	{
 		UIElementCollection projectNamesCollection = null;
 		private bool haveChildChanges;
+
+		Snackbar snackbar = null;
 
 		public ProjectViewModel() : base() { }
 
@@ -161,6 +165,11 @@ namespace ProjectEditorLib.ViewModel
 				UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
 			};
 			BindingOperations.SetBinding(altProjectNameViewModel, HaveUnsavedChangesProperty, haveUnsavedChangesBinding);
+		}
+
+		public void SetSnackbar(Snackbar snackbar)
+		{
+			this.snackbar = snackbar;
 		}
 
 		#endregion
