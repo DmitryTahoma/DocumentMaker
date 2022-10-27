@@ -70,6 +70,7 @@
     <Compile Include="Converters\ProjectNodeTypeToPackIconKindConverter.cs" />
     <Compile Include="Model\NodeContextMenuItemType.cs" />
     <Compile Include="Model\ProjectEditModel.cs" />
+    <Compile Include="Model\ProjectModel.cs" />
     <Compile Include="Model\ProjectNode.cs" />
     <Compile Include="Model\ProjectNodeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
