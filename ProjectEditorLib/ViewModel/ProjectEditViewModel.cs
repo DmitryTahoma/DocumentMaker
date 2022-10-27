@@ -250,7 +250,7 @@ namespace ProjectEditorLib.ViewModel
 		public Command Save { get; private set; }
 		private async void OnSaveExecute()
 		{
-			DependencyObject invalid = ValidationHelper.GetFirstInvalid(SelectedTreeViewItem, true);
+			DependencyObject invalid = ValidationHelper.GetFirstInvalid(SelectedOptionsView, true);
 			if (invalid != null)
 			{
 				(invalid as UIElement)?.Focus();
