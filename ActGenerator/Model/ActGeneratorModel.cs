@@ -2,6 +2,7 @@
 using Db.Context.BackPart;
 using Db.Context.HumanPart;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ActGenerator.Model
@@ -27,7 +28,15 @@ namespace ActGenerator.Model
 
 		public async Task<List<Project>> LoadProjects()
 		{
-			return await Task.Run(() => new List<Project>(db.Projects));
+			return await Task.Run(() => 
+			{
+				List<Project> projects = new List<Project>(db.Projects);
+				foreach(Project project in projects)
+				{
+					project.AlternativeNames = db.AlternativeProjectNames.Where(x => x.ProjectId == project.Id).ToList();
+				}
+				return projects;
+			});
 		}
 
 		public async Task<List<Human>> LoadHumen()

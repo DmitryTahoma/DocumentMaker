@@ -50,16 +50,16 @@
                                     Icon="{materialDesign:PackIcon Kind=PlusCircleOutline}" />
                                 <MenuItem
                                     Command="{Binding RemoveProjectCommand}"
-                                    CommandParameter="{Binding ElementName=ProjectsListView, Path=SelectedItems}"
                                     Header="Видалити"
                                     Icon="{materialDesign:PackIcon Kind=SortVariantRemove}" />
                             </Menu>
 
-                            <ListView
-                                x:Name="ProjectsListView"
+                            <ScrollViewer
                                 Grid.Row="2"
-                                DisplayMemberPath="Name"
-                                ItemsSource="{Binding ProjectsList, Mode=OneWay}" />
+                                HorizontalScrollBarVisibility="Auto"
+                                VerticalScrollBarVisibility="Auto">
+                                <StackPanel x:Name="ProjectsStackWithNames" />
+                            </ScrollViewer>
                         </Grid>
                     </materialDesign:Card>
 
@@ -210,6 +210,7 @@
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding BindProjectsStackWithNames}" CommandParameter="{Binding ElementName=ProjectsStackWithNames, Path=Children}" />
             <i:InvokeCommandAction Command="{Binding LoadFromDatabase}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>

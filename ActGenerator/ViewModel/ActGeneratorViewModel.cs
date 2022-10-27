@@ -12,6 +12,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace ActGenerator.ViewModel
 {
@@ -23,6 +24,9 @@ namespace ActGenerator.ViewModel
 
 		ListSelector listSelector;
 		ListSelectorViewModel listSelectorViewModel;
+
+		UIElementCollection projectsStackWithNames = null;
+		List<Project> projectsList = new List<Project>();
 
 		List<int> savedProjectList = null;
 		List<ActGeneratorSession.HumanDataContextSave> savedHumanList = null;
@@ -39,7 +43,7 @@ namespace ActGenerator.ViewModel
 
 		public string DialogHostId { get; } = "ActGeneratorDialogHost";
 
-		public ObservableRangeCollection<Project> ProjectsList { get; private set; } = new ObservableRangeCollection<Project>();
+		public IEnumerable<Project> ProjectsList => projectsList;
 
 		public ObservableRangeCollection<HumanDataContext> HumanList { get; private set; } = new ObservableRangeCollection<HumanDataContext>();
 
@@ -104,9 +108,10 @@ namespace ActGenerator.ViewModel
 			AddProjectCommand = new Command(OnAddProjectCommandExecute);
 			CloseOpenedDialog = new Command(OnCloseOpenedDialogExecute);
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
-			RemoveProjectCommand = new Command<IList>(OnRemoveProjectCommandExecute);
+			RemoveProjectCommand = new Command(OnRemoveProjectCommandExecute);
 			AddHumanCommand = new Command(OnAddHumanCommandExecute);
 			RemoveHumanCommand = new Command<IList>(OnRemoveHumanCommandExecute);
+			BindProjectsStackWithNames = new Command<UIElementCollection>(OnBindProjectsStackWithNamesExecute);
 		}
 
 		public Command AddProjectCommand { get; private set; }
@@ -117,16 +122,27 @@ namespace ActGenerator.ViewModel
 			projects.RemoveAll(x => ProjectsList.Contains(x));
 			listSelectorViewModel.SetItems(projects);
 			await DialogHost.Show(listSelector, DialogHostId);
-			if(listSelectorViewModel.IsAddingPressed && listSelectorViewModel.SelectedItems != null)
+			if (listSelectorViewModel.IsAddingPressed && listSelectorViewModel.SelectedItems != null)
 			{
-				ProjectsList.AddRange(listSelectorViewModel.SelectedItems.Cast<Project>());
+				listSelectorViewModel.SelectedItems
+					.Cast<Project>()
+					.ToList()
+					.ForEach(AddProjectToStack);
 			}
 		}
 
-		public Command<IList> RemoveProjectCommand { get; private set; }
-		private void OnRemoveProjectCommandExecute(IList selectedItems)
+		public Command RemoveProjectCommand { get; private set; }
+		private void OnRemoveProjectCommandExecute()
 		{
-			ProjectsList.RemoveRange(selectedItems.Cast<Project>());
+			projectsStackWithNames
+				.Cast<ListView>()
+				.Where(x => x.SelectedIndex != -1)
+				.ToList()
+				.ForEach((x) => 
+				{
+					projectsStackWithNames.Remove(x);
+					projectsList.Remove((Project)x.DataContext);
+				});
 		}
 
 		public Command CloseOpenedDialog { get; private set; }
@@ -150,7 +166,11 @@ namespace ActGenerator.ViewModel
 
 				if(savedProjectList != null)
 				{
-					ProjectsList.AddRange(dbProjects.Where(x => savedProjectList.Contains(x.Id)));
+					dbProjects
+						.Where(x => savedProjectList
+							.Contains(x.Id))
+						.ToList()
+						.ForEach(AddProjectToStack);
 				}
 				if (savedHumanList != null)
 				{
@@ -187,6 +207,15 @@ namespace ActGenerator.ViewModel
 			HumanList.RemoveRange(selectedItems.Cast<HumanDataContext>());
 		}
 
+		public Command<UIElementCollection> BindProjectsStackWithNames { get; private set; }
+		private void OnBindProjectsStackWithNamesExecute(UIElementCollection collection)
+		{
+			if(projectsStackWithNames == null)
+			{
+				projectsStackWithNames = collection;
+			}
+		}
+
 		#endregion
 
 		#region Methods
@@ -201,6 +230,16 @@ namespace ActGenerator.ViewModel
 			CanUseOldWorks = actGeneratorSession.CanUseOldWorks;
 			SelectedDateTimeItem = DateTimeItems?.FirstOrDefault(x => x.DateTime == actGeneratorSession.SelectedDateTimeItem?.DateTime)
 				?? DateTimeItems?.FirstOrDefault();
+		}
+
+		private void AddProjectToStack(Project project)
+		{
+			ListView listView = new ListView { Style = Application.Current.FindResource("MaterialDesignFilterChipPrimaryOutlineListBox") as Style };
+			listView.DataContext = project;
+			listView.ItemsSource = new List<string> { project.Name }.Concat(project.AlternativeNames.Select(x => x.Name));
+			listView.SelectedIndex = 0;
+			projectsStackWithNames.Add(listView);
+			projectsList.Add(project);
 		}
 
 		#endregion
