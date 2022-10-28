@@ -190,6 +190,7 @@
 
                         <Button
                             Grid.Row="1"
+                            Command="{Binding GenerateActs}"
                             Content="Згенерувати"
                             Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
 

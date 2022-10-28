@@ -1,6 +1,7 @@
 ﻿using ActGenerator.Model;
 using ActGenerator.View.Dialogs;
 using ActGenerator.ViewModel.Dialogs;
+using Db.Context.ActPart;
 using Db.Context.BackPart;
 using Db.Context.HumanPart;
 using Dml.Model.Template;
@@ -112,6 +113,7 @@ namespace ActGenerator.ViewModel
 			AddHumanCommand = new Command(OnAddHumanCommandExecute);
 			RemoveHumanCommand = new Command<IList>(OnRemoveHumanCommandExecute);
 			BindProjectsStackWithNames = new Command<UIElementCollection>(OnBindProjectsStackWithNamesExecute);
+			GenerateActs = new Command(OnGenerateActsExecute);
 		}
 
 		public Command AddProjectCommand { get; private set; }
@@ -214,6 +216,41 @@ namespace ActGenerator.ViewModel
 			{
 				projectsStackWithNames = collection;
 			}
+		}
+
+		public Command GenerateActs { get; private set; }
+		private async void OnGenerateActsExecute()
+		{
+			await model.ConnectDB();
+			List<FullWork> works = await model.GenerateEnableWorks();
+			await model.DisconnectDB();
+
+			string res = string.Empty;
+			const string splitter = " | ";
+			foreach (FullWork work in works)
+			{
+				if (res != string.Empty) res += '\n';
+
+				res += work.Work.WorkBackAdapter.AlternativeProjectName?.Name ?? "[null]";
+				res += splitter;
+				res += work.Work.WorkBackAdapter.Back.BackType.Name;
+				res += splitter;
+				res += work.Work.WorkBackAdapter.Back.Number.ToString() + ' ' + work.Work.WorkBackAdapter.Back.Name;
+				res += splitter;
+				res += work.Work.WorkType.Name.ToString();
+				res += splitter;
+				res += work.Work.WorkType.TemplateType.Name;
+				if(work.Work.Regions != null)
+				{
+					res += splitter + "regs: ";
+					foreach(Regions regions in work.Work.Regions)
+					{
+						res += regions.Number.ToString() + ' ';
+					}
+				}
+			}
+
+			Clipboard.SetText(res);
 		}
 
 		#endregion
