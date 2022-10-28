@@ -2,6 +2,7 @@
 using Db.Context.ActPart;
 using Db.Context.BackPart;
 using Db.Context.HumanPart;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -45,7 +46,7 @@ namespace ActGenerator.Model
 			return await Task.Run(() => new List<Human>(db.Humans));
 		}
 
-		public async Task<List<FullWork>> GenerateEnableWorks()
+		public async Task<List<FullWork>> GenerateEnableWorks(List<KeyValuePair<Project, bool[]>> selectedProjectNames)
 		{
 			return await Task.Run(() =>
 			{
@@ -54,30 +55,46 @@ namespace ActGenerator.Model
 				List<WorkType> workTypes = new List<WorkType>(db.WorkTypes.Where(x => x.ActPartId == supportPart.Id));
 				workTypes.ForEach(x => x.TemplateType = db.TemplateTypes.Where(y => y.Id == x.TemplateTypeId).FirstOrDefault());
 
-				List<Back> dbBacks = new List<Back>(db.Backs);
-				foreach (Back back in dbBacks)
+				foreach(KeyValuePair<Project, bool[]> projectPair in selectedProjectNames)
 				{
-					back.BackType = db.BackTypes.Where(x => x.Id == back.BackTypeId).FirstOrDefault();
-
-					List<AlternativeProjectName> alternativeProjectNames = new List<AlternativeProjectName>(
-						db.AlternativeProjectNames
-						.Where(x => x.ProjectId == db.Projects
-							.Where(y => y.Id == db.Episodes
-								.Where(z => z.Id == back.EpisodeId)
-								.FirstOrDefault().ProjectId)
-							.FirstOrDefault().Id));
-
-					CountRegions countRegions = db.CountRegions.Where(x => x.BackId == back.Id).FirstOrDefault();
-					foreach (WorkType supportWorkType in workTypes)
+					foreach(Episode dbEpisode in db.Episodes.Where(x => x.ProjectId == projectPair.Key.Id).ToList())
 					{
-						List<AlternativeProjectName>.Enumerator alternativeProjectNamesEnum = alternativeProjectNames.GetEnumerator();
-						AlternativeProjectName currentAltProjectName = null;
-						do
+						foreach(Back dbBack in db.Backs.Where(x => x.EpisodeId == dbEpisode.Id).ToList())
 						{
-							workList.Add(CreateNewFullWork(back, supportPart, supportWorkType, currentAltProjectName));
-							if (countRegions != null) workList.Add(CreateNewFullWorkRegions(back, supportPart, supportWorkType, currentAltProjectName, countRegions));
+							dbBack.BackType = db.BackTypes.Where(x => x.Id == dbBack.BackTypeId).FirstOrDefault();
 
-						} while (MoveEnumAndChangeCurrent(ref alternativeProjectNamesEnum, ref currentAltProjectName));
+							List<AlternativeProjectName> alternativeProjectNames = new List<AlternativeProjectName>(
+								db.AlternativeProjectNames
+								.Where(x => x.ProjectId == db.Projects
+									.Where(y => y.Id == db.Episodes
+										.Where(z => z.Id == dbBack.EpisodeId)
+										.FirstOrDefault().ProjectId)
+									.FirstOrDefault().Id));
+
+							CountRegions countRegions = db.CountRegions.Where(x => x.BackId == dbBack.Id).FirstOrDefault();
+
+							IEnumerator enableAltNamesEnum = projectPair.Value.GetEnumerator();
+							enableAltNamesEnum.MoveNext();
+							List<AlternativeProjectName>.Enumerator alternativeProjectNamesEnum = alternativeProjectNames.GetEnumerator();
+							AlternativeProjectName currentAltProjectName = null;
+							do
+							{
+								if (enableAltNamesEnum.Current is bool b && !b)
+								{
+									continue;
+								}
+
+								foreach (WorkType supportWorkType in workTypes)
+								{
+									workList.Add(CreateNewFullWork(dbBack, supportPart, supportWorkType, currentAltProjectName));
+									if (countRegions != null)
+									{
+										workList.Add(CreateNewFullWorkRegions(dbBack, supportPart, supportWorkType, currentAltProjectName, countRegions));
+									}
+								}
+
+							} while (MoveEnumAndChangeCurrent(ref alternativeProjectNamesEnum, ref currentAltProjectName) && enableAltNamesEnum.MoveNext());
+						}
 					}
 				}
 

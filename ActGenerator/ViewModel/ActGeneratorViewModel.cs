@@ -221,8 +221,34 @@ namespace ActGenerator.ViewModel
 		public Command GenerateActs { get; private set; }
 		private async void OnGenerateActsExecute()
 		{
+			List<KeyValuePair<Project, bool[]>> selectedProjectNames = new List<KeyValuePair<Project, bool[]>>();
+			foreach (ListView listView in projectsStackWithNames)
+			{
+				if (listView.SelectedIndex >= 0)
+				{
+					Project proj = (Project)listView.DataContext;
+					KeyValuePair<Project, bool[]> keyProj = new KeyValuePair<Project, bool[]>(proj, new bool[proj.AlternativeNames.Count + 1]);
+					foreach (object selectedItem in listView.SelectedItems)
+					{
+						int index = -1;
+						int i = 0;
+						foreach (object item in listView.ItemsSource)
+						{
+							if (item == selectedItem)
+							{
+								index = i;
+								break;
+							}
+							++i;
+						}
+						keyProj.Value[index] = true;
+					}
+					selectedProjectNames.Add(keyProj);
+				}
+			}
+
 			await model.ConnectDB();
-			List<FullWork> works = await model.GenerateEnableWorks();
+			List<FullWork> works = await model.GenerateEnableWorks(selectedProjectNames);
 			await model.DisconnectDB();
 
 			string res = string.Empty;
@@ -240,10 +266,10 @@ namespace ActGenerator.ViewModel
 				res += work.Work.WorkType.Name.ToString();
 				res += splitter;
 				res += work.Work.WorkType.TemplateType.Name;
-				if(work.Work.Regions != null)
+				if (work.Work.Regions != null)
 				{
 					res += splitter + "regs: ";
-					foreach(Regions regions in work.Work.Regions)
+					foreach (Regions regions in work.Work.Regions)
 					{
 						res += regions.Number.ToString() + ' ';
 					}
