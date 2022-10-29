@@ -2,6 +2,7 @@
 using Db.Context.ActPart;
 using Db.Context.BackPart;
 using Db.Context.HumanPart;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -102,6 +103,77 @@ namespace ActGenerator.Model
 			});
 		}
 
+		public Task RemoveUsedWorks(List<FullWork> works, bool canUseOldWorks, DateTime dateDiff)
+		{
+			return Task.Run(() => 
+			{
+				DateTime opornDate = DateTime.Now.AddYears(-dateDiff.Year + 1).AddMonths(-dateDiff.Month + 1).AddDays(-dateDiff.Day + 1);
+
+				List<FullWork> removeWorks = (canUseOldWorks 
+					? db.FullWorks
+						.Where(x => db.Acts
+							.FirstOrDefault(y => y.Id == db.Works
+								.FirstOrDefault(z => z.Id == x.WorkId).ActId)
+							.CreationTime > opornDate)
+					: db.FullWorks)
+					.ToList();
+				removeWorks
+					.ForEach(a => a.Work = db.Works
+						.First(b => b.Id == a.WorkId));
+				removeWorks
+					.ForEach(c => c.Work.WorkBackAdapter = db.WorkBackAdapters
+						.First(d => d.Id == c.Work.WorkBackAdapterId));
+				removeWorks
+					.ForEach(e => e.Work.WorkBackAdapter.Back = db.Backs
+						.FirstOrDefault(f => f.Id == e.Work.WorkBackAdapter.BackId));
+				removeWorks
+					.ForEach(g => g.Work.Regions = new List<Regions>(db.Regions
+						.Where(h => h.WorkId == g.WorkId)));
+
+				works.RemoveAll(j => 
+				{
+					foreach(FullWork removeWork in removeWorks)
+					{
+						if (removeWork.Work.WorkTypeId == j.Work.WorkType.Id
+						&& removeWork.Work.WorkBackAdapter.BackId == j.Work.WorkBackAdapter.Back.Id
+						&& (removeWork.Work.WorkBackAdapter.BackId != null 
+							|| removeWork.Work.WorkBackAdapter.Text == j.Work.WorkBackAdapter.Text)
+						&& ((removeWork.Work.WorkBackAdapter.AlternativeProjectNameId == null 
+							&& j.Work.WorkBackAdapter.AlternativeProjectName == null)
+							|| (j.Work.WorkBackAdapter.AlternativeProjectName != null 
+								&& removeWork.Work.WorkBackAdapter.AlternativeProjectNameId == j.Work.WorkBackAdapter.AlternativeProjectName.Id)))
+						{
+							if (removeWork.Work.Regions != null && j.Work.Regions != null)
+							{
+								if(removeWork.Work.Regions.Count != j.Work.Regions.Count)
+								{
+									RemoveRegions(j.Work.Regions, removeWork.Work.Regions.Select(k => k.Number).ToList());
+									removeWorks.Remove(removeWork);
+									return false;
+								}
+
+								List<Regions>.Enumerator removeWorkRegionsEnum = removeWork.Work.Regions.GetEnumerator();
+								List<Regions>.Enumerator jRegionsEnum = j.Work.Regions.GetEnumerator();
+
+								while(removeWorkRegionsEnum.MoveNext() && jRegionsEnum.MoveNext())
+								{
+									if(removeWorkRegionsEnum.Current.Number != jRegionsEnum.Current.Number)
+									{
+										RemoveRegions(j.Work.Regions, removeWork.Work.Regions.Select(k => k.Number).ToList());
+										removeWorks.Remove(removeWork);
+										return false;
+									}
+								}
+							}
+							removeWorks.Remove(removeWork);
+							return true;
+						}
+					}
+					return false; 
+				});
+			});
+		}
+
 		private void ReleaseContext()
 		{
 			if (db != null)
@@ -163,6 +235,11 @@ namespace ActGenerator.Model
 			bool res = listEnum.MoveNext();
 			if (res) current = listEnum.Current;
 			return res;
+		}
+
+		private void RemoveRegions(List<Regions> regions, List<int> removeNumbers)
+		{
+			regions.RemoveAll(x => removeNumbers.Remove(x.Number));
 		}
 	}
 }

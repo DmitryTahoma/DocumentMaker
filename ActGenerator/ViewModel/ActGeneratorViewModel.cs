@@ -249,6 +249,7 @@ namespace ActGenerator.ViewModel
 
 			await model.ConnectDB();
 			List<FullWork> works = await model.GenerateEnableWorks(selectedProjectNames);
+			await model.RemoveUsedWorks(works, CanUseOldWorks, SelectedDateTimeItem.DateTime);
 			await model.DisconnectDB();
 
 			string res = string.Empty;
