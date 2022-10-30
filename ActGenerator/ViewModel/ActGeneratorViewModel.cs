@@ -113,7 +113,7 @@ namespace ActGenerator.ViewModel
 			AddHumanCommand = new Command(OnAddHumanCommandExecute);
 			RemoveHumanCommand = new Command<IList>(OnRemoveHumanCommandExecute);
 			BindProjectsStackWithNames = new Command<UIElementCollection>(OnBindProjectsStackWithNamesExecute);
-			GenerateActs = new Command(OnGenerateActsExecute);
+			GenerateActs = new Command<DependencyObject>(OnGenerateActsExecute);
 		}
 
 		public Command AddProjectCommand { get; private set; }
@@ -218,34 +218,16 @@ namespace ActGenerator.ViewModel
 			}
 		}
 
-		public Command GenerateActs { get; private set; }
-		private async void OnGenerateActsExecute()
+		public Command<DependencyObject> GenerateActs { get; private set; }
+		private async void OnGenerateActsExecute(DependencyObject validateObj)
 		{
-			List<KeyValuePair<Project, bool[]>> selectedProjectNames = new List<KeyValuePair<Project, bool[]>>();
-			foreach (ListView listView in projectsStackWithNames)
+			if (ValidationHelper.GetFirstInvalid(validateObj, true) is UIElement invalid)
 			{
-				if (listView.SelectedIndex >= 0)
-				{
-					Project proj = (Project)listView.DataContext;
-					KeyValuePair<Project, bool[]> keyProj = new KeyValuePair<Project, bool[]>(proj, new bool[proj.AlternativeNames.Count + 1]);
-					foreach (object selectedItem in listView.SelectedItems)
-					{
-						int index = -1;
-						int i = 0;
-						foreach (object item in listView.ItemsSource)
-						{
-							if (item == selectedItem)
-							{
-								index = i;
-								break;
-							}
-							++i;
-						}
-						keyProj.Value[index] = true;
-					}
-					selectedProjectNames.Add(keyProj);
-				}
+				invalid.Focus();
+				return;
 			}
+
+			List <KeyValuePair<Project, bool[]>> selectedProjectNames = GetSelectedProjectNames();
 
 			await model.ConnectDB();
 			List<FullWork> works = await model.GenerateEnableWorks(selectedProjectNames);
@@ -304,6 +286,36 @@ namespace ActGenerator.ViewModel
 			listView.SelectedIndex = 0;
 			projectsStackWithNames.Add(listView);
 			projectsList.Add(project);
+		}
+
+		private List<KeyValuePair<Project, bool[]>> GetSelectedProjectNames()
+		{
+			List<KeyValuePair<Project, bool[]>> selectedProjectNames = new List<KeyValuePair<Project, bool[]>>();
+			foreach (ListView listView in projectsStackWithNames)
+			{
+				if (listView.SelectedIndex >= 0)
+				{
+					Project proj = (Project)listView.DataContext;
+					KeyValuePair<Project, bool[]> keyProj = new KeyValuePair<Project, bool[]>(proj, new bool[proj.AlternativeNames.Count + 1]);
+					foreach (object selectedItem in listView.SelectedItems)
+					{
+						int index = -1;
+						int i = 0;
+						foreach (object item in listView.ItemsSource)
+						{
+							if (item == selectedItem)
+							{
+								index = i;
+								break;
+							}
+							++i;
+						}
+						keyProj.Value[index] = true;
+					}
+					selectedProjectNames.Add(keyProj);
+				}
+			}
+			return selectedProjectNames;
 		}
 
 		#endregion
