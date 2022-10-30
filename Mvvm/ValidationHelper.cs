@@ -43,11 +43,11 @@ namespace Mvvm
 		{
 			if(obj is TextBox textBox)
 			{
-				textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+				textBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
 			}
 			else if(obj is Selector selector)
 			{
-				selector.GetBindingExpression(Selector.SelectedItemProperty).UpdateSource();
+				selector.GetBindingExpression(Selector.SelectedItemProperty)?.UpdateSource();
 			}
 		}
 	}
