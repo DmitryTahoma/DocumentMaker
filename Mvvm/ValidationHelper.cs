@@ -48,6 +48,7 @@ namespace Mvvm
 			else if(obj is Selector selector)
 			{
 				selector.GetBindingExpression(Selector.SelectedItemProperty)?.UpdateSource();
+				selector.GetBindingExpression(ItemsControl.ItemsSourceProperty)?.UpdateSource();
 			}
 		}
 	}
