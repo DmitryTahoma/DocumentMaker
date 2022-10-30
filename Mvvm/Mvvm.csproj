@@ -52,6 +52,7 @@
     <Compile Include="ObservableRangeCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValidationHelper.cs" />
+    <Compile Include="ValidationRules\LessThanValidationRule.cs" />
     <Compile Include="ValidationRules\MoreThanValidationRule.cs" />
     <Compile Include="ValidationRules\ContentProperties\ContentPropertyBase.cs" />
     <Compile Include="ValidationRules\ContentProperties\ItemsSource.cs" />
