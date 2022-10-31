@@ -69,5 +69,41 @@ namespace Db.Context
 					.FirstOrDefault();
 			}));
 		}
+
+		public Task SyncCollection<T>(ICollection<T> collection) where T : class, IDbObject
+		{
+			return Task.Run(async () =>
+			{
+				List<T> dbCollection = new List<T>(await GetTable<T>());
+
+				List<T> removeList = new List<T>();
+				foreach(T elem in collection)
+				{
+					if(dbCollection.FirstOrDefault(x => x.Id == elem.Id) == null)
+					{
+						removeList.Add(elem);
+					}
+				}
+				while(removeList.Count > 0)
+				{
+					T first = removeList.First();
+					collection.Remove(first);
+					removeList.Remove(first);
+				}
+
+				IEnumerator<T> collectionEnum = collection.GetEnumerator();
+				IEnumerator<T> dbCollectionEnum = dbCollection.GetEnumerator();
+
+				while (collectionEnum.MoveNext() && dbCollectionEnum.MoveNext())
+				{
+					collectionEnum.Current.Set(dbCollectionEnum.Current);
+				}
+
+				foreach (T newElem in dbCollection.Where(x => collection.FirstOrDefault(y => y.Id == x.Id) == null))
+				{
+					collection.Add(newElem);
+				}
+			});
+		}
 	}
 }

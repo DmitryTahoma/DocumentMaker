@@ -89,25 +89,9 @@ namespace HumanEditorLib.Model
 
 		public async Task SyncCollection<T>(ObservableRangeCollection<T> collection) where T : class, IDbObject
 		{
-			await Task.Run(async () =>
-			{
-				List<T> dbCollection = new List<T>(await db.GetTable<T>());
-				collection.SuppressingNotifications = true;
-
-				collection.RemoveAll(x => dbCollection.FirstOrDefault(y => y.Id == x.Id) == null);
-
-				IEnumerator<T> collectionEnum = collection.GetEnumerator();
-				IEnumerator<T> dbCollectionEnum = dbCollection.GetEnumerator();
-
-				while(collectionEnum.MoveNext() && dbCollectionEnum.MoveNext())
-				{
-					collectionEnum.Current.Set(dbCollectionEnum.Current);
-				}
-
-				collection.AddRange(dbCollection.Where(x => collection.FirstOrDefault(y => y.Id == x.Id) == null));
-
-				collection.SuppressingNotifications = false;
-			});
+			collection.SuppressingNotifications = true;
+			await db.SyncCollection(collection);
+			collection.SuppressingNotifications = false;
 		}
 
 		public async Task<Human> AddHuman(Human human)
