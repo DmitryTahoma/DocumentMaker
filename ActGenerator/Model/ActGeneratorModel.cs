@@ -5,6 +5,7 @@ using Db.Context.HumanPart;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -172,6 +173,11 @@ namespace ActGenerator.Model
 					return false; 
 				});
 			});
+		}
+
+		public async Task SyncCollection<T>(ICollection<T> collection) where T : class, IDbObject
+		{
+			await db.SyncCollection(collection);
 		}
 
 		private void ReleaseContext()

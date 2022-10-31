@@ -20,6 +20,7 @@ namespace ActGenerator.ViewModel
 	class ActGeneratorViewModel : DependencyObject
 	{
 		ActGeneratorModel model = new ActGeneratorModel();
+		ViewModelState state = ViewModelState.Initialized;
 		List<Project> dbProjects = null;
 		List<Human> dbHumans = null;
 
@@ -159,8 +160,9 @@ namespace ActGenerator.ViewModel
 		public Command LoadFromDatabase { get; private set; }
 		private async void OnLoadFromDatabaseExecute()
 		{
-			if (dbProjects == null)
+			if (state == ViewModelState.Initialized)
 			{
+				state = ViewModelState.Loading;
 				await model.ConnectDB();
 				dbProjects = await model.LoadProjects();
 				dbHumans = await model.LoadHumen();
@@ -186,6 +188,27 @@ namespace ActGenerator.ViewModel
 									.FirstOrDefault(y => y.Type == x.TemplateType)
 							}));
 				}
+				state = ViewModelState.Loaded;
+			}
+			else if(state == ViewModelState.Loaded)
+			{
+				state = ViewModelState.Loading;
+				await model.ConnectDB();
+				dbProjects = await model.LoadProjects();
+				await model.SyncCollection(dbHumans);
+				await model.DisconnectDB();
+
+				IEnumerator projectsStackWithNamesEnum = projectsStackWithNames.GetEnumerator();
+				List<Project>.Enumerator dbProjectsEnum = dbProjects.GetEnumerator();
+				while(projectsStackWithNamesEnum.MoveNext() && dbProjectsEnum.MoveNext())
+				{
+					ListView listView = projectsStackWithNamesEnum.Current as ListView;
+					listView.DataContext = dbProjectsEnum.Current;
+					listView.ItemsSource = new List<string> { dbProjectsEnum.Current.Name }.Concat(dbProjectsEnum.Current.AlternativeNames.Select(x => x.Name));
+				}
+				HumanList.ToList().ForEach(x => x.Context.Set(dbHumans.FirstOrDefault(y => y.Id == x.Context.Id)));
+				HumanList.UpdateCollection();
+				state = ViewModelState.Loaded;
 			}
 		}
 
