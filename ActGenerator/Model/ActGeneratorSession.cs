@@ -19,8 +19,8 @@ namespace ActGenerator.Model
 
 		public List<int> ProjectsList { get; set; } = null;
 		public List<HumanDataContextSave> HumanList { get; set; } = null;
-		public string MinSumText { get; set; } = "2500";
-		public string MaxSumText { get; set; } = "1200";
+		public string MinSumText { get; set; } = "1200";
+		public string MaxSumText { get; set; } = "2500";
 		public bool IsUniqueNumbers { get; set; } = true;
 		public bool CanUseOldWorks { get; set; } = true;
 		public DateTimeItem SelectedDateTimeItem { get; set; } = null;
