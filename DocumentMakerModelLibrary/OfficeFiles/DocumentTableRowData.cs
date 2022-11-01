@@ -1,9 +1,9 @@
 ﻿using Dml.Model.Back;
 using Dml.Model.Template;
-using DocumentMaker.Model.Controls;
+using DocumentMakerModelLibrary.Controls;
 using System.Linq;
 
-namespace DocumentMaker.Model.OfficeFiles
+namespace DocumentMakerModelLibrary.OfficeFiles
 {
 	internal class DocumentTableRowData
 	{

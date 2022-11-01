@@ -2,8 +2,8 @@
 using Dml.Controller;
 using Dml.Model.Template;
 using Dml.UndoRedo;
-using DocumentMaker.Model.Back;
-using DocumentMaker.Model.Controls;
+using DocumentMakerModelLibrary.Back;
+using DocumentMakerModelLibrary.Controls;
 
 namespace DocumentMaker.Controller.Controls
 {

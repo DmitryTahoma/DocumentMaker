@@ -1,12 +1,12 @@
 ﻿using Dml.Model.Back;
 using Dml.Model.Files;
 using Dml.Model.Session;
-using DocumentMaker.Model.Controls;
+using DocumentMakerModelLibrary.Controls;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace DocumentMaker.Model.Files
+namespace DocumentMakerModelLibrary.Files
 {
 	public class DmxFile : BaseDmxFile
 	{

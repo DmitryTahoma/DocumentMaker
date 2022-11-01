@@ -9,7 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 
-namespace DocumentMaker.Model.OfficeFiles
+namespace DocumentMakerModelLibrary.OfficeFiles
 {
 	internal class OfficeExporter
 	{

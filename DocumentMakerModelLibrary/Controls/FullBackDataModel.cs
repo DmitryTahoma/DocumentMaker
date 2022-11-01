@@ -3,9 +3,9 @@ using Dml.Model;
 using Dml.Model.Back;
 using Dml.Model.Template;
 using Dml.UndoRedo;
-using DocumentMaker.Model.Back;
+using DocumentMakerModelLibrary.Back;
 
-namespace DocumentMaker.Model.Controls
+namespace DocumentMakerModelLibrary.Controls
 {
 	public class FullBackDataModel : BaseBackDataModel
 	{

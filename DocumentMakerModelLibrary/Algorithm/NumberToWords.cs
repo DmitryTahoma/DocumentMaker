@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace DocumentMaker.Model.Algorithm
+namespace DocumentMakerModelLibrary.Algorithm
 {
 	public static class NumberToWords
 	{

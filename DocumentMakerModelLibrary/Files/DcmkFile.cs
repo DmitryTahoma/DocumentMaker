@@ -1,6 +1,6 @@
-﻿namespace DocumentMaker.Model.Files
+﻿namespace DocumentMakerModelLibrary.Files
 {
-	internal class DcmkFile : DmxFile
+	public class DcmkFile : DmxFile
 	{
 		public static new string Extension => ".dcmk";
 

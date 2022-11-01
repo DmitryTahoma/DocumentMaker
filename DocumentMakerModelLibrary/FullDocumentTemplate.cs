@@ -1,10 +1,10 @@
 ﻿using Dml;
 using Dml.Model.Template;
-using DocumentMaker.Model.Back;
-using DocumentMaker.Model.OfficeFiles;
+using DocumentMakerModelLibrary.Back;
+using DocumentMakerModelLibrary.OfficeFiles;
 using System.Collections.Generic;
 
-namespace DocumentMaker.Model
+namespace DocumentMakerModelLibrary
 {
 	public class FullDocumentTemplate : DocumentTemplate
 	{

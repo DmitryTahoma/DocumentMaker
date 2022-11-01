@@ -2,12 +2,12 @@
 using Dml.Model.Template;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentMaker.Model.Back;
-using DocumentMaker.Model.OfficeFiles.Human;
+using DocumentMakerModelLibrary.Back;
+using DocumentMakerModelLibrary.OfficeFiles.Human;
 using System.IO;
 using System.Linq;
 
-namespace DocumentMaker.Model.OfficeFiles
+namespace DocumentMakerModelLibrary.OfficeFiles
 {
 	internal class XlsxLoader
 	{

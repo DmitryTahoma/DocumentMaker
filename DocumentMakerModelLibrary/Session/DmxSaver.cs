@@ -1,9 +1,9 @@
 ﻿using Dml.Model.Session;
-using DocumentMaker.Model.Controls;
-using DocumentMaker.Model.Files;
+using DocumentMakerModelLibrary.Controls;
+using DocumentMakerModelLibrary.Files;
 using System.Xml;
 
-namespace DocumentMaker.Model.Session
+namespace DocumentMakerModelLibrary.Session
 {
 	internal class DmxSaver : XmlSaver
 	{

@@ -85,16 +85,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controller\Controls\FullBackDataController.cs" />
-    <Compile Include="Model\Algorithm\MixingSumAlgorithm.cs" />
-    <Compile Include="Model\Algorithm\NumberToWords.cs" />
-    <Compile Include="Model\Algorithm\BackDataRandomizer.cs" />
-    <Compile Include="Model\Back\WorkObject.cs" />
-    <Compile Include="Model\Controls\FullBackDataModel.cs" />
-    <Compile Include="Model\Files\DcmkFile.cs" />
-    <Compile Include="Model\Files\DmxFile.cs" />
-    <Compile Include="Model\FullDocumentTemplate.cs" />
-    <Compile Include="Model\Session\DmxLoader.cs" />
-    <Compile Include="Model\Session\DmxSaver.cs" />
     <Compile Include="View\Dialogs\ChangeDatesDialog.xaml.cs">
       <DependentUpon>ChangeDatesDialog.xaml</DependentUpon>
     </Compile>
@@ -153,19 +143,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Controller\MainWindowController.cs" />
-    <Compile Include="Model\DocumentMakerModel.cs" />
-    <Compile Include="Model\OfficeFiles\BackTaskStrings.cs" />
-    <Compile Include="Model\OfficeFiles\DocumentGeneralData.cs" />
-    <Compile Include="Model\OfficeFiles\DocumentTableData.cs" />
-    <Compile Include="Model\OfficeFiles\DocumentTableRowData.cs" />
-    <Compile Include="Model\OfficeFiles\Human\HumanData.cs" />
-    <Compile Include="Model\OfficeFiles\OfficeExporter.cs" />
-    <Compile Include="Model\OfficeFiles\OfficeStrings.cs" />
-    <Compile Include="Model\OfficeFiles\XlsxLoader.cs" />
-    <Compile Include="Resources\ResourceInfo.cs" />
-    <Compile Include="Resources\DocumentResourceManager.cs" />
-    <Compile Include="Resources\ResourceType.cs" />
-    <Compile Include="Resources\ResourceUnloader.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -194,8 +171,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <EmbeddedResource Include="Resources\DocumentMakerTemplate01.docx" />
-    <EmbeddedResource Include="Resources\DocumentMakerTemplate02.docx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -204,6 +179,10 @@
     <ProjectReference Include="..\Dml\Dml.csproj">
       <Project>{ac730979-6d09-406a-bfdf-e9f3f4d296e0}</Project>
       <Name>Dml</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DocumentMakerModelLibrary\DocumentMakerModelLibrary.csproj">
+      <Project>{c6bc5f49-e36f-46cd-a0e9-86b180eaafdf}</Project>
+      <Name>DocumentMakerModelLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

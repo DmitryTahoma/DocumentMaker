@@ -1,4 +1,4 @@
-﻿namespace DocumentMaker.Model.Back
+﻿namespace DocumentMakerModelLibrary.Back
 {
 	public class WorkObject
 	{

@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.15.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.15.0\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -39,10 +43,48 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\BackDataRandomizer.cs" />
+    <Compile Include="Algorithm\MixingSumAlgorithm.cs" />
+    <Compile Include="Algorithm\NumberToWords.cs" />
+    <Compile Include="Back\WorkObject.cs" />
+    <Compile Include="Controls\FullBackDataModel.cs" />
     <Compile Include="DocumentMakerModel.cs" />
+    <Compile Include="Files\DcmkFile.cs" />
+    <Compile Include="Files\DmxFile.cs" />
+    <Compile Include="FullDocumentTemplate.cs" />
+    <Compile Include="OfficeFiles\BackTaskStrings.cs" />
+    <Compile Include="OfficeFiles\DocumentGeneralData.cs" />
+    <Compile Include="OfficeFiles\DocumentTableData.cs" />
+    <Compile Include="OfficeFiles\DocumentTableRowData.cs" />
+    <Compile Include="OfficeFiles\Human\HumanData.cs" />
+    <Compile Include="OfficeFiles\OfficeExporter.cs" />
+    <Compile Include="OfficeFiles\OfficeStrings.cs" />
+    <Compile Include="OfficeFiles\XlsxLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\DocumentResourceManager.cs" />
+    <Compile Include="Resources\ResourceInfo.cs" />
+    <Compile Include="Resources\ResourceType.cs" />
+    <Compile Include="Resources\ResourceUnloader.cs" />
+    <Compile Include="Session\DmxLoader.cs" />
+    <Compile Include="Session\DmxSaver.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DocumentMakerTemplate01.docx" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DocumentMakerTemplate02.docx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dml\Dml.csproj">
+      <Project>{ac730979-6d09-406a-bfdf-e9f3f4d296e0}</Project>
+      <Name>Dml</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

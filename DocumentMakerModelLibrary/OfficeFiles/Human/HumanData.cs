@@ -1,7 +1,7 @@
 ﻿using Dml.Controller.Validation;
 using System.Collections.Generic;
 
-namespace DocumentMaker.Model.OfficeFiles.Human
+namespace DocumentMakerModelLibrary.OfficeFiles.Human
 {
 	public class HumanData
 	{

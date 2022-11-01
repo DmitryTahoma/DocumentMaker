@@ -1,4 +1,4 @@
-﻿using DocumentMaker.Model.OfficeFiles.Human;
+﻿using DocumentMakerModelLibrary.OfficeFiles.Human;
 using MaterialDesignThemes.Wpf;
 using System.Windows;
 using System.Windows.Controls;

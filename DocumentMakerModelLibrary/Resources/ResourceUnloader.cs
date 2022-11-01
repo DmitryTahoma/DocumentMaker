@@ -8,7 +8,7 @@ namespace DocumentMaker.Resources
 	{
 		public static void Unload(string resourceName, string nearFullname)
 		{
-			byte[] resource = LoadResource(Assembly.GetEntryAssembly().GetName().Name + ".Resources." + resourceName);
+			byte[] resource = LoadResource(Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + resourceName);
 			using (FileStream fStream = new FileStream(nearFullname, FileMode.OpenOrCreate))
 			{
 				using (BinaryWriter writer = new BinaryWriter(fStream))

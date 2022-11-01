@@ -1,9 +1,9 @@
 ﻿using Dml.Model.Template;
-using DocumentMaker.Model.Controls;
+using DocumentMakerModelLibrary.Controls;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DocumentMaker.Model.OfficeFiles
+namespace DocumentMakerModelLibrary.OfficeFiles
 {
 	internal class DocumentTableData : IEnumerable<DocumentTableRowData>
 	{

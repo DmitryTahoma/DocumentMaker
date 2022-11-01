@@ -1,4 +1,4 @@
-﻿using DocumentMaker.Model.OfficeFiles;
+﻿using DocumentMakerModelLibrary.OfficeFiles;
 using System.Collections.Generic;
 
 namespace DocumentMaker.Resources

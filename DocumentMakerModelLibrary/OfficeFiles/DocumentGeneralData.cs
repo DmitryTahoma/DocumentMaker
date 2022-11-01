@@ -1,9 +1,9 @@
 ﻿using Dml.Model.Template;
-using DocumentMaker.Model.Algorithm;
+using DocumentMakerModelLibrary.Algorithm;
 using System;
 using System.Globalization;
 
-namespace DocumentMaker.Model.OfficeFiles
+namespace DocumentMakerModelLibrary.OfficeFiles
 {
 	internal class DocumentGeneralData
 	{

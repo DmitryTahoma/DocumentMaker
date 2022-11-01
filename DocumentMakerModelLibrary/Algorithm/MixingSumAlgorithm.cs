@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DocumentMaker.Model.Algorithm
+namespace DocumentMakerModelLibrary.Algorithm
 {
 	public static class MixingSumAlgorithm
 	{

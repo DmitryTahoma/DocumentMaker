@@ -1,4 +1,4 @@
-﻿namespace DocumentMaker.Model.OfficeFiles
+﻿namespace DocumentMakerModelLibrary.OfficeFiles
 {
 	public static class OfficeStrings
 	{

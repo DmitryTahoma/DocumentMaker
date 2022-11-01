@@ -1,10 +1,10 @@
 ﻿using Dml.Model.Template;
-using DocumentMaker.Model.Back;
-using DocumentMaker.Model.Controls;
+using DocumentMakerModelLibrary.Back;
+using DocumentMakerModelLibrary.Controls;
 using System;
 using System.Collections.Generic;
 
-namespace DocumentMaker.Model.Algorithm
+namespace DocumentMakerModelLibrary.Algorithm
 {
 	internal static class BackDataRandomizer
 	{
