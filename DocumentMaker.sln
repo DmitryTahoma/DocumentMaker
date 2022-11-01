@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectEditorLib", "Project
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentMakerThemes", "DocumentMakerThemes\DocumentMakerThemes.csproj", "{A3C2F18E-B57E-4C71-A2DD-BCE3CFF24574}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentMakerModelLibrary", "DocumentMakerModelLibrary\DocumentMakerModelLibrary.csproj", "{C6BC5F49-E36F-46CD-A0E9-86B180EAAFDF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,12 @@ Global
 		{A3C2F18E-B57E-4C71-A2DD-BCE3CFF24574}.Release with UpdaterAPI|Any CPU.Build.0 = Release|Any CPU
 		{A3C2F18E-B57E-4C71-A2DD-BCE3CFF24574}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3C2F18E-B57E-4C71-A2DD-BCE3CFF24574}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6BC5F49-E36F-46CD-A0E9-86B180EAAFDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6BC5F49-E36F-46CD-A0E9-86B180EAAFDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6BC5F49-E36F-46CD-A0E9-86B180EAAFDF}.Release with UpdaterAPI|Any CPU.ActiveCfg = Release|Any CPU
+		{C6BC5F49-E36F-46CD-A0E9-86B180EAAFDF}.Release with UpdaterAPI|Any CPU.Build.0 = Release|Any CPU
+		{C6BC5F49-E36F-46CD-A0E9-86B180EAAFDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6BC5F49-E36F-46CD-A0E9-86B180EAAFDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
