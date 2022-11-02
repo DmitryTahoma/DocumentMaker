@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace ActGenerator.ViewModel
 {
-	class MainWindowViewModel
+	class MainWindowViewModel : DependencyObject
 	{
 		ActGeneratorSession model = new ActGeneratorSession();
 		ActGeneratorViewModel actGeneratorViewModel = null;
@@ -17,6 +17,17 @@ namespace ActGenerator.ViewModel
 			InitCommands();
 		}
 
+		#region Properties
+
+		public int SelectedTabIndex
+		{
+			get { return (int)GetValue(SelectedTabIndexProperty); }
+			set { SetValue(SelectedTabIndexProperty, value); }
+		}
+		public static readonly DependencyProperty SelectedTabIndexProperty = DependencyProperty.Register(nameof(SelectedTabIndex), typeof(int), typeof(MainWindowViewModel));
+
+		#endregion
+
 		#region Commands
 
 		private void InitCommands()
@@ -24,6 +35,9 @@ namespace ActGenerator.ViewModel
 			LoadSession = new Command<MainWindow>(OnLoadSessionExecute);
 			SaveSession = new Command<MainWindow>(OnSaveSessionExecute);
 			BindActGenerator = new Command<ActGeneratorViewModel>(OnBindActGeneratorExecute);
+			ShowGeneratorTab = new Command(OnShowGeneratorTabExecute);
+			OpenProject = new Command(OnOpenProjectExecute);
+			CreateProject = new Command(OnCreateProjectExecute);
 		}
 
 		public Command<MainWindow> LoadSession { get; private set; }
@@ -75,6 +89,24 @@ namespace ActGenerator.ViewModel
 		private void OnBindActGeneratorExecute(ActGeneratorViewModel actGenerator)
 		{
 			actGeneratorViewModel = actGenerator;
+		}
+
+		public Command ShowGeneratorTab { get; private set; }
+		private void OnShowGeneratorTabExecute()
+		{
+			SelectedTabIndex = 0;
+		}
+
+		public Command OpenProject { get; private set; }
+		private void OnOpenProjectExecute()
+		{
+			SelectedTabIndex = 1;
+		}
+
+		public Command CreateProject { get; private set; }
+		private void OnCreateProjectExecute()
+		{
+			SelectedTabIndex = 1;
 		}
 
 		#endregion

@@ -26,16 +26,31 @@
         <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
     </Window.Resources>
 
-    <materialDesign:Card>
-        <TabControl Margin="0" materialDesign:ColorZoneAssist.Mode="PrimaryMid">
-            <TabItem Header="ГЕНЕРАЦІЯ">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Menu>
+            <MenuItem Header="Меню" Icon="{materialDesign:PackIcon Kind=Menu}">
+                <MenuItem Command="{Binding ShowGeneratorTab}" Header="Генератор" />
+                <MenuItem Header="Проект">
+                    <MenuItem Command="{Binding OpenProject}" Header="Відкрити" />
+                    <MenuItem Command="{Binding CreateProject}" Header="Створити" />
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+
+        <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <TabItem Visibility="Collapsed">
                 <local:ActGeneratorView x:Name="ActGeneratorControl" />
             </TabItem>
-            <TabItem Header="ПРОЕКТИ">
+            <TabItem Visibility="Collapsed">
                 <projectEditor:ProjectEdit />
             </TabItem>
         </TabControl>
-    </materialDesign:Card>
+    </Grid>
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
