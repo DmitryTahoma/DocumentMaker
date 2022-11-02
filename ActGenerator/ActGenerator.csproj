@@ -146,6 +146,10 @@
       <Project>{ac730979-6d09-406a-bfdf-e9f3f4d296e0}</Project>
       <Name>Dml</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DocumentMakerModelLibrary\DocumentMakerModelLibrary.csproj">
+      <Project>{C6BC5F49-E36F-46CD-A0E9-86B180EAAFDF}</Project>
+      <Name>DocumentMakerModelLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DocumentMakerThemes\DocumentMakerThemes.csproj">
       <Project>{a3c2f18e-b57e-4c71-a2dd-bce3cff24574}</Project>
       <Name>DocumentMakerThemes</Name>

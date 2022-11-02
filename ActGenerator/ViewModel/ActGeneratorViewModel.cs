@@ -257,32 +257,26 @@ namespace ActGenerator.ViewModel
 			await model.RemoveUsedWorks(works, CanUseOldWorks, SelectedDateTimeItem.DateTime);
 			await model.DisconnectDB();
 
-			string res = string.Empty;
-			const string splitter = " | ";
-			foreach (FullWork work in works)
-			{
-				if (res != string.Empty) res += '\n';
-
-				res += work.Work.WorkBackAdapter.AlternativeProjectName?.Name ?? "[null]";
-				res += splitter;
-				res += work.Work.WorkBackAdapter.Back.BackType.Name;
-				res += splitter;
-				res += work.Work.WorkBackAdapter.Back.Number.ToString() + ' ' + work.Work.WorkBackAdapter.Back.Name;
-				res += splitter;
-				res += work.Work.WorkType.Name.ToString();
-				res += splitter;
-				res += work.Work.WorkType.TemplateType.Name;
-				if (work.Work.Regions != null)
+			int minSum = int.Parse(MinSumText);
+			int maxSum = int.Parse(MaxSumText);
+			var acts = model.GenerateActs(works, HumanList, minSum, maxSum,
+				lessWorksCallback: (curHuman) => 
 				{
-					res += splitter + "regs: ";
-					foreach (Regions regions in work.Work.Regions)
-					{
-						res += regions.Number.ToString() + ' ';
-					}
+					return MessageBox.Show("Недостатньо робіт для генерації акту [" + curHuman.FullName + "]. Продовжити? (Поточний акт буде пропущений)", "", MessageBoxButton.YesNo)
+							== MessageBoxResult.Yes; 
+				},
+				unrealSumCallback: (curHuman) => 
+				{
+					return MessageBox.Show("Неможливо розкидати роботи для акту [" + curHuman.FullName + "]. Продовжити? (Поточний акт буде пропущений)", "", MessageBoxButton.YesNo)
+									== MessageBoxResult.Yes;
 				}
-			}
+			);
 
-			Clipboard.SetText(res);
+			if(acts != null)
+			{
+				model.ExportActs(@"D:\", acts, projectsList);
+				MessageBox.Show("Сгенеровано актів: " + acts.Count.ToString());
+			}
 		}
 
 		#endregion

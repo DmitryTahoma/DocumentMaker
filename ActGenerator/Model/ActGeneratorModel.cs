@@ -2,12 +2,19 @@
 using Db.Context.ActPart;
 using Db.Context.BackPart;
 using Db.Context.HumanPart;
+using Dml;
+using DocumentMakerModelLibrary;
+using DocumentMakerModelLibrary.Controls;
+using DocumentMakerModelLibrary.Files;
+using ProjectEditorLib.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DmlBack = Dml.Model.Back;
 
 namespace ActGenerator.Model
 {
@@ -180,6 +187,97 @@ namespace ActGenerator.Model
 			await db.SyncCollection(collection);
 		}
 
+		public delegate bool GenerateActsCallback(HumanDataContext humanDataContext);
+		public List<KeyValuePair<HumanDataContext, List<FullWork>>> GenerateActs(List<FullWork> enableWorks, IList<HumanDataContext> humen, int minSum, int maxSum, GenerateActsCallback lessWorksCallback, GenerateActsCallback unrealSumCallback)
+		{
+			List<KeyValuePair<HumanDataContext, List<FullWork>>> acts = new List<KeyValuePair<HumanDataContext, List<FullWork>>>();
+			foreach (HumanDataContext human in humen)
+			{
+				List<FullWork> currentWorks = enableWorks.Where(x => x.Work.WorkType.TemplateType.Name == human.Template.Type.ToString()).ToList();
+				int sum = int.Parse(human.SumText);
+				KeyValuePair<HumanDataContext, List<FullWork>> act =
+					GenerateActWorks(human, ref sum, minSum, maxSum,
+						enableWorks
+							.Where(x => x.Work.WorkType.TemplateType.Name == human.Template.Type.ToString())
+							.ToList());
+
+				if (sum > 0)
+				{
+					if (lessWorksCallback.Invoke(human))
+					{
+						enableWorks.AddRange(act.Value);
+						continue;
+					}
+					else
+					{
+						return null;
+					}
+				}
+
+				if (!TryMixSumInWorks(act, ref sum, minSum, maxSum))
+				{
+					if (unrealSumCallback.Invoke(human))
+					{
+						break;
+					}
+					else
+					{
+						return null;
+					}
+				}
+				else
+				{
+					acts.Add(act);
+				}
+			}
+			return acts;
+		}
+
+		public void ExportActs(string path, List<KeyValuePair<HumanDataContext, List<FullWork>>> acts, List<Project> projects)
+		{
+			DocumentMakerModel documentMakerModel = new DocumentMakerModel();
+			if(documentMakerModel.TryLoadReworkWorkTypes(Path.Combine(PathHelper.ExecutingAssemblyPath, "SupportTypes.xlsx")))
+			{
+				foreach(var act in acts)
+				{
+					DocumentMakerModel actModel = new DocumentMakerModel
+					{
+						SelectedHuman = act.Key.FullName,
+						ActSum = act.Key.SumText,
+						TemplateType = act.Key.Template.Type
+					};
+					actModel.ExportDcmk(Path.Combine(path, act.Key.FullName + DcmkFile.Extension),
+						act.Value.Select(x =>
+						{
+							bool isRegions = x.Work.Regions != null && x.Work.Regions.Count > 0;
+
+							FullBackDataModel backModel = new FullBackDataModel
+							{
+								IsRework = true,
+								EpisodeNumberText = x.Work.WorkBackAdapter.Back.Episode.Number.ToString(),
+								BackName = x.Work.WorkBackAdapter.Back.Name,
+								GameName = x.Work.WorkBackAdapter.AlternativeProjectName?.Name ?? projects.First(y => y.Id == x.Work.WorkBackAdapter.Back.Episode.ProjectId).Name,
+								SpentTimeText = x.Sum.ToString(),
+								SumText = x.Sum.ToString(),
+								BackNumberText = x.Work.WorkBackAdapter.Back.Number.ToString(),
+								Type = ParseAndConvertProjectNodeTypeToBackType(x.Work.WorkBackAdapter.Back.BackType.Name, isRegions),
+								WorkObjectId = documentMakerModel.DocumentTemplatesList.First(z => z.Type == act.Key.Template.Type).ReworkWorkTypesList.First(a => a.Name == x.Work.WorkType.Name).Id,
+							};
+
+							if(isRegions)
+							{
+								foreach(Regions regions in x.Work.Regions)
+								{
+									backModel.BackCountRegionsText += regions.Number.ToString() + ',';
+								}
+							}
+
+							return backModel;
+						}));
+				}
+			}
+		}
+
 		private void ReleaseContext()
 		{
 			if (db != null)
@@ -210,7 +308,6 @@ namespace ActGenerator.Model
 			{
 				Work = new Work
 				{
-					//Act =
 					WorkType = workType,
 					ActPart = supportPart,
 					WorkBackAdapter = new WorkBackAdapter
@@ -246,6 +343,89 @@ namespace ActGenerator.Model
 		private void RemoveRegions(List<Regions> regions, List<int> removeNumbers)
 		{
 			regions.RemoveAll(x => removeNumbers.Remove(x.Number));
+		}
+
+		private KeyValuePair<HumanDataContext, List<FullWork>> GenerateActWorks(HumanDataContext human, ref int sum, int minSum, int maxSum, List<FullWork> works)
+		{
+			Random random = new Random();
+
+			List<FullWork> actWorks = new List<FullWork>();
+			while(sum > 0 && works.Count > 0)
+			{
+				int index = random.Next(0, works.Count);
+				FullWork randWork = works[index];
+				randWork.Sum = random.Next(minSum, maxSum);
+				sum -= randWork.Sum;
+				works.Remove(randWork);
+				actWorks.Add(randWork);
+			}
+
+			return new KeyValuePair<HumanDataContext, List<FullWork>>(human, actWorks);
+		}
+
+		private bool TryMixSumInWorks(KeyValuePair<HumanDataContext, List<FullWork>> act, ref int sum, int minSum, int maxSum)
+		{
+			int counter = maxSum;
+			bool speedUpMultiplier = true;
+			int dir = (sum > 0 ? 1 : -1);
+			while (sum != 0)
+			{
+				int step = (speedUpMultiplier && sum > 100 ? (sum / 100) : 1) * dir;
+				bool changedOne = false;
+				foreach(FullWork work in act.Value)
+				{
+					if((sum > 0 && work.Sum + step <= maxSum)
+						|| (sum <= 0 && work.Sum + step >= minSum))
+					{
+						work.Sum += step;
+						sum -= step;
+						changedOne = true;
+
+						if(sum == 0)
+						{
+							break;
+						}
+					}
+				}
+
+				if(!changedOne)
+				{
+					if(speedUpMultiplier)
+					{
+						speedUpMultiplier = false;
+					}
+					else
+					{
+						return false;
+					}
+				}
+
+				--counter;
+				if(counter <= 0)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private DmlBack.BackType ConvertProjectNodeTypeToBackType(ProjectNodeType projectNodeType, bool isRegions)
+		{
+			switch (projectNodeType)
+			{
+				case ProjectNodeType.Back: return isRegions ? DmlBack.BackType.Regions : DmlBack.BackType.Back;
+				case ProjectNodeType.Hog: return isRegions ? DmlBack.BackType.HogRegions : DmlBack.BackType.Hog;
+				case ProjectNodeType.Minigame: return DmlBack.BackType.Mg;
+				case ProjectNodeType.Craft: return DmlBack.BackType.Craft;
+				case ProjectNodeType.Dialog: return DmlBack.BackType.Dialog;
+			}
+			throw new ArgumentException("cannot convert to Dml.Model.Back.BackType");
+		}
+
+		private DmlBack.BackType ParseAndConvertProjectNodeTypeToBackType(string str, bool isRegions)
+		{
+			return ConvertProjectNodeTypeToBackType((ProjectNodeType)Enum.Parse(typeof(ProjectNodeType), str), isRegions);
 		}
 	}
 }
