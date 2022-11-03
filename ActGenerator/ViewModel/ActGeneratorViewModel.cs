@@ -43,6 +43,8 @@ namespace ActGenerator.ViewModel
 
 		#region Properties
 
+		public bool IsOpenActGeneratorDialogHost { get; private set; } = false;
+
 		public string DialogHostId { get; } = "ActGeneratorDialogHost";
 
 		public IEnumerable<Project> ProjectsList => projectsList;
@@ -124,13 +126,18 @@ namespace ActGenerator.ViewModel
 			List<Project> projects = new List<Project>(dbProjects.Where(x => !ProjectsList.Contains(x)));
 			projects.RemoveAll(x => ProjectsList.Contains(x));
 			listSelectorViewModel.SetItems(projects);
+			IsOpenActGeneratorDialogHost = true;
 			await DialogHost.Show(listSelector, DialogHostId);
-			if (listSelectorViewModel.IsAddingPressed && listSelectorViewModel.SelectedItems != null)
+			if (IsOpenActGeneratorDialogHost)
 			{
-				listSelectorViewModel.SelectedItems
-					.Cast<Project>()
-					.ToList()
-					.ForEach(AddProjectToStack);
+				IsOpenActGeneratorDialogHost = false;
+				if (listSelectorViewModel.IsAddingPressed && listSelectorViewModel.SelectedItems != null)
+				{
+					listSelectorViewModel.SelectedItems
+						.Cast<Project>()
+						.ToList()
+						.ForEach(AddProjectToStack);
+				}
 			}
 		}
 
@@ -151,8 +158,9 @@ namespace ActGenerator.ViewModel
 		public Command CloseOpenedDialog { get; private set; }
 		private void OnCloseOpenedDialogExecute()
 		{
-			if(DialogHost.IsDialogOpen(DialogHostId))
+			if(IsOpenActGeneratorDialogHost)
 			{
+				IsOpenActGeneratorDialogHost = false;
 				DialogHost.Close(DialogHostId);
 			}
 		}
@@ -219,10 +227,15 @@ namespace ActGenerator.ViewModel
 			List<Human> humen = new List<Human>(dbHumans.Where(x => !HumanList.Select(y => y.Context).Contains(x)));
 			humen.RemoveAll(x => HumanList.Select(y => y.Context).Contains(x));
 			listSelectorViewModel.SetItems(humen);
+			IsOpenActGeneratorDialogHost = true;
 			await DialogHost.Show(listSelector, DialogHostId);
-			if(listSelectorViewModel.IsAddingPressed && listSelectorViewModel.SelectedItems != null)
+			if (IsOpenActGeneratorDialogHost)
 			{
-				HumanList.AddRange(listSelectorViewModel.SelectedItems.Cast<Human>().Select(x => new HumanDataContext(x)));
+				IsOpenActGeneratorDialogHost = false;
+				if (listSelectorViewModel.IsAddingPressed && listSelectorViewModel.SelectedItems != null)
+				{
+					HumanList.AddRange(listSelectorViewModel.SelectedItems.Cast<Human>().Select(x => new HumanDataContext(x)));
+				}
 			}
 		}
 

@@ -20,7 +20,6 @@ namespace ProjectEditorLib.ViewModel
 	public class ProjectEditViewModel : DependencyObject
 	{
 		ProjectEditModel model = new ProjectEditModel();
-		ViewModelState state = ViewModelState.Initialized;
 
 		UIElementCollection optionsView = null;
 		int selectedViewTabIndex = -1;
@@ -81,8 +80,6 @@ namespace ProjectEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty NeedCreateProjectProperty = DependencyProperty.Register(nameof(NeedCreateProject), typeof(bool), typeof(ProjectEditViewModel));
 
-		public ObservableRangeCollection<Project> ProjectList { get; private set; } = new ObservableRangeCollection<Project>();
-
 		public Project SelectedEditProject
 		{
 			get { return (Project)GetValue(SelectedEditProjectProperty); }
@@ -112,8 +109,6 @@ namespace ProjectEditorLib.ViewModel
 			EditProject = new Command(OnEditProjectExecute, CanExecuteEditProject);
 			BindDependedObjCreateProject = new Command<DependencyObject>(OnBindDependedObjCreateProjectExecute);
 			BindDependedObjEditProject = new Command<DependencyObject>(OnBindDependedObjEditProjectExecute);
-			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
-			BackToProjectSelecting = new Command(OnBackToProjectSelectingExecute);
 			CollapseAllTree = new Command(OnCollapseAllTreeExecute);
 			Save = new Command(OnSaveExecute, CanExecuteSave);
 			BindSnackbar = new Command<Snackbar>(OnBindSnackbarExecute);
@@ -203,7 +198,6 @@ namespace ProjectEditorLib.ViewModel
 				if (NeedCreateProject)
 					await CreateProject();
 
-				await EditSelectedProject();
 				ProjectSelected = true;
 			}
 		}
@@ -218,29 +212,6 @@ namespace ProjectEditorLib.ViewModel
 		private void OnBindDependedObjEditProjectExecute(DependencyObject dependencyObject)
 		{
 			dependedObjEditProject = dependencyObject;
-		}
-
-		public Command LoadFromDatabase { get; private set; }
-		private async void OnLoadFromDatabaseExecute()
-		{
-			if(state == ViewModelState.Initialized)
-			{
-				state = ViewModelState.Loading;
-				await model.ConnectDB();
-				ProjectList.AddRange(await model.LoadProjects());
-				await model.DisconnectDB();
-				state = ViewModelState.Loaded;
-			}
-		}
-
-		public Command BackToProjectSelecting { get; private set; }
-		private void OnBackToProjectSelectingExecute()
-		{
-			if (CheckHaveUnsavedChangesAndSave())
-			{
-				TreeItems.Clear();
-				ProjectSelected = false;
-			}
 		}
 
 		public Command CollapseAllTree { get; private set; }
@@ -292,7 +263,6 @@ namespace ProjectEditorLib.ViewModel
 					SelectedEditProject = null;
 					SelectedEditProject = (Project)nodeModel.Context;
 					SelectedOptionsViewModel.SetFromContext(nodeModel.Context);
-					ProjectList.UpdateCollection();
 				}
 			}
 		}
@@ -347,16 +317,13 @@ namespace ProjectEditorLib.ViewModel
 			project = await model.CreateProject(project);
 			await model.DisconnectDB();
 			CreationProjectName = string.Empty;
-			ProjectList.Add(project);
 			SelectedEditProject = project;
 			NeedCreateProject = false;
 		}
 
-		private async Task EditSelectedProject()
+		public async Task LoadProject()
 		{
-			TreeItems.SuppressingNotifications = true;
 			TreeItems.Clear();
-			TreeItems.SuppressingNotifications = false;
 			TreeViewItem projectTreeItem = CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject, null);
 			TreeItems.Add(projectTreeItem);
 

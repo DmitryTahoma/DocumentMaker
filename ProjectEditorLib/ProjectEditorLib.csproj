@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\ProjectNodeTypeToPackIconKindConverter.cs" />
+    <Compile Include="Model\Dialogs\SelectProjectDialogModel.cs" />
     <Compile Include="Model\NodeContextMenuItemType.cs" />
     <Compile Include="Model\ProjectEditModel.cs" />
     <Compile Include="Model\ProjectModel.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="ViewModel\AlternativeProjectNameViewModel.cs" />
     <Compile Include="ViewModel\BackViewModel.cs" />
     <Compile Include="ViewModel\BaseDbObjectViewModel.cs" />
+    <Compile Include="ViewModel\Controls\SelectProjectDialogViewModel.cs" />
     <Compile Include="ViewModel\CraftViewModel.cs" />
     <Compile Include="ViewModel\DialogViewModel.cs" />
     <Compile Include="ViewModel\EpisodeViewModel.cs" />
@@ -107,6 +109,9 @@
     </Compile>
     <Compile Include="View\CraftView.xaml.cs">
       <DependentUpon>CraftView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\SelectProjectDialog.xaml.cs">
+      <DependentUpon>SelectProjectDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
@@ -168,6 +173,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\CraftView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Dialogs\SelectProjectDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

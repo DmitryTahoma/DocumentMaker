@@ -26,36 +26,41 @@
         <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
     </Window.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
+    <materialDesign:DialogHost CloseOnClickAway="True" Identifier="{Binding DialogHostId}">
 
-        <Menu>
-            <MenuItem Header="Меню" Icon="{materialDesign:PackIcon Kind=Menu}">
-                <MenuItem Command="{Binding ShowGeneratorTab}" Header="Генератор" />
-                <MenuItem Header="Проект">
-                    <MenuItem Command="{Binding OpenProject}" Header="Відкрити" />
-                    <MenuItem Command="{Binding CreateProject}" Header="Створити" />
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Menu>
+                <MenuItem Header="Меню" Icon="{materialDesign:PackIcon Kind=Menu}">
+                    <MenuItem Command="{Binding ShowGeneratorTab}" Header="Генератор" />
+                    <MenuItem Header="Проект">
+                        <MenuItem Command="{Binding OpenProject}" Header="Відкрити" />
+                        <MenuItem Command="{Binding CreateProject}" Header="Створити" />
+                    </MenuItem>
                 </MenuItem>
-            </MenuItem>
-        </Menu>
+            </Menu>
 
-        <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            <TabItem Visibility="Collapsed">
-                <local:ActGeneratorView x:Name="ActGeneratorControl" />
-            </TabItem>
-            <TabItem Visibility="Collapsed">
-                <projectEditor:ProjectEdit />
-            </TabItem>
-        </TabControl>
-    </Grid>
+            <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <TabItem Visibility="Collapsed">
+                    <local:ActGeneratorView x:Name="ActGeneratorControl" />
+                </TabItem>
+                <TabItem Visibility="Collapsed">
+                    <projectEditor:ProjectEdit x:Name="ProjectEditor" />
+                </TabItem>
+            </TabControl>
+        </Grid>
+
+    </materialDesign:DialogHost>
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding BindActGenerator}" CommandParameter="{Binding ElementName=ActGeneratorControl, Path=DataContext}" />
             <i:InvokeCommandAction Command="{Binding LoadSession}" CommandParameter="{Binding ElementName=WindowView}" />
+            <i:InvokeCommandAction Command="{Binding BindProjectEditor}" CommandParameter="{Binding ElementName=ProjectEditor, Path=DataContext}" />
         </i:EventTrigger>
         <i:EventTrigger EventName="Closed">
             <i:InvokeCommandAction Command="{Binding SaveSession}" CommandParameter="{Binding ElementName=WindowView}" />

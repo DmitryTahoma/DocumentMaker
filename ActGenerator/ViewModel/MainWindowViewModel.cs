@@ -1,6 +1,10 @@
 ﻿using ActGenerator.Model;
 using Dml.Controller.Validation;
+using MaterialDesignThemes.Wpf;
 using Mvvm.Commands;
+using ProjectEditorLib.View.Dialogs;
+using ProjectEditorLib.ViewModel;
+using ProjectEditorLib.ViewModel.Controls;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -11,10 +15,14 @@ namespace ActGenerator.ViewModel
 	{
 		ActGeneratorSession model = new ActGeneratorSession();
 		ActGeneratorViewModel actGeneratorViewModel = null;
+		ProjectEditViewModel projectEditViewModel = null;
+
+		SelectProjectDialog selectProjectDialog = new SelectProjectDialog();
 
 		public MainWindowViewModel()
 		{
 			InitCommands();
+			((SelectProjectDialogViewModel)selectProjectDialog.DataContext).DialogHostId = DialogHostId;
 		}
 
 		#region Properties
@@ -25,6 +33,8 @@ namespace ActGenerator.ViewModel
 			set { SetValue(SelectedTabIndexProperty, value); }
 		}
 		public static readonly DependencyProperty SelectedTabIndexProperty = DependencyProperty.Register(nameof(SelectedTabIndex), typeof(int), typeof(MainWindowViewModel));
+
+		public string DialogHostId => "TopDialogHost";
 
 		#endregion
 
@@ -38,6 +48,7 @@ namespace ActGenerator.ViewModel
 			ShowGeneratorTab = new Command(OnShowGeneratorTabExecute);
 			OpenProject = new Command(OnOpenProjectExecute);
 			CreateProject = new Command(OnCreateProjectExecute);
+			BindProjectEditor = new Command<ProjectEditViewModel>(OnBindProjectEditorExecute);
 		}
 
 		public Command<MainWindow> LoadSession { get; private set; }
@@ -98,15 +109,28 @@ namespace ActGenerator.ViewModel
 		}
 
 		public Command OpenProject { get; private set; }
-		private void OnOpenProjectExecute()
+		private async void OnOpenProjectExecute()
 		{
-			SelectedTabIndex = 1;
+			actGeneratorViewModel.CloseOpenedDialog.Execute();
+			await DialogHost.Show(selectProjectDialog, DialogHostId);
+			if(selectProjectDialog.DataContext is SelectProjectDialogViewModel selectProjectDialogDataContext && selectProjectDialogDataContext.IsOpen)
+			{
+				projectEditViewModel.SelectedEditProject = selectProjectDialogDataContext.SelectedProject;
+				SelectedTabIndex = 1;
+				await projectEditViewModel.LoadProject();
+			}
 		}
 
 		public Command CreateProject { get; private set; }
 		private void OnCreateProjectExecute()
 		{
 			SelectedTabIndex = 1;
+		}
+
+		public Command<ProjectEditViewModel> BindProjectEditor { get; private set; }
+		private void OnBindProjectEditorExecute(ProjectEditViewModel projectEdit)
+		{
+			projectEditViewModel = projectEdit;
 		}
 
 		#endregion

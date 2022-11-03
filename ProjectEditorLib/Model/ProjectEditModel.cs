@@ -26,11 +26,6 @@ namespace ProjectEditorLib.Model
 			await Task.Run(ReleaseContext);
 		}
 
-		public async Task<IEnumerable<Project>> LoadProjects()
-		{
-			return await Task.Run(() => new List<Project>(db.Projects));
-		}
-
 		public async Task<Project> CreateProject(Project project)
 		{
 			return await Task.Run(() =>

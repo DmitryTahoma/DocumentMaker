@@ -44,89 +44,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <Grid
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Visibility="{Binding ProjectSelected, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-
-            <TextBlock
-                x:Name="CreateProjectTextBlock"
-                Margin="5"
-                Text="Створити" />
-            <ToggleButton
-                x:Name="ChooseProjectToggleButton"
-                Grid.Column="1"
-                Margin="5"
-                IsChecked="{Binding NeedCreateProject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
-                Style="{StaticResource MaterialDesignSwitchToggleButton}" />
-            <TextBlock
-                x:Name="EditProjectTextBlock"
-                Grid.Column="2"
-                Margin="5"
-                Text="Редагувати" />
-
-            <ComboBox
-                x:Name="EditProjectComboBox"
-                Grid.Row="1"
-                Grid.ColumnSpan="3"
-                materialDesign:HintAssist.Hint="Оберіть проект"
-                DisplayMemberPath="Name"
-                ItemsSource="{Binding ProjectList, Mode=OneWay}"
-                Style="{StaticResource MiddleComboBox}"
-                Visibility="{Binding ElementName=ChooseProjectToggleButton, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverterHidden}}">
-                <ComboBox.SelectedItem>
-                    <Binding
-                        Mode="TwoWay"
-                        Path="SelectedEditProject"
-                        UpdateSourceTrigger="PropertyChanged">
-                        <Binding.ValidationRules>
-                            <validationRules:NotNullValidationRule />
-                        </Binding.ValidationRules>
-                    </Binding>
-                </ComboBox.SelectedItem>
-            </ComboBox>
-            <TextBox
-                x:Name="CreationProjectNameTextBox"
-                Grid.Row="1"
-                Grid.ColumnSpan="3"
-                materialDesign:HintAssist.Hint="Назва проекту"
-                Style="{StaticResource MiddleTextBox}"
-                Visibility="{Binding ElementName=ChooseProjectToggleButton, Path=IsChecked, Converter={StaticResource InverseBooleanToVisibilityConverterHidden}}">
-                <TextBox.Text>
-                    <Binding
-                        Mode="TwoWay"
-                        Path="CreationProjectName"
-                        UpdateSourceTrigger="PropertyChanged">
-                        <Binding.ValidationRules>
-                            <validationRules:NotEmptyValidationRule />
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>
-            </TextBox>
-
-            <Button
-                Grid.Row="2"
-                Grid.ColumnSpan="3"
-                Command="{Binding EditProject}"
-                Style="{StaticResource MaterialDesignPaperDarkButton}">
-                <Grid>
-                    <TextBlock Text="{Binding ElementName=CreateProjectTextBlock, Path=Text, Mode=OneWay}" Visibility="{Binding ElementName=ChooseProjectToggleButton, Path=IsChecked, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
-                    <TextBlock Text="{Binding ElementName=EditProjectTextBlock, Path=Text, Mode=OneWay}" Visibility="{Binding ElementName=ChooseProjectToggleButton, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                </Grid>
-            </Button>
-
-        </Grid>
-        <Grid Visibility="{Binding ProjectSelected, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="auto" />
@@ -139,15 +57,6 @@
 
             <ToolBarTray IsLocked="True">
                 <ToolBar Style="{StaticResource MaterialDesignToolBar}">
-                    <Button
-                        Command="{Binding BackToProjectSelecting}"
-                        Style="{StaticResource ToolBarButton}"
-                        ToolTip="Повернутися">
-                        <materialDesign:PackIcon
-                            Width="18"
-                            Height="18"
-                            Kind="ArrowLeftCircle" />
-                    </Button>
                     <Button
                         Command="{Binding CollapseAllTree}"
                         Style="{StaticResource ToolBarButton}"
@@ -209,7 +118,6 @@
             <i:InvokeCommandAction Command="{Binding BindOptionsView}" CommandParameter="{Binding ElementName=OptionsView, Path=Children}" />
             <i:InvokeCommandAction Command="{Binding BindDependedObjCreateProject}" CommandParameter="{Binding ElementName=CreationProjectNameTextBox}" />
             <i:InvokeCommandAction Command="{Binding BindDependedObjEditProject}" CommandParameter="{Binding ElementName=EditProjectComboBox}" />
-            <i:InvokeCommandAction Command="{Binding LoadFromDatabase}" />
 
             <i:InvokeCommandAction Command="{Binding BindSnackbar}" CommandParameter="{Binding ElementName=ProjectEditSnackbar}" />
             <i:InvokeCommandAction Command="{Binding SendSnackbar}" CommandParameter="{Binding ElementName=ProjectViewControl}" />
