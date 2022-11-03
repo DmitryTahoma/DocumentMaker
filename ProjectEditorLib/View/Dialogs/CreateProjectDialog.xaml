@@ -1,0 +1,82 @@
+﻿<UserControl
+    x:Class="ProjectEditorLib.View.Dialogs.CreateProjectDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:validationRules="clr-namespace:Mvvm.ValidationRules;assembly=Mvvm"
+    xmlns:vm="clr-namespace:ProjectEditorLib.ViewModel.Controls"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <UserControl.DataContext>
+        <vm:CreateProjectDialogViewModel />
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
+    </UserControl.Resources>
+
+    <Grid x:Name="MainGrid" Style="{StaticResource DialogGrid}">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+            Text="Створення нового проекту" />
+
+        <TextBox
+            x:Name="ProjectNameTextBox"
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            materialDesign:HintAssist.Hint="Назва"
+            Style="{StaticResource MiddleTextBox}">
+            <TextBox.Text>
+                <Binding
+                    Mode="TwoWay"
+                    Path="ProjectName"
+                    UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <validationRules:NotEmptyValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+        <Button
+            Grid.Row="2"
+            Command="{Binding CreateProject}"
+            Content="Продовжити"
+            Style="{StaticResource DialogButton}" />
+
+        <Button
+            Grid.Row="2"
+            Grid.Column="1"
+            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+            Content="Скасувати"
+            Style="{StaticResource DialogButton}" />
+
+    </Grid>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding BindValidateObj}" CommandParameter="{Binding ElementName=MainGrid}" />
+            <i:InvokeCommandAction Command="{Binding OnDialogLoaded}" />
+            <i:InvokeCommandAction Command="{Binding SetFocus}" CommandParameter="{Binding ElementName=ProjectNameTextBox}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+</UserControl>

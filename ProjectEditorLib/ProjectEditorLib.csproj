@@ -90,6 +90,7 @@
     <Compile Include="ViewModel\AlternativeProjectNameViewModel.cs" />
     <Compile Include="ViewModel\BackViewModel.cs" />
     <Compile Include="ViewModel\BaseDbObjectViewModel.cs" />
+    <Compile Include="ViewModel\Controls\CreateProjectDialogViewModel.cs" />
     <Compile Include="ViewModel\Controls\SelectProjectDialogViewModel.cs" />
     <Compile Include="ViewModel\CraftViewModel.cs" />
     <Compile Include="ViewModel\DialogViewModel.cs" />
@@ -109,6 +110,9 @@
     </Compile>
     <Compile Include="View\CraftView.xaml.cs">
       <DependentUpon>CraftView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\CreateProjectDialog.xaml.cs">
+      <DependentUpon>CreateProjectDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Dialogs\SelectProjectDialog.xaml.cs">
       <DependentUpon>SelectProjectDialog.xaml</DependentUpon>
@@ -173,6 +177,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\CraftView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Dialogs\CreateProjectDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

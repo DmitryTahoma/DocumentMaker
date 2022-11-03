@@ -18,11 +18,13 @@ namespace ActGenerator.ViewModel
 		ProjectEditViewModel projectEditViewModel = null;
 
 		SelectProjectDialog selectProjectDialog = new SelectProjectDialog();
+		CreateProjectDialog createProjectDialog = new CreateProjectDialog();
 
 		public MainWindowViewModel()
 		{
 			InitCommands();
 			((SelectProjectDialogViewModel)selectProjectDialog.DataContext).DialogHostId = DialogHostId;
+			((CreateProjectDialogViewModel)createProjectDialog.DataContext).DialogHostId = DialogHostId;
 		}
 
 		#region Properties
@@ -122,9 +124,17 @@ namespace ActGenerator.ViewModel
 		}
 
 		public Command CreateProject { get; private set; }
-		private void OnCreateProjectExecute()
+		private async void OnCreateProjectExecute()
 		{
-			SelectedTabIndex = 1;
+			actGeneratorViewModel.CloseOpenedDialog.Execute();
+			await DialogHost.Show(createProjectDialog, DialogHostId);
+			if(createProjectDialog.DataContext is CreateProjectDialogViewModel createProjectDialogViewModel && createProjectDialogViewModel.IsCreate)
+			{
+				projectEditViewModel.CreationProjectName = createProjectDialogViewModel.ProjectName;
+				SelectedTabIndex = 1;
+				await projectEditViewModel.CreateProject();
+				await projectEditViewModel.LoadProject();
+			}
 		}
 
 		public Command<ProjectEditViewModel> BindProjectEditor { get; private set; }

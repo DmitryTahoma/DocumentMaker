@@ -73,13 +73,6 @@ namespace ProjectEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty ProjectSelectedProperty = DependencyProperty.Register(nameof(ProjectSelected), typeof(bool), typeof(ProjectEditViewModel));
 
-		public bool NeedCreateProject
-		{
-			get { return (bool)GetValue(NeedCreateProjectProperty); }
-			set { SetValue(NeedCreateProjectProperty, value); }
-		}
-		public static readonly DependencyProperty NeedCreateProjectProperty = DependencyProperty.Register(nameof(NeedCreateProject), typeof(bool), typeof(ProjectEditViewModel));
-
 		public Project SelectedEditProject
 		{
 			get { return (Project)GetValue(SelectedEditProjectProperty); }
@@ -106,7 +99,6 @@ namespace ProjectEditorLib.ViewModel
 			RemoveTreeViewItemCommand = new Command<TreeViewItem>(OnRemoveTreeViewItemCommandExecute);
 			ChangeNodeOptionsView = new Command<TreeViewItem>(OnChangeNodeOptionsViewExecute);
 			BindOptionsView = new Command<UIElementCollection>(OnBindOptionsViewExecute);
-			EditProject = new Command(OnEditProjectExecute, CanExecuteEditProject);
 			BindDependedObjCreateProject = new Command<DependencyObject>(OnBindDependedObjCreateProjectExecute);
 			BindDependedObjEditProject = new Command<DependencyObject>(OnBindDependedObjEditProjectExecute);
 			CollapseAllTree = new Command(OnCollapseAllTreeExecute);
@@ -182,23 +174,6 @@ namespace ProjectEditorLib.ViewModel
 			{
 				optionsView = collection;
 				SelectedViewTabIndex = -1;
-			}
-		}
-
-		public Command EditProject { get; private set; }
-		private async void OnEditProjectExecute()
-		{
-			DependencyObject invalid = ValidationHelper.GetFirstInvalid(NeedCreateProject ? dependedObjCreateProject : dependedObjEditProject, true);
-			if (invalid != null)
-			{
-				(invalid as UIElement)?.Focus();
-			}
-			else 
-			{
-				if (NeedCreateProject)
-					await CreateProject();
-
-				ProjectSelected = true;
 			}
 		}
 
@@ -304,13 +279,7 @@ namespace ProjectEditorLib.ViewModel
 			return null;
 		}
 
-		private bool CanExecuteEditProject()
-		{
-			DependencyObject currentDependedObj = NeedCreateProject ? dependedObjCreateProject : dependedObjEditProject;
-			return currentDependedObj != null && ValidationHelper.IsValid(currentDependedObj);
-		}
-
-		private async Task CreateProject()
+		public async Task CreateProject()
 		{
 			Project project = new Project { Name = CreationProjectName };
 			await model.ConnectDB();
@@ -318,7 +287,6 @@ namespace ProjectEditorLib.ViewModel
 			await model.DisconnectDB();
 			CreationProjectName = string.Empty;
 			SelectedEditProject = project;
-			NeedCreateProject = false;
 		}
 
 		public async Task LoadProject()
