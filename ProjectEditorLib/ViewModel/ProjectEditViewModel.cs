@@ -166,6 +166,7 @@ namespace ProjectEditorLib.ViewModel
 			if (selectedView < 0) selectedView = 0;
 			SelectedViewTabIndex = selectedView;
 			IDbObject modelContext = nodeHeaderViewModel.GetModel().Context;
+			SelectedProjectNodeType = nodeHeaderViewModel.GetModel().Type;
 			SelectedOptionsViewModel.SetFromContext(modelContext);
 			SelectedOptionsViewModel.HaveUnsavedChanges = modelContext == null;
 		}
@@ -256,6 +257,13 @@ namespace ProjectEditorLib.ViewModel
 				RemoveTreeViewItemCommand.Execute(SelectedTreeViewItem);
 			}
 		}
+
+		public ProjectNodeType SelectedProjectNodeType
+		{
+			get { return (ProjectNodeType)GetValue(SelectedProjectNodeTypeProperty); }
+			set { SetValue(SelectedProjectNodeTypeProperty, value); }
+		}
+		public static readonly DependencyProperty SelectedProjectNodeTypeProperty = DependencyProperty.Register(nameof(SelectedProjectNodeType), typeof(ProjectNodeType), typeof(ProjectEditViewModel));
 
 		#endregion
 

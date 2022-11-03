@@ -40,6 +40,7 @@
                 FalseValue="Visible"
                 TrueValue="Hidden" />
             <mvvmConverters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
+            <myConverters:ProjectNodeTypeToStringConverter x:Key="ProjectNodeTypeToStringConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -85,11 +86,18 @@
 
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
                 <RowDefinition />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <Grid x:Name="OptionsView">
+            <ToolBarTray IsLocked="True">
+                <ToolBar Style="{StaticResource MaterialDesignToolBar}">
+                    <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding SelectedProjectNodeType, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ProjectNodeTypeToStringConverter}}" />
+                </ToolBar>
+            </ToolBarTray>
+
+            <Grid x:Name="OptionsView" Grid.Row="1">
                 <local:ProjectView x:Name="ProjectViewControl" />
                 <local:EpisodeView />
                 <local:BackView />
@@ -100,7 +108,7 @@
                 <local:RegionsView />
             </Grid>
 
-            <Grid Grid.Row="1" Visibility="{Binding HaveUnsavedChanges, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid Grid.Row="2" Visibility="{Binding HaveUnsavedChanges, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
