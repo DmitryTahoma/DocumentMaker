@@ -44,12 +44,14 @@
     </UserControl.Resources>
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="50" />
+        </Grid.ColumnDefinitions>
+
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition />
@@ -73,32 +75,21 @@
                 Grid.Row="1"
                 MinWidth="220"
                 ItemsSource="{Binding TreeItems}" />
+        </Grid>
 
-            <GridSplitter
-                Grid.RowSpan="2"
-                Grid.Column="1"
-                Width="5"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Stretch" />
+        <GridSplitter
+            Grid.Column="1"
+            Width="5"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Stretch" />
 
-            <ToolBarTray Grid.Column="2" IsLocked="True">
-                <ToolBar Style="{StaticResource MaterialDesignToolBar}">
-                    <Button
-                        Command="{Binding Save}"
-                        Style="{StaticResource ToolBarButton}"
-                        ToolTip="Зберегти">
-                        <materialDesign:PackIcon
-                            Width="18"
-                            Height="18"
-                            Kind="ContentSaveOutline" />
-                    </Button>
-                </ToolBar>
-            </ToolBarTray>
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
 
-            <Grid
-                x:Name="OptionsView"
-                Grid.Row="1"
-                Grid.Column="2">
+            <Grid x:Name="OptionsView">
                 <local:ProjectView x:Name="ProjectViewControl" />
                 <local:EpisodeView />
                 <local:BackView />
@@ -108,16 +99,34 @@
                 <local:MinigameView />
                 <local:RegionsView />
             </Grid>
+
+            <Grid Grid.Row="1" Visibility="{Binding HaveUnsavedChanges, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Button
+                    Command="{Binding Save}"
+                    Content="Зберегти"
+                    Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding CancelChanges}"
+                    Content="Скасувати"
+                    Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
+            </Grid>
         </Grid>
 
-        <materialDesign:Snackbar x:Name="ProjectEditSnackbar" MessageQueue="{materialDesign:MessageQueue}" />
+        <materialDesign:Snackbar
+            x:Name="ProjectEditSnackbar"
+            Grid.ColumnSpan="3"
+            MessageQueue="{materialDesign:MessageQueue}" />
     </Grid>
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding BindOptionsView}" CommandParameter="{Binding ElementName=OptionsView, Path=Children}" />
-            <i:InvokeCommandAction Command="{Binding BindDependedObjCreateProject}" CommandParameter="{Binding ElementName=CreationProjectNameTextBox}" />
-            <i:InvokeCommandAction Command="{Binding BindDependedObjEditProject}" CommandParameter="{Binding ElementName=EditProjectComboBox}" />
 
             <i:InvokeCommandAction Command="{Binding BindSnackbar}" CommandParameter="{Binding ElementName=ProjectEditSnackbar}" />
             <i:InvokeCommandAction Command="{Binding SendSnackbar}" CommandParameter="{Binding ElementName=ProjectViewControl}" />

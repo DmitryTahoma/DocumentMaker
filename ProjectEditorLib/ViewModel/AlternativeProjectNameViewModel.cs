@@ -49,6 +49,7 @@ namespace ProjectEditorLib.ViewModel
 			{
 				AltProjectName = alternativeName.Name;
 				model = alternativeName.Id;
+				context = alternativeName;
 			}
 			else
 			{

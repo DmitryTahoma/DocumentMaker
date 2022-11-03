@@ -34,6 +34,7 @@ namespace ProjectEditorLib.ViewModel
 			{
 				MinigameName = minigame.Name;
 				MinigameNumberText = minigame.Number.ToString();
+				context = minigame;
 			}
 			else
 			{
@@ -60,6 +61,7 @@ namespace ProjectEditorLib.ViewModel
 				minigame.Name = MinigameName;
 				minigame.Number = float.Parse(MinigameNumberText);
 				dbObject = minigame;
+				context = minigame;
 			}
 
 			return dbObject;

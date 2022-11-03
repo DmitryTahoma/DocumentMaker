@@ -39,6 +39,7 @@ namespace ProjectEditorLib.ViewModel
 				back.Name = CraftName;
 
 				dbObject = back;
+				context = back;
 			}
 
 			return dbObject;
@@ -49,6 +50,7 @@ namespace ProjectEditorLib.ViewModel
 			if (dbObject is Back back)
 			{
 				CraftName = back.Name;
+				context = back;
 			}
 			else
 			{

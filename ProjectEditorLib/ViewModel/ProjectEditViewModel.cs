@@ -24,9 +24,6 @@ namespace ProjectEditorLib.ViewModel
 		UIElementCollection optionsView = null;
 		int selectedViewTabIndex = -1;
 
-		DependencyObject dependedObjCreateProject = null;
-		DependencyObject dependedObjEditProject = null;
-
 		Snackbar snackbar = null;
 
 		public ProjectEditViewModel()
@@ -89,6 +86,13 @@ namespace ProjectEditorLib.ViewModel
 
 		public TreeViewItem SelectedTreeViewItem { get; private set; } = null;
 
+		public bool HaveUnsavedChanges
+		{
+			get { return (bool)GetValue(HaveUnsavedChangesProperty); }
+			set { SetValue(HaveUnsavedChangesProperty, value); }
+		}
+		public static readonly DependencyProperty HaveUnsavedChangesProperty = DependencyProperty.Register(nameof(HaveUnsavedChanges), typeof(bool), typeof(ProjectEditViewModel));
+
 		#endregion
 
 		#region Commands
@@ -99,12 +103,11 @@ namespace ProjectEditorLib.ViewModel
 			RemoveTreeViewItemCommand = new Command<TreeViewItem>(OnRemoveTreeViewItemCommandExecute);
 			ChangeNodeOptionsView = new Command<TreeViewItem>(OnChangeNodeOptionsViewExecute);
 			BindOptionsView = new Command<UIElementCollection>(OnBindOptionsViewExecute);
-			BindDependedObjCreateProject = new Command<DependencyObject>(OnBindDependedObjCreateProjectExecute);
-			BindDependedObjEditProject = new Command<DependencyObject>(OnBindDependedObjEditProjectExecute);
 			CollapseAllTree = new Command(OnCollapseAllTreeExecute);
 			Save = new Command(OnSaveExecute, CanExecuteSave);
 			BindSnackbar = new Command<Snackbar>(OnBindSnackbarExecute);
 			SendSnackbar = new Command<FrameworkElement>(OnSendSnackbarExecute);
+			CancelChanges = new Command(OnCancelChangesExecute);
 		}
 
 		public Command<KeyValuePair<TreeViewItem, ProjectNodeType>> AddTreeViewItemCommand { get; private set; }
@@ -177,18 +180,6 @@ namespace ProjectEditorLib.ViewModel
 			}
 		}
 
-		public Command<DependencyObject> BindDependedObjCreateProject { get; private set; }
-		private void OnBindDependedObjCreateProjectExecute(DependencyObject dependencyObject)
-		{
-			dependedObjCreateProject = dependencyObject;
-		}
-
-		public Command<DependencyObject> BindDependedObjEditProject { get; private set; }
-		private void OnBindDependedObjEditProjectExecute(DependencyObject dependencyObject)
-		{
-			dependedObjEditProject = dependencyObject;
-		}
-
 		public Command CollapseAllTree { get; private set; }
 		private void OnCollapseAllTreeExecute()
 		{
@@ -254,6 +245,15 @@ namespace ProjectEditorLib.ViewModel
 			if(target.DataContext is ISnackbarRequired targetObj)
 			{
 				targetObj.SetSnackbar(snackbar);
+			}
+		}
+
+		public Command CancelChanges { get; private set; }
+		private void OnCancelChangesExecute()
+		{
+			if(!SelectedOptionsViewModel.CancelChanges())
+			{
+				RemoveTreeViewItemCommand.Execute(SelectedTreeViewItem);
 			}
 		}
 
@@ -468,7 +468,8 @@ namespace ProjectEditorLib.ViewModel
 
 		private bool CanExecuteSave()
 		{
-			return SelectedViewTabIndex != -1 && SelectedOptionsViewModel.HaveUnsavedChanges && ValidationHelper.IsValid(SelectedOptionsView);
+			HaveUnsavedChanges = SelectedViewTabIndex != -1 && SelectedOptionsViewModel.HaveUnsavedChanges;
+			return HaveUnsavedChanges && ValidationHelper.IsValid(SelectedOptionsView);
 		}
 
 		private bool CheckHaveUnsavedChangesAndSave()

@@ -122,6 +122,7 @@ namespace ProjectEditorLib.ViewModel
 						altProjectNameViewModel.SetFromContext(projectAlternativeNamesEnum.Current);
 					}
 				}
+				context = project;
 			}
 			else
 			{
@@ -154,6 +155,7 @@ namespace ProjectEditorLib.ViewModel
 				project.AlternativeNames = currentAlternativeProjectNames;
 
 				dbObject = project;
+				context = project;
 			}
 
 			return dbObject;

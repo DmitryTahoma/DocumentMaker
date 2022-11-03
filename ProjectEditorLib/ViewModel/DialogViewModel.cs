@@ -34,6 +34,7 @@ namespace ProjectEditorLib.ViewModel
 			{
 				DialogNumberText = dialog.Number.ToString();
 				DialogName = dialog.Name;
+				context = dialog;
 			}
 			else
 			{
@@ -60,6 +61,7 @@ namespace ProjectEditorLib.ViewModel
 				dialog.Name = DialogName;
 				dialog.Number = float.Parse(DialogNumberText);
 				dbObject = dialog;
+				context = dialog;
 			}
 
 			return dbObject;

@@ -46,6 +46,7 @@ namespace ProjectEditorLib.ViewModel
 				episode.Name = EpisodeName;
 				episode.Number = int.Parse(EpisodeNumber);
 				dbObject = episode;
+				context = episode;
 			}
 
 			return dbObject;
@@ -57,6 +58,7 @@ namespace ProjectEditorLib.ViewModel
 			{
 				EpisodeName = episode.Name;
 				EpisodeNumber = episode.Number.ToString();
+				context = episode;
 			}
 			else
 			{

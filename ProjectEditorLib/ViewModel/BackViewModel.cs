@@ -44,6 +44,7 @@ namespace ProjectEditorLib.ViewModel
 				BackNumberText = back.Number.ToString();
 				BackName = back.Name;
 				CountRegionsText = back.Regions?.FirstOrDefault().Count.ToString();
+				context = back;
 			}
 			else
 			{
@@ -85,6 +86,7 @@ namespace ProjectEditorLib.ViewModel
 				regions.Count = int.Parse(CountRegionsText);
 
 				dbObject = back;
+				context = back;
 			}
 
 			return dbObject;

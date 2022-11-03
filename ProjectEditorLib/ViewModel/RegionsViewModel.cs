@@ -26,6 +26,7 @@ namespace ProjectEditorLib.ViewModel
 			if(dbObject is CountRegions regions)
 			{
 				CountText = regions.Count.ToString();
+				context = regions;
 			}
 			else
 			{
@@ -50,6 +51,7 @@ namespace ProjectEditorLib.ViewModel
 			{
 				regions.Count = int.Parse(CountText);
 				dbObject = regions;
+				context = regions;
 			}
 
 			return dbObject;

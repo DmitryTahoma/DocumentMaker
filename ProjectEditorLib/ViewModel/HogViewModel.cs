@@ -44,6 +44,7 @@ namespace ProjectEditorLib.ViewModel
 				HogNumberText = hog.Number.ToString();
 				HogName = hog.Name;
 				CountRegionsText = hog.Regions?.FirstOrDefault().Count.ToString();
+				context = hog;
 			}
 			else
 			{
@@ -85,6 +86,7 @@ namespace ProjectEditorLib.ViewModel
 				regions.Count = int.Parse(CountRegionsText);
 
 				dbObject = hog;
+				context = hog;
 			}
 
 			return dbObject;

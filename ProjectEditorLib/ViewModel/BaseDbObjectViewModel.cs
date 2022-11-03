@@ -6,6 +6,8 @@ namespace ProjectEditorLib.ViewModel
 {
 	public abstract class BaseDbObjectViewModel : DependencyObject, IDbObjectViewModel
 	{
+		protected IDbObject context = null;
+
 		public BaseDbObjectViewModel()
 		{
 			InitCommands();
@@ -41,6 +43,16 @@ namespace ProjectEditorLib.ViewModel
 
 		public abstract IDbObject UpdateContext(IDbObject dbObject);
 		public abstract void SetFromContext(IDbObject dbObject);
+		public virtual bool CancelChanges()
+		{
+			if(context != null)
+			{
+				SetFromContext(context);
+				HaveUnsavedChanges = false;
+				return true;
+			}
+			return false;
+		}
 
 		#endregion
 	}

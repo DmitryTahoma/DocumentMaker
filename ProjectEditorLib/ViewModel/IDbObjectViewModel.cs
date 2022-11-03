@@ -7,5 +7,6 @@ namespace ProjectEditorLib.ViewModel
 		bool HaveUnsavedChanges { get; set; }
 		IDbObject UpdateContext(IDbObject dbObject);
 		void SetFromContext(IDbObject dbObject);
+		bool CancelChanges();
 	}
 }
