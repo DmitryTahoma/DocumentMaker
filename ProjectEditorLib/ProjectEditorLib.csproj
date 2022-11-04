@@ -154,9 +154,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Db\Db.csproj">
+    <ProjectReference Include="..\Db\ProjectsDb.csproj">
       <Project>{e5dda9a3-7f76-4b4b-84af-a4dd3a9ffe5e}</Project>
-      <Name>Db</Name>
+      <Name>ProjectsDb</Name>
     </ProjectReference>
     <ProjectReference Include="..\DocumentMakerThemes\DocumentMakerThemes.csproj">
       <Project>{a3c2f18e-b57e-4c71-a2dd-bce3cff24574}</Project>

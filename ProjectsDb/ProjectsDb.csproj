@@ -8,8 +8,8 @@
     <ProjectGuid>{E5DDA9A3-7F76-4B4B-84AF-A4DD3A9FFE5E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Db</RootNamespace>
-    <AssemblyName>Db</AssemblyName>
+    <RootNamespace>ProjectsDb</RootNamespace>
+    <AssemblyName>ProjectsDb</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -51,58 +51,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Context\ActPart\Act.cs" />
-    <Compile Include="Context\ActPart\ActPart.cs" />
-    <Compile Include="Context\ActPart\FullAct.cs" />
-    <Compile Include="Context\ActPart\FullWork.cs" />
-    <Compile Include="Context\ActPart\Regions.cs" />
-    <Compile Include="Context\ActPart\TemplateType.cs" />
-    <Compile Include="Context\ActPart\Work.cs" />
-    <Compile Include="Context\ActPart\WorkBackAdapter.cs" />
-    <Compile Include="Context\ActPart\WorkType.cs" />
-    <Compile Include="Context\BackPart\AlternativeProjectName.cs" />
-    <Compile Include="Context\BackPart\Back.cs" />
-    <Compile Include="Context\BackPart\BackType.cs" />
-    <Compile Include="Context\BackPart\Episode.cs" />
-    <Compile Include="Context\BackPart\Project.cs" />
-    <Compile Include="Context\BackPart\CountRegions.cs" />
-    <Compile Include="Context\DocumentMakerContext.cs" />
-    <Compile Include="Context\HumanPart\Address.cs" />
-    <Compile Include="Context\HumanPart\Bank.cs" />
-    <Compile Include="Context\HumanPart\Contract.cs" />
-    <Compile Include="Context\HumanPart\Human.cs" />
-    <Compile Include="Context\HumanPart\LocalityType.cs" />
-    <Compile Include="Context\HumanPart\StreetType.cs" />
+    <Compile Include="Context\AlternativeProjectName.cs" />
+    <Compile Include="Context\Back.cs" />
+    <Compile Include="Context\BackType.cs" />
+    <Compile Include="Context\Project.cs" />
+    <Compile Include="Context\CountRegions.cs" />
+    <Compile Include="DocumentMakerContext.cs" />
     <Compile Include="Context\IDbObject.cs" />
-    <Compile Include="Migrations\202209280832373_InitialCreate.cs" />
-    <Compile Include="Migrations\202209280832373_InitialCreate.designer.cs">
-      <DependentUpon>202209280832373_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202210100825351_Migration1.cs" />
-    <Compile Include="Migrations\202210100825351_Migration1.designer.cs">
-      <DependentUpon>202210100825351_Migration1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202210280832260_Migration2.cs" />
-    <Compile Include="Migrations\202210280832260_Migration2.designer.cs">
-      <DependentUpon>202210280832260_Migration2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\202209280832373_InitialCreate.resx">
-      <DependentUpon>202209280832373_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202210100825351_Migration1.resx">
-      <DependentUpon>202210100825351_Migration1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202210280832260_Migration2.resx">
-      <DependentUpon>202210280832260_Migration2.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

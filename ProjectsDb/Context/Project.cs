@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Db.Context.BackPart
+namespace ProjectsDb.Context
 {
 	public class Project : IDbObject
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
 
-		[InverseProperty("Project")]
 		public List<AlternativeProjectName> AlternativeNames { get; set; }
-		[InverseProperty("Project")]
-		public List<Episode> Episodes { get; set; }
+		public List<Back> Backs { get; set; }
 
 		public void Set(Project obj)
 		{

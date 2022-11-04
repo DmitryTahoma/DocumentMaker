@@ -1,6 +1,4 @@
-﻿using Db.Context.ActPart;
-using Db.Context.BackPart;
-using Db.Context.HumanPart;
+﻿using ProjectsDb.Context;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -8,55 +6,25 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Db.Context
+namespace ProjectsDb
 {
-	public class DocumentMakerContext : DbContext
+	public class ProjectsDbContext : DbContext
 	{
 		static List<PropertyInfo> tables = new List<PropertyInfo>();
 
-		static DocumentMakerContext()
+		static ProjectsDbContext()
 		{
-			tables = new List<PropertyInfo>(typeof(DocumentMakerContext).GetProperties()
+			tables = new List<PropertyInfo>(typeof(ProjectsDbContext).GetProperties()
 				.Where(x => x.PropertyType.Name == typeof(DbSet<>).Name));
 		}
 
-		public DocumentMakerContext() : base("Data Source=10.32.16.170,1433;Network Library=DBMSSOCN;Initial Catalog=DocumentMaker;User ID=ProgTest; Password=qwerty123;") { }
-
-		#region ActPart
-
-		public DbSet<Act> Acts { get; set; }
-		public DbSet<ActPart.ActPart> ActParts { get; set; }
-		public DbSet<FullAct> FullActs { get; set; }
-		public DbSet<FullWork> FullWorks { get; set; }
-		public DbSet<Regions> Regions { get; set; }
-		public DbSet<TemplateType> TemplateTypes { get; set; }
-		public DbSet<Work> Works { get; set; }
-		public DbSet<WorkBackAdapter> WorkBackAdapters { get; set; }
-		public DbSet<WorkType> WorkTypes { get; set; }
-
-		#endregion
-
-		#region BackPart
+		public ProjectsDbContext() : base("Data Source=10.32.16.170,1433;Network Library=DBMSSOCN;Initial Catalog=FbnProjectsDb;User ID=ProgTest; Password=qwerty123;") { }
 
 		public DbSet<AlternativeProjectName> AlternativeProjectNames { get; set; }
 		public DbSet<Back> Backs { get; set; }
 		public DbSet<BackType> BackTypes { get; set; }
 		public DbSet<CountRegions> CountRegions { get; set; }
-		public DbSet<Episode> Episodes { get; set; }
 		public DbSet<Project> Projects { get; set; }
-
-		#endregion
-
-		#region HumanPart
-
-		public DbSet<Address> Addresses { get; set; }
-		public DbSet<Bank> Banks { get; set; }
-		public DbSet<Contract> Contracts { get; set; }
-		public DbSet<Human> Humans { get; set; }
-		public DbSet<LocalityType> LocalityTypes { get; set; }
-		public DbSet<StreetType> StreetTypes { get; set; }
-
-		#endregion
 
 		public async Task<IEnumerable<T>> GetTable<T>() where T : class, IDbObject
 		{

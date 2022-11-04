@@ -1,4 +1,4 @@
-﻿namespace Db.Context
+﻿namespace ProjectsDb.Context
 {
 	public interface IDbObject
 	{

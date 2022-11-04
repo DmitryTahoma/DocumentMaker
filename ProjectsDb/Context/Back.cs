@@ -1,36 +1,30 @@
-﻿using Db.Context.ActPart;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Db.Context.BackPart
+namespace ProjectsDb.Context
 {
 	public class Back : IDbObject
 	{
 		public int Id { get; set; }
-		public int? EpisodeId { get; set; }
-		public Episode Episode { get; set; }
 		public int? BackTypeId { get; set; }
 		public BackType BackType { get; set; }
 		public string Name { get; set; }
 		public int? BaseBackId { get; set; }
 		public Back BaseBack { get; set; }
 		public float Number { get; set; }
+		public int? ProjectId { get; set; }
+		public Project Project { get; set; }
 
-		[InverseProperty("Back")]
 		public List<CountRegions> Regions { get; set; }
-		[InverseProperty("BaseBack")]
 		public List<Back> ChildBacks { get; set; }
-		[InverseProperty("Back")]
-		public List<WorkBackAdapter> WorkBackAdapters { get; set; }
 
 		public void Set(Back obj)
 		{
 			Name = obj.Name;
 			Number = obj.Number;
-			if(obj.EpisodeId != null)
+			if(obj.ProjectId != null)
 			{
-				EpisodeId = obj.EpisodeId;
+				ProjectId = obj.ProjectId;
 			}
 			if(obj.BackTypeId != null)
 			{

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Db.Context.BackPart
+namespace ProjectsDb.Context
 {
 	public class CountRegions : IDbObject
 	{

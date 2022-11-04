@@ -1,4 +1,4 @@
-﻿namespace Db.Context.BackPart
+﻿namespace ProjectsDb.Context
 {
 	public class BackType : IDbObject
 	{
