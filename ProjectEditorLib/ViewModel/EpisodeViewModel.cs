@@ -1,5 +1,4 @@
-﻿using Db.Context;
-using Db.Context.BackPart;
+﻿using ProjectsDb.Context;
 using System.Windows;
 
 namespace ProjectEditorLib.ViewModel
@@ -30,15 +29,15 @@ namespace ProjectEditorLib.ViewModel
 
 		public override IDbObject UpdateContext(IDbObject dbObject)
 		{
-			Episode episode;
+			Back episode;
 
 			if(dbObject == null)
 			{
-				episode = new Episode();
+				episode = new Back();
 			}
 			else
 			{
-				episode = dbObject as Episode;
+				episode = dbObject as Back;
 			}
 
 			if (episode != null)
@@ -54,7 +53,7 @@ namespace ProjectEditorLib.ViewModel
 
 		public override void SetFromContext(IDbObject dbObject)
 		{
-			if(dbObject is Episode episode)
+			if(dbObject is Back episode)
 			{
 				EpisodeName = episode.Name;
 				EpisodeNumber = episode.Number.ToString();

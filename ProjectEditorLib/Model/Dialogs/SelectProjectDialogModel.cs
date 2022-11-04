@@ -1,5 +1,5 @@
-﻿using Db.Context;
-using Db.Context.BackPart;
+﻿using ProjectsDb;
+using ProjectsDb.Context;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,7 +12,7 @@ namespace ProjectEditorLib.Model.Dialogs
 			return Task.Run(() =>
 			{
 				List<Project> result;
-				using (DocumentMakerContext db = new DocumentMakerContext())
+				using (ProjectsDbContext db = new ProjectsDbContext())
 				{
 					result = new List<Project>(db.Projects);
 				}
@@ -22,7 +22,7 @@ namespace ProjectEditorLib.Model.Dialogs
 
 		public async Task SyncCollection<T>(ICollection<T> collection) where T : class, IDbObject
 		{
-			using(DocumentMakerContext db = new DocumentMakerContext())
+			using(ProjectsDbContext db = new ProjectsDbContext())
 			{
 				await db.SyncCollection(collection);
 			}

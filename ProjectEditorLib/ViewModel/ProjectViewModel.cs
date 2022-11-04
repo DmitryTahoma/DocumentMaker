@@ -1,10 +1,9 @@
-﻿using Db.Context;
-using Db.Context.BackPart;
-using DocumentMakerThemes.ViewModel;
+﻿using DocumentMakerThemes.ViewModel;
 using MaterialDesignThemes.Wpf;
 using Mvvm.Commands;
 using ProjectEditorLib.Model;
 using ProjectEditorLib.View;
+using ProjectsDb.Context;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,8 +15,6 @@ namespace ProjectEditorLib.ViewModel
 {
 	public class ProjectViewModel : BaseDbObjectViewModel, IDbObjectViewModel, ISnackbarRequired
 	{
-		ProjectModel model = new ProjectModel();
-
 		UIElementCollection projectNamesCollection = null;
 		private bool haveChildChanges;
 
@@ -63,17 +60,8 @@ namespace ProjectEditorLib.ViewModel
 		public Command<AlternativeProjectNameView> DeleteAltProjectName { get; private set; }
 		private void OnDeleteAltProjectNameExecute(AlternativeProjectNameView sender)
 		{
-			AlternativeProjectNameViewModel senderViewModel = (AlternativeProjectNameViewModel)sender.DataContext;
-			if (model.CanRemoveAltProjectName(senderViewModel.GetModel()))
-			{
-				projectNamesCollection.Remove(sender);
-				HaveUnsavedChanges = true;
-			}
-			else
-			{
-				snackbar.MessageQueue.Clear();
-				snackbar.MessageQueue.Enqueue("Неможливо видалити (назва використовується в актах).", null, null, null, false, true, TimeSpan.FromSeconds(3));
-			}
+			projectNamesCollection.Remove(sender);
+			HaveUnsavedChanges = true;
 		}
 
 		public bool HaveChildChanges

@@ -1,5 +1,4 @@
-﻿using Db.Context;
-using Db.Context.BackPart;
+﻿using ProjectsDb.Context;
 using DocumentMakerThemes.ViewModel;
 using MaterialDesignThemes.Wpf;
 using Mvvm;
@@ -306,12 +305,12 @@ namespace ProjectEditorLib.ViewModel
 			await model.ConnectDB();
 			Project project = await model.LoadProject(SelectedEditProject);
 			await model.DisconnectDB();
-			foreach (Episode episode in project.Episodes)
+			foreach (Back episode in project.Backs)
 			{
 				TreeViewItem episodeTreeItem = CreateTreeViewItem(ProjectNodeType.Episode, episode, projectTreeItem);
 				projectTreeItem.Items.Add(episodeTreeItem);
 
-				foreach(Back back in episode.Backs)
+				foreach(Back back in episode.ChildBacks)
 				{
 					TreeViewItem backNode = CreateNodeByType(back, episodeTreeItem, out ProjectNodeType nodeType);
 					if (nodeType == ProjectNodeType.Minigame)
@@ -401,21 +400,21 @@ namespace ProjectEditorLib.ViewModel
 
 		private void BindNewEpisode(IDbObject episodeContext)
 		{
-			Episode newEpisode = (Episode)episodeContext;
+			Back newEpisode = (Back)episodeContext;
 			newEpisode.ProjectId = SelectedEditProject.Id;
-			SelectedEditProject.Episodes.Add(newEpisode);
+			SelectedEditProject.Backs.Add(newEpisode);
 		}
 
 		private void BindNewBack(IDbObject backContext, TreeItemHeaderViewModel nodeViewModel)
 		{
 			Back back = (Back)backContext;
-			back.EpisodeId = nodeViewModel.GetParrent().GetModel().Context.Id;
-			Episode parrentEpisode = (Episode)nodeViewModel.GetParrent().GetModel().Context;
-			if (parrentEpisode.Backs == null)
+			back.ProjectId = nodeViewModel.GetParrent().GetModel().Context.Id;
+			Back parrentEpisode = (Back)nodeViewModel.GetParrent().GetModel().Context;
+			if (parrentEpisode.ChildBacks == null)
 			{
-				parrentEpisode.Backs = new List<Back>();
+				parrentEpisode.ChildBacks = new List<Back>();
 			}
-			parrentEpisode.Backs.Add(back);
+			parrentEpisode.ChildBacks.Add(back);
 		}
 
 		private void BindNewChildBack(IDbObject childBackContext, TreeItemHeaderViewModel nodeViewModel)
@@ -427,7 +426,7 @@ namespace ProjectEditorLib.ViewModel
 			{
 				if (parrentBackNodeViewModel.GetModel().Context is Back back)
 				{
-					childBack.EpisodeId = back.EpisodeId;
+					childBack.ProjectId = back.ProjectId;
 					if (back.ChildBacks == null)
 					{
 						back.ChildBacks = new List<Back>();

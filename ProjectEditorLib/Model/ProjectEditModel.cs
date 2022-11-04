@@ -1,6 +1,5 @@
-﻿using Db.Context;
-using Db.Context.ActPart;
-using Db.Context.BackPart;
+﻿using ProjectsDb;
+using ProjectsDb.Context;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +8,7 @@ namespace ProjectEditorLib.Model
 {
 	public class ProjectEditModel
 	{
-		DocumentMakerContext db = null;
+		ProjectsDbContext db = null;
 
 		~ProjectEditModel()
 		{
@@ -18,7 +17,7 @@ namespace ProjectEditorLib.Model
 
 		public async Task ConnectDB()
 		{
-			await Task.Run(() => { db = new DocumentMakerContext(); });
+			await Task.Run(() => { db = new ProjectsDbContext(); });
 		}
 
 		public async Task DisconnectDB()
@@ -52,7 +51,7 @@ namespace ProjectEditorLib.Model
 				switch (projectNode.Type)
 				{
 					case ProjectNodeType.Project: await SaveProjectChanges((Project)projectNode.Context); break;
-					case ProjectNodeType.Episode: await SaveEpisodeChanges((Episode)projectNode.Context); break;
+					case ProjectNodeType.Episode:
 					case ProjectNodeType.Back:
 					case ProjectNodeType.Craft:
 					case ProjectNodeType.Minigame:
@@ -94,23 +93,6 @@ namespace ProjectEditorLib.Model
 					}
 				}
 
-				db.SaveChanges();
-			});
-		}
-
-		private Task SaveEpisodeChanges(Episode episode)
-		{
-			return Task.Run(() =>
-			{
-				Episode dbEpisode = db.Episodes.FirstOrDefault(x => x.Id == episode.Id);
-				if (dbEpisode == null)
-				{
-					episode = db.Episodes.Add(episode);
-				}
-				else
-				{
-					dbEpisode.Set(episode);
-				}
 				db.SaveChanges();
 			});
 		}
@@ -175,37 +157,26 @@ namespace ProjectEditorLib.Model
 
 		public Task<Project> LoadProject(Project project)
 		{
-			return Task.Run(async () =>
+			return Task.Run(() =>
 			{
 				Project dbProject = db.Projects.First(x => x.Id == project.Id);
-				project.Episodes = new List<Episode>(db.Episodes.Where(x => x.ProjectId == project.Id));
+				project.Backs = new List<Back>(db.Backs.Where(x => x.ProjectId == project.Id && x.BaseBackId == null));
 				project.AlternativeNames = new List<AlternativeProjectName>(db.AlternativeProjectNames.Where(x => x.ProjectId == project.Id));
-				foreach(Episode episode in project.Episodes)
-				{
-					List<Back> backs = new List<Back>(db.Backs.Where(x => x.EpisodeId == episode.Id && x.BaseBackId == null));
-					foreach (Back back in backs)
-					{
-						await LoadBack(back);
-					}
-					episode.Backs = backs;
-				}
+				project.Backs.ForEach(LoadBack);
 				return project;
 			});
 		}
 
-		private async Task LoadBack(Back back)
+		private void LoadBack(Back back)
 		{
-			await Task.Run(async () =>
-			{
-				back.BackType = db.BackTypes.FirstOrDefault(x => x.Id == back.BackTypeId);
-				back.Regions = new List<CountRegions>(db.CountRegions.Where(x => x.BackId == back.Id));
-				back.ChildBacks = new List<Back>(db.Backs.Where(x => x.BaseBackId == back.Id));
+			back.BackType = db.BackTypes.FirstOrDefault(x => x.Id == back.BackTypeId);
+			back.Regions = new List<CountRegions>(db.CountRegions.Where(x => x.BackId == back.Id));
+			back.ChildBacks = new List<Back>(db.Backs.Where(x => x.BaseBackId == back.Id));
 
-				foreach (Back childBack in back.ChildBacks)
-				{
-					await LoadBack(childBack);
-				}
-			});
+			foreach (Back childBack in back.ChildBacks)
+			{
+				LoadBack(childBack);
+			}
 		}
 
 		public Task<bool> RemoveNode(IDbObject node)
@@ -214,23 +185,14 @@ namespace ProjectEditorLib.Model
 			{
 				List<Back> removingBacks = null;
 
-				Episode episode = node as Episode;
-				if (episode != null)
-				{
-					removingBacks = episode.Backs;
-					if(removingBacks == null)
-					{
-						removingBacks = new List<Back>();
-					}
-				}
-				else if (node is Back back)
+				if (node is Back back)
 				{
 					removingBacks = new List<Back> { back };
 				}
 
 				if (removingBacks == null)
 				{
-					if(node is CountRegions regions)
+					if (node is CountRegions regions)
 					{
 						CountRegions dbRegions = db.CountRegions
 							.FirstOrDefault(x => x.Id == regions.Id);
@@ -244,45 +206,18 @@ namespace ProjectEditorLib.Model
 				{
 					PushChildBacks(ref removingBacks);
 
-					bool canRemove = CanRemoveAll(removingBacks);
+					List<CountRegions> removingDbRegions = new List<CountRegions>(GetDbRegionsOfBacks(removingBacks));
+					List<Back> removingDbBacks = new List<Back>(GetDbBacksOfBacks(removingBacks));
 
-					if (canRemove)
-					{
-						List<CountRegions> removingDbRegions = new List<CountRegions>(GetDbRegionsOfBacks(removingBacks));
-						List<Back> removingDbBacks = new List<Back>(GetDbBacksOfBacks(removingBacks));
+					db.CountRegions.RemoveRange(removingDbRegions);
+					db.Backs.RemoveRange(removingDbBacks);
 
-						db.CountRegions.RemoveRange(removingDbRegions);
-						db.Backs.RemoveRange(removingDbBacks);
+					db.SaveChanges();
 
-						if (episode != null)
-						{
-							db.Episodes
-							.Remove(db.Episodes
-								.FirstOrDefault(x => x.Id == episode.Id));
-						}
-
-						db.SaveChanges();
-					}
-
-					return canRemove;
+					return true;
 				}
 				return false;
 			});
-		}
-
-		private bool CanRemoveAll(IEnumerable<Back> backs)
-		{
-			foreach (WorkBackAdapter workBackAdapter in db.WorkBackAdapters)
-			{
-				foreach (Back removingBack in backs)
-				{
-					if (workBackAdapter.BackId == removingBack.Id)
-					{
-						return false;
-					}
-				}
-			}
-			return true;
 		}
 
 		private IEnumerable<CountRegions> GetDbRegionsOfBacks(IEnumerable<Back> back)

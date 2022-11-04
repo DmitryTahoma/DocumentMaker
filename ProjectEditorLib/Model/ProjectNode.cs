@@ -1,8 +1,4 @@
-﻿using Db.Context;
-using Mvvm;
-using Mvvm.Commands;
-using System.Collections.Generic;
-using System.Windows.Controls;
+﻿using ProjectsDb.Context;
 
 namespace ProjectEditorLib.Model
 {

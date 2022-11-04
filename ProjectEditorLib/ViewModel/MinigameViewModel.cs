@@ -1,5 +1,4 @@
-﻿using Db.Context;
-using Db.Context.BackPart;
+﻿using ProjectsDb.Context;
 using System.Windows;
 
 namespace ProjectEditorLib.ViewModel
