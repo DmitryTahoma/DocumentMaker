@@ -12,6 +12,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -20,7 +21,6 @@ namespace ActGenerator.ViewModel
 	class ActGeneratorViewModel : DependencyObject
 	{
 		ActGeneratorModel model = new ActGeneratorModel();
-		ViewModelState state = ViewModelState.Initialized;
 		List<Project> dbProjects = null;
 		List<Human> dbHumans = null;
 
@@ -39,6 +39,8 @@ namespace ActGenerator.ViewModel
 
 			listSelector = new ListSelector();
 			listSelectorViewModel = (ListSelectorViewModel)listSelector.DataContext;
+
+			State = ViewModelState.Initialized;
 		}
 
 		#region Properties
@@ -102,6 +104,13 @@ namespace ActGenerator.ViewModel
 			set { SetValue(SelectedDateTimeItemProperty, value); }
 		}
 		public static readonly DependencyProperty SelectedDateTimeItemProperty = DependencyProperty.Register(nameof(SelectedDateTimeItem), typeof(DateTimeItem), typeof(ActGeneratorViewModel));
+
+		public ViewModelState State
+		{
+			get { return (ViewModelState)GetValue(StateProperty); }
+			set { SetValue(StateProperty, value); }
+		}
+		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(ActGeneratorViewModel));
 
 		#endregion
 
@@ -168,15 +177,15 @@ namespace ActGenerator.ViewModel
 		public Command LoadFromDatabase { get; private set; }
 		private async void OnLoadFromDatabaseExecute()
 		{
-			if (state == ViewModelState.Initialized)
+			if (State == ViewModelState.Initialized)
 			{
-				state = ViewModelState.Loading;
+				State = ViewModelState.Loading;
 				await model.ConnectDB();
 				dbProjects = await model.LoadProjects();
 				dbHumans = await model.LoadHumen();
 				await model.DisconnectDB();
 
-				if(savedProjectList != null)
+				if (savedProjectList != null)
 				{
 					dbProjects
 						.Where(x => savedProjectList
@@ -187,7 +196,7 @@ namespace ActGenerator.ViewModel
 				if (savedHumanList != null)
 				{
 					HumanList.AddRange(savedHumanList
-						.Select(x => 
+						.Select(x =>
 							new HumanDataContext(dbHumans
 								.FirstOrDefault(y => y.Id == x.ContextId))
 							{
@@ -196,11 +205,12 @@ namespace ActGenerator.ViewModel
 									.FirstOrDefault(y => y.Type == x.TemplateType)
 							}));
 				}
-				state = ViewModelState.Loaded;
+
+				State = ViewModelState.Loaded;
 			}
-			else if(state == ViewModelState.Loaded)
+			else if(State == ViewModelState.Loaded)
 			{
-				state = ViewModelState.Loading;
+				State = ViewModelState.Loading;
 				await model.ConnectDB();
 				dbProjects = await model.LoadProjects();
 				await model.SyncCollection(dbHumans);
@@ -216,7 +226,7 @@ namespace ActGenerator.ViewModel
 				}
 				HumanList.ToList().ForEach(x => x.Context.Set(dbHumans.FirstOrDefault(y => y.Id == x.Context.Id)));
 				HumanList.UpdateCollection();
-				state = ViewModelState.Loaded;
+				State = ViewModelState.Loaded;
 			}
 		}
 

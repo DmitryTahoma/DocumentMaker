@@ -11,7 +11,6 @@ namespace ProjectEditorLib.ViewModel.Controls
 	public class SelectProjectDialogViewModel : DependencyObject
 	{
 		SelectProjectDialogModel model = new SelectProjectDialogModel();
-		ViewModelState state = ViewModelState.Initialized;
 
 		ObservableRangeCollection<Project> projects = new ObservableRangeCollection<Project>();
 		DependencyObject validateObj = null;
@@ -19,6 +18,8 @@ namespace ProjectEditorLib.ViewModel.Controls
 		public SelectProjectDialogViewModel()
 		{
 			InitCommands();
+
+			State = ViewModelState.Initialized;
 		}
 
 		#region Properties
@@ -35,6 +36,13 @@ namespace ProjectEditorLib.ViewModel.Controls
 		public bool IsOpen { get; private set; } = false;
 
 		public string DialogHostId { get; set; } = "";
+
+		public ViewModelState State
+		{
+			get { return (ViewModelState)GetValue(StateProperty); }
+			set { SetValue(StateProperty, value); }
+		}
+		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(SelectProjectDialogViewModel));
 
 		#endregion
 
@@ -67,27 +75,27 @@ namespace ProjectEditorLib.ViewModel.Controls
 		}
 		private bool CanExecuteOpenProjectCommand()
 		{
-			return validateObj != null && ValidationHelper.IsValid(validateObj);
+			return State == ViewModelState.Loaded && validateObj != null && ValidationHelper.IsValid(validateObj);
 		}
 
 		public Command LoadFromDatabase { get; private set; }
 		private async void OnLoadFromDatabaseExecute()
 		{
 			IsOpen = false;
-			if (state == ViewModelState.Initialized)
+			if (State == ViewModelState.Initialized)
 			{
-				state = ViewModelState.Loading;
+				State = ViewModelState.Loading;
 				projects.AddRange(await model.LoadProjects());
-				state = ViewModelState.Loaded;
+				State = ViewModelState.Loaded;
 			}
-			else if (state == ViewModelState.Loaded)
+			else if (State == ViewModelState.Loaded)
 			{
-				state = ViewModelState.Loading;
+				State = ViewModelState.Loading;
 				projects.SuppressingNotifications = true;
 				await model.SyncCollection(projects);
 				projects.SuppressingNotifications = false;
 				projects.UpdateCollection();
-				state = ViewModelState.Loaded;
+				State = ViewModelState.Loaded;
 			}
 		}
 

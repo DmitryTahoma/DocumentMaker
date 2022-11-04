@@ -6,6 +6,7 @@
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mvvmConverters="clr-namespace:Mvvm.Converters;assembly=Mvvm"
     xmlns:validationRules="clr-namespace:Mvvm.ValidationRules;assembly=Mvvm"
     xmlns:vm="clr-namespace:ProjectEditorLib.ViewModel.Controls"
     d:DesignHeight="450"
@@ -21,6 +22,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <mvvmConverters:ViewModelStateToVisibilityConverter x:Key="ViewModelStateToVisibilityConverter" FalseValue="Hidden" />
+            <mvvmConverters:ViewModelStateToVisibilityConverter
+                x:Key="InvertedViewModelStateToVisibilityConverter"
+                FalseValue="Hidden"
+                IsInverted="True" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -42,22 +49,38 @@
             Style="{StaticResource MaterialDesignHeadline6TextBlock}"
             Text="Оберіть проект" />
 
-        <ComboBox
-            Grid.Row="1"
-            Grid.ColumnSpan="2"
-            ItemsSource="{Binding Projects}"
-            Style="{StaticResource MiddleComboBox}">
-            <ComboBox.SelectedItem>
-                <Binding
-                    Mode="TwoWay"
-                    Path="SelectedProject"
-                    UpdateSourceTrigger="PropertyChanged">
-                    <Binding.ValidationRules>
-                        <validationRules:NotNullValidationRule />
-                    </Binding.ValidationRules>
-                </Binding>
-            </ComboBox.SelectedItem>
-        </ComboBox>
+        <Grid Grid.Row="1" Grid.ColumnSpan="2">
+            <ComboBox
+                ItemsSource="{Binding Projects}"
+                Style="{StaticResource MiddleComboBox}"
+                Visibility="{Binding State, Mode=OneWay, Converter={StaticResource InvertedViewModelStateToVisibilityConverter}}">
+                <ComboBox.SelectedItem>
+                    <Binding
+                        Mode="TwoWay"
+                        Path="SelectedProject"
+                        UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <validationRules:NotNullValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </ComboBox.SelectedItem>
+            </ComboBox>
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Orientation="Horizontal"
+                Visibility="{Binding State, Mode=OneWay, Converter={StaticResource ViewModelStateToVisibilityConverter}}">
+                <ProgressBar
+                    IsIndeterminate="True"
+                    Style="{StaticResource MaterialDesignCircularProgressBar}"
+                    Value="35" />
+                <TextBlock
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                    Text="завантаження проєктів" />
+            </StackPanel>
+        </Grid>
 
         <Button
             Grid.Row="2"

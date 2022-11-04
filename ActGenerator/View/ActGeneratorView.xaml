@@ -7,6 +7,7 @@
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mvvmConverters="clr-namespace:Mvvm.Converters;assembly=Mvvm"
     xmlns:validationRules="clr-namespace:Mvvm.ValidationRules;assembly=Mvvm"
     xmlns:validationRulesProps="clr-namespace:Mvvm.ValidationRules.ContentProperties;assembly=Mvvm"
     xmlns:vm="clr-namespace:ActGenerator.ViewModel"
@@ -19,6 +20,13 @@
     <UserControl.DataContext>
         <vm:ActGeneratorViewModel x:Name="ViewModel" />
     </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <mvvmConverters:ViewModelStateToVisibilityConverter x:Key="ViewModelStateToVisibilityConverter" />
+            <mvvmConverters:ViewModelStateToVisibilityConverter x:Key="InvertedViewModelStateToVisibilityConverter" IsInverted="True" />
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <materialDesign:DialogHost CloseOnClickAway="True" Identifier="{Binding DialogHostId}">
 
@@ -38,31 +46,48 @@
 
                     <materialDesign:Card Style="{StaticResource TopFirstCard}">
                         <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto" />
-                                <RowDefinition Height="auto" />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
+                            <Grid Visibility="{Binding State, Mode=OneWay, Converter={StaticResource InvertedViewModelStateToVisibilityConverter}}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
 
-                            <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Список проектів" />
+                                <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Список проектів" />
 
-                            <Menu Grid.Row="1">
-                                <MenuItem
-                                    Command="{Binding AddProjectCommand}"
-                                    Header="Додати"
-                                    Icon="{materialDesign:PackIcon Kind=PlusCircleOutline}" />
-                                <MenuItem
-                                    Command="{Binding RemoveProjectCommand}"
-                                    Header="Видалити"
-                                    Icon="{materialDesign:PackIcon Kind=SortVariantRemove}" />
-                            </Menu>
+                                <Menu Grid.Row="1">
+                                    <MenuItem
+                                        Command="{Binding AddProjectCommand}"
+                                        Header="Додати"
+                                        Icon="{materialDesign:PackIcon Kind=PlusCircleOutline}" />
+                                    <MenuItem
+                                        Command="{Binding RemoveProjectCommand}"
+                                        Header="Видалити"
+                                        Icon="{materialDesign:PackIcon Kind=SortVariantRemove}" />
+                                </Menu>
 
-                            <ScrollViewer
-                                Grid.Row="2"
-                                HorizontalScrollBarVisibility="Auto"
-                                VerticalScrollBarVisibility="Auto">
-                                <StackPanel x:Name="ProjectsStackWithNames" />
-                            </ScrollViewer>
+                                <ScrollViewer
+                                    Grid.Row="2"
+                                    HorizontalScrollBarVisibility="Auto"
+                                    VerticalScrollBarVisibility="Auto">
+                                    <StackPanel x:Name="ProjectsStackWithNames" />
+                                </ScrollViewer>
+                            </Grid>
+                            <StackPanel
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal"
+                                Visibility="{Binding State, Mode=OneWay, Converter={StaticResource ViewModelStateToVisibilityConverter}}">
+                                <ProgressBar
+                                    IsIndeterminate="True"
+                                    Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                    Value="35" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                                    Text="підключення до бази даних" />
+                            </StackPanel>
                         </Grid>
                     </materialDesign:Card>
 
