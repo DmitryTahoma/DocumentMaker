@@ -409,12 +409,19 @@ namespace ProjectEditorLib.ViewModel
 		{
 			Back back = (Back)backContext;
 			back.ProjectId = nodeViewModel.GetParrent().GetModel().Context.Id;
-			Back parrentEpisode = (Back)nodeViewModel.GetParrent().GetModel().Context;
-			if (parrentEpisode.ChildBacks == null)
+			IDbObject parrentDbObj = nodeViewModel.GetParrent().GetModel().Context;
+			if (parrentDbObj is Back parrentEpisode)
 			{
-				parrentEpisode.ChildBacks = new List<Back>();
+				if (parrentEpisode.ChildBacks == null)
+				{
+					parrentEpisode.ChildBacks = new List<Back>();
+				}
+				parrentEpisode.ChildBacks.Add(back);
 			}
-			parrentEpisode.ChildBacks.Add(back);
+			else if(parrentDbObj is Project parrentProject)
+			{
+				parrentProject.Backs.Add(back);
+			}
 		}
 
 		private void BindNewChildBack(IDbObject childBackContext, TreeItemHeaderViewModel nodeViewModel)
