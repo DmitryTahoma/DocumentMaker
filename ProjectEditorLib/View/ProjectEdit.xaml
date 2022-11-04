@@ -51,79 +51,81 @@
             <ColumnDefinition />
             <ColumnDefinition Width="50" />
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
+        <ToolBarTray IsLocked="True">
+            <ToolBar Style="{StaticResource MaterialDesignToolBar}">
+                <Button
+                    Command="{Binding CollapseAllTree}"
+                    Style="{StaticResource ToolBarButton}"
+                    ToolTip="Згорнути все">
+                    <materialDesign:PackIcon
+                        Width="18"
+                        Height="18"
+                        Kind="CollapseAllOutline" />
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
 
-            <ToolBarTray IsLocked="True">
-                <ToolBar Style="{StaticResource MaterialDesignToolBar}">
-                    <Button
-                        Command="{Binding CollapseAllTree}"
-                        Style="{StaticResource ToolBarButton}"
-                        ToolTip="Згорнути все">
-                        <materialDesign:PackIcon
-                            Width="18"
-                            Height="18"
-                            Kind="CollapseAllOutline" />
-                    </Button>
-                </ToolBar>
-            </ToolBarTray>
-
-            <TreeView
-                Grid.Row="1"
-                MinWidth="220"
-                ItemsSource="{Binding TreeItems}" />
-        </Grid>
+        <TreeView
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            MinWidth="220"
+            ItemsSource="{Binding TreeItems}" />
 
         <GridSplitter
+            Grid.RowSpan="3"
             Grid.Column="1"
             Width="5"
             HorizontalAlignment="Center"
             VerticalAlignment="Stretch" />
 
-        <Grid Grid.Column="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
 
-            <ToolBarTray IsLocked="True">
-                <ToolBar Style="{StaticResource MaterialDesignToolBar}">
-                    <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding SelectedProjectNodeType, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ProjectNodeTypeToStringConverter}}" />
-                </ToolBar>
-            </ToolBarTray>
+        <ToolBarTray
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
+            IsLocked="True">
+            <ToolBar Style="{StaticResource MaterialDesignToolBar}">
+                <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding SelectedProjectNodeType, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ProjectNodeTypeToStringConverter}}" />
+            </ToolBar>
+        </ToolBarTray>
 
-            <Grid x:Name="OptionsView" Grid.Row="1">
-                <local:ProjectView x:Name="ProjectViewControl" />
-                <local:EpisodeView />
-                <local:BackView />
-                <local:CraftView />
-                <local:DialogView />
-                <local:HogView />
-                <local:MinigameView />
-                <local:RegionsView />
-            </Grid>
+        <Grid
+            x:Name="OptionsView"
+            Grid.Row="1"
+            Grid.Column="2">
+            <local:ProjectView x:Name="ProjectViewControl" />
+            <local:EpisodeView />
+            <local:BackView />
+            <local:CraftView />
+            <local:DialogView />
+            <local:HogView />
+            <local:MinigameView />
+            <local:RegionsView />
+        </Grid>
 
-            <Grid Grid.Row="2" Visibility="{Binding HaveUnsavedChanges, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+        <Grid
+            Grid.Row="2"
+            Grid.Column="2"
+            Visibility="{Binding HaveUnsavedChanges, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-                <Button
-                    Command="{Binding Save}"
-                    Content="Зберегти"
-                    Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
-                <Button
-                    Grid.Column="1"
-                    Command="{Binding CancelChanges}"
-                    Content="Скасувати"
-                    Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
-            </Grid>
+            <Button
+                Command="{Binding Save}"
+                Content="Зберегти"
+                Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
+            <Button
+                Grid.Column="1"
+                Command="{Binding CancelChanges}"
+                Content="Скасувати"
+                Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
         </Grid>
 
         <materialDesign:Snackbar
