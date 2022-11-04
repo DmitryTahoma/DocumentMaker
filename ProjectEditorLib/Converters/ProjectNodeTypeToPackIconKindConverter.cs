@@ -15,8 +15,7 @@ namespace ProjectEditorLib.Converters
 			{
 				switch (projectNodeType)
 				{
-					case ProjectNodeType.Project:
-					case ProjectNodeType.ProjectWithoutEpisodes: return PackIconKind.AlphaPBoxOutline;
+					case ProjectNodeType.Project: return PackIconKind.AlphaPBoxOutline;
 					case ProjectNodeType.Episode: return PackIconKind.AlphaEBoxOutline;
 					case ProjectNodeType.Back: return PackIconKind.AlphaBBoxOutline;
 					case ProjectNodeType.Craft: return PackIconKind.AlphaCBoxOutline;

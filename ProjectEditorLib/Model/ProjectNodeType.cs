@@ -1,15 +1,19 @@
 ﻿namespace ProjectEditorLib.Model
 {
+	/// <summary>
+	/// Тип узла проекта.
+	/// 
+	/// Используется, как индекс выбранной IDbObjectView в ProjectEdit.
+	/// </summary>
 	public enum ProjectNodeType
 	{
 		Project = 0,
-		ProjectWithoutEpisodes = 1,
-		Episode = 2,
-		Back = 3,
-		Craft = 4,
-		Dialog = 5,
-		Hog = 6,
-		Minigame = 7,
-		Regions = 8,
+		Episode = 1,
+		Back = 2,
+		Craft = 3,
+		Dialog = 4,
+		Hog = 5,
+		Minigame = 6,
+		Regions = 7,
 	}
 }

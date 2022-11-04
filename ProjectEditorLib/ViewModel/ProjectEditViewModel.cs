@@ -161,7 +161,7 @@ namespace ProjectEditorLib.ViewModel
 
 			TreeItemHeader nodeHeader = (TreeItemHeader)selectedNode.Header;
 			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)nodeHeader.DataContext;
-			int selectedView = (int)nodeHeaderViewModel.NodeType - 1;
+			int selectedView = (int)nodeHeaderViewModel.NodeType;
 			if (selectedView < 0) selectedView = 0;
 			SelectedViewTabIndex = selectedView;
 			IDbObject modelContext = nodeHeaderViewModel.GetModel().Context;
