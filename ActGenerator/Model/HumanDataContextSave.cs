@@ -12,7 +12,6 @@ namespace ActGenerator.Model
 			{
 				SumText = humanDataContext.SumText;
 				TemplateType = humanDataContext.Template?.Type ?? DocumentTemplateType.Empty;
-				ContextId = humanDataContext.Context?.Id ?? -1;
 			}
 
 			public string SumText { get; set; }

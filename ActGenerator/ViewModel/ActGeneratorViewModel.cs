@@ -1,18 +1,15 @@
 ﻿using ActGenerator.Model;
 using ActGenerator.View.Dialogs;
 using ActGenerator.ViewModel.Dialogs;
-using Db.Context.ActPart;
-using Db.Context.BackPart;
-using Db.Context.HumanPart;
 using Dml.Model.Template;
 using MaterialDesignThemes.Wpf;
 using Mvvm;
 using Mvvm.Commands;
+using ProjectsDb.Context;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -22,7 +19,6 @@ namespace ActGenerator.ViewModel
 	{
 		ActGeneratorModel model = new ActGeneratorModel();
 		List<Project> dbProjects = null;
-		List<Human> dbHumans = null;
 
 		ListSelector listSelector;
 		ListSelectorViewModel listSelectorViewModel;
@@ -182,7 +178,6 @@ namespace ActGenerator.ViewModel
 				State = ViewModelState.Loading;
 				await model.ConnectDB();
 				dbProjects = await model.LoadProjects();
-				dbHumans = await model.LoadHumen();
 				await model.DisconnectDB();
 
 				if (savedProjectList != null)
@@ -195,15 +190,7 @@ namespace ActGenerator.ViewModel
 				}
 				if (savedHumanList != null)
 				{
-					HumanList.AddRange(savedHumanList
-						.Select(x =>
-							new HumanDataContext(dbHumans
-								.FirstOrDefault(y => y.Id == x.ContextId))
-							{
-								SumText = x.SumText,
-								Template = DocumentTemplates
-									.FirstOrDefault(y => y.Type == x.TemplateType)
-							}));
+					
 				}
 
 				State = ViewModelState.Loaded;
@@ -213,7 +200,6 @@ namespace ActGenerator.ViewModel
 				State = ViewModelState.Loading;
 				await model.ConnectDB();
 				dbProjects = await model.LoadProjects();
-				await model.SyncCollection(dbHumans);
 				await model.DisconnectDB();
 
 				IEnumerator projectsStackWithNamesEnum = projectsStackWithNames.GetEnumerator();
@@ -224,29 +210,15 @@ namespace ActGenerator.ViewModel
 					listView.DataContext = dbProjectsEnum.Current;
 					listView.ItemsSource = new List<string> { dbProjectsEnum.Current.Name }.Concat(dbProjectsEnum.Current.AlternativeNames.Select(x => x.Name));
 				}
-				HumanList.ToList().ForEach(x => x.Context.Set(dbHumans.FirstOrDefault(y => y.Id == x.Context.Id)));
 				HumanList.UpdateCollection();
 				State = ViewModelState.Loaded;
 			}
 		}
 
 		public Command AddHumanCommand { get; private set; }
-		private async void OnAddHumanCommandExecute()
+		private void OnAddHumanCommandExecute()
 		{
-			listSelectorViewModel.ItemsDisplayMemberPath = nameof(Human.FullName);
-			List<Human> humen = new List<Human>(dbHumans.Where(x => !HumanList.Select(y => y.Context).Contains(x)));
-			humen.RemoveAll(x => HumanList.Select(y => y.Context).Contains(x));
-			listSelectorViewModel.SetItems(humen);
-			IsOpenActGeneratorDialogHost = true;
-			await DialogHost.Show(listSelector, DialogHostId);
-			if (IsOpenActGeneratorDialogHost)
-			{
-				IsOpenActGeneratorDialogHost = false;
-				if (listSelectorViewModel.IsAddingPressed && listSelectorViewModel.SelectedItems != null)
-				{
-					HumanList.AddRange(listSelectorViewModel.SelectedItems.Cast<Human>().Select(x => new HumanDataContext(x)));
-				}
-			}
+			
 		}
 
 		public Command<IList> RemoveHumanCommand { get; private set; }
@@ -265,7 +237,7 @@ namespace ActGenerator.ViewModel
 		}
 
 		public Command<DependencyObject> GenerateActs { get; private set; }
-		private async void OnGenerateActsExecute(DependencyObject validateObj)
+		private void OnGenerateActsExecute(DependencyObject validateObj)
 		{
 			if (ValidationHelper.GetFirstInvalid(validateObj, true) is UIElement invalid)
 			{
@@ -273,33 +245,7 @@ namespace ActGenerator.ViewModel
 				return;
 			}
 
-			List <KeyValuePair<Project, bool[]>> selectedProjectNames = GetSelectedProjectNames();
 
-			await model.ConnectDB();
-			List<FullWork> works = await model.GenerateEnableWorks(selectedProjectNames);
-			await model.RemoveUsedWorks(works, CanUseOldWorks, SelectedDateTimeItem.DateTime);
-			await model.DisconnectDB();
-
-			int minSum = int.Parse(MinSumText);
-			int maxSum = int.Parse(MaxSumText);
-			var acts = model.GenerateActs(works, HumanList, minSum, maxSum,
-				lessWorksCallback: (curHuman) => 
-				{
-					return MessageBox.Show("Недостатньо робіт для генерації акту [" + curHuman.FullName + "]. Продовжити? (Поточний акт буде пропущений)", "", MessageBoxButton.YesNo)
-							== MessageBoxResult.Yes; 
-				},
-				unrealSumCallback: (curHuman) => 
-				{
-					return MessageBox.Show("Неможливо розкидати роботи для акту [" + curHuman.FullName + "]. Продовжити? (Поточний акт буде пропущений)", "", MessageBoxButton.YesNo)
-									== MessageBoxResult.Yes;
-				}
-			);
-
-			if(acts != null)
-			{
-				model.ExportActs(@"D:\", acts, projectsList);
-				MessageBox.Show("Сгенеровано актів: " + acts.Count.ToString());
-			}
 		}
 
 		#endregion

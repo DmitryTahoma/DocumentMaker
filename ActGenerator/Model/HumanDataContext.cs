@@ -1,18 +1,15 @@
-﻿using Db.Context.HumanPart;
-using Dml.Model.Template;
+﻿using Dml.Model.Template;
 
 namespace ActGenerator.Model
 {
 	public class HumanDataContext
 	{
-		public HumanDataContext(Human context)
+		public HumanDataContext()
 		{
-			Context = context;
 		}
 
-		public string FullName { get => Context.FullName; }
+		public string FullName { get => string.Empty; }
 		public string SumText { get; set; }
 		public DocumentTemplate Template { get; set; }
-		public Human Context { get; private set; }
 	}
 }

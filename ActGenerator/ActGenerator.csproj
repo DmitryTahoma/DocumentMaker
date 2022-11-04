@@ -141,10 +141,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Db\ProjectsDb.csproj">
-      <Project>{E5DDA9A3-7F76-4B4B-84AF-A4DD3A9FFE5E}</Project>
-      <Name>ProjectsDb</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Dml\Dml.csproj">
       <Project>{ac730979-6d09-406a-bfdf-e9f3f4d296e0}</Project>
       <Name>Dml</Name>
@@ -164,6 +160,10 @@
     <ProjectReference Include="..\ProjectEditorLib\ProjectEditorLib.csproj">
       <Project>{64d8e8dd-2804-4501-b482-57a2ea8c19fc}</Project>
       <Name>ProjectEditorLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectsDb\ProjectsDb.csproj">
+      <Project>{e5dda9a3-7f76-4b4b-84af-a4dd3a9ffe5e}</Project>
+      <Name>ProjectsDb</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
