@@ -15,7 +15,7 @@ namespace ActGenerator.Model
 		public double WindowLeft { get; set; } = -1;
 		public double WindowHeight { get; set; } = 500;
 		public double WindowWidth { get; set; } = 900;
-		public WindowState WindowState { get; set; } = WindowState.Normal;
+		public WindowState WindowState { get; set; } = WindowState.Maximized;
 
 		public List<int> ProjectsList { get; set; } = null;
 		public List<HumanDataContextSave> HumanList { get; set; } = null;
