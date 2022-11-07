@@ -305,30 +305,37 @@ namespace ProjectEditorLib.ViewModel
 			await model.ConnectDB();
 			Project project = await model.LoadProject(SelectedEditProject);
 			await model.DisconnectDB();
-			foreach (Back episode in project.Backs)
+			foreach(Back back in project.Backs)
 			{
-				TreeViewItem episodeTreeItem = CreateTreeViewItem(ProjectNodeType.Episode, episode, projectTreeItem);
-				projectTreeItem.Items.Add(episodeTreeItem);
-
-				foreach(Back back in episode.ChildBacks)
-				{
-					TreeViewItem backNode = CreateNodeByType(back, episodeTreeItem, out ProjectNodeType nodeType);
-					if (nodeType == ProjectNodeType.Minigame)
-					{
-						foreach (CountRegions regions in back.Regions)
-						{
-							backNode.Items.Add(CreateTreeViewItem(ProjectNodeType.Regions, regions, backNode));
-						}
-					}
-					if (backNode != null)
-					{
-						episodeTreeItem.Items.Add(backNode);
-						await SetChildsBacks(backNode, back);
-					}
-				}
+				PushBackToTreeItem(projectTreeItem, back);
 			}
 			projectTreeItem.IsExpanded = true;
 			projectTreeItem.IsSelected = true;
+		}
+
+		private void PushBackToTreeItem(TreeViewItem parrent, Back context)
+		{
+			TreeViewItem backNode = CreateNodeByType(context, parrent, out ProjectNodeType nodeType);
+			parrent.Items.Add(backNode);
+
+			switch (nodeType)
+			{
+				case ProjectNodeType.Episode:
+				case ProjectNodeType.Back:
+				case ProjectNodeType.Craft:
+				case ProjectNodeType.Hog:
+					foreach(Back back in context.ChildBacks)
+					{
+						PushBackToTreeItem(backNode, back);
+					}
+					break;
+				case ProjectNodeType.Minigame:
+					foreach(CountRegions regions in context.Regions)
+					{
+						backNode.Items.Add(CreateTreeViewItem(ProjectNodeType.Regions, regions, backNode));
+					}
+					break;
+			}
 		}
 
 		private async Task SetChildsBacks(TreeViewItem parrentNode, Back back)
@@ -408,10 +415,11 @@ namespace ProjectEditorLib.ViewModel
 		private void BindNewBack(IDbObject backContext, TreeItemHeaderViewModel nodeViewModel)
 		{
 			Back back = (Back)backContext;
-			back.ProjectId = nodeViewModel.GetParrent().GetModel().Context.Id;
 			IDbObject parrentDbObj = nodeViewModel.GetParrent().GetModel().Context;
 			if (parrentDbObj is Back parrentEpisode)
 			{
+				back.BaseBackId = parrentEpisode.Id;
+				back.ProjectId = parrentEpisode.ProjectId;
 				if (parrentEpisode.ChildBacks == null)
 				{
 					parrentEpisode.ChildBacks = new List<Back>();
@@ -420,6 +428,7 @@ namespace ProjectEditorLib.ViewModel
 			}
 			else if(parrentDbObj is Project parrentProject)
 			{
+				back.ProjectId = parrentProject.Id;
 				parrentProject.Backs.Add(back);
 			}
 		}
