@@ -228,7 +228,10 @@ namespace ProjectEditorLib.ViewModel
 				{
 					SelectedEditProject = null;
 					SelectedEditProject = (Project)nodeModel.Context;
-					SelectedOptionsViewModel.SetFromContext(nodeModel.Context);
+					if (SelectedOptionsViewModel is ProjectViewModel)
+					{
+						SelectedOptionsViewModel.SetFromContext(nodeModel.Context);
+					}
 				}
 			}
 		}
@@ -471,6 +474,12 @@ namespace ProjectEditorLib.ViewModel
 			if(e.ChangedButton == MouseButton.Left && e.LeftButton == MouseButtonState.Pressed && !CheckHaveUnsavedChangesAndSave())
 			{
 				e.Handled = true;
+			}
+			else
+			{
+				TreeViewItem s = (TreeViewItem)sender;
+				s.IsSelected = false;
+				s.IsSelected = true;
 			}
 		}
 

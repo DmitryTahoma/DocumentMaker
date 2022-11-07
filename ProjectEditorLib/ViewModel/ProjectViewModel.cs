@@ -88,7 +88,6 @@ namespace ProjectEditorLib.ViewModel
 			{
 				ProjectName = project.Name;
 
-				projectNamesCollection.Clear();
 				if (project.AlternativeNames != null)
 				{
 					while(projectNamesCollection.Count > project.AlternativeNames.Count)
