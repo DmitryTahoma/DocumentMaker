@@ -203,89 +203,171 @@
                                     Header="Видалити"
                                     Icon="{materialDesign:PackIcon Kind=SortVariantRemove}" />
                             </Menu>
+                            
+                            <Grid Grid.Row="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
 
-                            <ListView
-                                x:Name="HumenListView"
-                                Grid.Row="2"
-                                ItemsSource="{Binding HumanList, Mode=OneWay}">
-                                <ListView.View>
-                                    <GridView>
-                                        <GridViewColumn DisplayMemberBinding="{Binding FullName}" Header="ПІБ" />
-                                        <GridViewColumn Header="Сума">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBox MinWidth="75">
-                                                        <TextBox.Text>
-                                                            <Binding
-                                                                Mode="TwoWay"
-                                                                Path="SumText"
-                                                                UpdateSourceTrigger="PropertyChanged">
-                                                                <Binding.ValidationRules>
-                                                                    <validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
-                                                                    <validationRules:IntPositiveValidationRule ValidatesOnTargetUpdated="True" />
-                                                                </Binding.ValidationRules>
-                                                            </Binding>
-                                                        </TextBox.Text>
-                                                    </TextBox>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
-                                        <GridViewColumn Header="Шаблон">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <ComboBox MinWidth="150" ItemsSource="{Binding DocumentTemplates, Mode=OneWay, ElementName=ViewModel}">
-                                                        <ComboBox.SelectedItem>
-                                                            <Binding
-                                                                Mode="TwoWay"
-                                                                Path="Template"
-                                                                UpdateSourceTrigger="PropertyChanged">
-                                                                <Binding.ValidationRules>
-                                                                    <validationRules:NotNullValidationRule ValidatesOnTargetUpdated="True" />
-                                                                </Binding.ValidationRules>
-                                                            </Binding>
-                                                        </ComboBox.SelectedItem>
-                                                    </ComboBox>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
-                                    </GridView>
-                                </ListView.View>
-                            </ListView>
+                                <TextBlock
+                                    Margin="0,0,0,10"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Text="ПІБ" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Margin="0,0,0,10"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Text="Сума" />
+                                <TextBlock
+                                    Grid.Column="2"
+                                    Margin="0,0,0,10"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Text="Шаблони" />
+
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="5"
+                                    Text="Алєйникова Марина Сергіївна" />
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    MinWidth="75"
+                                    Margin="5,0"
+                                    Text="150000" />
+
+                                <StackPanel
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="Технічний дизайнер, Скриптувальник" />
+
+                                    <materialDesign:PopupBox Padding="0" StaysOpen="True">
+                                        <ListView
+                                            Grid.ColumnSpan="2"
+                                            SelectionMode="Multiple"
+                                            Style="{StaticResource MaterialDesignToolVerticalToggleListBox}">
+                                            <ListViewItem Content="Технічний дизайнер" IsSelected="True" />
+                                            <ListViewItem Content="Скриптувальник" IsSelected="True" />
+                                            <ListViewItem Content="Художник" />
+                                            <ListViewItem Content="Моделлер" />
+                                        </ListView>
+                                    </materialDesign:PopupBox>
+
+                                </StackPanel>
+
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Margin="5,10,5,5"
+                                    Text="Баєв Олександр Євгенович" />
+                                <TextBox
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    MinWidth="75"
+                                    Margin="5,10,5,5"
+                                    Text="76000" />
+                                <StackPanel
+                                    Grid.Row="2"
+                                    Grid.Column="2"
+                                    Margin="5,10,5,5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="Художник, Скриптувальник, Технічний дизайнер, Моделлер" />
+
+                                    <materialDesign:PopupBox Padding="0" StaysOpen="True">
+                                        <ListView
+                                            Grid.ColumnSpan="2"
+                                            SelectionMode="Multiple"
+                                            Style="{StaticResource MaterialDesignToolVerticalToggleListBox}">
+                                            <ListViewItem Content="Технічний дизайнер" IsSelected="True" />
+                                            <ListViewItem Content="Скриптувальник" IsSelected="True" />
+                                            <ListViewItem Content="Художник" IsSelected="True" />
+                                            <ListViewItem Content="Моделлер" IsSelected="True" />
+                                        </ListView>
+                                    </materialDesign:PopupBox>
+
+                                </StackPanel>
+                            </Grid>
                         </Grid>
                     </materialDesign:Card>
 
-                    <Grid Grid.Row="1">
+                    <materialDesign:Card Grid.Row="1" Style="{StaticResource BottomLastCard}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
 
-                        <CheckBox IsChecked="{Binding CanUseOldWorks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CheckBoxWithComboBox}">
-                            <StackPanel Orientation="Horizontal">
+                                <DatePicker materialDesign:HintAssist.Hint="Акт від" Style="{StaticResource FirstDatePicker}" />
+                                <DatePicker
+                                    Grid.Column="1"
+                                    materialDesign:HintAssist.Hint="Акт до"
+                                    Style="{StaticResource LastDatePicker}" />
+                            </Grid>
 
-                                <TextBlock Text="використовувати роботи, що вже були в актах" />
+                            <Button
+                                Grid.Row="1"
+                                Content="Імпорт актів"
+                                Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
 
-                                <ComboBox
-                                    DisplayMemberPath="Text"
-                                    ItemsSource="{Binding DateTimeItems, Mode=OneWay}"
-                                    SelectedIndex="0"
-                                    SelectedItem="{Binding SelectedDateTimeItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    Style="{StaticResource ComboBoxInCheckBox}" />
+                            <CheckBox
+                                Grid.Column="1"
+                                IsChecked="{Binding CanUseOldWorks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource CheckBoxWithComboBox}">
+                                <StackPanel Orientation="Horizontal">
 
-                                <TextBlock Text="тому або раніше" />
+                                    <TextBlock Text="використовувати роботи, що вже були в актах" />
 
-                            </StackPanel>
-                        </CheckBox>
+                                    <ComboBox
+                                        DisplayMemberPath="Text"
+                                        ItemsSource="{Binding DateTimeItems, Mode=OneWay}"
+                                        SelectedIndex="0"
+                                        SelectedItem="{Binding SelectedDateTimeItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource ComboBoxInCheckBox}" />
 
-                        <Button
-                            Grid.Row="1"
-                            Command="{Binding GenerateActs}"
-                            CommandParameter="{Binding ElementName=MainGrid}"
-                            Content="Згенерувати"
-                            Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
+                                    <TextBlock Text="тому або раніше" />
 
-                    </Grid>
+                                </StackPanel>
+                            </CheckBox>
+
+                            <Button
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Command="{Binding GenerateActs}"
+                                CommandParameter="{Binding ElementName=MainGrid}"
+                                Content="Згенерувати акти"
+                                Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
+
+                        </Grid>
+                    </materialDesign:Card>
 
                 </Grid>
 
