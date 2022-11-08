@@ -35,12 +35,10 @@
             </Grid.RowDefinitions>
 
             <Menu>
-                <MenuItem Header="Меню" Icon="{materialDesign:PackIcon Kind=Menu}">
-                    <MenuItem Command="{Binding ShowGeneratorTab}" Header="Генератор" />
-                    <MenuItem Header="Проект">
-                        <MenuItem Command="{Binding OpenProject}" Header="Відкрити" />
-                        <MenuItem Command="{Binding CreateProject}" Header="Створити" />
-                    </MenuItem>
+                <MenuItem Command="{Binding ShowGeneratorTab}" Header="Генератор" />
+                <MenuItem Header="Проект">
+                    <MenuItem Command="{Binding OpenProject}" Header="Відкрити" />
+                    <MenuItem Command="{Binding CreateProject}" Header="Створити" />
                 </MenuItem>
             </Menu>
 
