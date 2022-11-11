@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProjectsDb.Context
 {
@@ -14,6 +15,8 @@ namespace ProjectsDb.Context
 		public float Number { get; set; }
 		public int? ProjectId { get; set; }
 		public Project Project { get; set; }
+		[Column(TypeName = "date")]
+		public DateTime? DeletionDate { get; set; }
 
 		public List<CountRegions> Regions { get; set; }
 		public List<Back> ChildBacks { get; set; }

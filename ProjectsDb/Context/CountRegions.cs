@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProjectsDb.Context
 {
@@ -8,6 +9,8 @@ namespace ProjectsDb.Context
 		public int? BackId { get; set; }
 		public Back Back { get; set; }
 		public int Count { get; set; }
+		[Column(TypeName = "date")]
+		public DateTime? DeletionDate { get; set; }
 
 		public void Set(CountRegions obj)
 		{
