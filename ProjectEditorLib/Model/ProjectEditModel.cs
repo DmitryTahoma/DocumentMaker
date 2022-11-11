@@ -2,6 +2,7 @@
 using ProjectsDb.Context;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,6 +10,8 @@ namespace ProjectEditorLib.Model
 {
 	public class ProjectEditModel
 	{
+		const double nodesDaysLifetime = 45;
+
 		ProjectsDbContext db = null;
 
 		~ProjectEditModel()
@@ -184,6 +187,8 @@ namespace ProjectEditorLib.Model
 		{
 			return Task.Run(() =>
 			{
+				RemoveOldBacks();
+
 				Back removingBack = null;
 
 				if (node is Back back)
@@ -264,6 +269,23 @@ namespace ProjectEditorLib.Model
 				result.AddRange(backs);
 			}
 			return result;
+		}
+
+		private void RemoveOldBacks()
+		{
+			List<CountRegions> removingRegions = db.CountRegions
+				.Where(x => x.DeletionDate.HasValue && DbFunctions.DiffDays(DateTime.Now, x.DeletionDate.Value).Value > nodesDaysLifetime)
+				.ToList();
+			List<Back> removingBacks = db.Backs
+				.Where(x => x.DeletionDate.HasValue && DbFunctions.DiffDays(DateTime.Now, x.DeletionDate.Value).Value > nodesDaysLifetime)
+				.ToList();
+			removingBacks.ForEach(LoadBack);
+
+			PushChildBacks(ref removingBacks);
+			removingRegions.AddRange(GetDbRegionsOfBacks(removingBacks));
+
+			db.Backs.RemoveRange(removingBacks);
+			db.CountRegions.RemoveRange(removingRegions);
 		}
 	}
 }
