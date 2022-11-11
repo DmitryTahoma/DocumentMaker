@@ -1,5 +1,6 @@
 ﻿using ProjectsDb;
 using ProjectsDb.Context;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -160,7 +161,7 @@ namespace ProjectEditorLib.Model
 			return Task.Run(() =>
 			{
 				Project dbProject = db.Projects.First(x => x.Id == project.Id);
-				project.Backs = new List<Back>(db.Backs.Where(x => x.ProjectId == project.Id && x.BaseBackId == null));
+				project.Backs = new List<Back>(db.Backs.Where(x => x.BaseBackId == null && x.ProjectId == project.Id && x.DeletionDate == null));
 				project.AlternativeNames = new List<AlternativeProjectName>(db.AlternativeProjectNames.Where(x => x.ProjectId == project.Id));
 				project.Backs.ForEach(LoadBack);
 				return project;
@@ -170,8 +171,8 @@ namespace ProjectEditorLib.Model
 		private void LoadBack(Back back)
 		{
 			back.BackType = db.BackTypes.FirstOrDefault(x => x.Id == back.BackTypeId);
-			back.Regions = new List<CountRegions>(db.CountRegions.Where(x => x.BackId == back.Id));
-			back.ChildBacks = new List<Back>(db.Backs.Where(x => x.BaseBackId == back.Id));
+			back.Regions = new List<CountRegions>(db.CountRegions.Where(x => x.DeletionDate == null && x.BackId == back.Id));
+			back.ChildBacks = new List<Back>(db.Backs.Where(x => x.DeletionDate == null && x.BaseBackId == back.Id));
 
 			foreach (Back childBack in back.ChildBacks)
 			{
@@ -183,35 +184,31 @@ namespace ProjectEditorLib.Model
 		{
 			return Task.Run(() =>
 			{
-				List<Back> removingBacks = null;
+				Back removingBack = null;
 
 				if (node is Back back)
 				{
-					removingBacks = new List<Back> { back };
+					removingBack = back;
 				}
 
-				if (removingBacks == null)
+				if (removingBack == null)
 				{
 					if (node is CountRegions regions)
 					{
 						CountRegions dbRegions = db.CountRegions
 							.FirstOrDefault(x => x.Id == regions.Id);
 
-						db.CountRegions.Remove(dbRegions);
+						dbRegions.DeletionDate = DateTime.Now;
 						db.SaveChanges();
 						return true;
 					}
 				}
 				else
 				{
-					PushChildBacks(ref removingBacks);
+					Back dbBack = db.Backs
+						.FirstOrDefault(x => x.Id == removingBack.Id);
 
-					List<CountRegions> removingDbRegions = new List<CountRegions>(GetDbRegionsOfBacks(removingBacks));
-					List<Back> removingDbBacks = new List<Back>(GetDbBacksOfBacks(removingBacks));
-
-					db.CountRegions.RemoveRange(removingDbRegions);
-					db.Backs.RemoveRange(removingDbBacks);
-
+					dbBack.DeletionDate = DateTime.Now;
 					db.SaveChanges();
 
 					return true;
