@@ -20,6 +20,8 @@ namespace ProjectParser
 		{
 			if (!File.Exists(sourceFilename)) return;
 			Maximize();
+			Console.OutputEncoding = System.Text.Encoding.Unicode;
+			Console.InputEncoding = System.Text.Encoding.Unicode;
 
 			using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(sourceFilename, false))
 			{
