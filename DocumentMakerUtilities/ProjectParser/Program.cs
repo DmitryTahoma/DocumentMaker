@@ -1,8 +1,10 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 namespace ProjectParser
@@ -11,11 +13,13 @@ namespace ProjectParser
 	{
 		static string sourceFilename => "Source.xlsx";
 
-		static Regex regex = new Regex(@"^\d+\.\s*\w+");
+		static Regex backNameRegex = new Regex(@"^\d+\.\s*\w+");
+		static Regex hogNameRegex = new Regex(@"^[\d+\.]*\s*\w+");
 
 		static void Main(string[] args)
 		{
 			if (!File.Exists(sourceFilename)) return;
+			Maximize();
 
 			using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(sourceFilename, false))
 			{
@@ -45,10 +49,17 @@ namespace ProjectParser
 								continue;
 							}
 
+							Console.ForegroundColor = ConsoleColor.White;
+							bool isAppropriate = false;
+							bool isNotNull = false;
+
 							int curColIdNum = 0;
 							foreach (Cell c in r.Elements<Cell>())
 							{
-								bool isAppropriate = false;
+								if (!c.CellReference.HasValue || c.CellReference.Value != curColId + curRowId.ToString())
+								{
+									continue;
+								}
 
 								string text;
 								if (c.DataType != null && c.DataType == CellValues.SharedString && int.TryParse(c.CellValue.Text, out int strId))
@@ -59,30 +70,56 @@ namespace ProjectParser
 								{
 									text = c.CellValue?.Text;
 								}
+
 								if (!string.IsNullOrWhiteSpace(text))
 								{
-									//if(text.Contains("15.1 Фуллскр"))
-									//{
-									//	int k = -9;
-									//}
+									isNotNull = true;
+
 									if (curColIdNum == 0)
 									{
-										isAppropriate = regex.IsMatch(text);
+										isAppropriate = backNameRegex.IsMatch(text);
 										if (isAppropriate) Console.ForegroundColor = ConsoleColor.Blue;
 										Console.Write(text);
-										if (!isAppropriate) Console.WriteLine();
 									}
 									else if(curColIdNum == 1)
 									{
 										Console.CursorLeft = 50;
 										if(float.TryParse(text.Replace('.',','), out float countRegions))
 										{
-											Console.WriteLine(((uint)countRegions).ToString());
+											Console.Write(((uint)countRegions).ToString());
 										}
 										else
 										{
 											Console.ForegroundColor = ConsoleColor.Red;
-											Console.WriteLine("err reg");
+											Console.Write("err reg");
+										}
+									}
+									else if(curColIdNum == 2)
+									{
+										Console.CursorLeft = 60;
+										if(hogNameRegex.IsMatch(text))
+										{
+											Console.ForegroundColor = ConsoleColor.Blue;
+											Console.Write(text.Replace('\n', ';'));
+										}
+										else
+										{
+											Console.ForegroundColor = ConsoleColor.Red;
+											Console.Write("err hog");
+										}
+									}
+									else if(curColIdNum == 3)
+									{
+										Console.CursorLeft = 120;
+										if (float.TryParse(text.Replace('.', ','), out float hogCountRegions))
+										{
+											Console.ForegroundColor = ConsoleColor.Blue;
+											Console.Write(((uint)hogCountRegions).ToString());
+										}
+										else
+										{
+											Console.ForegroundColor = ConsoleColor.Red;
+											Console.Write("err reg");
 										}
 									}
 								}
@@ -90,7 +127,19 @@ namespace ProjectParser
 								{
 									Console.CursorLeft = 50;
 									Console.ForegroundColor = ConsoleColor.Red;
-									Console.WriteLine("err reg");
+									Console.Write("err reg");
+								}
+								else if(curColIdNum == 2)
+								{
+									Console.CursorLeft = 60;
+									Console.ForegroundColor = ConsoleColor.Red;
+									Console.Write("err hog");
+								}
+								else if (curColIdNum == 3)
+								{
+									Console.CursorLeft = 120;
+									Console.ForegroundColor = ConsoleColor.Red;
+									Console.Write("err reg");
 								}
 								++curColId;
 								++curColIdNum;
@@ -100,6 +149,10 @@ namespace ProjectParser
 									Console.ForegroundColor = ConsoleColor.White;
 									break;
 								}
+							}
+							if(isNotNull)
+							{
+								Console.WriteLine();
 							}
 
 							++curRowId;
@@ -111,6 +164,15 @@ namespace ProjectParser
 			}
 
 			Console.ReadLine();
+		}
+
+		[DllImport("user32.dll")]
+		public static extern bool ShowWindow(IntPtr hWnd, int cmdShow);
+
+		private static void Maximize()
+		{
+			Process p = Process.GetCurrentProcess();
+			ShowWindow(p.MainWindowHandle, 3); //SW_MAXIMIZE = 3
 		}
 	}
 }
