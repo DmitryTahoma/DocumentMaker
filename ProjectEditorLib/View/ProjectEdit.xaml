@@ -53,8 +53,9 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition />
         </Grid.RowDefinitions>
 
         <ToolBarTray IsLocked="True">
@@ -73,12 +74,12 @@
 
         <TreeView
             Grid.Row="1"
-            Grid.RowSpan="2"
+            Grid.RowSpan="3"
             MinWidth="220"
             ItemsSource="{Binding TreeItems}" />
 
         <GridSplitter
-            Grid.RowSpan="3"
+            Grid.RowSpan="4"
             Grid.Column="1"
             Width="5"
             HorizontalAlignment="Center"
