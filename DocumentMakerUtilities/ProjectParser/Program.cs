@@ -48,7 +48,6 @@ namespace ProjectParser
 							if (sheet.Name == "Escape")
 							{
 								++curColId;
-								continue;
 							}
 
 							Console.ForegroundColor = ConsoleColor.White;
