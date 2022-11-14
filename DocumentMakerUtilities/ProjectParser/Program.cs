@@ -39,13 +39,16 @@ namespace ProjectParser
 						foreach (Row r in sheetData.Elements<Row>())
 						{
 							char curColId = 'A';
+							if (sheet.Name == "Escape")
+							{
+								++curColId;
+								continue;
+							}
+
+							int curColIdNum = 0;
 							foreach (Cell c in r.Elements<Cell>())
 							{
-								if (sheet.Name == "Escape")
-								{
-									++curColId;
-									continue;
-								}
+								bool isAppropriate = false;
 
 								string text;
 								if (c.DataType != null && c.DataType == CellValues.SharedString && int.TryParse(c.CellValue.Text, out int strId))
@@ -58,15 +61,45 @@ namespace ProjectParser
 								}
 								if (!string.IsNullOrWhiteSpace(text))
 								{
-									bool isAppropriate = regex.IsMatch(text);
-									if (isAppropriate) Console.ForegroundColor = ConsoleColor.Blue;
-									Console.WriteLine(text);
-									if (isAppropriate) Console.ForegroundColor = ConsoleColor.White;
-									
+									//if(text.Contains("15.1 Фуллскр"))
+									//{
+									//	int k = -9;
+									//}
+									if (curColIdNum == 0)
+									{
+										isAppropriate = regex.IsMatch(text);
+										if (isAppropriate) Console.ForegroundColor = ConsoleColor.Blue;
+										Console.Write(text);
+										if (!isAppropriate) Console.WriteLine();
+									}
+									else if(curColIdNum == 1)
+									{
+										Console.CursorLeft = 50;
+										if(float.TryParse(text.Replace('.',','), out float countRegions))
+										{
+											Console.WriteLine(((uint)countRegions).ToString());
+										}
+										else
+										{
+											Console.ForegroundColor = ConsoleColor.Red;
+											Console.WriteLine("err reg");
+										}
+									}
+								}
+								else if(curColIdNum == 1)
+								{
+									Console.CursorLeft = 50;
+									Console.ForegroundColor = ConsoleColor.Red;
+									Console.WriteLine("err reg");
 								}
 								++curColId;
+								++curColIdNum;
 
-								break;
+								if (!isAppropriate)
+								{
+									Console.ForegroundColor = ConsoleColor.White;
+									break;
+								}
 							}
 
 							++curRowId;
