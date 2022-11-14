@@ -122,6 +122,18 @@ namespace ProjectParser
 											Console.Write("err reg");
 										}
 									}
+									else if(curColIdNum == 4)
+									{
+										Console.CursorLeft = 130;
+										Console.ForegroundColor = ConsoleColor.Blue;
+										Console.Write(text.Replace('\n', ';'));
+									}
+									else if(curColIdNum == 5)
+									{
+										if(Console.CursorLeft < 130) Console.CursorLeft = 130;
+										Console.ForegroundColor = ConsoleColor.Blue;
+										Console.Write(" | " + text.Replace('\n', ';'));
+									}
 								}
 								else if(curColIdNum == 1)
 								{
