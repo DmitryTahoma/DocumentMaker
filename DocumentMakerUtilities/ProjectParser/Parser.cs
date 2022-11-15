@@ -35,7 +35,6 @@ namespace ProjectParser
 
 					foreach (SheetData sheetData in worksheetPart.Worksheet.Elements<SheetData>())
 					{
-						int curRowId = 1;
 						foreach (Row r in sheetData.Elements<Row>())
 						{
 							ParsedObj parsedObj = new ParsedObj();
@@ -54,9 +53,19 @@ namespace ProjectParser
 							int curColIdNum = 0;
 							foreach (Cell c in r.Elements<Cell>())
 							{
-								if (!c.CellReference.HasValue || c.CellReference.Value != curColId + curRowId.ToString())
+								if (!c.CellReference.HasValue || c.CellReference.Value[0] != curColId)
+								if (!c.CellReference.HasValue || c.CellReference.Value[0] != curColId)
 								{
-									continue;
+									if (c.CellReference.Value[0] < curColId)
+									{
+										continue;
+									}
+									else if (curColId == 'A') break;
+									else
+									{
+										curColIdNum += c.CellReference.Value[0] - curColId;
+										curColId = c.CellReference.Value[0];
+									}
 								}
 
 								string text;
@@ -161,6 +170,7 @@ namespace ProjectParser
 									Console.ForegroundColor = ConsoleColor.Red;
 									Console.Write("err reg");
 								}
+								else break;
 								++curColId;
 								++curColIdNum;
 
@@ -178,8 +188,6 @@ namespace ProjectParser
 							{
 								project.Value.Add(parsedObj);
 							}
-
-							++curRowId;
 						}
 					}
 
