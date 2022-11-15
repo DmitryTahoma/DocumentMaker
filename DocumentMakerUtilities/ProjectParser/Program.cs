@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProjectsDb;
+using ProjectsDb.Context;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,7 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace ProjectParser
 {
-	class Program
+	partial class Program
 	{
 		static string sourceFilename => "Source.xlsx";
 
@@ -26,13 +28,55 @@ namespace ProjectParser
 
 			Console.ReadLine();
 
+			FillToDatabase(data);
+
+			Console.ReadLine();
+		}
+
+		[DllImport("user32.dll")]
+		public static extern bool ShowWindow(IntPtr hWnd, int cmdShow);
+
+		private static void Maximize()
+		{
+			Process p = Process.GetCurrentProcess();
+			ShowWindow(p.MainWindowHandle, 3); //SW_MAXIMIZE = 3
+		}
+
+		private static string FillingMenu()
+		{
+			string str;
+			do
+			{
+				Console.Write("1 Insert\n2 Skip\n> ");
+				str = Console.ReadLine();
+
+			} while (str != "1" && str != "2");
+			return str;
+		}
+
+		private static void ProgressBarStart(int count)
+		{
+			for (int i = 0; i < count; ++i)
+			{
+				Console.Write('-');
+			}
+			Console.CursorLeft = 0;
+		}
+
+		private static void AddProgress()
+		{
+			Console.Write('+');
+		}
+
+		private static void FillToDatabase(List<KeyValuePair<string, List<ParsedObj>>> data)
+		{
 			Console.ForegroundColor = ConsoleColor.Green;
 			Console.WriteLine("-------------------------------------------------");
 			Console.ForegroundColor = ConsoleColor.White;
 
 			data.RemoveAll(x => x.Value.Count <= 0);
 
-			foreach(KeyValuePair<string, List<ParsedObj>> project in data)
+			foreach (KeyValuePair<string, List<ParsedObj>> project in data)
 			{
 				int maxBackLength = project.Value.Max(x => x.BackName?.Length ?? 4);
 				int maxHogLength = project.Value.Max(x => x.HogName?.Length ?? 4);
@@ -46,41 +90,72 @@ namespace ProjectParser
 					parsedObj.WriteToConsoleTable(maxBackLength, maxHogLength, maxMinigamesLength);
 				}
 
-				string str;
-				do
-				{
-					Console.Write("1 Insert\n2 Skip\n> ");
-					str = Console.ReadLine();
-
-				} while (str != "1" && str != "2");
+				string str = FillingMenu();
 
 				if (str == "2") continue;
 
-				for (int i = 0; i < project.Value.Count; ++i)
-				{
-					Console.Write('-');
-				}
+				ProgressBarStart(project.Value.Count);
 
-				Console.CursorLeft = 0;
-				foreach(ParsedObj parsedObj1 in project.Value)
+				foreach (ParsedObj parsedObj in project.Value)
 				{
-					// insert to db
-
-					Console.Write('+');
+					FillObjToDatabase(parsedObj, project.Key);
+					AddProgress();
 				}
 				Console.WriteLine();
 			}
-
-			Console.ReadLine();
 		}
 
-		[DllImport("user32.dll")]
-		public static extern bool ShowWindow(IntPtr hWnd, int cmdShow);
-
-		private static void Maximize()
+		private static BackType GetBackType(ProjectsDbContext db, ProjectNodeType projectNodeType)
 		{
-			Process p = Process.GetCurrentProcess();
-			ShowWindow(p.MainWindowHandle, 3); //SW_MAXIMIZE = 3
+			BackType dbBackType = db.BackTypes.FirstOrDefault(x => x.Name == projectNodeType.ToString());
+			if (dbBackType == null)
+			{
+				dbBackType = db.BackTypes.Add(new BackType { Name = projectNodeType.ToString() });
+			}
+			return dbBackType;
+		}
+
+		private static void FillObjToDatabase(ParsedObj parsedObj, string projectName)
+		{
+			using (ProjectsDbContext db = new ProjectsDbContext())
+			{
+				Project dbProject = db.Projects.FirstOrDefault(x => x.Name == projectName);
+				if (dbProject == null)
+				{
+					dbProject = db.Projects.Add(new Project { Name = projectName });
+				}
+
+				BackType dbBackType = GetBackType(db, ProjectNodeType.Back);
+				Back dbBack = db.Backs.Add(parsedObj.ConvertToBack(dbProject, dbBackType));
+
+				if (parsedObj.HaveHog())
+				{
+					BackType dbHogType = GetBackType(db, ProjectNodeType.Hog);
+					db.Backs.Add(parsedObj.ConvertToHog(dbProject, dbBack, dbHogType));
+				}
+
+				if(parsedObj.HaveMinigames())
+				{
+					BackType dbMgType = GetBackType(db, ProjectNodeType.Minigame);
+					List<Back> minigames = parsedObj.ConvertToMinigames(dbProject, dbBack, dbMgType).ToList();
+					if(minigames.Count > 0)
+					{
+						db.Backs.AddRange(minigames);
+					}
+				}
+
+				if(parsedObj.HaveDialogs())
+				{
+					BackType dbDialogType = GetBackType(db, ProjectNodeType.Dialog);
+					List<Back> dialogs = parsedObj.ConvertToDialogs(dbProject, dbBack, dbDialogType).ToList();
+					if(dialogs.Count > 0)
+					{
+						db.Backs.AddRange(dialogs);
+					}
+				}
+
+				db.SaveChanges();
+			}
 		}
 	}
 }
