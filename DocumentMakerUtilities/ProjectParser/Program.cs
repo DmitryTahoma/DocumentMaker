@@ -1,20 +1,15 @@
-﻿using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 
 namespace ProjectParser
 {
 	class Program
 	{
 		static string sourceFilename => "Source.xlsx";
-
-		static Regex backNameRegex = new Regex(@"^\d+\.\s*\w+");
-		static Regex hogNameRegex = new Regex(@"^[\d+\.]*\s*\w+");
 
 		static void Main(string[] args)
 		{
@@ -23,157 +18,57 @@ namespace ProjectParser
 			Console.OutputEncoding = System.Text.Encoding.Unicode;
 			Console.InputEncoding = System.Text.Encoding.Unicode;
 
-			using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(sourceFilename, false))
+			Parser parser = new Parser();
+			List<KeyValuePair<string, List<ParsedObj>>> data = parser.ParseFromFile(sourceFilename);
+
+			Console.ForegroundColor = ConsoleColor.DarkGreen;
+			Console.WriteLine("End!");
+
+			Console.ReadLine();
+
+			Console.ForegroundColor = ConsoleColor.Green;
+			Console.WriteLine("-------------------------------------------------");
+			Console.ForegroundColor = ConsoleColor.White;
+
+			data.RemoveAll(x => x.Value.Count <= 0);
+
+			foreach(KeyValuePair<string, List<ParsedObj>> project in data)
 			{
-				WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
+				int maxBackLength = project.Value.Max(x => x.BackName?.Length ?? 4);
+				int maxHogLength = project.Value.Max(x => x.HogName?.Length ?? 4);
+				int maxMinigamesLength = project.Value.Max(x => x.Minigames?.Length ?? 4);
 
-				SharedStringTablePart sharedStringTablePart = workbookPart.GetPartsOfType<SharedStringTablePart>().First();
-				SharedStringTable sharedStringTable = sharedStringTablePart.SharedStringTable;
-
-				foreach (Sheet sheet in workbookPart.Workbook.Sheets)
+				Console.ForegroundColor = ConsoleColor.Green;
+				Console.WriteLine(project.Key);
+				Console.ForegroundColor = ConsoleColor.White;
+				foreach (ParsedObj parsedObj in project.Value)
 				{
-					Console.ForegroundColor = ConsoleColor.Green;
-					Console.WriteLine(sheet.Name);
-					Console.ForegroundColor = ConsoleColor.White;
-
-					string relationshipId = sheet.Id.Value;
-					WorksheetPart worksheetPart = (WorksheetPart)workbookPart.GetPartById(relationshipId);
-				
-					foreach (SheetData sheetData in worksheetPart.Worksheet.Elements<SheetData>())
-					{
-						int curRowId = 1;
-						foreach (Row r in sheetData.Elements<Row>())
-						{
-							char curColId = 'A';
-							if (sheet.Name == "Escape")
-							{
-								++curColId;
-							}
-
-							Console.ForegroundColor = ConsoleColor.White;
-							bool isAppropriate = false;
-							bool isNotNull = false;
-
-							int curColIdNum = 0;
-							foreach (Cell c in r.Elements<Cell>())
-							{
-								if (!c.CellReference.HasValue || c.CellReference.Value != curColId + curRowId.ToString())
-								{
-									continue;
-								}
-
-								string text;
-								if (c.DataType != null && c.DataType == CellValues.SharedString && int.TryParse(c.CellValue.Text, out int strId))
-								{
-									text = sharedStringTable.ChildElements[strId]?.InnerText;
-								}
-								else
-								{
-									text = c.CellValue?.Text;
-								}
-
-								if (!string.IsNullOrWhiteSpace(text))
-								{
-									isNotNull = true;
-
-									if (curColIdNum == 0)
-									{
-										isAppropriate = backNameRegex.IsMatch(text);
-										if (isAppropriate) Console.ForegroundColor = ConsoleColor.Blue;
-										Console.Write(text);
-									}
-									else if(curColIdNum == 1)
-									{
-										Console.CursorLeft = 50;
-										if(float.TryParse(text.Replace('.',','), out float countRegions))
-										{
-											Console.Write(((uint)countRegions).ToString());
-										}
-										else
-										{
-											Console.ForegroundColor = ConsoleColor.Red;
-											Console.Write("err reg");
-										}
-									}
-									else if(curColIdNum == 2)
-									{
-										Console.CursorLeft = 60;
-										if(hogNameRegex.IsMatch(text))
-										{
-											Console.ForegroundColor = ConsoleColor.Blue;
-											Console.Write(text.Replace('\n', ';'));
-										}
-										else
-										{
-											Console.ForegroundColor = ConsoleColor.Red;
-											Console.Write("err hog");
-										}
-									}
-									else if(curColIdNum == 3)
-									{
-										Console.CursorLeft = 120;
-										if (float.TryParse(text.Replace('.', ','), out float hogCountRegions))
-										{
-											Console.ForegroundColor = ConsoleColor.Blue;
-											Console.Write(((uint)hogCountRegions).ToString());
-										}
-										else
-										{
-											Console.ForegroundColor = ConsoleColor.Red;
-											Console.Write("err reg");
-										}
-									}
-									else if(curColIdNum == 4)
-									{
-										Console.CursorLeft = 130;
-										Console.ForegroundColor = ConsoleColor.Blue;
-										Console.Write(text.Replace('\n', ';'));
-									}
-									else if(curColIdNum == 5)
-									{
-										if(Console.CursorLeft < 130) Console.CursorLeft = 130;
-										Console.ForegroundColor = ConsoleColor.Blue;
-										Console.Write(" | " + text.Replace('\n', ';'));
-									}
-								}
-								else if(curColIdNum == 1)
-								{
-									Console.CursorLeft = 50;
-									Console.ForegroundColor = ConsoleColor.Red;
-									Console.Write("err reg");
-								}
-								else if(curColIdNum == 2)
-								{
-									Console.CursorLeft = 60;
-									Console.ForegroundColor = ConsoleColor.Red;
-									Console.Write("err hog");
-								}
-								else if (curColIdNum == 3)
-								{
-									Console.CursorLeft = 120;
-									Console.ForegroundColor = ConsoleColor.Red;
-									Console.Write("err reg");
-								}
-								++curColId;
-								++curColIdNum;
-
-								if (!isAppropriate)
-								{
-									Console.ForegroundColor = ConsoleColor.White;
-									break;
-								}
-							}
-							if(isNotNull)
-							{
-								Console.WriteLine();
-							}
-
-							++curRowId;
-						}
-					}
+					parsedObj.WriteToConsoleTable(maxBackLength, maxHogLength, maxMinigamesLength);
 				}
 
-				spreadsheetDocument.Close();
+				string str;
+				do
+				{
+					Console.Write("1 Insert\n2 Skip\n> ");
+					str = Console.ReadLine();
+
+				} while (str != "1" && str != "2");
+
+				if (str == "2") continue;
+
+				for (int i = 0; i < project.Value.Count; ++i)
+				{
+					Console.Write('-');
+				}
+
+				Console.CursorLeft = 0;
+				foreach(ParsedObj parsedObj1 in project.Value)
+				{
+					// insert to db
+
+					Console.Write('+');
+				}
+				Console.WriteLine();
 			}
 
 			Console.ReadLine();
