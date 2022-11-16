@@ -4,12 +4,18 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:ProjectEditorLib.View"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:ProjectEditorLib.ViewModel"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
+    <UserControl.DataContext>
+        <vm:ProjectRestoreViewModel />
+    </UserControl.DataContext>
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -37,23 +43,7 @@
 
         <Grid>
 
-            <TreeView x:Name="ProjectsTreeView">
-                <TreeViewItem Header="Escape">
-                    <TreeViewItem Header="Back" />
-                    <TreeViewItem Header="Back" />
-                    <TreeViewItem Header="Back" />
-                </TreeViewItem>
-                <TreeViewItem Header="Escape">
-                    <TreeViewItem Header="Back" />
-                    <TreeViewItem Header="Back" />
-                    <TreeViewItem Header="Back" />
-                </TreeViewItem>
-                <TreeViewItem Header="Escape">
-                    <TreeViewItem Header="Back" />
-                    <TreeViewItem Header="Back" />
-                    <TreeViewItem Header="Back" />
-                </TreeViewItem>
-            </TreeView>
+            <TreeView x:Name="ProjectsTreeView" ItemsSource="{Binding TreeItems}" />
 
             <StackPanel
                 VerticalAlignment="Center"
@@ -81,4 +71,11 @@
         </Grid>
 
     </DockPanel>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadFromDatabase}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
 </UserControl>

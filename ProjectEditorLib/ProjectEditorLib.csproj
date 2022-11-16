@@ -74,6 +74,7 @@
     <Compile Include="Model\ProjectEditModel.cs" />
     <Compile Include="Model\ProjectNode.cs" />
     <Compile Include="Model\ProjectNodeType.cs" />
+    <Compile Include="Model\ProjectRestoreModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -99,6 +100,7 @@
     <Compile Include="ViewModel\IDbObjectViewModel.cs" />
     <Compile Include="ViewModel\MinigameViewModel.cs" />
     <Compile Include="ViewModel\ProjectEditViewModel.cs" />
+    <Compile Include="ViewModel\ProjectRestoreViewModel.cs" />
     <Compile Include="ViewModel\ProjectViewModel.cs" />
     <Compile Include="ViewModel\RegionsViewModel.cs" />
     <Compile Include="ViewModel\TreeItemHeaderViewModel.cs" />
