@@ -57,6 +57,7 @@ namespace ProjectEditorLib.ViewModel
 		private void InitCommands()
 		{
 			removeCommand = new Command(OnRemoveExecute);
+			restoreCommand = new Command(OnRestoreExecute);
 		}
 
 		private Command CreateAddCommand(ProjectNodeType param)
@@ -73,67 +74,96 @@ namespace ProjectEditorLib.ViewModel
 			RemoveCommand?.Execute();
 		}
 
+		public Command RestoreCommand { get; set; }
+		private Command restoreCommand;
+		private void OnRestoreExecute()
+		{
+			RestoreCommand?.Execute();
+		}
+
 		#endregion
 
 		#region Methods
 
-		private void ReInitContextMenu()
+		private void ReInitContextMenu(TreeItemContextMenuType menuType)
 		{
 			ContextMenu = new ContextMenu();
 			List<Control> itemsSource = new List<Control>();
-			switch (model.Type)
+
+			switch (menuType)
 			{
-				case ProjectNodeType.Project:
-					itemsSource.Add(new MenuItem { Header = "Додати епізод", Command = CreateAddCommand(ProjectNodeType.Episode), DataContext = NodeContextMenuItemType.Adding });
-					itemsSource.Add(new MenuItem { Header = "Додати бек", Command = CreateAddCommand(ProjectNodeType.Back), DataContext = NodeContextMenuItemType.Adding });
-					itemsSource.Add(new MenuItem { Header = "Додати крафт", Command = CreateAddCommand(ProjectNodeType.Craft), DataContext = NodeContextMenuItemType.Adding });
+				default:
+					switch (model.Type)
+					{
+						case ProjectNodeType.Project:
+							itemsSource.Add(new MenuItem { Header = "Додати епізод", Command = CreateAddCommand(ProjectNodeType.Episode), DataContext = NodeContextMenuItemType.Adding });
+							itemsSource.Add(new MenuItem { Header = "Додати бек", Command = CreateAddCommand(ProjectNodeType.Back), DataContext = NodeContextMenuItemType.Adding });
+							itemsSource.Add(new MenuItem { Header = "Додати крафт", Command = CreateAddCommand(ProjectNodeType.Craft), DataContext = NodeContextMenuItemType.Adding });
+							break;
+						case ProjectNodeType.Episode:
+							itemsSource.Add(new MenuItem { Header = "Додати бек", Command = CreateAddCommand(ProjectNodeType.Back), DataContext = NodeContextMenuItemType.Adding });
+							itemsSource.Add(new MenuItem { Header = "Додати крафт", Command = CreateAddCommand(ProjectNodeType.Craft), DataContext = NodeContextMenuItemType.Adding });
+							itemsSource.Add(new Separator());
+							itemsSource.Add(new MenuItem { Header = "Видалити епізод", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
+							break;
+						case ProjectNodeType.Back:
+							itemsSource.Add(new MenuItem { Header = "Додати мініігру", Command = CreateAddCommand(ProjectNodeType.Minigame), DataContext = NodeContextMenuItemType.Adding });
+							itemsSource.Add(new MenuItem { Header = "Додати діалог", Command = CreateAddCommand(ProjectNodeType.Dialog), DataContext = NodeContextMenuItemType.Adding });
+							itemsSource.Add(new MenuItem { Header = "Додати хог", Command = CreateAddCommand(ProjectNodeType.Hog), DataContext = NodeContextMenuItemType.Adding });
+							itemsSource.Add(new Separator());
+							itemsSource.Add(new MenuItem { Header = "Видалити бек", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
+							break;
+						case ProjectNodeType.Craft:
+							itemsSource.Add(new MenuItem { Header = "Додати мініігру", Command = CreateAddCommand(ProjectNodeType.Minigame), DataContext = NodeContextMenuItemType.Adding });
+							itemsSource.Add(new MenuItem { Header = "Додати хог", Command = CreateAddCommand(ProjectNodeType.Hog), DataContext = NodeContextMenuItemType.Adding });
+							itemsSource.Add(new Separator());
+							itemsSource.Add(new MenuItem { Header = "Видалити крафт", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
+							break;
+						case ProjectNodeType.Dialog:
+							itemsSource.Add(new MenuItem { Header = "Видалити діалог", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
+							break;
+						case ProjectNodeType.Hog:
+							itemsSource.Add(new MenuItem { Header = "Додати мініігру", Command = CreateAddCommand(ProjectNodeType.Minigame), DataContext = NodeContextMenuItemType.Adding });
+							itemsSource.Add(new Separator());
+							itemsSource.Add(new MenuItem { Header = "Видалити хог", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
+							break;
+						case ProjectNodeType.Minigame:
+							itemsSource.Add(new MenuItem { Header = "Додати регіони", Command = CreateAddCommand(ProjectNodeType.Regions), DataContext = NodeContextMenuItemType.Adding });
+							itemsSource.Add(new Separator());
+							itemsSource.Add(new MenuItem { Header = "Видалити мінігру", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
+							break;
+						case ProjectNodeType.Regions:
+							itemsSource.Add(new MenuItem { Header = "Видалити регіони", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
+							break;
+					}
 					break;
-				case ProjectNodeType.Episode:
-					itemsSource.Add(new MenuItem { Header = "Додати бек", Command = CreateAddCommand(ProjectNodeType.Back), DataContext = NodeContextMenuItemType.Adding });
-					itemsSource.Add(new MenuItem { Header = "Додати крафт", Command = CreateAddCommand(ProjectNodeType.Craft), DataContext = NodeContextMenuItemType.Adding });
-					itemsSource.Add(new Separator());
-					itemsSource.Add(new MenuItem { Header = "Видалити епізод", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
-					break;
-				case ProjectNodeType.Back:
-					itemsSource.Add(new MenuItem { Header = "Додати мініігру", Command = CreateAddCommand(ProjectNodeType.Minigame), DataContext = NodeContextMenuItemType.Adding });
-					itemsSource.Add(new MenuItem { Header = "Додати діалог", Command = CreateAddCommand(ProjectNodeType.Dialog), DataContext = NodeContextMenuItemType.Adding });
-					itemsSource.Add(new MenuItem { Header = "Додати хог", Command = CreateAddCommand(ProjectNodeType.Hog), DataContext = NodeContextMenuItemType.Adding });
-					itemsSource.Add(new Separator());
-					itemsSource.Add(new MenuItem { Header = "Видалити бек", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
-					break;
-				case ProjectNodeType.Craft:
-					itemsSource.Add(new MenuItem { Header = "Додати мініігру", Command = CreateAddCommand(ProjectNodeType.Minigame), DataContext = NodeContextMenuItemType.Adding });
-					itemsSource.Add(new MenuItem { Header = "Додати хог", Command = CreateAddCommand(ProjectNodeType.Hog), DataContext = NodeContextMenuItemType.Adding });
-					itemsSource.Add(new Separator());
-					itemsSource.Add(new MenuItem { Header = "Видалити крафт", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
-					break;
-				case ProjectNodeType.Dialog:
-					itemsSource.Add(new MenuItem { Header = "Видалити діалог", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
-					break;
-				case ProjectNodeType.Hog:
-					itemsSource.Add(new MenuItem { Header = "Додати мініігру", Command = CreateAddCommand(ProjectNodeType.Minigame), DataContext = NodeContextMenuItemType.Adding });
-					itemsSource.Add(new Separator());
-					itemsSource.Add(new MenuItem { Header = "Видалити хог", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
-					break;
-				case ProjectNodeType.Minigame:
-					itemsSource.Add(new MenuItem { Header = "Додати регіони", Command = CreateAddCommand(ProjectNodeType.Regions), DataContext = NodeContextMenuItemType.Adding });
-					itemsSource.Add(new Separator());
-					itemsSource.Add(new MenuItem { Header = "Видалити мінігру", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
-					break;
-				case ProjectNodeType.Regions:
-					itemsSource.Add(new MenuItem { Header = "Видалити регіони", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
+				case TreeItemContextMenuType.ProjectRestore:
+					switch (model.Type)
+					{
+						case ProjectNodeType.Project:
+							itemsSource.Add(new MenuItem { Header = "Відновити всі", Command = restoreCommand, DataContext = NodeContextMenuItemType.Restoring });
+							itemsSource.Add(new Separator());
+							itemsSource.Add(new MenuItem { Header = "Видалити всі назавжди", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
+							break;
+						default:
+							itemsSource.Add(new MenuItem { Header = "Відновити", Command = restoreCommand, DataContext = NodeContextMenuItemType.Restoring });
+							itemsSource.Add(new Separator());
+							itemsSource.Add(new MenuItem { Header = "Видалити назавжди", Command = removeCommand, DataContext = NodeContextMenuItemType.Removing });
+							break;
+					}
 					break;
 			}
+
 			ContextMenu.ItemsSource = itemsSource;
 		}
 
-		public void SetModel(ProjectNode model)
+		public void SetModel(ProjectNode model, TreeItemContextMenuType menuType = TreeItemContextMenuType.ProjectEdition)
 		{
 			this.model = model;
 			NodeType = model.Type;
 			UpdateText();
 
-			ReInitContextMenu();
+			ReInitContextMenu(menuType);
 		}
 
 		public ProjectNode GetModel()

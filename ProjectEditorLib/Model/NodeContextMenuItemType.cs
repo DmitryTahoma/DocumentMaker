@@ -4,5 +4,6 @@
 	{
 		Adding,
 		Removing,
+		Restoring,
 	}
 }

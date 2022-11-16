@@ -31,6 +31,8 @@ namespace ProjectEditorLib.ViewModel
 		private void InitCommands()
 		{
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
+			RestoreTreeViewItemCommand = new Command<TreeViewItem>(OnRestoreTreeViewItemCommandExecute);
+			RemoveTreeViewItemCommand = new Command<TreeViewItem>(OnRemoveTreeViewItemCommandExecute);
 		}
 
 		public Command LoadFromDatabase { get; private set; }
@@ -53,6 +55,18 @@ namespace ProjectEditorLib.ViewModel
 			}
 		}
 
+		public Command<TreeViewItem> RestoreTreeViewItemCommand { get; private set; }
+		private void OnRestoreTreeViewItemCommandExecute(TreeViewItem sender)
+		{
+
+		}
+
+		public Command<TreeViewItem> RemoveTreeViewItemCommand { get; private set; }
+		private void OnRemoveTreeViewItemCommandExecute(TreeViewItem sender)
+		{
+
+		}
+
 		#endregion
 
 		#region Methods
@@ -67,10 +81,10 @@ namespace ProjectEditorLib.ViewModel
 		{
 			TreeItemHeader nodeHeader = new TreeItemHeader();
 			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)nodeHeader.DataContext;
-			nodeHeaderViewModel.SetModel(new ProjectNode(nodeType, context));
+			nodeHeaderViewModel.SetModel(new ProjectNode(nodeType, context), TreeItemContextMenuType.ProjectRestore);
 			TreeViewItem treeViewItem = new TreeViewItem { Header = nodeHeader };
-			//nodeHeaderViewModel.AddCommand = ConvertAddingCommand(treeViewItem, AddTreeViewItemCommand);
-			//nodeHeaderViewModel.RemoveCommand = ConvertRemovingCommand(treeViewItem, RemoveTreeViewItemCommand);
+			nodeHeaderViewModel.RestoreCommand = ConvertTreeViewItemCommand(treeViewItem, RestoreTreeViewItemCommand);
+			nodeHeaderViewModel.RemoveCommand = ConvertTreeViewItemCommand(treeViewItem, RemoveTreeViewItemCommand);
 
 			Binding contextMenuBinding = new Binding(nameof(TreeItemHeaderViewModel.ContextMenuProperty))
 			{
@@ -89,6 +103,11 @@ namespace ProjectEditorLib.ViewModel
 			}
 
 			return treeViewItem;
+		}
+
+		private Command ConvertTreeViewItemCommand(TreeViewItem sender, Command<TreeViewItem> command)
+		{
+			return new Command(() => command.Execute(sender));
 		}
 
 		#endregion
