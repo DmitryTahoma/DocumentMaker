@@ -39,6 +39,7 @@
                 <MenuItem Header="Проект">
                     <MenuItem Command="{Binding OpenProject}" Header="Відкрити" />
                     <MenuItem Command="{Binding CreateProject}" Header="Створити" />
+                    <MenuItem Command="{Binding RestoreProject}" Header="Відновити" />
                 </MenuItem>
             </Menu>
 
@@ -48,6 +49,9 @@
                 </TabItem>
                 <TabItem Visibility="Collapsed">
                     <projectEditor:ProjectEdit x:Name="ProjectEditor" />
+                </TabItem>
+                <TabItem Visibility="Collapsed">
+                    <projectEditor:ProjectRestore />
                 </TabItem>
             </TabControl>
         </Grid>

@@ -203,7 +203,7 @@
                                     Header="Видалити"
                                     Icon="{materialDesign:PackIcon Kind=SortVariantRemove}" />
                             </Menu>
-                            
+
                             <Grid Grid.Row="2">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="auto" />

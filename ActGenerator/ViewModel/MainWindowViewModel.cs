@@ -51,6 +51,7 @@ namespace ActGenerator.ViewModel
 			OpenProject = new Command(OnOpenProjectExecute);
 			CreateProject = new Command(OnCreateProjectExecute);
 			BindProjectEditor = new Command<ProjectEditViewModel>(OnBindProjectEditorExecute);
+			RestoreProject = new Command(OnRestoreProjectExecute);
 		}
 
 		public Command<MainWindow> LoadSession { get; private set; }
@@ -141,6 +142,12 @@ namespace ActGenerator.ViewModel
 		private void OnBindProjectEditorExecute(ProjectEditViewModel projectEdit)
 		{
 			projectEditViewModel = projectEdit;
+		}
+
+		public Command RestoreProject { get; private set; }
+		private void OnRestoreProjectExecute()
+		{
+			SelectedTabIndex = 2;
 		}
 
 		#endregion
