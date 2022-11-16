@@ -50,6 +50,8 @@ namespace ProjectEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty ContextMenuProperty = DependencyProperty.Register(nameof(ContextMenu), typeof(ContextMenu), typeof(TreeItemHeaderViewModel));
 
+		public bool ShowFullName { get; set; } = false;
+
 		#endregion
 
 		#region Commands
@@ -188,20 +190,42 @@ namespace ProjectEditorLib.ViewModel
 			{
 				Text = "?";
 			}
+			else if(!ShowFullName)
+			{
+				Text = model.ToString();
+			}
 			else
 			{
-				if(NodeType == ProjectNodeType.Regions && model.Context is CountRegions regions)
+				string res = null;
+				IDbObject context = model.Context;
+				while(context != null)
 				{
-					Text = "Регіони (" + regions.Count.ToString() + ")";
+					IDbObject next = null;
+
+					ProjectNodeType projectNodeType = ProjectNodeType.Back;
+					if(context is CountRegions countRegions)
+					{
+						projectNodeType = ProjectNodeType.Regions;
+						next = countRegions.Back;
+					}
+					else if(context is Back back)
+					{
+						if(back.BackType.Name == nameof(ProjectNodeType.Craft))
+						{
+							projectNodeType = ProjectNodeType.Craft;
+						}
+						next = back.BaseBack;
+					}
+
+					string str = model.ConextToString(projectNodeType, context);
+					res = res != null
+						? res.Insert(0, str + " ➔ ")
+						: str;
+
+					context = next;
 				}
-				else if(NodeType == ProjectNodeType.Craft && model.Context is Back craft)
-				{
-					Text = craft.Name;
-				}
-				else
-				{
-					Text = model.Context.ToString();
-				}
+
+				Text = res;
 			}
 		}
 

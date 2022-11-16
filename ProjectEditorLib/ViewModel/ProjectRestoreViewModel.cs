@@ -81,6 +81,7 @@ namespace ProjectEditorLib.ViewModel
 		{
 			TreeItemHeader nodeHeader = new TreeItemHeader();
 			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)nodeHeader.DataContext;
+			nodeHeaderViewModel.ShowFullName = true;
 			nodeHeaderViewModel.SetModel(new ProjectNode(nodeType, context), TreeItemContextMenuType.ProjectRestore);
 			TreeViewItem treeViewItem = new TreeViewItem { Header = nodeHeader };
 			nodeHeaderViewModel.RestoreCommand = ConvertTreeViewItemCommand(treeViewItem, RestoreTreeViewItemCommand);
