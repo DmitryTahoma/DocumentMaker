@@ -1,5 +1,6 @@
 ﻿using ProjectsDb;
 using ProjectsDb.Context;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,7 +55,11 @@ namespace ProjectEditorLib.Model
 					project.Backs
 						.ForEach(x => x.BackType = db.BackTypes
 							.FirstOrDefault(y => y.Id == x.BackTypeId));
+
+					project.Backs.Sort((x, y) => -DateTime.Compare(x.DeletionDate.Value, y.DeletionDate.Value));
 				}
+
+				projects.Sort((x, y) => -DateTime.Compare(x.Backs.First().DeletionDate.Value, y.Backs.First().DeletionDate.Value));
 
 				return projects;
 			});
