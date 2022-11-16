@@ -95,5 +95,39 @@ namespace ProjectEditorLib.Model
 				LoadBack(loadedParrentBack);
 			}
 		}
+
+		public Task Restore(IDbObject dbObject)
+		{
+			return Task.Run(() =>
+			{
+				if (dbObject is Project)
+				{
+					db.Backs
+						.Where(x => x.ProjectId == dbObject.Id)
+						.ToList()
+						.ForEach(x => x.DeletionDate = null);
+
+					db.CountRegions
+						.Where(x => db.Backs
+							.FirstOrDefault(y => y.Id == x.BackId).ProjectId == dbObject.Id)
+						.ToList()
+						.ForEach(x => x.DeletionDate = null);
+
+					db.SaveChanges();
+				}
+				else if (dbObject is CountRegions)
+				{
+					CountRegions dbRegions = db.CountRegions.First(x => x.Id == dbObject.Id);
+					dbRegions.DeletionDate = null;
+					db.SaveChanges();
+				}
+				else if (dbObject is Back)
+				{
+					Back dbBack = db.Backs.First(x => x.Id == dbObject.Id);
+					dbBack.DeletionDate = null;
+					db.SaveChanges();
+				}
+			});
+		}
 	}
 }

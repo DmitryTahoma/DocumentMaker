@@ -4,6 +4,7 @@ using ProjectEditorLib.Model;
 using ProjectEditorLib.View;
 using ProjectsDb.Context;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -56,9 +57,28 @@ namespace ProjectEditorLib.ViewModel
 		}
 
 		public Command<TreeViewItem> RestoreTreeViewItemCommand { get; private set; }
-		private void OnRestoreTreeViewItemCommandExecute(TreeViewItem sender)
+		private async void OnRestoreTreeViewItemCommandExecute(TreeViewItem sender)
 		{
+			TreeItemHeaderViewModel headerViewModel = (TreeItemHeaderViewModel)((FrameworkElement)sender.Header).DataContext;
+			ProjectNode projectNode = headerViewModel.GetModel();
+			if(projectNode.Type == ProjectNodeType.Project)
+			{
+				TreeItems.Remove(sender);
+			}
+			else
+			{
+				TreeViewItem parent = sender.Parent as TreeViewItem;
+				parent.Items.Remove(sender);
 
+				if(!parent.HasItems)
+				{
+					TreeItems.Remove(parent);
+				}
+			}
+
+			await model.ConnectDB();
+			await model.Restore(projectNode.Context);
+			await model.DisconnectDB();
 		}
 
 		public Command<TreeViewItem> RemoveTreeViewItemCommand { get; private set; }
@@ -109,6 +129,24 @@ namespace ProjectEditorLib.ViewModel
 		private Command ConvertTreeViewItemCommand(TreeViewItem sender, Command<TreeViewItem> command)
 		{
 			return new Command(() => command.Execute(sender));
+		}
+
+		private TreeViewItem GetParent(IEnumerable enumerable, TreeViewItem treeViewItem)
+		{
+			foreach (TreeViewItem treeItem in enumerable)
+			{
+				if (treeItem.Items.Contains(treeViewItem))
+				{
+					return treeItem;
+				}
+
+				TreeViewItem parrent = GetParent(treeItem.Items, treeViewItem);
+				if (parrent != null)
+				{
+					return parrent;
+				}
+			}
+			return null;
 		}
 
 		#endregion
