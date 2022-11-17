@@ -12,6 +12,8 @@ namespace ProjectParser
 	partial class Program
 	{
 		static string sourceFilename => "Source.xlsx";
+		const int countFill = 10;
+		const bool enableTestFilling = countFill > 1;
 
 		static void Main(string[] args)
 		{
@@ -28,7 +30,20 @@ namespace ProjectParser
 
 			Console.ReadLine();
 
-			FillToDatabase(data);
+			if (enableTestFilling)
+			{
+				string title = Console.Title;
+
+				for (int i = 0; i < countFill; ++i)
+				{
+					Console.Title = (i + 1).ToString() + " of " + countFill.ToString() + " filling | " + title;
+					FillToDatabase(data);
+				}
+			}
+			else
+			{
+				FillToDatabase(data);
+			}
 
 			Console.ReadLine();
 		}
@@ -90,9 +105,11 @@ namespace ProjectParser
 					parsedObj.WriteToConsoleTable(maxBackLength, maxHogLength, maxMinigamesLength);
 				}
 
-				string str = FillingMenu();
-
-				if (str == "2") continue;
+				if(!enableTestFilling)
+				{
+					string str = FillingMenu();
+					if (str == "2") continue;
+				}
 
 				ProgressBarStart(project.Value.Count);
 
