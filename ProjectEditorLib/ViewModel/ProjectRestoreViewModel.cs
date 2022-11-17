@@ -6,6 +6,8 @@ using ProjectsDb.Context;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -82,9 +84,31 @@ namespace ProjectEditorLib.ViewModel
 		}
 
 		public Command<TreeViewItem> RemoveTreeViewItemCommand { get; private set; }
-		private void OnRemoveTreeViewItemCommandExecute(TreeViewItem sender)
+		private async void OnRemoveTreeViewItemCommandExecute(TreeViewItem sender)
 		{
+			TreeItemHeaderViewModel headerViewModel = (TreeItemHeaderViewModel)((FrameworkElement)sender.Header).DataContext;
+			ProjectNode projectNode = headerViewModel.GetModel();
+			TreeViewItem projectTreeItem = null;
+			if (projectNode.Type == ProjectNodeType.Project)
+			{
+				TreeItems.Remove(sender);
+			}
+			else
+			{
+				projectTreeItem = sender.Parent as TreeViewItem;
+			}
 
+			await model.ConnectDB();
+			IEnumerable<IDbObject> removedObjects = await model.RemoveForever(projectNode.Context);
+			await model.DisconnectDB();
+
+			if(projectTreeItem != null)
+			{
+				foreach(TreeViewItem removeTreeViewItem in GetTreeViewItemsByContext(projectTreeItem, removedObjects))
+				{
+					projectTreeItem.Items.Remove(removeTreeViewItem);
+				}
+			}
 		}
 
 		#endregion
@@ -147,6 +171,28 @@ namespace ProjectEditorLib.ViewModel
 				}
 			}
 			return null;
+		}
+
+		private IEnumerable<TreeViewItem> GetTreeViewItemsByContext(TreeViewItem root, IEnumerable<IDbObject> dbObjects)
+		{
+			Dictionary<IDbObject, TreeViewItem> treeItemsWithModel =
+					root
+					.Items
+					.Cast<TreeViewItem>()
+					.ToDictionary(key => ((TreeItemHeaderViewModel)((TreeItemHeader)key.Header).DataContext).GetModel().Context);
+
+			foreach (IDbObject dbObject in dbObjects)
+			{
+				IDbObject key =
+					treeItemsWithModel
+					.Keys
+					.FirstOrDefault(x => x.Id == dbObject.Id && x.GetType() == dbObject.GetType());
+
+				if (key != null)
+				{
+					yield return treeItemsWithModel[key];
+				}
+			}
 		}
 
 		#endregion

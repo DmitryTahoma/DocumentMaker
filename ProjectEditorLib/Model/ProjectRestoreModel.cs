@@ -129,5 +129,101 @@ namespace ProjectEditorLib.Model
 				}
 			});
 		}
+
+		public Task<IEnumerable<IDbObject>> RemoveForever(IDbObject dbObject)
+		{
+			return Task.Run(async () =>
+			{
+				if(dbObject is Project)
+				{
+					IEnumerable<IDbObject> result = null;
+
+					Back removeBack = GetFirstOrDefaultRemoveBack(dbObject);
+					while (removeBack != null)
+					{
+						IEnumerable<IDbObject> removedObjs = await RemoveForever(removeBack);
+						result = result == null ? removedObjs : result.Concat(removedObjs);
+
+						removeBack = GetFirstOrDefaultRemoveBack(dbObject);
+					}
+
+					CountRegions removeCountRegions = GetFirstOrDefaultRemoveCountRegions(dbObject);
+					while(removeCountRegions != null)
+					{
+						IEnumerable<IDbObject> removedObjs = await RemoveForever(removeCountRegions);
+						result = result == null ? removedObjs : result.Concat(removedObjs);
+
+						removeCountRegions = GetFirstOrDefaultRemoveCountRegions(dbObject);
+					}
+
+					return result;
+				}
+				else if(dbObject is CountRegions)
+				{
+					CountRegions countRegions = db.CountRegions.FirstOrDefault(x => x.Id == dbObject.Id);
+					db.CountRegions.Remove(countRegions);
+					db.SaveChanges();
+					return new CountRegions[] { countRegions };
+				}
+				else if(dbObject is Back)
+				{
+					Back dbBack = db.Backs.First(x => x.Id == dbObject.Id);
+					Stack<Back> removingBacks = new Stack<Back>();
+					removingBacks.Push(dbBack);
+					PushToStackChilds(dbBack, removingBacks);
+					List<CountRegions> removingCountRegions = GetDbRegionsOfBacks(removingBacks);
+
+					db.CountRegions.RemoveRange(removingCountRegions);
+					db.Backs.RemoveRange(removingBacks);
+					db.SaveChanges();
+
+					return removingCountRegions
+						.Cast<IDbObject>()
+						.Concat(removingBacks
+							.Cast<IDbObject>());
+				}
+
+				return null;
+			});
+		}
+
+		private void PushToStackChilds(Back root, Stack<Back> stackOfBacks)
+		{
+			foreach(Back back in db.Backs.Where(x => x.BaseBackId == root.Id).ToList())
+			{
+				stackOfBacks.Push(back);
+				PushToStackChilds(back, stackOfBacks);
+			}
+		}
+
+		private List<CountRegions> GetDbRegionsOfBacks(IEnumerable<Back> backs)
+		{
+			List<int> backIds = backs
+				.Select(y => y.Id)
+				.ToList();
+
+			return db.CountRegions
+				.Where(x => x.BackId.HasValue && backIds
+					.Contains(x.BackId.Value))
+				.ToList();
+		}
+
+		private Back GetFirstOrDefaultRemoveBack(IDbObject project)
+		{
+			return db.Backs
+				.FirstOrDefault(x => x.ProjectId == project.Id && x.DeletionDate.HasValue);
+		}
+
+		private CountRegions GetFirstOrDefaultRemoveCountRegions(IDbObject project)
+		{
+			List<int> backs = db.Backs
+				.Where(y => y.ProjectId == project.Id)
+				.Select(x => x.Id)
+				.ToList();
+
+			return db.CountRegions
+				.FirstOrDefault(x => x.DeletionDate.HasValue && x.BackId.HasValue && backs
+					.Contains(x.BackId.Value));
+		}
 	}
 }
