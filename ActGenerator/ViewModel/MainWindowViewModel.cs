@@ -118,9 +118,11 @@ namespace ActGenerator.ViewModel
 			await DialogHost.Show(selectProjectDialog, DialogHostId);
 			if(selectProjectDialog.DataContext is SelectProjectDialogViewModel selectProjectDialogDataContext && selectProjectDialogDataContext.IsOpen)
 			{
+				projectEditViewModel.State = Mvvm.ViewModelState.Loading;
 				projectEditViewModel.SelectedEditProject = selectProjectDialogDataContext.SelectedProject;
 				SelectedTabIndex = 1;
 				await projectEditViewModel.LoadProject();
+				projectEditViewModel.State = Mvvm.ViewModelState.Loaded;
 			}
 		}
 
@@ -131,10 +133,12 @@ namespace ActGenerator.ViewModel
 			await DialogHost.Show(createProjectDialog, DialogHostId);
 			if(createProjectDialog.DataContext is CreateProjectDialogViewModel createProjectDialogViewModel && createProjectDialogViewModel.IsCreate)
 			{
-				projectEditViewModel.CreationProjectName = createProjectDialogViewModel.ProjectName;
+				projectEditViewModel.State = Mvvm.ViewModelState.Initializing;
 				SelectedTabIndex = 1;
+				projectEditViewModel.CreationProjectName = createProjectDialogViewModel.ProjectName;
 				await projectEditViewModel.CreateProject();
 				await projectEditViewModel.LoadProject();
+				projectEditViewModel.State = Mvvm.ViewModelState.Loaded;
 			}
 		}
 

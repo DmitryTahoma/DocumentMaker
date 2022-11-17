@@ -41,98 +41,142 @@
                 TrueValue="Hidden" />
             <mvvmConverters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
             <myConverters:ProjectNodeTypeToStringConverter x:Key="ProjectNodeTypeToStringConverter" />
+            <mvvmConverters:ViewModelStateToVisibilityConverter x:Key="ViewModelStateToVisibilityConverter" />
+            <mvvmConverters:ViewModelStateToVisibilityConverter x:Key="InvertedViewModelStateToVisibilityConverter" IsInverted="True" />
+            <mvvmConverters:ViewModelStateToVisibilityConverter x:Key="ViewModelStateToVisibilityConverterInitializing" VisibleValue="Initializing" />
+            <mvvmConverters:ViewModelStateToVisibilityConverter
+                x:Key="InvertedViewModelStateToVisibilityConverterInitializing"
+                IsInverted="True"
+                VisibleValue="Initializing" />
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition />
-            <ColumnDefinition Width="50" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
 
-        <ToolBarTray IsLocked="True">
-            <ToolBar Style="{StaticResource MaterialDesignToolBar}">
-                <Button
-                    Command="{Binding CollapseAllTree}"
-                    Style="{StaticResource ToolBarButton}"
-                    ToolTip="Згорнути все">
-                    <materialDesign:PackIcon
-                        Width="18"
-                        Height="18"
-                        Kind="CollapseAllOutline" />
-                </Button>
-            </ToolBar>
-        </ToolBarTray>
+        <Grid Visibility="{Binding State, Mode=OneWay, Converter={StaticResource InvertedViewModelStateToVisibilityConverterInitializing}}">
+            <Grid Visibility="{Binding State, Mode=OneWay, Converter={StaticResource InvertedViewModelStateToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="50" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
 
-        <TreeView
-            Grid.Row="1"
-            Grid.RowSpan="3"
-            MinWidth="220"
-            ItemsSource="{Binding TreeItems}" />
+                <ToolBarTray IsLocked="True">
+                    <ToolBar Style="{StaticResource MaterialDesignToolBar}">
+                        <Button
+                            Command="{Binding CollapseAllTree}"
+                            Style="{StaticResource ToolBarButton}"
+                            ToolTip="Згорнути все">
+                            <materialDesign:PackIcon
+                                Width="18"
+                                Height="18"
+                                Kind="CollapseAllOutline" />
+                        </Button>
+                    </ToolBar>
+                </ToolBarTray>
 
-        <GridSplitter
-            Grid.RowSpan="4"
-            Grid.Column="1"
-            Width="5"
+                <TreeView
+                    Grid.Row="1"
+                    Grid.RowSpan="3"
+                    MinWidth="220"
+                    ItemsSource="{Binding TreeItems}" />
+
+                <GridSplitter
+                    Grid.RowSpan="4"
+                    Grid.Column="1"
+                    Width="5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Stretch" />
+
+                <ToolBarTray
+                    Grid.Column="2"
+                    Grid.ColumnSpan="2"
+                    IsLocked="True">
+                    <ToolBar Style="{StaticResource MaterialDesignToolBar}">
+                        <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding SelectedProjectNodeType, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ProjectNodeTypeToStringConverter}}" />
+                    </ToolBar>
+                </ToolBarTray>
+
+                <Grid
+                    x:Name="OptionsView"
+                    Grid.Row="1"
+                    Grid.Column="2">
+                    <local:ProjectView x:Name="ProjectViewControl" />
+                    <local:EpisodeView />
+                    <local:BackView />
+                    <local:CraftView />
+                    <local:DialogView />
+                    <local:HogView />
+                    <local:MinigameView />
+                    <local:RegionsView />
+                </Grid>
+
+                <Grid
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    Visibility="{Binding HaveUnsavedChanges, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Button
+                        Command="{Binding Save}"
+                        Content="Зберегти"
+                        Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding CancelChanges}"
+                        Content="Скасувати"
+                        Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
+                </Grid>
+
+                <materialDesign:Snackbar
+                    x:Name="ProjectEditSnackbar"
+                    Grid.ColumnSpan="3"
+                    MessageQueue="{materialDesign:MessageQueue}" />
+            </Grid>
+        </Grid>
+
+        <StackPanel
             HorizontalAlignment="Center"
-            VerticalAlignment="Stretch" />
+            VerticalAlignment="Center"
+            Orientation="Horizontal"
+            Visibility="{Binding State, Mode=OneWay, Converter={StaticResource ViewModelStateToVisibilityConverter}}">
+            <ProgressBar
+                IsIndeterminate="True"
+                Style="{StaticResource MaterialDesignCircularProgressBar}"
+                Value="35" />
+            <TextBlock
+                Margin="5,0,0,0"
+                VerticalAlignment="Center"
+                Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                Text="завантаження проєкту" />
+        </StackPanel>
 
+        <StackPanel
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Orientation="Horizontal"
+            Visibility="{Binding State, Mode=OneWay, Converter={StaticResource ViewModelStateToVisibilityConverterInitializing}}">
+            <ProgressBar
+                IsIndeterminate="True"
+                Style="{StaticResource MaterialDesignCircularProgressBar}"
+                Value="35" />
+            <TextBlock
+                Margin="5,0,0,0"
+                VerticalAlignment="Center"
+                Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                Text="створення проєкту" />
+        </StackPanel>
 
-        <ToolBarTray
-            Grid.Column="2"
-            Grid.ColumnSpan="2"
-            IsLocked="True">
-            <ToolBar Style="{StaticResource MaterialDesignToolBar}">
-                <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding SelectedProjectNodeType, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ProjectNodeTypeToStringConverter}}" />
-            </ToolBar>
-        </ToolBarTray>
-
-        <Grid
-            x:Name="OptionsView"
-            Grid.Row="1"
-            Grid.Column="2">
-            <local:ProjectView x:Name="ProjectViewControl" />
-            <local:EpisodeView />
-            <local:BackView />
-            <local:CraftView />
-            <local:DialogView />
-            <local:HogView />
-            <local:MinigameView />
-            <local:RegionsView />
-        </Grid>
-
-        <Grid
-            Grid.Row="2"
-            Grid.Column="2"
-            Visibility="{Binding HaveUnsavedChanges, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-
-            <Button
-                Command="{Binding Save}"
-                Content="Зберегти"
-                Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
-            <Button
-                Grid.Column="1"
-                Command="{Binding CancelChanges}"
-                Content="Скасувати"
-                Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
-        </Grid>
-
-        <materialDesign:Snackbar
-            x:Name="ProjectEditSnackbar"
-            Grid.ColumnSpan="3"
-            MessageQueue="{materialDesign:MessageQueue}" />
     </Grid>
 
     <i:Interaction.Triggers>

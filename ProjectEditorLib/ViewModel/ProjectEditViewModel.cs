@@ -28,6 +28,8 @@ namespace ProjectEditorLib.ViewModel
 		public ProjectEditViewModel()
 		{
 			InitCommands();
+
+			State = ViewModelState.Initialized;
 		}
 
 		#region Properties
@@ -91,6 +93,13 @@ namespace ProjectEditorLib.ViewModel
 			set { SetValue(HaveUnsavedChangesProperty, value); }
 		}
 		public static readonly DependencyProperty HaveUnsavedChangesProperty = DependencyProperty.Register(nameof(HaveUnsavedChanges), typeof(bool), typeof(ProjectEditViewModel));
+
+		public ViewModelState State
+		{
+			get { return (ViewModelState)GetValue(StateProperty); }
+			set { SetValue(StateProperty, value); }
+		}
+		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(ProjectEditViewModel));
 
 		#endregion
 
