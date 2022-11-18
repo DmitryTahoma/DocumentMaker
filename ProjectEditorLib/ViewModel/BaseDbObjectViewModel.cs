@@ -47,6 +47,7 @@ namespace ProjectEditorLib.ViewModel
 		{
 			if(context != null)
 			{
+				SetFromContext(null);
 				SetFromContext(context);
 				HaveUnsavedChanges = false;
 				return true;
