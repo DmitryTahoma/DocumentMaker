@@ -6,7 +6,9 @@ using ProjectEditorLib.View.Dialogs;
 using ProjectEditorLib.ViewModel;
 using ProjectEditorLib.ViewModel.Controls;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 
@@ -54,6 +56,7 @@ namespace ActGenerator.ViewModel
 			BindProjectEditor = new Command<ProjectEditViewModel>(OnBindProjectEditorExecute);
 			RestoreProject = new Command(OnRestoreProjectExecute);
 			BlockTabControlHotKeys = new Command<KeyEventArgs>(OnBlockTabControlHotKeysExecute);
+			CheckHaveUnsavedChanges = new Command<CancelEventArgs>(OnCheckHaveUnsavedChangesExecute);
 		}
 
 		public Command<MainWindow> LoadSession { get; private set; }
@@ -172,6 +175,13 @@ namespace ActGenerator.ViewModel
 			{
 				e.Handled = true;
 			}
+		}
+
+		public Command<CancelEventArgs> CheckHaveUnsavedChanges { get; private set; }
+		private void OnCheckHaveUnsavedChangesExecute(CancelEventArgs e)
+		{
+			if (SelectedTabIndex == 1 && !projectEditViewModel.CheckHaveUnsavedChangesAndSave(true))
+				e.Cancel = true;
 		}
 
 		#endregion

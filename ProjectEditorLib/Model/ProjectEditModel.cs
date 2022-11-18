@@ -19,17 +19,27 @@ namespace ProjectEditorLib.Model
 			ReleaseContext();
 		}
 
-		public async Task ConnectDB()
+		public async Task ConnectDBAsync()
 		{
 			await Task.Run(() => { db = new ProjectsDbContext(); });
 		}
 
-		public async Task DisconnectDB()
+		public async Task DisconnectDBAsync()
 		{
 			await Task.Run(ReleaseContext);
 		}
 
-		public async Task<Project> CreateProject(Project project)
+		public void ConnectDB()
+		{
+			db = new ProjectsDbContext();
+		}
+
+		public void DisconnectDB()
+		{
+			ReleaseContext();
+		}
+
+		public async Task<Project> CreateProjectAsync(Project project)
 		{
 			return await Task.Run(() =>
 			{
@@ -48,118 +58,114 @@ namespace ProjectEditorLib.Model
 			}
 		}
 
-		public Task SaveNodeChanges(ProjectNode projectNode)
-		{
-			return Task.Run(async () =>
-			{
-				switch (projectNode.Type)
-				{
-					case ProjectNodeType.Project: await SaveProjectChanges((Project)projectNode.Context); break;
-					case ProjectNodeType.Episode:
-					case ProjectNodeType.Back:
-					case ProjectNodeType.Craft:
-					case ProjectNodeType.Minigame:
-					case ProjectNodeType.Dialog:
-					case ProjectNodeType.Hog:
-						await SaveBackChanges((Back)projectNode.Context, projectNode.Type); break;
-					case ProjectNodeType.Regions: await SaveCountRegionsChanges((CountRegions)projectNode.Context); break;
-				}
-			});
-		}
-
-		private Task SaveProjectChanges(Project project)
+		public Task SaveNodeChangesAsync(ProjectNode projectNode)
 		{
 			return Task.Run(() =>
 			{
-				Project dbProject = db.Projects.First(x => x.Id == project.Id);
-				dbProject.Set(project);
-
-				List<AlternativeProjectName> dbAltNames = db.AlternativeProjectNames.Where(x => x.ProjectId == project.Id).ToList();
-				List<AlternativeProjectName> altNamesToRemove = dbAltNames.ToList();
-				foreach(AlternativeProjectName projName in dbAltNames)
-				{
-					if(project.AlternativeNames.FirstOrDefault(x => x.Id == projName.Id) != null)
-					{
-						altNamesToRemove.Remove(projName);
-					}
-				}
-				db.AlternativeProjectNames.RemoveRange(altNamesToRemove);
-
-				foreach (AlternativeProjectName projName in project.AlternativeNames)
-				{
-					if (projName.Id == 0)
-					{
-						db.AlternativeProjectNames.Add(projName);
-					}
-					else
-					{
-						db.AlternativeProjectNames.FirstOrDefault(x => x.Id == projName.Id).Set(projName);
-					}
-				}
-
-				db.SaveChanges();
+				SaveNodeChanges(projectNode);
 			});
 		}
 
-		private Task SaveBackChanges(Back back, ProjectNodeType projectNodeType)
+		public void SaveNodeChanges(ProjectNode projectNode)
 		{
-			return Task.Run(() =>
+			switch (projectNode.Type)
 			{
-				BackType backType = db.BackTypes.FirstOrDefault(x => x.Name == projectNodeType.ToString());
-				bool isNewBackType = backType == null;
-				if(isNewBackType)
-				{
-					backType = db.BackTypes.Add(new BackType { Name = projectNodeType.ToString() });
-				}
-
-				Back dbBack = db.Backs.FirstOrDefault(x => x.Id == back.Id);
-				if(dbBack == null)
-				{
-					dbBack = db.Backs.Add(back);
-				}
-				else
-				{
-					dbBack.Set(back);
-
-					if (back.Regions != null && back.Regions.Count > 0)
-					{
-						CountRegions regions = db.CountRegions.FirstOrDefault(x => x.BackId == dbBack.Id);
-						if (regions == null)
-						{
-							regions = db.CountRegions.Add(new CountRegions());
-						}
-
-						regions.Set(back.Regions.FirstOrDefault());
-					}
-				}
-
-				if (isNewBackType)
-					dbBack.BackType = backType;
-				else
-					dbBack.BackTypeId = backType.Id;
-
-				db.SaveChanges();
-			});
+				case ProjectNodeType.Project: SaveProjectChanges((Project)projectNode.Context); break;
+				case ProjectNodeType.Episode:
+				case ProjectNodeType.Back:
+				case ProjectNodeType.Craft:
+				case ProjectNodeType.Minigame:
+				case ProjectNodeType.Dialog:
+				case ProjectNodeType.Hog:
+					SaveBackChanges((Back)projectNode.Context, projectNode.Type); break;
+				case ProjectNodeType.Regions: SaveCountRegionsChanges((CountRegions)projectNode.Context); break;
+			}
 		}
 
-		private Task SaveCountRegionsChanges(CountRegions countRegions)
+		private void SaveProjectChanges(Project project)
 		{
-			return Task.Run(() =>
+			Project dbProject = db.Projects.First(x => x.Id == project.Id);
+			dbProject.Set(project);
+
+			List<AlternativeProjectName> dbAltNames = db.AlternativeProjectNames.Where(x => x.ProjectId == project.Id).ToList();
+			List<AlternativeProjectName> altNamesToRemove = dbAltNames.ToList();
+			foreach (AlternativeProjectName projName in dbAltNames)
 			{
-				CountRegions dbCountRegions = db.CountRegions.FirstOrDefault(x => x.Id == countRegions.Id);
-				if(dbCountRegions == null)
+				if (project.AlternativeNames.FirstOrDefault(x => x.Id == projName.Id) != null)
 				{
-					dbCountRegions = db.CountRegions.Add(countRegions);
+					altNamesToRemove.Remove(projName);
+				}
+			}
+			db.AlternativeProjectNames.RemoveRange(altNamesToRemove);
+
+			foreach (AlternativeProjectName projName in project.AlternativeNames)
+			{
+				if (projName.Id == 0)
+				{
+					db.AlternativeProjectNames.Add(projName);
 				}
 				else
 				{
-					dbCountRegions.Set(countRegions);
+					db.AlternativeProjectNames.FirstOrDefault(x => x.Id == projName.Id).Set(projName);
 				}
-				db.SaveChanges();
-			});
+			}
+
+			db.SaveChanges();
 		}
 
-		public Task<Project> LoadProject(Project project)
+		private void SaveBackChanges(Back back, ProjectNodeType projectNodeType)
+		{
+			BackType backType = db.BackTypes.FirstOrDefault(x => x.Name == projectNodeType.ToString());
+			bool isNewBackType = backType == null;
+			if (isNewBackType)
+			{
+				backType = db.BackTypes.Add(new BackType { Name = projectNodeType.ToString() });
+			}
+
+			Back dbBack = db.Backs.FirstOrDefault(x => x.Id == back.Id);
+			if (dbBack == null)
+			{
+				dbBack = db.Backs.Add(back);
+			}
+			else
+			{
+				dbBack.Set(back);
+
+				if (back.Regions != null && back.Regions.Count > 0)
+				{
+					CountRegions regions = db.CountRegions.FirstOrDefault(x => x.BackId == dbBack.Id);
+					if (regions == null)
+					{
+						regions = db.CountRegions.Add(new CountRegions());
+					}
+
+					regions.Set(back.Regions.FirstOrDefault());
+				}
+			}
+
+			if (isNewBackType)
+				dbBack.BackType = backType;
+			else
+				dbBack.BackTypeId = backType.Id;
+
+			db.SaveChanges();
+		}
+
+		private void SaveCountRegionsChanges(CountRegions countRegions)
+		{
+			CountRegions dbCountRegions = db.CountRegions.FirstOrDefault(x => x.Id == countRegions.Id);
+			if (dbCountRegions == null)
+			{
+				dbCountRegions = db.CountRegions.Add(countRegions);
+			}
+			else
+			{
+				dbCountRegions.Set(countRegions);
+			}
+			db.SaveChanges();
+		}
+
+		public Task<Project> LoadProjectAsync(Project project)
 		{
 			return Task.Run(() =>
 			{
@@ -183,7 +189,7 @@ namespace ProjectEditorLib.Model
 			}
 		}
 
-		public Task<bool> RemoveNode(IDbObject node)
+		public Task<bool> RemoveNodeAsync(IDbObject node)
 		{
 			return Task.Run(() =>
 			{

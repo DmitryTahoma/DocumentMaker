@@ -71,6 +71,9 @@
             <i:InvokeCommandAction Command="{Binding LoadSession}" CommandParameter="{Binding ElementName=WindowView}" />
             <i:InvokeCommandAction Command="{Binding BindProjectEditor}" CommandParameter="{Binding ElementName=ProjectEditor, Path=DataContext}" />
         </i:EventTrigger>
+        <i:EventTrigger EventName="Closing">
+            <cmd:EventToCommand Command="{Binding CheckHaveUnsavedChanges}" PassEventArgsToCommand="True" />
+        </i:EventTrigger>
         <i:EventTrigger EventName="Closed">
             <i:InvokeCommandAction Command="{Binding SaveSession}" CommandParameter="{Binding ElementName=WindowView}" />
         </i:EventTrigger>

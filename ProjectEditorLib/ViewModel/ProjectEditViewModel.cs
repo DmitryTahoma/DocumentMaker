@@ -139,9 +139,9 @@ namespace ProjectEditorLib.ViewModel
 
 			if(!removed)
 			{
-				await model.ConnectDB();
-				removed = await model.RemoveNode(nodeModel);
-				await model.DisconnectDB();
+				await model.ConnectDBAsync();
+				removed = await model.RemoveNodeAsync(nodeModel);
+				await model.DisconnectDBAsync();
 			}
 
 			if(removed)
@@ -201,47 +201,15 @@ namespace ProjectEditorLib.ViewModel
 		public Command Save { get; private set; }
 		private async void OnSaveExecute()
 		{
-			DependencyObject invalid = ValidationHelper.GetFirstInvalid(SelectedOptionsView, true);
-			if (invalid != null)
+			if(IsValidSelectedOptionView())
 			{
-				(invalid as UIElement)?.Focus();
-			}
-			else
-			{
-				TreeItemHeaderViewModel nodeViewModel = (TreeItemHeaderViewModel)((TreeItemHeader)SelectedTreeViewItem.Header).DataContext;
-				ProjectNode nodeModel = nodeViewModel.GetModel();
-				bool isNewNode = nodeModel.Context == null;
-				nodeModel.Context = SelectedOptionsViewModel.UpdateContext(nodeModel.Context);
-				SelectedOptionsViewModel.HaveUnsavedChanges = false;
-				if (isNewNode)
-				{
-					switch (nodeModel.Type)
-					{
-						case ProjectNodeType.Episode: BindNewEpisode(nodeModel.Context); break;
-						case ProjectNodeType.Back:
-						case ProjectNodeType.Craft: BindNewBack(nodeModel.Context, nodeViewModel); break;
-						case ProjectNodeType.Minigame:
-						case ProjectNodeType.Dialog:
-						case ProjectNodeType.Hog: BindNewChildBack(nodeModel.Context, nodeViewModel); break;
-						case ProjectNodeType.Regions: BindNewRegions(nodeModel.Context, nodeViewModel); break;
-					}
-				}
+				ProjectNode nodeModel = GetSaveTreeView();
 
-				nodeViewModel.UpdateText();
+				await model.ConnectDBAsync();
+				await model.SaveNodeChangesAsync(nodeModel);
+				await model.DisconnectDBAsync();
 
-				await model.ConnectDB();
-				await model.SaveNodeChanges(nodeModel);
-				await model.DisconnectDB();
-
-				if(nodeModel.Type == ProjectNodeType.Project)
-				{
-					SelectedEditProject = null;
-					SelectedEditProject = (Project)nodeModel.Context;
-					if (SelectedOptionsViewModel is ProjectViewModel)
-					{
-						SelectedOptionsViewModel.SetFromContext(nodeModel.Context);
-					}
-				}
+				UpdateContextAfterSaving(nodeModel);
 			}
 		}
 
@@ -301,9 +269,9 @@ namespace ProjectEditorLib.ViewModel
 		public async Task CreateProject()
 		{
 			Project project = new Project { Name = CreationProjectName };
-			await model.ConnectDB();
-			project = await model.CreateProject(project);
-			await model.DisconnectDB();
+			await model.ConnectDBAsync();
+			project = await model.CreateProjectAsync(project);
+			await model.DisconnectDBAsync();
 			CreationProjectName = string.Empty;
 			SelectedEditProject = project;
 		}
@@ -318,9 +286,9 @@ namespace ProjectEditorLib.ViewModel
 			TreeViewItem projectTreeItem = CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject, null);
 			TreeItems.Add(projectTreeItem);
 
-			await model.ConnectDB();
-			Project project = await model.LoadProject(SelectedEditProject);
-			await model.DisconnectDB();
+			await model.ConnectDBAsync();
+			Project project = await model.LoadProjectAsync(SelectedEditProject);
+			await model.DisconnectDBAsync();
 			foreach(Back back in project.Backs)
 			{
 				PushBackToTreeItem(projectTreeItem, back);
@@ -520,7 +488,7 @@ namespace ProjectEditorLib.ViewModel
 			return HaveUnsavedChanges && ValidationHelper.IsValid(SelectedOptionsView);
 		}
 
-		public bool CheckHaveUnsavedChangesAndSave()
+		public bool CheckHaveUnsavedChangesAndSave(bool isClosing = false)
 		{
 			if(SelectedViewTabIndex != -1 && SelectedOptionsViewModel.HaveUnsavedChanges)
 			{
@@ -537,7 +505,14 @@ namespace ProjectEditorLib.ViewModel
 				}
 				else if (res == MessageBoxResult.Yes)
 				{
-					Save.Execute();
+					if(isClosing)
+					{
+						SaveNodeChanges();
+					}
+					else
+					{
+						Save.Execute();
+					}
 
 					if (SelectedOptionsViewModel.HaveUnsavedChanges)
 					{
@@ -550,6 +525,70 @@ namespace ProjectEditorLib.ViewModel
 				}
 			}
 			return true;
+		}
+
+		private bool IsValidSelectedOptionView()
+		{
+			DependencyObject invalid = ValidationHelper.GetFirstInvalid(SelectedOptionsView, true);
+			if(invalid is UIElement elem)
+			{
+				elem.Focus();
+				return false;
+			}
+			return true;
+		}
+
+		private ProjectNode GetSaveTreeView()
+		{
+			TreeItemHeaderViewModel nodeViewModel = (TreeItemHeaderViewModel)((TreeItemHeader)SelectedTreeViewItem.Header).DataContext;
+			ProjectNode nodeModel = nodeViewModel.GetModel();
+			bool isNewNode = nodeModel.Context == null;
+			nodeModel.Context = SelectedOptionsViewModel.UpdateContext(nodeModel.Context);
+			SelectedOptionsViewModel.HaveUnsavedChanges = false;
+			if (isNewNode)
+			{
+				switch (nodeModel.Type)
+				{
+					case ProjectNodeType.Episode: BindNewEpisode(nodeModel.Context); break;
+					case ProjectNodeType.Back:
+					case ProjectNodeType.Craft: BindNewBack(nodeModel.Context, nodeViewModel); break;
+					case ProjectNodeType.Minigame:
+					case ProjectNodeType.Dialog:
+					case ProjectNodeType.Hog: BindNewChildBack(nodeModel.Context, nodeViewModel); break;
+					case ProjectNodeType.Regions: BindNewRegions(nodeModel.Context, nodeViewModel); break;
+				}
+			}
+
+			nodeViewModel.UpdateText();
+
+			return nodeModel;
+		}
+
+		private void UpdateContextAfterSaving(ProjectNode nodeModel)
+		{
+			if (nodeModel.Type == ProjectNodeType.Project)
+			{
+				SelectedEditProject = null;
+				SelectedEditProject = (Project)nodeModel.Context;
+				if (SelectedOptionsViewModel is ProjectViewModel)
+				{
+					SelectedOptionsViewModel.SetFromContext(nodeModel.Context);
+				}
+			}
+		}
+
+		public void SaveNodeChanges()
+		{
+			if (IsValidSelectedOptionView())
+			{
+				ProjectNode nodeModel = GetSaveTreeView();
+
+				model.ConnectDB();
+				model.SaveNodeChanges(nodeModel);
+				model.DisconnectDB();
+
+				UpdateContextAfterSaving(nodeModel);
+			}
 		}
 
 		#endregion
