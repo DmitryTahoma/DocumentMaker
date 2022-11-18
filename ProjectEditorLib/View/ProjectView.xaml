@@ -65,7 +65,10 @@
 
             <StackPanel x:Name="AltProjectNamesStackPanel" Orientation="Vertical" />
 
-            <Menu Grid.Row="1">
+            <Menu
+                Grid.Row="1"
+                Width="60"
+                HorizontalAlignment="Left">
                 <MenuItem
                     Width="60"
                     Padding="19,0,0,0"
