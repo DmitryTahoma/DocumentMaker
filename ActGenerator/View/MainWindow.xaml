@@ -80,6 +80,9 @@
         <i:EventTrigger EventName="MouseDown">
             <i:InvokeCommandAction Command="{Binding ClearKeyboardFocus}" />
         </i:EventTrigger>
+        <i:EventTrigger EventName="KeyDown">
+            <cmd:EventToCommand Command="{Binding ClearKeyboardFocusOnEnter}" PassEventArgsToCommand="True"/>
+        </i:EventTrigger>
     </i:Interaction.Triggers>
 
 </Window>

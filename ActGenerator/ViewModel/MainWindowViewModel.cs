@@ -58,6 +58,7 @@ namespace ActGenerator.ViewModel
 			BlockTabControlHotKeys = new Command<KeyEventArgs>(OnBlockTabControlHotKeysExecute);
 			CheckHaveUnsavedChanges = new Command<CancelEventArgs>(OnCheckHaveUnsavedChangesExecute);
 			ClearKeyboardFocus = new Command(OnClearKeyboardFocusExecute);
+			ClearKeyboardFocusOnEnter = new Command<KeyEventArgs>(OnClearKeyboardFocusOnEnterExecute);
 		}
 
 		public Command<MainWindow> LoadSession { get; private set; }
@@ -189,6 +190,15 @@ namespace ActGenerator.ViewModel
 		private void OnClearKeyboardFocusExecute()
 		{
 			Keyboard.ClearFocus();
+		}
+
+		public Command<KeyEventArgs> ClearKeyboardFocusOnEnter { get; private set; }
+		private void OnClearKeyboardFocusOnEnterExecute(KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter)
+			{ 
+				Keyboard.ClearFocus();
+			}
 		}
 
 		#endregion
