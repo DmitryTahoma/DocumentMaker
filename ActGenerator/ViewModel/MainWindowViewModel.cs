@@ -110,12 +110,16 @@ namespace ActGenerator.ViewModel
 		public Command ShowGeneratorTab { get; private set; }
 		private void OnShowGeneratorTabExecute()
 		{
+			if (BeforeSelectedTabIndexChanged()) return;
+
 			SelectedTabIndex = 0;
 		}
 
 		public Command OpenProject { get; private set; }
 		private async void OnOpenProjectExecute()
 		{
+			if (BeforeSelectedTabIndexChanged()) return;
+
 			actGeneratorViewModel.CloseOpenedDialog.Execute();
 			await DialogHost.Show(selectProjectDialog, DialogHostId);
 			if(selectProjectDialog.DataContext is SelectProjectDialogViewModel selectProjectDialogDataContext && selectProjectDialogDataContext.IsOpen)
@@ -131,6 +135,8 @@ namespace ActGenerator.ViewModel
 		public Command CreateProject { get; private set; }
 		private async void OnCreateProjectExecute()
 		{
+			if (BeforeSelectedTabIndexChanged()) return;
+
 			actGeneratorViewModel.CloseOpenedDialog.Execute();
 			await DialogHost.Show(createProjectDialog, DialogHostId);
 			if(createProjectDialog.DataContext is CreateProjectDialogViewModel createProjectDialogViewModel && createProjectDialogViewModel.IsCreate)
@@ -153,6 +159,8 @@ namespace ActGenerator.ViewModel
 		public Command RestoreProject { get; private set; }
 		private void OnRestoreProjectExecute()
 		{
+			if (BeforeSelectedTabIndexChanged()) return;
+
 			SelectedTabIndex = 2;
 		}
 
@@ -167,5 +175,15 @@ namespace ActGenerator.ViewModel
 		}
 
 		#endregion
+
+		private bool BeforeSelectedTabIndexChanged()
+		{
+			if(SelectedTabIndex == 1)
+			{
+				return !projectEditViewModel.CheckHaveUnsavedChangesAndSave();
+			}
+
+			return false;
+		}
 	}
 }

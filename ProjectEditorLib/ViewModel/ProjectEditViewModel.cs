@@ -310,6 +310,10 @@ namespace ProjectEditorLib.ViewModel
 
 		public async Task LoadProject()
 		{
+			if (SelectedOptionsViewModel != null)
+			{
+				SelectedOptionsViewModel.HaveUnsavedChanges = false;
+			}
 			TreeItems.Clear();
 			TreeViewItem projectTreeItem = CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject, null);
 			TreeItems.Add(projectTreeItem);
@@ -516,7 +520,7 @@ namespace ProjectEditorLib.ViewModel
 			return HaveUnsavedChanges && ValidationHelper.IsValid(SelectedOptionsView);
 		}
 
-		private bool CheckHaveUnsavedChangesAndSave()
+		public bool CheckHaveUnsavedChangesAndSave()
 		{
 			if(SelectedViewTabIndex != -1 && SelectedOptionsViewModel.HaveUnsavedChanges)
 			{
@@ -529,12 +533,7 @@ namespace ProjectEditorLib.ViewModel
 
 				if (res == MessageBoxResult.No)
 				{
-					TreeItemHeaderViewModel nodeViewModel = (TreeItemHeaderViewModel)((TreeItemHeader)SelectedTreeViewItem.Header).DataContext;
-					ProjectNode nodeModel = nodeViewModel.GetModel();
-					if (nodeModel.Context == null)
-					{
-						RemoveTreeViewItemCommand.Execute(SelectedTreeViewItem);
-					}
+					CancelChanges.Execute();
 				}
 				else if (res == MessageBoxResult.Yes)
 				{
