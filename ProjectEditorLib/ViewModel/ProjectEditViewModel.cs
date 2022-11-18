@@ -480,11 +480,14 @@ namespace ProjectEditorLib.ViewModel
 
 		private void BeforeTreeViewItemSelected(object sender, MouseButtonEventArgs e) // TreeViewItem.PreviewMouseDown
 		{
-			if(e.ChangedButton == MouseButton.Left && e.LeftButton == MouseButtonState.Pressed && !CheckHaveUnsavedChangesAndSave())
+			if (e.Source != (e.Source is TreeViewItem ? sender : (sender as TreeViewItem)?.Header)
+				|| sender == SelectedTreeViewItem) return;
+
+			if (e.ChangedButton == MouseButton.Left && e.LeftButton == MouseButtonState.Pressed && !CheckHaveUnsavedChangesAndSave())
 			{
 				e.Handled = true;
 			}
-			else
+			else if(e.ChangedButton == MouseButton.Left)
 			{
 				TreeViewItem s = (TreeViewItem)sender;
 				s.IsSelected = false;
