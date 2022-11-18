@@ -57,6 +57,7 @@ namespace ActGenerator.ViewModel
 			RestoreProject = new Command(OnRestoreProjectExecute);
 			BlockTabControlHotKeys = new Command<KeyEventArgs>(OnBlockTabControlHotKeysExecute);
 			CheckHaveUnsavedChanges = new Command<CancelEventArgs>(OnCheckHaveUnsavedChangesExecute);
+			ClearKeyboardFocus = new Command(OnClearKeyboardFocusExecute);
 		}
 
 		public Command<MainWindow> LoadSession { get; private set; }
@@ -182,6 +183,12 @@ namespace ActGenerator.ViewModel
 		{
 			if (SelectedTabIndex == 1 && !projectEditViewModel.CheckHaveUnsavedChangesAndSave(true))
 				e.Cancel = true;
+		}
+
+		public Command ClearKeyboardFocus { get; private set; }
+		private void OnClearKeyboardFocusExecute()
+		{
+			Keyboard.ClearFocus();
 		}
 
 		#endregion
