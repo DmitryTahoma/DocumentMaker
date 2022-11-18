@@ -8,6 +8,7 @@ using ProjectEditorLib.ViewModel.Controls;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 
 namespace ActGenerator.ViewModel
 {
@@ -52,6 +53,7 @@ namespace ActGenerator.ViewModel
 			CreateProject = new Command(OnCreateProjectExecute);
 			BindProjectEditor = new Command<ProjectEditViewModel>(OnBindProjectEditorExecute);
 			RestoreProject = new Command(OnRestoreProjectExecute);
+			BlockTabControlHotKeys = new Command<KeyEventArgs>(OnBlockTabControlHotKeysExecute);
 		}
 
 		public Command<MainWindow> LoadSession { get; private set; }
@@ -152,6 +154,16 @@ namespace ActGenerator.ViewModel
 		private void OnRestoreProjectExecute()
 		{
 			SelectedTabIndex = 2;
+		}
+
+		public Command<KeyEventArgs> BlockTabControlHotKeys { get; private set; }
+		private void OnBlockTabControlHotKeysExecute(KeyEventArgs e)
+		{
+			if ((Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && Keyboard.IsKeyDown(Key.Tab))
+				|| (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) && Keyboard.IsKeyDown(Key.Tab)))
+			{
+				e.Handled = true;
+			}
 		}
 
 		#endregion

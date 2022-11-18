@@ -9,6 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:projectEditor="clr-namespace:ProjectEditorLib.View;assembly=ProjectEditorLib"
     xmlns:vm="clr-namespace:ActGenerator.ViewModel"
+    xmlns:cmd="clr-namespace:Mvvm.Commands;assembly=Mvvm"
     x:Name="WindowView"
     Title="MainWindow"
     Width="900"
@@ -53,6 +54,12 @@
                 <TabItem Visibility="Collapsed">
                     <projectEditor:ProjectRestore />
                 </TabItem>
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewKeyDown">
+                        <cmd:EventToCommand Command="{Binding BlockTabControlHotKeys}" PassEventArgsToCommand="True"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </TabControl>
         </Grid>
 
