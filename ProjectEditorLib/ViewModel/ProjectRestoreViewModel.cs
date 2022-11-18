@@ -89,6 +89,9 @@ namespace ProjectEditorLib.ViewModel
 			TreeItemHeaderViewModel headerViewModel = (TreeItemHeaderViewModel)((FrameworkElement)sender.Header).DataContext;
 			ProjectNode projectNode = headerViewModel.GetModel();
 			TreeViewItem projectTreeItem = null;
+
+			if (!GetUserConfirmForRemovingForever(projectNode.Context)) return;
+
 			if (projectNode.Type == ProjectNodeType.Project)
 			{
 				TreeItems.Remove(sender);
@@ -193,6 +196,17 @@ namespace ProjectEditorLib.ViewModel
 					yield return treeItemsWithModel[key];
 				}
 			}
+		}
+
+		private bool GetUserConfirmForRemovingForever(IDbObject dbObject)
+		{
+			return MessageBox.Show(
+						"Ви впевнені, що хочете видалити назавжди \"" + dbObject.ToString() + "\" з усіма дочірніми вузлами? (цю дію неможливо відмінити)",
+						"Видалення елементу",
+						MessageBoxButton.OKCancel,
+						MessageBoxImage.Exclamation,
+						MessageBoxResult.Cancel)
+				== MessageBoxResult.OK;
 		}
 
 		#endregion

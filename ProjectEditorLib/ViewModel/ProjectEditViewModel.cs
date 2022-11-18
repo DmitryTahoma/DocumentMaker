@@ -139,6 +139,8 @@ namespace ProjectEditorLib.ViewModel
 
 			if(!removed)
 			{
+				if (!GetUserConfirmForRemoving(nodeModel)) return;
+
 				await model.ConnectDBAsync();
 				removed = await model.RemoveNodeAsync(nodeModel);
 				await model.DisconnectDBAsync();
@@ -589,6 +591,17 @@ namespace ProjectEditorLib.ViewModel
 
 				UpdateContextAfterSaving(nodeModel);
 			}
+		}
+
+		private bool GetUserConfirmForRemoving(IDbObject dbObject)
+		{
+			return MessageBox.Show(
+						"Ви впевнені, що хочете видалити \"" + dbObject.ToString() + "\" з усіма дочірніми вузлами (якщо вони є)?",
+						"Видалення елементу",
+						MessageBoxButton.OKCancel,
+						MessageBoxImage.Question,
+						MessageBoxResult.OK)
+				== MessageBoxResult.OK;
 		}
 
 		#endregion
