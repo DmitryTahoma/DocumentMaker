@@ -284,15 +284,29 @@ namespace ProjectEditorLib.ViewModel
 			{
 				SelectedOptionsViewModel.HaveUnsavedChanges = false;
 			}
-			TreeItems.Clear();
+			Task clearing = Task.Run(() =>
+			{
+				foreach (TreeViewItem treeItem in TreeItems)
+				{
+					while (Dispatcher.Invoke(() => treeItem.HasItems))
+					{
+						Dispatcher.Invoke(() => { treeItem.Items.Remove(treeItem.Items[0]); });
+					}
+				}
+				Dispatcher.Invoke(() => { TreeItems.Clear(); });
+			});
+
 			TreeViewItem projectTreeItem = CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject, null);
-			TreeItems.Add(projectTreeItem);
 
 			await model.ConnectDBAsync();
 			Project project = await model.LoadProjectAsync(SelectedEditProject);
 			await model.DisconnectDBAsync();
 			projectTreeItem.IsExpanded = true;
 			projectTreeItem.IsSelected = true;
+
+			await clearing;
+			TreeItems.Add(projectTreeItem);
+
 			State = ViewModelState.Loaded;
 			foreach (Back back in project.Backs)
 			{
