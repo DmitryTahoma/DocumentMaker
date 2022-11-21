@@ -133,7 +133,6 @@ namespace ActGenerator.ViewModel
 				projectEditViewModel.SelectedEditProject = selectProjectDialogDataContext.SelectedProject;
 				SelectedTabIndex = 1;
 				await projectEditViewModel.LoadProject();
-				projectEditViewModel.State = Mvvm.ViewModelState.Loaded;
 			}
 		}
 
@@ -151,7 +150,6 @@ namespace ActGenerator.ViewModel
 				projectEditViewModel.CreationProjectName = createProjectDialogViewModel.ProjectName;
 				await projectEditViewModel.CreateProject();
 				await projectEditViewModel.LoadProject();
-				projectEditViewModel.State = Mvvm.ViewModelState.Loaded;
 			}
 		}
 

@@ -291,12 +291,14 @@ namespace ProjectEditorLib.ViewModel
 			await model.ConnectDBAsync();
 			Project project = await model.LoadProjectAsync(SelectedEditProject);
 			await model.DisconnectDBAsync();
-			foreach(Back back in project.Backs)
-			{
-				PushBackToTreeItem(projectTreeItem, back);
-			}
 			projectTreeItem.IsExpanded = true;
 			projectTreeItem.IsSelected = true;
+			State = ViewModelState.Loaded;
+			foreach (Back back in project.Backs)
+			{
+				PushBackToTreeItem(projectTreeItem, back);
+				await Task.Delay(1);
+			}
 		}
 
 		private void PushBackToTreeItem(TreeViewItem parrent, Back context)
