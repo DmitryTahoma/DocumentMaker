@@ -26,6 +26,7 @@ namespace ActGenerator.ViewModel
 		public MainWindowViewModel()
 		{
 			InitCommands();
+
 			((SelectProjectDialogViewModel)selectProjectDialog.DataContext).DialogHostId = DialogHostId;
 			((CreateProjectDialogViewModel)createProjectDialog.DataContext).DialogHostId = DialogHostId;
 		}
@@ -59,6 +60,7 @@ namespace ActGenerator.ViewModel
 			CheckHaveUnsavedChanges = new Command<CancelEventArgs>(OnCheckHaveUnsavedChangesExecute);
 			ClearKeyboardFocus = new Command(OnClearKeyboardFocusExecute);
 			ClearKeyboardFocusOnEnter = new Command<KeyEventArgs>(OnClearKeyboardFocusOnEnterExecute);
+			SendCryptedConnectionString = new Command<ICryptedConnectionStringRequired>(OnSendCryptedConnectionStringExecute);
 		}
 
 		public Command<MainWindow> LoadSession { get; private set; }
@@ -84,6 +86,8 @@ namespace ActGenerator.ViewModel
 			window.Width = model.WindowWidth;
 
 			actGeneratorViewModel.LoadFromSession(model);
+
+			((SelectProjectDialogViewModel)selectProjectDialog.DataContext).SetCryptedConnectionString(model.CryptedConnectionString);
 		}
 
 		public Command<MainWindow> SaveSession { get; private set; }
@@ -197,6 +201,12 @@ namespace ActGenerator.ViewModel
 			{ 
 				Keyboard.ClearFocus();
 			}
+		}
+
+		public Command<ICryptedConnectionStringRequired> SendCryptedConnectionString { get; private set; }
+		private void OnSendCryptedConnectionStringExecute(ICryptedConnectionStringRequired connectionStringRequired)
+		{
+			connectionStringRequired.SetCryptedConnectionString(model.CryptedConnectionString);
 		}
 
 		#endregion

@@ -1,4 +1,5 @@
-﻿using Mvvm;
+﻿using DocumentMaker.Security;
+using Mvvm;
 using Mvvm.Commands;
 using ProjectEditorLib.Model;
 using ProjectEditorLib.View;
@@ -14,7 +15,7 @@ using System.Windows.Data;
 
 namespace ProjectEditorLib.ViewModel
 {
-	public class ProjectRestoreViewModel
+	public class ProjectRestoreViewModel : ICryptedConnectionStringRequired
 	{
 		ProjectRestoreModel model = new ProjectRestoreModel();
 
@@ -207,6 +208,11 @@ namespace ProjectEditorLib.ViewModel
 						MessageBoxImage.Exclamation,
 						MessageBoxResult.Cancel)
 				== MessageBoxResult.OK;
+		}
+
+		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
+		{
+			model.SetConnectionString(cryptedConnectionString);
 		}
 
 		#endregion

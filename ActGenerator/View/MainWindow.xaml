@@ -52,7 +52,7 @@
                     <projectEditor:ProjectEdit x:Name="ProjectEditor" />
                 </TabItem>
                 <TabItem Visibility="Collapsed">
-                    <projectEditor:ProjectRestore />
+                    <projectEditor:ProjectRestore x:Name="ProjectRestore" />
                 </TabItem>
 
                 <i:Interaction.Triggers>
@@ -70,6 +70,9 @@
             <i:InvokeCommandAction Command="{Binding BindActGenerator}" CommandParameter="{Binding ElementName=ActGeneratorControl, Path=DataContext}" />
             <i:InvokeCommandAction Command="{Binding LoadSession}" CommandParameter="{Binding ElementName=WindowView}" />
             <i:InvokeCommandAction Command="{Binding BindProjectEditor}" CommandParameter="{Binding ElementName=ProjectEditor, Path=DataContext}" />
+            <i:InvokeCommandAction Command="{Binding SendCryptedConnectionString}" CommandParameter="{Binding ElementName=ActGeneratorControl, Path=DataContext}" />
+            <i:InvokeCommandAction Command="{Binding SendCryptedConnectionString}" CommandParameter="{Binding ElementName=ProjectEditor, Path=DataContext}" />
+            <i:InvokeCommandAction Command="{Binding SendCryptedConnectionString}" CommandParameter="{Binding ElementName=ProjectRestore, Path=DataContext}" />
         </i:EventTrigger>
         <i:EventTrigger EventName="Closing">
             <cmd:EventToCommand Command="{Binding CheckHaveUnsavedChanges}" PassEventArgsToCommand="True" />
@@ -81,7 +84,7 @@
             <i:InvokeCommandAction Command="{Binding ClearKeyboardFocus}" />
         </i:EventTrigger>
         <i:EventTrigger EventName="KeyDown">
-            <cmd:EventToCommand Command="{Binding ClearKeyboardFocusOnEnter}" PassEventArgsToCommand="True"/>
+            <cmd:EventToCommand Command="{Binding ClearKeyboardFocusOnEnter}" PassEventArgsToCommand="True" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 

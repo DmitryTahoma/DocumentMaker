@@ -97,6 +97,7 @@
     <Compile Include="ViewModel\DialogViewModel.cs" />
     <Compile Include="ViewModel\EpisodeViewModel.cs" />
     <Compile Include="ViewModel\HogViewModel.cs" />
+    <Compile Include="ViewModel\ICryptedConnectionStringRequired.cs" />
     <Compile Include="ViewModel\IDbObjectViewModel.cs" />
     <Compile Include="ViewModel\MinigameViewModel.cs" />
     <Compile Include="ViewModel\ProjectEditViewModel.cs" />
@@ -170,6 +171,10 @@
     <ProjectReference Include="..\ProjectsDb\ProjectsDb.csproj">
       <Project>{e5dda9a3-7f76-4b4b-84af-a4dd3a9ffe5e}</Project>
       <Name>ProjectsDb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Security\Security.csproj">
+      <Project>{dda90ec4-2b15-454f-8837-cbfe2a5c409d}</Project>
+      <Name>Security</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

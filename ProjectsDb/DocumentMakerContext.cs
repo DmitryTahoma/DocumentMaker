@@ -18,7 +18,7 @@ namespace ProjectsDb
 				.Where(x => x.PropertyType.Name == typeof(DbSet<>).Name));
 		}
 
-		public ProjectsDbContext() : base("Data Source=10.32.16.170,1433;Network Library=DBMSSOCN;Initial Catalog=FbnProjectsDb;User ID=ProgTest; Password=qwerty123;") { }
+		public ProjectsDbContext(string nameOrConnectionString) : base(nameOrConnectionString) { }
 
 		public DbSet<AlternativeProjectName> AlternativeProjectNames { get; set; }
 		public DbSet<Back> Backs { get; set; }

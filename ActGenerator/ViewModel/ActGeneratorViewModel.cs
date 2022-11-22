@@ -2,9 +2,11 @@
 using ActGenerator.View.Dialogs;
 using ActGenerator.ViewModel.Dialogs;
 using Dml.Model.Template;
+using DocumentMaker.Security;
 using MaterialDesignThemes.Wpf;
 using Mvvm;
 using Mvvm.Commands;
+using ProjectEditorLib.ViewModel;
 using ProjectsDb.Context;
 using System;
 using System.Collections;
@@ -15,7 +17,7 @@ using System.Windows.Controls;
 
 namespace ActGenerator.ViewModel
 {
-	class ActGeneratorViewModel : DependencyObject
+	class ActGeneratorViewModel : DependencyObject, ICryptedConnectionStringRequired
 	{
 		ActGeneratorModel model = new ActGeneratorModel();
 		List<Project> dbProjects = null;
@@ -302,6 +304,11 @@ namespace ActGenerator.ViewModel
 				}
 			}
 			return selectedProjectNames;
+		}
+
+		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
+		{
+			model.SetConnectionString(cryptedConnectionString);
 		}
 
 		#endregion

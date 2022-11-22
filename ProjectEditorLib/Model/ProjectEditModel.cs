@@ -1,4 +1,5 @@
-﻿using ProjectsDb;
+﻿using DocumentMaker.Security;
+using ProjectsDb;
 using ProjectsDb.Context;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace ProjectEditorLib.Model
 {
 	public class ProjectEditModel
 	{
+		CryptedConnectionString cryptedConnectionString = null;
 		const double nodesDaysLifetime = 45;
 
 		ProjectsDbContext db = null;
@@ -21,7 +23,7 @@ namespace ProjectEditorLib.Model
 
 		public async Task ConnectDBAsync()
 		{
-			await Task.Run(() => { db = new ProjectsDbContext(); });
+			await Task.Run(() => { db = new ProjectsDbContext(cryptedConnectionString.GetDecryptedConnectionString()); });
 		}
 
 		public async Task DisconnectDBAsync()
@@ -31,7 +33,7 @@ namespace ProjectEditorLib.Model
 
 		public void ConnectDB()
 		{
-			db = new ProjectsDbContext();
+			db = new ProjectsDbContext(cryptedConnectionString.GetDecryptedConnectionString());
 		}
 
 		public void DisconnectDB()
@@ -292,6 +294,11 @@ namespace ProjectEditorLib.Model
 
 			db.Backs.RemoveRange(removingBacks);
 			db.CountRegions.RemoveRange(removingRegions);
+		}
+
+		public void SetConnectionString(CryptedConnectionString cryptedConnectionString)
+		{
+			this.cryptedConnectionString = cryptedConnectionString;
 		}
 	}
 }

@@ -5,10 +5,11 @@ using Mvvm.Commands;
 using ProjectEditorLib.Model.Dialogs;
 using System.Collections.Generic;
 using System.Windows;
+using DocumentMaker.Security;
 
 namespace ProjectEditorLib.ViewModel.Controls
 {
-	public class SelectProjectDialogViewModel : DependencyObject
+	public class SelectProjectDialogViewModel : DependencyObject, ICryptedConnectionStringRequired
 	{
 		SelectProjectDialogModel model = new SelectProjectDialogModel();
 
@@ -97,6 +98,11 @@ namespace ProjectEditorLib.ViewModel.Controls
 				projects.UpdateCollection();
 				State = ViewModelState.Loaded;
 			}
+		}
+
+		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
+		{
+			model.SetConnectionString(cryptedConnectionString);
 		}
 
 		#endregion

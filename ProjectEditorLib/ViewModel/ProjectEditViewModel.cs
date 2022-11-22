@@ -13,10 +13,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using DocumentMaker.Security;
 
 namespace ProjectEditorLib.ViewModel
 {
-	public class ProjectEditViewModel : DependencyObject
+	public class ProjectEditViewModel : DependencyObject, ICryptedConnectionStringRequired
 	{
 		ProjectEditModel model = new ProjectEditModel();
 
@@ -618,6 +619,11 @@ namespace ProjectEditorLib.ViewModel
 						MessageBoxImage.Question,
 						MessageBoxResult.OK)
 				== MessageBoxResult.OK;
+		}
+
+		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
+		{
+			model.SetConnectionString(cryptedConnectionString);
 		}
 
 		#endregion

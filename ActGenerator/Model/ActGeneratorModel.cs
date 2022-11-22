@@ -1,22 +1,15 @@
-﻿using Dml;
-using DocumentMakerModelLibrary;
-using DocumentMakerModelLibrary.Controls;
-using DocumentMakerModelLibrary.Files;
-using ProjectEditorLib.Model;
+﻿using DocumentMaker.Security;
 using ProjectsDb;
 using ProjectsDb.Context;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DmlBack = Dml.Model.Back;
 
 namespace ActGenerator.Model
 {
 	class ActGeneratorModel
 	{
+		CryptedConnectionString cryptedConnectionString = null;
 		ProjectsDbContext db = null;
 
 		~ActGeneratorModel()
@@ -26,7 +19,7 @@ namespace ActGenerator.Model
 
 		public async Task ConnectDB()
 		{
-			await Task.Run(() => { db = new ProjectsDbContext(); });
+			await Task.Run(() => { db = new ProjectsDbContext(cryptedConnectionString.GetDecryptedConnectionString()); });
 		}
 
 		public async Task DisconnectDB()
@@ -59,6 +52,11 @@ namespace ActGenerator.Model
 				db.Dispose();
 				db = null;
 			}
+		}
+
+		public void SetConnectionString(CryptedConnectionString cryptedConnectionString)
+		{
+			this.cryptedConnectionString = cryptedConnectionString;
 		}
 	}
 }
