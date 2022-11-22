@@ -59,6 +59,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -164,6 +165,10 @@
     <ProjectReference Include="..\ProjectsDb\ProjectsDb.csproj">
       <Project>{e5dda9a3-7f76-4b4b-84af-a4dd3a9ffe5e}</Project>
       <Name>ProjectsDb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Security\Security.csproj">
+      <Project>{dda90ec4-2b15-454f-8837-cbfe2a5c409d}</Project>
+      <Name>Security</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

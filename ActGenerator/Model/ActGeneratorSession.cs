@@ -1,4 +1,5 @@
 ﻿using Dml;
+using DocumentMaker.Security;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
@@ -24,6 +25,7 @@ namespace ActGenerator.Model
 		public bool IsUniqueNumbers { get; set; } = true;
 		public bool CanUseOldWorks { get; set; } = true;
 		public DateTimeItem SelectedDateTimeItem { get; set; } = null;
+		public CryptedConnectionString CryptedConnectionString { get; set; }
 
 		public void Load()
 		{
@@ -47,7 +49,14 @@ namespace ActGenerator.Model
 						IsUniqueNumbers = loadedObj.IsUniqueNumbers;
 						CanUseOldWorks = loadedObj.CanUseOldWorks;
 						SelectedDateTimeItem = loadedObj.SelectedDateTimeItem;
+						CryptedConnectionString = loadedObj.CryptedConnectionString;
 					}
+				}
+
+				if(CryptedConnectionString != null && !CryptedConnectionString.IsCrypted)
+				{
+					CryptedConnectionString.Crypt();
+					Save();
 				}
 			}
 		}
