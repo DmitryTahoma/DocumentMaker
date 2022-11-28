@@ -11,7 +11,7 @@
     xmlns:projectEditor="clr-namespace:ProjectEditorLib.View;assembly=ProjectEditorLib"
     xmlns:vm="clr-namespace:ActGenerator.ViewModel"
     x:Name="WindowView"
-    Title="MainWindow"
+    Title="Генератор актів"
     Width="900"
     Height="500"
     FontSize="15"
