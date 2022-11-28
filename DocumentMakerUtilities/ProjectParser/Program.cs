@@ -1,4 +1,5 @@
-﻿using ProjectsDb;
+﻿using DocumentMaker.Security;
+using ProjectsDb;
 using ProjectsDb.Context;
 using System;
 using System.Collections.Generic;
@@ -6,14 +7,17 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Xml.Serialization;
 
 namespace ProjectParser
 {
 	partial class Program
 	{
 		static string sourceFilename => "Source.xlsx";
-		const int countFill = 10;
+		const int countFill = -1;
 		const bool enableTestFilling = countFill > 1;
+		const string connectionStringFilename = "connection_string.xml";
+		static CryptedConnectionString cryptedConnectionString = null;
 
 		static void Main(string[] args)
 		{
@@ -134,7 +138,7 @@ namespace ProjectParser
 
 		private static void FillObjToDatabase(ParsedObj parsedObj, string projectName)
 		{
-			using (ProjectsDbContext db = new ProjectsDbContext())
+			using (ProjectsDbContext db = new ProjectsDbContext(GetConnectionString()))
 			{
 				Project dbProject = db.Projects.FirstOrDefault(x => x.Name == projectName);
 				if (dbProject == null)
@@ -173,6 +177,28 @@ namespace ProjectParser
 
 				db.SaveChanges();
 			}
+		}
+
+		private static string GetConnectionString()
+		{
+			if (cryptedConnectionString == null)
+			{
+				XmlSerializer serializer = new XmlSerializer(typeof(CryptedConnectionString));
+				using (FileStream fstream = new FileStream(connectionStringFilename, FileMode.Open))
+				{
+					cryptedConnectionString = serializer.Deserialize(fstream) as CryptedConnectionString;
+				}
+
+				if (cryptedConnectionString != null && !cryptedConnectionString.IsCrypted)
+				{
+					cryptedConnectionString.Crypt();
+					using(FileStream fstream = new FileStream(connectionStringFilename, FileMode.Create))
+					{
+						serializer.Serialize(fstream, cryptedConnectionString);
+					}
+				}
+			}
+			return cryptedConnectionString.GetDecryptedConnectionString();
 		}
 	}
 }

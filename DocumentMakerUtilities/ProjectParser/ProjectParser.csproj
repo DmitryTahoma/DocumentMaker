@@ -48,6 +48,9 @@
     <Reference Include="ProjectsDb">
       <HintPath>..\..\ProjectsDb\bin\Release\ProjectsDb.dll</HintPath>
     </Reference>
+    <Reference Include="Security">
+      <HintPath>..\..\Security\bin\Release\Security.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
