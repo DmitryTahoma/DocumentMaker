@@ -160,6 +160,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Dml\Dml.csproj">
+      <Project>{ac730979-6d09-406a-bfdf-e9f3f4d296e0}</Project>
+      <Name>Dml</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DocumentMakerThemes\DocumentMakerThemes.csproj">
       <Project>{a3c2f18e-b57e-4c71-a2dd-bce3cff24574}</Project>
       <Name>DocumentMakerThemes</Name>

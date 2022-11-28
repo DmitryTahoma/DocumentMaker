@@ -7,8 +7,10 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvvmConverters="clr-namespace:Mvvm.Converters;assembly=Mvvm"
+    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:validationRules="clr-namespace:Mvvm.ValidationRules;assembly=Mvvm"
     xmlns:vm="clr-namespace:ProjectEditorLib.ViewModel.Controls"
+    x:Name="UserContolView"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -22,6 +24,11 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <CollectionViewSource
+                x:Key="SortedProjects"
+                IsLiveSortingRequested="False"
+                Source="{Binding Projects}" />
 
             <mvvmConverters:ViewModelStateToVisibilityConverter x:Key="ViewModelStateToVisibilityConverter" FalseValue="Hidden" />
             <mvvmConverters:ViewModelStateToVisibilityConverter
@@ -51,7 +58,7 @@
 
         <Grid Grid.Row="1" Grid.ColumnSpan="2">
             <ComboBox
-                ItemsSource="{Binding Projects}"
+                ItemsSource="{Binding Source={StaticResource SortedProjects}}"
                 Style="{StaticResource MiddleComboBox}"
                 Visibility="{Binding State, Mode=OneWay, Converter={StaticResource InvertedViewModelStateToVisibilityConverter}}">
                 <ComboBox.SelectedItem>
@@ -101,6 +108,7 @@
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding BindValidateObj}" CommandParameter="{Binding ElementName=MainGrid}" />
             <i:InvokeCommandAction Command="{Binding LoadFromDatabase}" />
+            <i:InvokeCommandAction Command="{Binding SetCustomSort}" CommandParameter="{Binding ElementName=UserContolView, Path=Resources}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 

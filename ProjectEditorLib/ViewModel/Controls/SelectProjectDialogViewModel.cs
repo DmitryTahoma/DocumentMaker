@@ -6,6 +6,7 @@ using ProjectEditorLib.Model.Dialogs;
 using System.Collections.Generic;
 using System.Windows;
 using DocumentMaker.Security;
+using System.Windows.Data;
 
 namespace ProjectEditorLib.ViewModel.Controls
 {
@@ -54,6 +55,7 @@ namespace ProjectEditorLib.ViewModel.Controls
 			BindValidateObj = new Command<DependencyObject>(OnBindValidateObjExecute);
 			OpenProjectCommand = new Command(OnOpenProjectCommandExecute, CanExecuteOpenProjectCommand);
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
+			SetCustomSort = new Command<ResourceDictionary>(OnSetCustomSortExecute);
 		}
 
 		public Command<DependencyObject> BindValidateObj { get; private set; }
@@ -100,11 +102,17 @@ namespace ProjectEditorLib.ViewModel.Controls
 			}
 		}
 
+		public Command<ResourceDictionary> SetCustomSort { get; private set; }
+		private void OnSetCustomSortExecute(ResourceDictionary resourceDictionary)
+		{
+			((ListCollectionView)((CollectionViewSource)resourceDictionary["SortedProjects"]).View).CustomSort = new Dml.NaturalStringComparer();
+		}
+
+		#endregion
+
 		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
 		{
 			model.SetConnectionString(cryptedConnectionString);
 		}
-
-		#endregion
 	}
 }
