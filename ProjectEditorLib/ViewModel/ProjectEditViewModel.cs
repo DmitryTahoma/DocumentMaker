@@ -299,7 +299,7 @@ namespace ProjectEditorLib.ViewModel
 
 			TreeViewItem projectTreeItem = CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject, null);
 
-			await model.ConnectDBAsync();
+			if (!await model.ConnectDBAsync()) return;
 			Project project = await model.LoadProjectAsync(SelectedEditProject);
 			await model.DisconnectDBAsync();
 			projectTreeItem.IsExpanded = true;

@@ -22,9 +22,13 @@ namespace ProjectEditorLib.Model
 			ReleaseContext();
 		}
 
-		public async Task ConnectDBAsync()
+		public Task<bool> ConnectDBAsync()
 		{
-			await Task.Run(() => { db = new ProjectsDbContext(cryptedConnectionString.GetDecryptedConnectionString()); });
+			return Task.Run(() =>
+			{
+				if (cryptedConnectionStringSetted) db = new ProjectsDbContext(cryptedConnectionString.GetDecryptedConnectionString());
+				return cryptedConnectionStringSetted;
+			});
 		}
 
 		public async Task DisconnectDBAsync()
