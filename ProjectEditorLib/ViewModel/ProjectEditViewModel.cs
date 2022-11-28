@@ -602,7 +602,7 @@ namespace ProjectEditorLib.ViewModel
 			{
 				ProjectNode nodeModel = GetSaveTreeView();
 
-				model.ConnectDB();
+				if (!model.TryConnectDB()) return;
 				model.SaveNodeChanges(nodeModel);
 				model.DisconnectDB();
 

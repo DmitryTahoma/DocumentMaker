@@ -103,6 +103,8 @@ namespace ActGenerator.ViewModel
 		public Command<MainWindow> SaveSession { get; private set; }
 		private void OnSaveSessionExecute(MainWindow window)
 		{
+			if (!model.ApplicationLoaded) return;
+
 			model.WindowTop = window.Top;
 			model.WindowLeft = window.Left;
 			model.WindowHeight = window.Height;
@@ -170,6 +172,8 @@ namespace ActGenerator.ViewModel
 		public Command<ProjectEditViewModel> BindProjectEditor { get; private set; }
 		private void OnBindProjectEditorExecute(ProjectEditViewModel projectEdit)
 		{
+			if (!model.ApplicationLoaded) return;
+
 			projectEditViewModel = projectEdit;
 		}
 
@@ -216,6 +220,8 @@ namespace ActGenerator.ViewModel
 		public Command<ICryptedConnectionStringRequired> SendCryptedConnectionString { get; private set; }
 		private void OnSendCryptedConnectionStringExecute(ICryptedConnectionStringRequired connectionStringRequired)
 		{
+			if (!model.ApplicationLoaded) return;
+
 			connectionStringRequired.SetCryptedConnectionString(model.CryptedConnectionString);
 		}
 

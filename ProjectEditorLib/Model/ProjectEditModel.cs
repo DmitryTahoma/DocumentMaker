@@ -12,6 +12,7 @@ namespace ProjectEditorLib.Model
 	public class ProjectEditModel
 	{
 		CryptedConnectionString cryptedConnectionString = null;
+		bool cryptedConnectionStringSetted = false;
 		const double nodesDaysLifetime = 45;
 
 		ProjectsDbContext db = null;
@@ -31,9 +32,10 @@ namespace ProjectEditorLib.Model
 			await Task.Run(ReleaseContext);
 		}
 
-		public void ConnectDB()
+		public bool TryConnectDB()
 		{
-			db = new ProjectsDbContext(cryptedConnectionString.GetDecryptedConnectionString());
+			if(cryptedConnectionStringSetted) db = new ProjectsDbContext(cryptedConnectionString.GetDecryptedConnectionString());
+			return cryptedConnectionStringSetted;
 		}
 
 		public void DisconnectDB()
@@ -299,6 +301,7 @@ namespace ProjectEditorLib.Model
 		public void SetConnectionString(CryptedConnectionString cryptedConnectionString)
 		{
 			this.cryptedConnectionString = cryptedConnectionString;
+			cryptedConnectionStringSetted = true;
 		}
 	}
 }

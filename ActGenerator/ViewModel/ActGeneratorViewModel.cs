@@ -178,7 +178,7 @@ namespace ActGenerator.ViewModel
 			if (State == ViewModelState.Initialized)
 			{
 				State = ViewModelState.Loading;
-				await model.ConnectDB();
+				if (!await model.TryConnectDB()) return;
 				dbProjects = await model.LoadProjects();
 				await model.DisconnectDB();
 
@@ -200,7 +200,7 @@ namespace ActGenerator.ViewModel
 			else if(State == ViewModelState.Loaded)
 			{
 				State = ViewModelState.Loading;
-				await model.ConnectDB();
+				if (!await model.TryConnectDB()) return;
 				dbProjects = await model.LoadProjects();
 				await model.DisconnectDB();
 

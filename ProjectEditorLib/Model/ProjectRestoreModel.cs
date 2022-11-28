@@ -11,6 +11,7 @@ namespace ProjectEditorLib.Model
 	public class ProjectRestoreModel
 	{
 		CryptedConnectionString cryptedConnectionString = null;
+		bool cryptedConnectionStringSetted = false;
 		ProjectsDbContext db = null;
 
 		~ProjectRestoreModel()
@@ -18,9 +19,13 @@ namespace ProjectEditorLib.Model
 			ReleaseContext();
 		}
 
-		public async Task ConnectDB()
+		public Task<bool> TryConnectDB()
 		{
-			await Task.Run(() => { db = new ProjectsDbContext(cryptedConnectionString.GetDecryptedConnectionString()); });
+			return Task.Run(() =>
+			{
+				if(cryptedConnectionStringSetted) db = new ProjectsDbContext(cryptedConnectionString.GetDecryptedConnectionString());
+				return cryptedConnectionStringSetted;
+			});
 		}
 
 		public async Task DisconnectDB()
@@ -231,6 +236,7 @@ namespace ProjectEditorLib.Model
 		public void SetConnectionString(CryptedConnectionString cryptedConnectionString)
 		{
 			this.cryptedConnectionString = cryptedConnectionString;
+			cryptedConnectionStringSetted = true;
 		}
 	}
 }

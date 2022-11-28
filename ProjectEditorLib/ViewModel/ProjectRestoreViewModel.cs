@@ -42,7 +42,7 @@ namespace ProjectEditorLib.ViewModel
 		public Command LoadFromDatabase { get; private set; }
 		private async void OnLoadFromDatabaseExecute()
 		{
-			await model.ConnectDB();
+			if (!await model.TryConnectDB()) return;
 			List<Project> projects = await model.LoadRemovedNodes();
 			await model.DisconnectDB();
 
@@ -79,7 +79,7 @@ namespace ProjectEditorLib.ViewModel
 				}
 			}
 
-			await model.ConnectDB();
+			if (!await model.TryConnectDB()) return;
 			await model.Restore(projectNode.Context);
 			await model.DisconnectDB();
 		}
@@ -102,7 +102,7 @@ namespace ProjectEditorLib.ViewModel
 				projectTreeItem = sender.Parent as TreeViewItem;
 			}
 
-			await model.ConnectDB();
+			if (!await model.TryConnectDB()) return;
 			IEnumerable<IDbObject> removedObjects = await model.RemoveForever(projectNode.Context);
 			await model.DisconnectDB();
 

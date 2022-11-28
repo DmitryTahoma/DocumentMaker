@@ -1,5 +1,6 @@
 ﻿using Dml;
 using DocumentMaker.Security;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -29,6 +30,9 @@ namespace ActGenerator.Model
 		public DateTimeItem SelectedDateTimeItem { get; set; } = null;
 		public CryptedConnectionString CryptedConnectionString { get; set; }
 
+		[XmlIgnore]
+		public bool ApplicationLoaded { get; private set; } = false;
+
 		public void Load()
 		{
 			if (File.Exists(CurrentSaveFileName))
@@ -36,7 +40,7 @@ namespace ActGenerator.Model
 				XmlSerializer loader = new XmlSerializer(typeof(ActGeneratorSession));
 				using (FileStream fstream = new FileStream(CurrentSaveFileName, FileMode.Open))
 				{
-					if(loader.Deserialize(fstream) is ActGeneratorSession loadedObj)
+					if (loader.Deserialize(fstream) is ActGeneratorSession loadedObj)
 					{
 						WindowTop = loadedObj.WindowTop;
 						WindowLeft = loadedObj.WindowLeft;
@@ -55,18 +59,20 @@ namespace ActGenerator.Model
 					}
 				}
 
-				if(CryptedConnectionString != null && !CryptedConnectionString.IsCrypted)
+				if (CryptedConnectionString != null && !CryptedConnectionString.IsCrypted)
 				{
 					CryptedConnectionString.Crypt();
 					Save();
 				}
+
+				ApplicationLoaded = true;
 			}
 		}
 
 		public void Save()
 		{
 			XmlSerializer saver = new XmlSerializer(typeof(ActGeneratorSession));
-			using(FileStream fstream = new FileStream(CurrentSaveFileName, FileMode.Create))
+			using (FileStream fstream = new FileStream(CurrentSaveFileName, FileMode.Create))
 			{
 				saver.Serialize(fstream, this);
 			}

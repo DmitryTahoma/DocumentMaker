@@ -9,11 +9,14 @@ namespace ProjectEditorLib.Model.Dialogs
 	public class SelectProjectDialogModel
 	{
 		CryptedConnectionString cryptedConnectionString = null;
+		bool cryptedConnectionStringSetted = false;
 
 		public Task<List<Project>> LoadProjects()
 		{
 			return Task.Run(() =>
 			{
+				if (!cryptedConnectionStringSetted) return null;
+
 				List<Project> result;
 				using (ProjectsDbContext db = new ProjectsDbContext(cryptedConnectionString.GetDecryptedConnectionString()))
 				{
@@ -27,6 +30,8 @@ namespace ProjectEditorLib.Model.Dialogs
 		{
 			using(ProjectsDbContext db = new ProjectsDbContext(cryptedConnectionString.GetDecryptedConnectionString()))
 			{
+				if (!cryptedConnectionStringSetted) return;
+
 				await db.SyncCollection(collection);
 			}
 		}
@@ -34,6 +39,7 @@ namespace ProjectEditorLib.Model.Dialogs
 		public void SetConnectionString(CryptedConnectionString cryptedConnectionString)
 		{
 			this.cryptedConnectionString = cryptedConnectionString;
+			cryptedConnectionStringSetted = true;
 		}
 	}
 }
