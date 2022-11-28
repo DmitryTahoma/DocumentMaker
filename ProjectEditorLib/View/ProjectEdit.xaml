@@ -56,9 +56,9 @@
         <Grid Visibility="{Binding State, Mode=OneWay, Converter={StaticResource InvertedViewModelStateToVisibilityConverterInitializing}}">
             <Grid Visibility="{Binding State, Mode=OneWay, Converter={StaticResource InvertedViewModelStateToVisibilityConverter}}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
+                    <ColumnDefinition MinWidth="220" />
                     <ColumnDefinition Width="auto" />
-                    <ColumnDefinition />
+                    <ColumnDefinition MinWidth="390" />
                     <ColumnDefinition Width="50" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -85,7 +85,6 @@
                 <TreeView
                     Grid.Row="1"
                     Grid.RowSpan="3"
-                    MinWidth="220"
                     ItemsSource="{Binding TreeItems}" />
 
                 <GridSplitter
