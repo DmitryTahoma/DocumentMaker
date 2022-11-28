@@ -1,7 +1,9 @@
 ﻿using Dml;
 using DocumentMaker.Security;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Xml.Serialization;
 
@@ -67,6 +69,23 @@ namespace ActGenerator.Model
 			using(FileStream fstream = new FileStream(CurrentSaveFileName, FileMode.Create))
 			{
 				saver.Serialize(fstream, this);
+			}
+		}
+
+		public void ReopenApplicationElevatedRights()
+		{
+			ProcessStartInfo psi = new ProcessStartInfo
+			{
+				FileName = Assembly.GetExecutingAssembly().Location,
+				Verb = "runas",
+			};
+			try
+			{
+				Process.Start(psi);
+			}
+			finally
+			{
+				Application.Current.Shutdown(0);
 			}
 		}
 	}

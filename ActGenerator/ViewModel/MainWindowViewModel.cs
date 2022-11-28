@@ -5,6 +5,7 @@ using Mvvm.Commands;
 using ProjectEditorLib.View.Dialogs;
 using ProjectEditorLib.ViewModel;
 using ProjectEditorLib.ViewModel.Controls;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -66,7 +67,16 @@ namespace ActGenerator.ViewModel
 		public Command<MainWindow> LoadSession { get; private set; }
 		private void OnLoadSessionExecute(MainWindow window)
 		{
-			model.Load();
+			try
+			{
+				model.Load();
+			}
+			catch(UnauthorizedAccessException)
+			{
+				model.ReopenApplicationElevatedRights();
+				return;
+			}
+
 			window.Height = model.WindowHeight;
 			window.Width = model.WindowWidth;
 
