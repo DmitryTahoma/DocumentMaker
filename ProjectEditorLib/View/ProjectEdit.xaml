@@ -66,6 +66,7 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
                     <RowDefinition />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
                 <ToolBarTray IsLocked="True">
@@ -134,9 +135,25 @@
                         Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
                 </Grid>
 
+                <Grid
+                    Grid.Row="4"
+                    Grid.ColumnSpan="4"
+                    Visibility="{Binding IsLoadingBacks, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ProgressBar
+                        Maximum="{Binding LoadingBacksMaximum, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource BacksLoadingProgressBar}"
+                        Value="{Binding LoadingBacksProgress, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <StackPanel Style="{StaticResource CenterHorizontalStackPanel}">
+                        <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="Завантажено вузлів " />
+                        <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding LoadingBacksProgress, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text=" із " />
+                        <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding LoadingBacksMaximum, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                </Grid>
+
                 <materialDesign:Snackbar
                     x:Name="ProjectEditSnackbar"
-                    Grid.ColumnSpan="3"
+                    Grid.ColumnSpan="4"
                     MessageQueue="{materialDesign:MessageQueue}" />
             </Grid>
         </Grid>

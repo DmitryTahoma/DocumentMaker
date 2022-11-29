@@ -102,6 +102,27 @@ namespace ProjectEditorLib.ViewModel
 		}
 		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(ProjectEditViewModel));
 
+		public bool IsLoadingBacks
+		{
+			get { return (bool)GetValue(IsLoadingBacksProperty); }
+			set { SetValue(IsLoadingBacksProperty, value); }
+		}
+		public static readonly DependencyProperty IsLoadingBacksProperty = DependencyProperty.Register(nameof(IsLoadingBacks), typeof(bool), typeof(ProjectEditViewModel));
+
+		public double LoadingBacksProgress
+		{
+			get { return (double)GetValue(LoadingBacksProgressProperty); }
+			set { SetValue(LoadingBacksProgressProperty, value); }
+		}
+		public static readonly DependencyProperty LoadingBacksProgressProperty = DependencyProperty.Register(nameof(LoadingBacksProgress), typeof(double), typeof(ProjectEditViewModel));
+
+		public double LoadingBacksMaximum
+		{
+			get { return (double)GetValue(LoadingBacksMaximumProperty); }
+			set { SetValue(LoadingBacksMaximumProperty, value); }
+		}
+		public static readonly DependencyProperty LoadingBacksMaximumProperty = DependencyProperty.Register(nameof(LoadingBacksMaximum), typeof(double), typeof(ProjectEditViewModel));
+
 		#endregion
 
 		#region Commands
@@ -316,15 +337,20 @@ namespace ProjectEditorLib.ViewModel
 			TreeItems.Add(projectTreeItem);
 
 			State = ViewModelState.Loaded;
+			LoadingBacksProgress = 0;
+			LoadingBacksMaximum = project.Backs.Count;
+			IsLoadingBacks = true;
 			foreach (Back back in project.Backs)
 			{
 				await PushBackToTreeItemAsync(projectTreeItem, back);
+				++LoadingBacksProgress;
 			}
 			// update sorting
 			if (projectTreeItem.Items.Count > 1)
 			{
 				projectTreeItem.Items.Refresh();
 			}
+			IsLoadingBacks = false;
 		}
 
 		private async Task PushBackToTreeItemAsync(TreeViewItem parrent, Back context)
