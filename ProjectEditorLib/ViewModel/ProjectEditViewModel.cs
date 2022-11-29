@@ -213,6 +213,13 @@ namespace ProjectEditorLib.ViewModel
 				await model.DisconnectDBAsync();
 
 				UpdateContextAfterSaving(nodeModel);
+
+				// update sorting
+				TreeViewItem parrent = GetParent(TreeItems, SelectedTreeViewItem);
+				if (parrent.Items.Count > 1)
+				{
+					ResetTreeItemsSortDesriptions(parrent.Items);
+				}
 			}
 		}
 
@@ -311,12 +318,16 @@ namespace ProjectEditorLib.ViewModel
 			State = ViewModelState.Loaded;
 			foreach (Back back in project.Backs)
 			{
-				PushBackToTreeItem(projectTreeItem, back);
-				await Task.Delay(1);
+				await PushBackToTreeItemAsync(projectTreeItem, back);
+			}
+			// update sorting
+			if (projectTreeItem.Items.Count > 1)
+			{
+				projectTreeItem.Items.Refresh();
 			}
 		}
 
-		private void PushBackToTreeItem(TreeViewItem parrent, Back context)
+		private async Task PushBackToTreeItemAsync(TreeViewItem parrent, Back context)
 		{
 			TreeViewItem backNode = CreateNodeByType(context, parrent, out ProjectNodeType nodeType);
 			parrent.Items.Add(backNode);
@@ -329,16 +340,28 @@ namespace ProjectEditorLib.ViewModel
 				case ProjectNodeType.Hog:
 					foreach(Back back in context.ChildBacks)
 					{
-						PushBackToTreeItem(backNode, back);
+						await PushBackToTreeItemAsync(backNode, back);
+					}
+					// update sorting
+					if(backNode.Items.Count > 1)
+					{
+						backNode.Items.Refresh();
 					}
 					break;
 				case ProjectNodeType.Minigame:
 					foreach(CountRegions regions in context.Regions)
 					{
 						backNode.Items.Add(CreateTreeViewItem(ProjectNodeType.Regions, regions, backNode));
+						await Task.Delay(1);
+					}
+					// update sorting
+					if (backNode.Items.Count > 1)
+					{
+						backNode.Items.Refresh();
 					}
 					break;
 			}
+			await Task.Delay(1);
 		}
 
 		private async Task SetChildsBacks(TreeViewItem parrentNode, Back back)
@@ -370,10 +393,11 @@ namespace ProjectEditorLib.ViewModel
 
 		private TreeViewItem CreateTreeViewItem(ProjectNodeType nodeType, IDbObject context, TreeViewItem parrent)
 		{
-			TreeItemHeader nodeHeader = new TreeItemHeader();
+			ComparableTreeItemHeader nodeHeader = new ComparableTreeItemHeader();
 			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)nodeHeader.DataContext;
 			nodeHeaderViewModel.SetModel(new ProjectNode(nodeType, context));
 			TreeViewItem treeViewItem = new TreeViewItem { Header = nodeHeader };
+			ResetTreeItemsSortDesriptions(treeViewItem.Items);
 			nodeHeaderViewModel.AddCommand = ConvertAddingCommand(treeViewItem, AddTreeViewItemCommand);
 			nodeHeaderViewModel.RemoveCommand = ConvertRemovingCommand(treeViewItem, RemoveTreeViewItemCommand);
 			treeViewItem.Selected += (s, e) => { ChangeNodeOptionsView.Execute((TreeViewItem)s); };
@@ -526,7 +550,7 @@ namespace ProjectEditorLib.ViewModel
 				{
 					if(isClosing)
 					{
-						SaveNodeChanges();
+						SaveNodeChangesOnClosing();
 					}
 					else
 					{
@@ -596,7 +620,7 @@ namespace ProjectEditorLib.ViewModel
 			}
 		}
 
-		public void SaveNodeChanges()
+		private void SaveNodeChangesOnClosing()
 		{
 			if (IsValidSelectedOptionView())
 			{
@@ -605,8 +629,6 @@ namespace ProjectEditorLib.ViewModel
 				if (!model.TryConnectDB()) return;
 				model.SaveNodeChanges(nodeModel);
 				model.DisconnectDB();
-
-				UpdateContextAfterSaving(nodeModel);
 			}
 		}
 
@@ -624,6 +646,12 @@ namespace ProjectEditorLib.ViewModel
 		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
 		{
 			model.SetConnectionString(cryptedConnectionString);
+		}
+
+		private void ResetTreeItemsSortDesriptions(ItemCollection items)
+		{
+			items.SortDescriptions.Clear();
+			items.SortDescriptions.Add(new System.ComponentModel.SortDescription("Header", System.ComponentModel.ListSortDirection.Ascending));
 		}
 
 		#endregion

@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Converters\ProjectNodeTypeToPackIconKindConverter.cs" />
     <Compile Include="Converters\ProjectNodeTypeToStringConverter.cs" />
+    <Compile Include="Model\ComparableTreeItemHeader.cs" />
     <Compile Include="Model\Dialogs\SelectProjectDialogModel.cs" />
     <Compile Include="Model\NodeContextMenuItemType.cs" />
     <Compile Include="Model\ProjectEditModel.cs" />
