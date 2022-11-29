@@ -62,6 +62,7 @@ namespace ActGenerator.ViewModel
 			ClearKeyboardFocus = new Command(OnClearKeyboardFocusExecute);
 			ClearKeyboardFocusOnEnter = new Command<KeyEventArgs>(OnClearKeyboardFocusOnEnterExecute);
 			SendCryptedConnectionString = new Command<ICryptedConnectionStringRequired>(OnSendCryptedConnectionStringExecute);
+			SetInvariantNumberFormat = new Command(OnSetInvariantNumberFormatExecute);
 		}
 
 		public Command<MainWindow> LoadSession { get; private set; }
@@ -223,6 +224,17 @@ namespace ActGenerator.ViewModel
 			if (!model.ApplicationLoaded) return;
 
 			connectionStringRequired.SetCryptedConnectionString(model.CryptedConnectionString);
+		}
+
+		public Command SetInvariantNumberFormat { get; private set; }
+		private void OnSetInvariantNumberFormatExecute()
+		{
+			if (!model.ApplicationLoaded) return;
+
+			System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("uk-ua");
+			culture.NumberFormat = System.Globalization.NumberFormatInfo.InvariantInfo;
+			Thread.CurrentThread.CurrentCulture = culture;
+			Thread.CurrentThread.CurrentUICulture = culture;
 		}
 
 		#endregion
