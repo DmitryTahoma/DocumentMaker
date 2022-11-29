@@ -1,10 +1,13 @@
-﻿using ProjectsDb.Context;
+﻿using Dml.Converters;
+using ProjectsDb.Context;
 using System.Windows;
 
 namespace ProjectEditorLib.ViewModel
 {
 	public class MinigameViewModel : BaseDbObjectViewModel, IDbObjectViewModel
 	{
+		StringConverter stringConverter = new StringConverter();
+
 		public MinigameViewModel() : base() { }
 
 		#region Properties
@@ -58,7 +61,8 @@ namespace ProjectEditorLib.ViewModel
 			if(minigame != null)
 			{
 				minigame.Name = MinigameName;
-				minigame.Number = float.Parse(MinigameNumberText);
+				minigame.Number = stringConverter.ConvertToFloat(MinigameNumberText);
+				MinigameNumberText = minigame.Number.ToString();
 				dbObject = minigame;
 				context = minigame;
 			}

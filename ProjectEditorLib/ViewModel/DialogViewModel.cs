@@ -1,10 +1,13 @@
-﻿using ProjectsDb.Context;
+﻿using Dml.Converters;
+using ProjectsDb.Context;
 using System.Windows;
 
 namespace ProjectEditorLib.ViewModel
 {
 	public class DialogViewModel : BaseDbObjectViewModel, IDbObjectViewModel
 	{
+		StringConverter stringConverter = new StringConverter();
+
 		public DialogViewModel() : base() { }
 
 		#region Properties
@@ -58,7 +61,8 @@ namespace ProjectEditorLib.ViewModel
 			if(dialog != null)
 			{
 				dialog.Name = DialogName;
-				dialog.Number = float.Parse(DialogNumberText);
+				dialog.Number = stringConverter.ConvertToFloat(DialogNumberText);
+				DialogNumberText = dialog.Number.ToString();
 				dbObject = dialog;
 				context = dialog;
 			}

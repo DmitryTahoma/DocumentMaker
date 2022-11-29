@@ -65,6 +65,7 @@
     <Compile Include="Controls\InputWithText.xaml.cs">
       <DependentUpon>InputWithText.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\StringConverter.cs" />
     <Compile Include="Model\Back\GameObject.cs" />
     <Compile Include="Model\BaseBackDataModel.cs" />
     <Compile Include="Model\Back\BackDataType.cs" />

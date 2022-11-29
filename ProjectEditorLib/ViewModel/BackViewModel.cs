@@ -1,4 +1,5 @@
-﻿using ProjectsDb.Context;
+﻿using Dml.Converters;
+using ProjectsDb.Context;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -7,6 +8,8 @@ namespace ProjectEditorLib.ViewModel
 {
 	public class BackViewModel : BaseDbObjectViewModel, IDbObjectViewModel
 	{
+		StringConverter stringConverter = new StringConverter();
+
 		public BackViewModel() : base() { }
 
 		#region Properties
@@ -69,7 +72,8 @@ namespace ProjectEditorLib.ViewModel
 			if (back != null)
 			{
 				back.Name = BackName;
-				back.Number = float.Parse(BackNumberText);
+				back.Number = stringConverter.ConvertToFloat(BackNumberText);
+				BackNumberText = back.Number.ToString();
 
 				CountRegions regions = back.Regions?.FirstOrDefault();
 				if(regions == null)

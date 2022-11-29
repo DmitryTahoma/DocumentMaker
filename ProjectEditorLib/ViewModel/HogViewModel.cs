@@ -1,4 +1,5 @@
-﻿using ProjectsDb.Context;
+﻿using Dml.Converters;
+using ProjectsDb.Context;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -7,6 +8,8 @@ namespace ProjectEditorLib.ViewModel
 {
 	public class HogViewModel : BaseDbObjectViewModel, IDbObjectViewModel
 	{
+		StringConverter stringConverter = new StringConverter();
+
 		public HogViewModel() : base() { }
 
 		#region Properties
@@ -69,7 +72,8 @@ namespace ProjectEditorLib.ViewModel
 			if(hog != null)
 			{
 				hog.Name = HogName;
-				hog.Number = float.Parse(HogNumberText);
+				hog.Number = stringConverter.ConvertToFloat(HogNumberText);
+				HogNumberText = hog.Number.ToString();
 
 				CountRegions regions = hog.Regions?.FirstOrDefault();
 				if(regions == null)
