@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Windows;
 using DocumentMaker.Security;
 using System.Windows.Data;
+using System.Linq;
 
 namespace ProjectEditorLib.ViewModel.Controls
 {
@@ -45,6 +46,8 @@ namespace ProjectEditorLib.ViewModel.Controls
 			set { SetValue(StateProperty, value); }
 		}
 		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(SelectProjectDialogViewModel));
+
+		public string LastOpenedProjectName { get; set; } = null;
 
 		#endregion
 
@@ -89,6 +92,7 @@ namespace ProjectEditorLib.ViewModel.Controls
 			{
 				State = ViewModelState.Loading;
 				projects.AddRange(await model.LoadProjects());
+				SelectedProject = projects.FirstOrDefault(x => x.Name == LastOpenedProjectName);
 				State = ViewModelState.Loaded;
 			}
 			else if (State == ViewModelState.Loaded)
@@ -98,6 +102,7 @@ namespace ProjectEditorLib.ViewModel.Controls
 				await model.SyncCollection(projects);
 				projects.SuppressingNotifications = false;
 				projects.UpdateCollection();
+				SelectedProject = projects.FirstOrDefault(x => x.Name == LastOpenedProjectName);
 				State = ViewModelState.Loaded;
 			}
 		}

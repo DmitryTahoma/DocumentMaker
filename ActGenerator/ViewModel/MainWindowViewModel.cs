@@ -101,7 +101,9 @@ namespace ActGenerator.ViewModel
 
 			actGeneratorViewModel.LoadFromSession(model);
 
-			((SelectProjectDialogViewModel)selectProjectDialog.DataContext).SetCryptedConnectionString(model.CryptedConnectionString);
+			SelectProjectDialogViewModel selectProjectDialogViewModel = (SelectProjectDialogViewModel)selectProjectDialog.DataContext;
+			selectProjectDialogViewModel.SetCryptedConnectionString(model.CryptedConnectionString);
+			selectProjectDialogViewModel.LastOpenedProjectName = model.LastOpenedProjectName;
 		}
 
 		public Command<MainWindow> SaveSession { get; private set; }
@@ -122,6 +124,7 @@ namespace ActGenerator.ViewModel
 			model.IsUniqueNumbers = actGeneratorViewModel.IsUniqueNumbers;
 			model.CanUseOldWorks = actGeneratorViewModel.CanUseOldWorks;
 			model.SelectedDateTimeItem = actGeneratorViewModel.SelectedDateTimeItem;
+			model.LastOpenedProjectName = ((SelectProjectDialogViewModel)selectProjectDialog.DataContext).LastOpenedProjectName;
 
 			model.Save();
 		}
@@ -151,6 +154,7 @@ namespace ActGenerator.ViewModel
 			{
 				projectEditViewModel.State = ViewModelState.Loading;
 				projectEditViewModel.SelectedEditProject = selectProjectDialogDataContext.SelectedProject;
+				selectProjectDialogDataContext.LastOpenedProjectName = projectEditViewModel.SelectedEditProject.Name;
 				SelectedTabIndex = 1;
 				await projectEditViewModel.LoadProject();
 			}
@@ -168,6 +172,7 @@ namespace ActGenerator.ViewModel
 				projectEditViewModel.State = ViewModelState.Initializing;
 				SelectedTabIndex = 1;
 				projectEditViewModel.CreationProjectName = createProjectDialogViewModel.ProjectName;
+				((SelectProjectDialogViewModel)selectProjectDialog.DataContext).LastOpenedProjectName = projectEditViewModel.CreationProjectName;
 				await projectEditViewModel.CreateProject();
 				await projectEditViewModel.LoadProject();
 			}

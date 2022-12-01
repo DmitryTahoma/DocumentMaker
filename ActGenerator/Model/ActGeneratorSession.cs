@@ -29,6 +29,7 @@ namespace ActGenerator.Model
 		public bool CanUseOldWorks { get; set; } = true;
 		public DateTimeItem SelectedDateTimeItem { get; set; } = null;
 		public CryptedConnectionString CryptedConnectionString { get; set; }
+		public string LastOpenedProjectName { get; set; } = null;
 
 		[XmlIgnore]
 		public bool ApplicationLoaded { get; private set; } = false;
@@ -56,6 +57,7 @@ namespace ActGenerator.Model
 						CanUseOldWorks = loadedObj.CanUseOldWorks;
 						SelectedDateTimeItem = loadedObj.SelectedDateTimeItem;
 						CryptedConnectionString = loadedObj.CryptedConnectionString;
+						LastOpenedProjectName = loadedObj.LastOpenedProjectName;
 					}
 				}
 
