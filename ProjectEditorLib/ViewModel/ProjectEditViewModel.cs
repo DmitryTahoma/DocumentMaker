@@ -235,7 +235,7 @@ namespace ProjectEditorLib.ViewModel
 
 				UpdateContextAfterSaving(nodeModel);
 
-				if (!IsLoadingBacks)
+				if (!IsLoadingBacks && !TreeItems.Contains(SelectedTreeViewItem))
 				{
 					// update sorting
 					TreeViewItem parrent = GetParent(TreeItems, SelectedTreeViewItem);
