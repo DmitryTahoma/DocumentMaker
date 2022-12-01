@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Dml
 {
-	public class NaturalStringComparer : IComparer, IComparer<string>
+	public class NaturalStringComparer : IComparer, IComparer<object>, IComparer<string>
 	{
 		[DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
 		public static extern int StrCmpLogicalW(string a, string b);
