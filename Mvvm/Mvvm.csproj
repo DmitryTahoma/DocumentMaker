@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="BindingExtensions\BindingProxy.cs" />
     <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\CommandHelper.cs" />
     <Compile Include="Commands\EventToCommand.cs" />
     <Compile Include="Commands\GenericCommand.cs" />
     <Compile Include="Converters\InvertBooleanConverter.cs" />
