@@ -70,6 +70,7 @@
             <i:InvokeCommandAction Command="{Binding BindActGenerator}" CommandParameter="{Binding ElementName=ActGeneratorControl, Path=DataContext}" />
             <i:InvokeCommandAction Command="{Binding LoadSession}" CommandParameter="{Binding ElementName=WindowView}" />
             <i:InvokeCommandAction Command="{Binding BindProjectEditor}" CommandParameter="{Binding ElementName=ProjectEditor, Path=DataContext}" />
+            <i:InvokeCommandAction Command="{Binding BindProjectRestore}" CommandParameter="{Binding ElementName=ProjectRestore, Path=DataContext}" />
             <i:InvokeCommandAction Command="{Binding SendCryptedConnectionString}" CommandParameter="{Binding ElementName=ActGeneratorControl, Path=DataContext}" />
             <i:InvokeCommandAction Command="{Binding SendCryptedConnectionString}" CommandParameter="{Binding ElementName=ProjectEditor, Path=DataContext}" />
             <i:InvokeCommandAction Command="{Binding SendCryptedConnectionString}" CommandParameter="{Binding ElementName=ProjectRestore, Path=DataContext}" />

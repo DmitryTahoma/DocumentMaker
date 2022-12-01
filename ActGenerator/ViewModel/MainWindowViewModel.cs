@@ -1,6 +1,7 @@
 ﻿using ActGenerator.Model;
 using Dml.Controller.Validation;
 using MaterialDesignThemes.Wpf;
+using Mvvm;
 using Mvvm.Commands;
 using ProjectEditorLib.View.Dialogs;
 using ProjectEditorLib.ViewModel;
@@ -20,6 +21,7 @@ namespace ActGenerator.ViewModel
 		ActGeneratorSession model = new ActGeneratorSession();
 		ActGeneratorViewModel actGeneratorViewModel = null;
 		ProjectEditViewModel projectEditViewModel = null;
+		ProjectRestoreViewModel projectRestoreViewModel = null;
 
 		SelectProjectDialog selectProjectDialog = new SelectProjectDialog();
 		CreateProjectDialog createProjectDialog = new CreateProjectDialog();
@@ -63,6 +65,7 @@ namespace ActGenerator.ViewModel
 			ClearKeyboardFocusOnEnter = new Command<KeyEventArgs>(OnClearKeyboardFocusOnEnterExecute);
 			SendCryptedConnectionString = new Command<ICryptedConnectionStringRequired>(OnSendCryptedConnectionStringExecute);
 			SetInvariantNumberFormat = new Command(OnSetInvariantNumberFormatExecute);
+			BindProjectRestore = new Command<ProjectRestoreViewModel>(OnBindProjectRestoreExecute);
 		}
 
 		public Command<MainWindow> LoadSession { get; private set; }
@@ -146,7 +149,7 @@ namespace ActGenerator.ViewModel
 			await DialogHost.Show(selectProjectDialog, DialogHostId);
 			if(selectProjectDialog.DataContext is SelectProjectDialogViewModel selectProjectDialogDataContext && selectProjectDialogDataContext.IsOpen)
 			{
-				projectEditViewModel.State = Mvvm.ViewModelState.Loading;
+				projectEditViewModel.State = ViewModelState.Loading;
 				projectEditViewModel.SelectedEditProject = selectProjectDialogDataContext.SelectedProject;
 				SelectedTabIndex = 1;
 				await projectEditViewModel.LoadProject();
@@ -162,7 +165,7 @@ namespace ActGenerator.ViewModel
 			await DialogHost.Show(createProjectDialog, DialogHostId);
 			if(createProjectDialog.DataContext is CreateProjectDialogViewModel createProjectDialogViewModel && createProjectDialogViewModel.IsCreate)
 			{
-				projectEditViewModel.State = Mvvm.ViewModelState.Initializing;
+				projectEditViewModel.State = ViewModelState.Initializing;
 				SelectedTabIndex = 1;
 				projectEditViewModel.CreationProjectName = createProjectDialogViewModel.ProjectName;
 				await projectEditViewModel.CreateProject();
@@ -179,11 +182,14 @@ namespace ActGenerator.ViewModel
 		}
 
 		public Command RestoreProject { get; private set; }
-		private void OnRestoreProjectExecute()
+		private async void OnRestoreProjectExecute()
 		{
 			if (BeforeSelectedTabIndexChanged()) return;
 
+			actGeneratorViewModel.CloseOpenedDialog.Execute();
+			projectRestoreViewModel.State = ViewModelState.Loading;
 			SelectedTabIndex = 2;
+			await projectRestoreViewModel.LoadRemovedNodes();
 		}
 
 		public Command<KeyEventArgs> BlockTabControlHotKeys { get; private set; }
@@ -235,6 +241,12 @@ namespace ActGenerator.ViewModel
 			culture.NumberFormat = System.Globalization.NumberFormatInfo.InvariantInfo;
 			Thread.CurrentThread.CurrentCulture = culture;
 			Thread.CurrentThread.CurrentUICulture = culture;
+		}
+
+		public Command<ProjectRestoreViewModel> BindProjectRestore { get; private set; }
+		private void OnBindProjectRestoreExecute(ProjectRestoreViewModel projectRestoreViewModel)
+		{
+			this.projectRestoreViewModel = projectRestoreViewModel;
 		}
 
 		#endregion

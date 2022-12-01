@@ -8,6 +8,7 @@
     xmlns:local="clr-namespace:ProjectEditorLib.View"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mvvmConverters="clr-namespace:Mvvm.Converters;assembly=Mvvm"
     xmlns:vm="clr-namespace:ProjectEditorLib.ViewModel"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -27,55 +28,84 @@
                 x:Key="InverseBooleanToVisibilityConverter"
                 FalseValue="Visible"
                 TrueValue="Collapsed" />
+            <mvvmConverters:ViewModelStateToVisibilityConverter x:Key="ViewModelStateToVisibilityConverter" />
+            <mvvmConverters:ViewModelStateToVisibilityConverter x:Key="InvertedViewModelStateToVisibilityConverter" IsInverted="True" />
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <DockPanel LastChildFill="True">
+    <Grid>
 
-        <ToolBarTray DockPanel.Dock="Top" IsLocked="True">
-            <ToolBar Style="{StaticResource MaterialDesignToolBar}">
-                <TextBlock
-                    Padding="5"
-                    Style="{StaticResource MaterialDesignBody1TextBlock}"
-                    Text="Елементи автоматично видаляються через 45 днів" />
-            </ToolBar>
-        </ToolBarTray>
+        <DockPanel LastChildFill="True" Visibility="{Binding State, Mode=OneWay, Converter={StaticResource InvertedViewModelStateToVisibilityConverter}}">
 
-        <Grid>
+            <ToolBarTray DockPanel.Dock="Top" IsLocked="True">
+                <ToolBar Style="{StaticResource MaterialDesignToolBar}">
+                    <TextBlock
+                        Padding="5"
+                        Style="{StaticResource MaterialDesignBody1TextBlock}"
+                        Text="Елементи автоматично видаляються через 45 днів" />
+                </ToolBar>
+            </ToolBarTray>
 
-            <TreeView x:Name="ProjectsTreeView" ItemsSource="{Binding TreeItems}" />
+            <Grid DockPanel.Dock="Bottom" Visibility="{Binding IsLoadingBacks, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ProgressBar
+                    Maximum="{Binding LoadingBacksMaximum, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource BacksLoadingProgressBar}"
+                    Value="{Binding LoadingBacksProgress, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                <StackPanel Style="{StaticResource CenterHorizontalStackPanel}">
+                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="Завантажено вузлів " />
+                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding LoadingBacksProgress, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text=" із " />
+                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding LoadingBacksMaximum, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+            </Grid>
 
-            <StackPanel
+            <Grid>
+
+                <TreeView x:Name="ProjectsTreeView" ItemsSource="{Binding TreeItems}" />
+
+                <StackPanel
+                    VerticalAlignment="Center"
+                    Orientation="Vertical"
+                    Visibility="{Binding ElementName=ProjectsTreeView, Path=HasItems, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+
+                    <materialDesign:PackIcon
+                        Width="160"
+                        Height="160"
+                        HorizontalAlignment="Center"
+                        Kind="DeleteOutline" />
+
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                        Text="Пусто" />
+
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource MaterialDesignBody1TextBlock}"
+                        Text="Тут будуть видалені елементи з проєктів" />
+
+                </StackPanel>
+
+            </Grid>
+
+        </DockPanel>
+
+        <StackPanel
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Orientation="Horizontal"
+            Visibility="{Binding State, Mode=OneWay, Converter={StaticResource ViewModelStateToVisibilityConverter}}">
+            <ProgressBar
+                IsIndeterminate="True"
+                Style="{StaticResource MaterialDesignCircularProgressBar}"
+                Value="35" />
+            <TextBlock
+                Margin="5,0,0,0"
                 VerticalAlignment="Center"
-                Orientation="Vertical"
-                Visibility="{Binding ElementName=ProjectsTreeView, Path=HasItems, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                Text="завантаження видалених вузлів" />
+        </StackPanel>
 
-                <materialDesign:PackIcon
-                    Width="160"
-                    Height="160"
-                    HorizontalAlignment="Center"
-                    Kind="DeleteOutline" />
-
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    Style="{StaticResource MaterialDesignHeadline5TextBlock}"
-                    Text="Пусто" />
-
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    Style="{StaticResource MaterialDesignBody1TextBlock}"
-                    Text="Тут будуть видалені елементи з проєктів" />
-
-            </StackPanel>
-
-        </Grid>
-
-    </DockPanel>
-
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding LoadFromDatabase}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
+    </Grid>
 
 </UserControl>

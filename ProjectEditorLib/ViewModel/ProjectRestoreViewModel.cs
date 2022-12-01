@@ -15,7 +15,7 @@ using System.Windows.Data;
 
 namespace ProjectEditorLib.ViewModel
 {
-	public class ProjectRestoreViewModel : ICryptedConnectionStringRequired
+	public class ProjectRestoreViewModel : DependencyObject, ICryptedConnectionStringRequired
 	{
 		ProjectRestoreModel model = new ProjectRestoreModel();
 
@@ -28,35 +28,42 @@ namespace ProjectEditorLib.ViewModel
 
 		public ObservableRangeCollection<TreeViewItem> TreeItems { get; private set; } = new ObservableRangeCollection<TreeViewItem>();
 
+		public ViewModelState State
+		{
+			get { return (ViewModelState)GetValue(StateProperty); }
+			set { SetValue(StateProperty, value); }
+		}
+		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(ProjectRestoreViewModel));
+
+		public double LoadingBacksProgress
+		{
+			get { return (double)GetValue(LoadingBacksProgressProperty); }
+			set { SetValue(LoadingBacksProgressProperty, value); }
+		}
+		public static readonly DependencyProperty LoadingBacksProgressProperty = DependencyProperty.Register(nameof(LoadingBacksProgress), typeof(double), typeof(ProjectRestoreViewModel));
+
+		public double LoadingBacksMaximum
+		{
+			get { return (double)GetValue(LoadingBacksMaximumProperty); }
+			set { SetValue(LoadingBacksMaximumProperty, value); }
+		}
+		public static readonly DependencyProperty LoadingBacksMaximumProperty = DependencyProperty.Register(nameof(LoadingBacksMaximum), typeof(double), typeof(ProjectRestoreViewModel));
+
+		public bool IsLoadingBacks
+		{
+			get { return (bool)GetValue(IsLoadingBacksProperty); }
+			set { SetValue(IsLoadingBacksProperty, value); }
+		}
+		public static readonly DependencyProperty IsLoadingBacksProperty = DependencyProperty.Register(nameof(IsLoadingBacks), typeof(bool), typeof(ProjectRestoreViewModel));
+
 		#endregion
 
 		#region Commands
 
 		private void InitCommands()
 		{
-			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
 			RestoreTreeViewItemCommand = new Command<TreeViewItem>(OnRestoreTreeViewItemCommandExecute);
 			RemoveTreeViewItemCommand = new Command<TreeViewItem>(OnRemoveTreeViewItemCommandExecute);
-		}
-
-		public Command LoadFromDatabase { get; private set; }
-		private async void OnLoadFromDatabaseExecute()
-		{
-			if (!await model.TryConnectDB()) return;
-			List<Project> projects = await model.LoadRemovedNodes();
-			await model.DisconnectDB();
-
-			TreeItems.Clear();
-			foreach(Project project in projects)
-			{
-				TreeViewItem projectTree = CreateTreeViewItem(ProjectNodeType.Project, project, null);
-				TreeItems.Add(projectTree);
-
-				foreach(Back back in project.Backs)
-				{
-					projectTree.Items.Add(CreateNodeByType(back, projectTree, out _));
-				}
-			}
 		}
 
 		public Command<TreeViewItem> RestoreTreeViewItemCommand { get; private set; }
@@ -213,6 +220,51 @@ namespace ProjectEditorLib.ViewModel
 		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
 		{
 			model.SetConnectionString(cryptedConnectionString);
+		}
+
+		public async Task LoadRemovedNodes()
+		{
+			Task clearing = Task.Run(() =>
+			{
+				foreach(TreeViewItem projectTreeItem in TreeItems)
+				{
+					foreach(TreeViewItem backTreeItem in Dispatcher.Invoke(projectTreeItem.Items.Cast<TreeViewItem>))
+					{
+						while(Dispatcher.Invoke(() => backTreeItem.HasItems))
+						{
+							Dispatcher.Invoke(() => { backTreeItem.Items.Remove(backTreeItem.Items[0]); });
+						}
+					}
+					Dispatcher.Invoke(projectTreeItem.Items.Clear);
+				}
+				Dispatcher.Invoke(TreeItems.Clear);
+			});
+
+			if (!await model.TryConnectDB()) return;
+			List<Project> projects = await model.LoadRemovedNodes();
+			await model.DisconnectDB();
+
+			await clearing;
+
+			State = ViewModelState.Loaded;
+			LoadingBacksProgress = 0;
+			LoadingBacksMaximum = projects.Sum(x => x.Backs.Count) + projects.Count;
+			IsLoadingBacks = true;
+			foreach (Project project in projects)
+			{
+				TreeViewItem projectTree = CreateTreeViewItem(ProjectNodeType.Project, project, null);
+				TreeItems.Add(projectTree);
+				++LoadingBacksProgress;
+				await Task.Delay(1);
+
+				foreach (Back back in project.Backs)
+				{
+					projectTree.Items.Add(CreateNodeByType(back, projectTree, out _));
+					++LoadingBacksProgress;
+					await Task.Delay(1);
+				}
+			}
+			IsLoadingBacks = false;
 		}
 
 		#endregion
