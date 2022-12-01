@@ -100,14 +100,14 @@ namespace ProjectEditorLib.ViewModel
 			get { return (ViewModelState)GetValue(StateProperty); }
 			set { SetValue(StateProperty, value); }
 		}
-		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(ProjectEditViewModel));
+		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(ProjectEditViewModel), new PropertyMetadata(), CommandHelper.UpdateAllCanExecute);
 
 		public bool IsLoadingBacks
 		{
 			get { return (bool)GetValue(IsLoadingBacksProperty); }
 			set { SetValue(IsLoadingBacksProperty, value); }
 		}
-		public static readonly DependencyProperty IsLoadingBacksProperty = DependencyProperty.Register(nameof(IsLoadingBacks), typeof(bool), typeof(ProjectEditViewModel));
+		public static readonly DependencyProperty IsLoadingBacksProperty = DependencyProperty.Register(nameof(IsLoadingBacks), typeof(bool), typeof(ProjectEditViewModel), new PropertyMetadata(), CommandHelper.UpdateAllCanExecute);
 
 		public double LoadingBacksProgress
 		{

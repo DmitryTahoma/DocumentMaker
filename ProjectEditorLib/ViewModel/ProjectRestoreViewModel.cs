@@ -22,6 +22,8 @@ namespace ProjectEditorLib.ViewModel
 		public ProjectRestoreViewModel()
 		{
 			InitCommands();
+
+			State = ViewModelState.Initialized;
 		}
 
 		#region Properties
@@ -33,7 +35,7 @@ namespace ProjectEditorLib.ViewModel
 			get { return (ViewModelState)GetValue(StateProperty); }
 			set { SetValue(StateProperty, value); }
 		}
-		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(ProjectRestoreViewModel));
+		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(ProjectRestoreViewModel), new PropertyMetadata(), CommandHelper.UpdateAllCanExecute);
 
 		public double LoadingBacksProgress
 		{
@@ -54,7 +56,7 @@ namespace ProjectEditorLib.ViewModel
 			get { return (bool)GetValue(IsLoadingBacksProperty); }
 			set { SetValue(IsLoadingBacksProperty, value); }
 		}
-		public static readonly DependencyProperty IsLoadingBacksProperty = DependencyProperty.Register(nameof(IsLoadingBacks), typeof(bool), typeof(ProjectRestoreViewModel));
+		public static readonly DependencyProperty IsLoadingBacksProperty = DependencyProperty.Register(nameof(IsLoadingBacks), typeof(bool), typeof(ProjectRestoreViewModel), new PropertyMetadata(), CommandHelper.UpdateAllCanExecute);
 
 		#endregion
 

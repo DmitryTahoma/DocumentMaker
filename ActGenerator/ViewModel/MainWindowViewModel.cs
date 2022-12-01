@@ -54,11 +54,11 @@ namespace ActGenerator.ViewModel
 			LoadSession = new Command<MainWindow>(OnLoadSessionExecute);
 			SaveSession = new Command<MainWindow>(OnSaveSessionExecute);
 			BindActGenerator = new Command<ActGeneratorViewModel>(OnBindActGeneratorExecute);
-			ShowGeneratorTab = new Command(OnShowGeneratorTabExecute);
-			OpenProject = new Command(OnOpenProjectExecute);
-			CreateProject = new Command(OnCreateProjectExecute);
+			ShowGeneratorTab = new Command(OnShowGeneratorTabExecute, CanChangeTabIndex);
+			OpenProject = new Command(OnOpenProjectExecute, CanChangeTabIndex);
+			CreateProject = new Command(OnCreateProjectExecute, CanChangeTabIndex);
 			BindProjectEditor = new Command<ProjectEditViewModel>(OnBindProjectEditorExecute);
-			RestoreProject = new Command(OnRestoreProjectExecute);
+			RestoreProject = new Command(OnRestoreProjectExecute, CanChangeTabIndex);
 			BlockTabControlHotKeys = new Command<KeyEventArgs>(OnBlockTabControlHotKeysExecute);
 			CheckHaveUnsavedChanges = new Command<CancelEventArgs>(OnCheckHaveUnsavedChangesExecute);
 			ClearKeyboardFocus = new Command(OnClearKeyboardFocusExecute);
@@ -259,6 +259,19 @@ namespace ActGenerator.ViewModel
 			}
 
 			return false;
+		}
+
+		private bool CanChangeTabIndex(object obj)
+		{
+			return actGeneratorViewModel != null
+				&& projectEditViewModel != null
+				&& projectRestoreViewModel != null
+				&& actGeneratorViewModel.State == ViewModelState.Loaded
+				&& projectEditViewModel.State != ViewModelState.Initializing
+				&& projectEditViewModel.State != ViewModelState.Loading
+				&& !projectEditViewModel.IsLoadingBacks
+				&& projectRestoreViewModel.State != ViewModelState.Loading
+				&& !projectRestoreViewModel.IsLoadingBacks;
 		}
 	}
 }

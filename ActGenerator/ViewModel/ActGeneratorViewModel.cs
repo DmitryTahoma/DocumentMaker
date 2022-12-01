@@ -108,7 +108,7 @@ namespace ActGenerator.ViewModel
 			get { return (ViewModelState)GetValue(StateProperty); }
 			set { SetValue(StateProperty, value); }
 		}
-		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(ActGeneratorViewModel));
+		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(ActGeneratorViewModel), new PropertyMetadata(), CommandHelper.UpdateAllCanExecute);
 
 		#endregion
 
