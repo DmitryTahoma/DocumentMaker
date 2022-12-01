@@ -254,7 +254,7 @@ namespace ProjectEditorLib.ViewModel
 			foreach (Project project in projects)
 			{
 				TreeViewItem projectTree = CreateTreeViewItem(ProjectNodeType.Project, project, null);
-				TreeItems.Add(projectTree);
+				AddProjectTreeItem(projectTree);
 				++LoadingBacksProgress;
 				await Task.Delay(1);
 
@@ -271,8 +271,30 @@ namespace ProjectEditorLib.ViewModel
 					projectTree.Items.Refresh();
 				}
 			}
-			TreeItems.OrderBy(x => x);
 			IsLoadingBacks = false;
+		}
+
+		private void AddProjectTreeItem(TreeViewItem treeViewItem)
+		{
+			IComparable comparable = treeViewItem.Header as IComparable;
+			int i = 0;
+			bool inserted = false;
+			foreach (TreeViewItem treeItem in TreeItems)
+			{
+				if (comparable.CompareTo(treeItem.Header) < 0)
+				{
+					TreeItems.Insert(i, treeViewItem);
+					inserted = true;
+					break;
+				}
+
+				++i;
+			}
+
+			if (!inserted)
+			{
+				TreeItems.Add(treeViewItem);
+			}
 		}
 
 		#endregion
