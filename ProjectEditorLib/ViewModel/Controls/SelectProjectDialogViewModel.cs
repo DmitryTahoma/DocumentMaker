@@ -92,6 +92,7 @@ namespace ProjectEditorLib.ViewModel.Controls
 			{
 				State = ViewModelState.Loading;
 				projects.AddRange(await model.LoadProjects());
+				SelectedProject = null;
 				SelectedProject = projects.FirstOrDefault(x => x.Name == LastOpenedProjectName);
 				State = ViewModelState.Loaded;
 			}
@@ -102,6 +103,7 @@ namespace ProjectEditorLib.ViewModel.Controls
 				await model.SyncCollection(projects);
 				projects.SuppressingNotifications = false;
 				projects.UpdateCollection();
+				SelectedProject = null;
 				SelectedProject = projects.FirstOrDefault(x => x.Name == LastOpenedProjectName);
 				State = ViewModelState.Loaded;
 			}

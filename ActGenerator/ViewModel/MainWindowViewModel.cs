@@ -101,9 +101,7 @@ namespace ActGenerator.ViewModel
 
 			actGeneratorViewModel.LoadFromSession(model);
 
-			SelectProjectDialogViewModel selectProjectDialogViewModel = (SelectProjectDialogViewModel)selectProjectDialog.DataContext;
-			selectProjectDialogViewModel.SetCryptedConnectionString(model.CryptedConnectionString);
-			selectProjectDialogViewModel.LastOpenedProjectName = model.LastOpenedProjectName;
+			((SelectProjectDialogViewModel)selectProjectDialog.DataContext).SetCryptedConnectionString(model.CryptedConnectionString);
 		}
 
 		public Command<MainWindow> SaveSession { get; private set; }
@@ -148,9 +146,11 @@ namespace ActGenerator.ViewModel
 		{
 			if (BeforeSelectedTabIndexChanged()) return;
 
+			SelectProjectDialogViewModel selectProjectDialogDataContext = (SelectProjectDialogViewModel)selectProjectDialog.DataContext;
+			selectProjectDialogDataContext.LastOpenedProjectName = model.LastOpenedProjectName;
 			actGeneratorViewModel.CloseOpenedDialog.Execute();
 			await DialogHost.Show(selectProjectDialog, DialogHostId);
-			if(selectProjectDialog.DataContext is SelectProjectDialogViewModel selectProjectDialogDataContext && selectProjectDialogDataContext.IsOpen)
+			if(selectProjectDialogDataContext.IsOpen)
 			{
 				projectEditViewModel.State = ViewModelState.Loading;
 				projectEditViewModel.SelectedEditProject = selectProjectDialogDataContext.SelectedProject;
@@ -260,6 +260,7 @@ namespace ActGenerator.ViewModel
 		{
 			if(SelectedTabIndex == 1)
 			{
+				model.LastOpenedProjectName = projectEditViewModel.SelectedEditProject.Name;
 				return !projectEditViewModel.CheckHaveUnsavedChangesAndSave();
 			}
 
