@@ -235,11 +235,14 @@ namespace ProjectEditorLib.ViewModel
 
 				UpdateContextAfterSaving(nodeModel);
 
-				// update sorting
-				TreeViewItem parrent = GetParent(TreeItems, SelectedTreeViewItem);
-				if (parrent.Items.Count > 1)
+				if (!IsLoadingBacks)
 				{
-					ResetTreeItemsSortDesriptions(parrent.Items);
+					// update sorting
+					TreeViewItem parrent = GetParent(TreeItems, SelectedTreeViewItem);
+					if (parrent.Items.Count > 1)
+					{
+						ResetTreeItemsSortDesriptions(parrent.Items);
+					}
 				}
 			}
 		}
