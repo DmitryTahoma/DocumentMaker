@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using DocumentMaker.Security;
+using Dml;
 
 namespace ProjectEditorLib.ViewModel
 {

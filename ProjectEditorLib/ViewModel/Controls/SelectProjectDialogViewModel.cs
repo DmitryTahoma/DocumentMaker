@@ -8,6 +8,7 @@ using System.Windows;
 using DocumentMaker.Security;
 using System.Windows.Data;
 using System.Linq;
+using Dml;
 
 namespace ProjectEditorLib.ViewModel.Controls
 {

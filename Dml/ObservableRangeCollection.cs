@@ -7,11 +7,11 @@ namespace Dml
 {
 	public class ObservableRangeCollection<T> : ObservableCollection<T>
 	{
-		private bool suppressNotification = false;
+		public bool SuppressingNotifications { get; set; } = false;
 
 		protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
 		{
-			if (!suppressNotification)
+			if (!SuppressingNotifications)
 				base.OnCollectionChanged(e);
 		}
 
@@ -20,14 +20,54 @@ namespace Dml
 			if (list == null)
 				throw new ArgumentNullException("list");
 
-			suppressNotification = true;
+			bool suppressingNotifications = SuppressingNotifications;
+			SuppressingNotifications = true;
 
 			foreach (T item in list)
 			{
 				Add(item);
 			}
-			suppressNotification = false;
+			SuppressingNotifications = suppressingNotifications;
+			UpdateCollection();
+		}
+
+		public void UpdateCollection()
+		{
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+		}
+
+		public void RemoveRange(IEnumerable<T> list)
+		{
+			if (list == null)
+				throw new ArgumentNullException("list");
+
+			bool suppressingNotifications = SuppressingNotifications;
+			SuppressingNotifications = true;
+
+			foreach (T item in list)
+			{
+				Remove(item);
+			}
+			SuppressingNotifications = suppressingNotifications;
+			UpdateCollection();
+		}
+
+		public int RemoveAll(Predicate<T> match)
+		{
+			Stack<T> removed = new Stack<T>();
+			foreach (T elem in this)
+			{
+				if (match(elem))
+				{
+					removed.Push(elem);
+				}
+			}
+			int counter = removed.Count;
+			while (removed.Count > 0)
+			{
+				Remove(removed.Pop());
+			}
+			return counter;
 		}
 	}
 }
