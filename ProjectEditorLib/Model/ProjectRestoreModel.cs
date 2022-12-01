@@ -66,12 +66,8 @@ namespace ProjectEditorLib.Model
 						LoadBack(back);
 					}
 
-					projectBacks.Sort((x, y) => -DateTime.Compare(x.DeletionDate.Value, y.DeletionDate.Value));
 					project.Backs = projectBacks;
 				}
-
-				projects.Sort((x, y) => -DateTime.Compare(x.Backs.First().DeletionDate.Value, y.Backs.First().DeletionDate.Value));
-
 				return projects;
 			});
 		}

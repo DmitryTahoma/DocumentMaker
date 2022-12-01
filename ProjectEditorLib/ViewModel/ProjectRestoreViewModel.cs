@@ -134,11 +134,12 @@ namespace ProjectEditorLib.ViewModel
 
 		private TreeViewItem CreateTreeViewItem(ProjectNodeType nodeType, IDbObject context, TreeViewItem parrent)
 		{
-			TreeItemHeader nodeHeader = new TreeItemHeader();
+			ComparableTreeItemHeader nodeHeader = new ComparableTreeItemHeader();
 			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)nodeHeader.DataContext;
 			nodeHeaderViewModel.ShowFullName = true;
 			nodeHeaderViewModel.SetModel(new ProjectNode(nodeType, context), TreeItemContextMenuType.ProjectRestore);
 			TreeViewItem treeViewItem = new TreeViewItem { Header = nodeHeader };
+			treeViewItem.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("Header", System.ComponentModel.ListSortDirection.Ascending));
 			nodeHeaderViewModel.RestoreCommand = ConvertTreeViewItemCommand(treeViewItem, RestoreTreeViewItemCommand);
 			nodeHeaderViewModel.RemoveCommand = ConvertTreeViewItemCommand(treeViewItem, RemoveTreeViewItemCommand);
 
@@ -263,7 +264,14 @@ namespace ProjectEditorLib.ViewModel
 					++LoadingBacksProgress;
 					await Task.Delay(1);
 				}
+
+				// update sorting
+				if(projectTree.Items.Count > 1)
+				{
+					projectTree.Items.Refresh();
+				}
 			}
+			TreeItems.OrderBy(x => x);
 			IsLoadingBacks = false;
 		}
 
