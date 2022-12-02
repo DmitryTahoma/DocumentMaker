@@ -5,22 +5,22 @@ using Mvvm;
 using Mvvm.Commands;
 using ProjectEditorLib.Model;
 using ProjectEditorLib.View;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using DocumentMaker.Security;
 using Dml;
+using ProjectEditorLib.Model.TreeViewItemHandling;
 
 namespace ProjectEditorLib.ViewModel
 {
 	public class ProjectEditViewModel : DependencyObject, ICryptedConnectionStringRequired
 	{
 		ProjectEditModel model = new ProjectEditModel();
+		ITreeViewItemFactory treeViewItemFactory = null;
 
 		UIElementCollection optionsView = null;
 		int selectedViewTabIndex = -1;
@@ -30,6 +30,12 @@ namespace ProjectEditorLib.ViewModel
 		public ProjectEditViewModel()
 		{
 			InitCommands();
+			treeViewItemFactory = new ProjectEditTreeViewItemFactory(AddTreeViewItemCommand, RemoveTreeViewItemCommand)
+			{
+				TreeViewItemSelectedHandler = (s, e) => { ChangeNodeOptionsView.Execute((TreeViewItem)s); },
+				TreeViewItemPreviewMouseDownHandler = BeforeTreeViewItemSelected,
+				TreeViewItemPreviewMouseUpHandler = BeforeTreeViewItemShowContextMenu,
+			};
 
 			State = ViewModelState.Initialized;
 		}
@@ -145,7 +151,7 @@ namespace ProjectEditorLib.ViewModel
 		private void OnAddTreeViewItemCommandExecute(KeyValuePair<TreeViewItem, ProjectNodeType> addingInfo)
 		{
 			TreeViewItem parrent = addingInfo.Key;
-			TreeViewItem treeViewItem = CreateTreeViewItem(addingInfo.Value, null, parrent);
+			TreeViewItem treeViewItem = treeViewItemFactory.CreateTreeViewItem(addingInfo.Value, null, parrent);
 
 			parrent.Items.Add(treeViewItem);
 			parrent.IsExpanded = true;
@@ -175,16 +181,6 @@ namespace ProjectEditorLib.ViewModel
 				TreeViewItem parrent = GetParent(TreeItems, sender);
 				parrent.Items.Remove(sender);
 			}
-		}
-
-		private Command<ProjectNodeType> ConvertAddingCommand(TreeViewItem sender, Command<KeyValuePair<TreeViewItem, ProjectNodeType>> command)
-		{
-			return new Command<ProjectNodeType>((projectNodeType) => command.Execute(new KeyValuePair<TreeViewItem, ProjectNodeType>(sender, projectNodeType)));
-		}
-
-		private Command ConvertRemovingCommand(TreeViewItem sender, Command<TreeViewItem> command)
-		{
-			return new Command(() => command.Execute(sender));
 		}
 
 		public Command<TreeViewItem> ChangeNodeOptionsView { get; private set; }
@@ -242,7 +238,7 @@ namespace ProjectEditorLib.ViewModel
 					TreeViewItem parrent = GetParent(TreeItems, SelectedTreeViewItem);
 					if (parrent.Items.Count > 1)
 					{
-						ResetTreeItemsSortDesriptions(parrent.Items);
+						treeViewItemFactory.ResetTreeItemsSortDesriptions(parrent.Items);
 					}
 				}
 			}
@@ -329,7 +325,7 @@ namespace ProjectEditorLib.ViewModel
 				Dispatcher.Invoke(() => { TreeItems.Clear(); });
 			});
 
-			TreeViewItem projectTreeItem = CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject, null);
+			TreeViewItem projectTreeItem = treeViewItemFactory.CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject, null);
 
 			if (!await model.ConnectDBAsync()) return;
 			Project project = await model.LoadProjectAsync(SelectedEditProject);
@@ -359,7 +355,7 @@ namespace ProjectEditorLib.ViewModel
 
 		private async Task PushBackToTreeItemAsync(TreeViewItem parrent, Back context)
 		{
-			TreeViewItem backNode = CreateNodeByType(context, parrent, out ProjectNodeType nodeType);
+			TreeViewItem backNode = treeViewItemFactory.CreateNodeByType(context, parrent, out ProjectNodeType nodeType);
 			parrent.Items.Add(backNode);
 
 			switch (nodeType)
@@ -381,7 +377,7 @@ namespace ProjectEditorLib.ViewModel
 				case ProjectNodeType.Minigame:
 					foreach(CountRegions regions in context.Regions)
 					{
-						backNode.Items.Add(CreateTreeViewItem(ProjectNodeType.Regions, regions, backNode));
+						backNode.Items.Add(treeViewItemFactory.CreateTreeViewItem(ProjectNodeType.Regions, regions, backNode));
 						await Task.Delay(1);
 					}
 					// update sorting
@@ -398,12 +394,12 @@ namespace ProjectEditorLib.ViewModel
 		{
 			foreach(Back childBack in back.ChildBacks)
 			{
-				TreeViewItem childBackNode = CreateNodeByType(childBack, parrentNode, out ProjectNodeType nodeType);
+				TreeViewItem childBackNode = treeViewItemFactory.CreateNodeByType(childBack, parrentNode, out ProjectNodeType nodeType);
 				if (nodeType == ProjectNodeType.Minigame)
 				{
 					foreach(CountRegions regions in childBack.Regions)
 					{
-						childBackNode.Items.Add(CreateTreeViewItem(ProjectNodeType.Regions, regions, childBackNode));
+						childBackNode.Items.Add(treeViewItemFactory.CreateTreeViewItem(ProjectNodeType.Regions, regions, childBackNode));
 					}
 				}
 
@@ -413,44 +409,6 @@ namespace ProjectEditorLib.ViewModel
 					await SetChildsBacks(childBackNode, childBack);
 				}
 			}
-		}
-
-		private TreeViewItem CreateNodeByType(Back back, TreeViewItem parrent, out ProjectNodeType nodeType)
-		{
-			nodeType = (ProjectNodeType)Enum.Parse(typeof(ProjectNodeType), back.BackType.Name);
-			return CreateTreeViewItem(nodeType, back, parrent);
-		}
-
-		private TreeViewItem CreateTreeViewItem(ProjectNodeType nodeType, IDbObject context, TreeViewItem parrent)
-		{
-			ComparableTreeItemHeader nodeHeader = new ComparableTreeItemHeader();
-			TreeItemHeaderViewModel nodeHeaderViewModel = (TreeItemHeaderViewModel)nodeHeader.DataContext;
-			nodeHeaderViewModel.SetModel(new ProjectNode(nodeType, context));
-			TreeViewItem treeViewItem = new TreeViewItem { Header = nodeHeader };
-			ResetTreeItemsSortDesriptions(treeViewItem.Items);
-			nodeHeaderViewModel.AddCommand = ConvertAddingCommand(treeViewItem, AddTreeViewItemCommand);
-			nodeHeaderViewModel.RemoveCommand = ConvertRemovingCommand(treeViewItem, RemoveTreeViewItemCommand);
-			treeViewItem.Selected += (s, e) => { ChangeNodeOptionsView.Execute((TreeViewItem)s); };
-			treeViewItem.PreviewMouseDown += BeforeTreeViewItemSelected;
-			treeViewItem.PreviewMouseUp += BeforeTreeViewItemShowContextMenu;
-
-			Binding contextMenuBinding = new Binding(nameof(TreeItemHeaderViewModel.ContextMenuProperty))
-			{
-				Source = nodeHeaderViewModel,
-				Path = new PropertyPath(nameof(nodeHeaderViewModel.ContextMenu)),
-				Mode = BindingMode.OneWay,
-				UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-			};
-			treeViewItem.SetBinding(FrameworkElement.ContextMenuProperty, contextMenuBinding);
-
-			if (parrent != null)
-			{
-				TreeItemHeader parrentHeader = (TreeItemHeader)parrent.Header;
-				TreeItemHeaderViewModel parrentHeaderViewModel = (TreeItemHeaderViewModel)parrentHeader.DataContext;
-				parrentHeaderViewModel.AddChild(nodeHeaderViewModel);
-			}
-
-			return treeViewItem;
 		}
 
 		private void CollapseTreeItems(IEnumerable treeItems)
@@ -676,12 +634,6 @@ namespace ProjectEditorLib.ViewModel
 		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
 		{
 			model.SetConnectionString(cryptedConnectionString);
-		}
-
-		private void ResetTreeItemsSortDesriptions(ItemCollection items)
-		{
-			items.SortDescriptions.Clear();
-			items.SortDescriptions.Add(new System.ComponentModel.SortDescription("Header", System.ComponentModel.ListSortDirection.Ascending));
 		}
 
 		#endregion

@@ -76,6 +76,10 @@
     <Compile Include="Model\ProjectNode.cs" />
     <Compile Include="Model\ProjectNodeType.cs" />
     <Compile Include="Model\ProjectRestoreModel.cs" />
+    <Compile Include="Model\TreeViewItemHandling\ITreeViewItemFactory.cs" />
+    <Compile Include="Model\TreeViewItemHandling\ProjectEditTreeViewItemFactory.cs" />
+    <Compile Include="Model\TreeViewItemHandling\ProjectRestoreTreeViewItemFactory.cs" />
+    <Compile Include="Model\TreeViewItemHandling\TreeViewItemFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -105,7 +109,6 @@
     <Compile Include="ViewModel\ProjectRestoreViewModel.cs" />
     <Compile Include="ViewModel\ProjectViewModel.cs" />
     <Compile Include="ViewModel\RegionsViewModel.cs" />
-    <Compile Include="ViewModel\TreeItemContextMenuType.cs" />
     <Compile Include="ViewModel\TreeItemHeaderViewModel.cs" />
     <Compile Include="View\AlternativeProjectNameView.xaml.cs">
       <DependentUpon>AlternativeProjectNameView.xaml</DependentUpon>
