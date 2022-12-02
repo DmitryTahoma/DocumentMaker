@@ -56,7 +56,7 @@
     <Compile Include="Context\BackType.cs" />
     <Compile Include="Context\Project.cs" />
     <Compile Include="Context\CountRegions.cs" />
-    <Compile Include="DocumentMakerContext.cs" />
+    <Compile Include="ProjectsDbContext.cs" />
     <Compile Include="Context\IDbObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
