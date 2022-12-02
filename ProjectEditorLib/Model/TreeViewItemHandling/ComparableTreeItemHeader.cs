@@ -3,7 +3,7 @@ using ProjectEditorLib.View;
 using ProjectEditorLib.ViewModel;
 using System;
 
-namespace ProjectEditorLib.Model
+namespace ProjectEditorLib.Model.TreeViewItemHandling
 {
 	internal class ComparableTreeItemHeader : TreeItemHeader, IComparable
 	{
