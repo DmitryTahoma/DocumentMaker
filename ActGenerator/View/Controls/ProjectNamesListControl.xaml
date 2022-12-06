@@ -10,6 +10,10 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
+    </UserControl.Resources>
+
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
@@ -23,59 +27,23 @@
             <Menu Grid.Row="1">
                 <MenuItem ToolTip="Додати">
                     <MenuItem.Header>
-                        <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
-                            Kind="PlusCircleOutline" />
+                        <materialDesign:PackIcon Kind="PlusCircleOutline" Style="{StaticResource IconForMenuItem}" />
                     </MenuItem.Header>
                 </MenuItem>
             </Menu>
 
-            <ScrollViewer
-                x:Name="ProjectsScrollViewer"
-                Grid.Row="2"
-                VerticalScrollBarVisibility="Auto">
-                <WrapPanel x:Name="ProjectsStackWithNames">
-                    <materialDesign:Chip
-                        Content="Escape"
-                        IsDeletable="True"
-                        Style="{StaticResource MaterialDesignOutlineChip}" />
-                    <materialDesign:Chip
-                        Content="Exit"
-                        IsDeletable="True"
-                        Style="{StaticResource MaterialDesignOutlineChip}" />
-                    <materialDesign:Chip
-                        Content="Lost Lands 8"
-                        IsDeletable="True"
-                        Style="{StaticResource MaterialDesignOutlineChip}" />
-                    <materialDesign:Chip
-                        Content="Lost Lands 7"
-                        IsDeletable="True"
-                        Style="{StaticResource MaterialDesignOutlineChip}" />
-                    <materialDesign:Chip
-                        Content="Lost Lands 6"
-                        IsDeletable="True"
-                        Style="{StaticResource MaterialDesignOutlineChip}" />
-                    <materialDesign:Chip
-                        Content="Lost Lands 5"
-                        IsDeletable="True"
-                        Style="{StaticResource MaterialDesignOutlineChip}" />
-                    <materialDesign:Chip
-                        Content="Lost Lands 4"
-                        IsDeletable="True"
-                        Style="{StaticResource MaterialDesignOutlineChip}" />
-                    <materialDesign:Chip
-                        Content="Darkness and Flame 2"
-                        IsDeletable="True"
-                        Style="{StaticResource MaterialDesignOutlineChip}" />
-                    <materialDesign:Chip
-                        Content="Darkness and Flame 3"
-                        IsDeletable="True"
-                        Style="{StaticResource MaterialDesignOutlineChip}" />
-                    <materialDesign:Chip
-                        Content="Darkness and Flame 4"
-                        IsDeletable="True"
-                        Style="{StaticResource MaterialDesignOutlineChip}" />
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <WrapPanel x:Name="ProjectsWrapPanel">
+                    <materialDesign:Chip Content="Escape" Style="{StaticResource DeletableMaterialDesignOutlineChip}" />
+                    <materialDesign:Chip Content="Exit" Style="{StaticResource DeletableMaterialDesignOutlineChip}" />
+                    <materialDesign:Chip Content="Lost Lands 8" Style="{StaticResource DeletableMaterialDesignOutlineChip}" />
+                    <materialDesign:Chip Content="Lost Lands 7" Style="{StaticResource DeletableMaterialDesignOutlineChip}" />
+                    <materialDesign:Chip Content="Lost Lands 6" Style="{StaticResource DeletableMaterialDesignOutlineChip}" />
+                    <materialDesign:Chip Content="Lost Lands 5" Style="{StaticResource DeletableMaterialDesignOutlineChip}" />
+                    <materialDesign:Chip Content="Lost Lands 4" Style="{StaticResource DeletableMaterialDesignOutlineChip}" />
+                    <materialDesign:Chip Content="Darkness and Flame 2" Style="{StaticResource DeletableMaterialDesignOutlineChip}" />
+                    <materialDesign:Chip Content="Darkness and Flame 3" Style="{StaticResource DeletableMaterialDesignOutlineChip}" />
+                    <materialDesign:Chip Content="Darkness and Flame 4" Style="{StaticResource DeletableMaterialDesignOutlineChip}" />
                 </WrapPanel>
             </ScrollViewer>
         </Grid>
