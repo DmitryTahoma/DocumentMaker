@@ -46,6 +46,7 @@ Source: "..\ActGenerator\bin\Release\Mvvm.dll"; DestDir: "{app}"; Flags: ignorev
 Source: "..\ActGenerator\bin\Release\ProjectEditorLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\ActGenerator\bin\Release\ProjectsDb.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\ActGenerator\bin\Release\Security.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\Release\Dml.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Properties\ActGenerator\session_act_generator.xml"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
