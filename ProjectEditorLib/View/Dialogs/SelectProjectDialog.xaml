@@ -7,7 +7,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvvmConverters="clr-namespace:Mvvm.Converters;assembly=Mvvm"
-    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:themeControls="clr-namespace:DocumentMakerThemes.View.Controls;assembly=DocumentMakerThemes"
     xmlns:validationRules="clr-namespace:Mvvm.ValidationRules;assembly=Mvvm"
     xmlns:vm="clr-namespace:ProjectEditorLib.ViewModel.Controls"
     x:Name="UserContolView"
@@ -72,21 +72,7 @@
                     </Binding>
                 </ComboBox.SelectedItem>
             </ComboBox>
-            <StackPanel
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Orientation="Horizontal"
-                Visibility="{Binding State, Mode=OneWay, Converter={StaticResource ViewModelStateToVisibilityConverter}}">
-                <ProgressBar
-                    IsIndeterminate="True"
-                    Style="{StaticResource MaterialDesignCircularProgressBar}"
-                    Value="35" />
-                <TextBlock
-                    Margin="5,0,0,0"
-                    VerticalAlignment="Center"
-                    Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                    Text="завантаження проєктів" />
-            </StackPanel>
+            <themeControls:WaitingControl Text="завантаження проєктів" Visibility="{Binding State, Mode=OneWay, Converter={StaticResource ViewModelStateToVisibilityConverter}}" />
         </Grid>
 
         <Button

@@ -10,7 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvvmConverters="clr-namespace:Mvvm.Converters;assembly=Mvvm"
     xmlns:myConverters="clr-namespace:ProjectEditorLib.Converters"
-    xmlns:validationRules="clr-namespace:Mvvm.ValidationRules;assembly=Mvvm"
+    xmlns:themeControls="clr-namespace:DocumentMakerThemes.View.Controls;assembly=DocumentMakerThemes"
     xmlns:vm="clr-namespace:ProjectEditorLib.ViewModel"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -158,38 +158,8 @@
             </Grid>
         </Grid>
 
-        <StackPanel
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Orientation="Horizontal"
-            Visibility="{Binding State, Mode=OneWay, Converter={StaticResource ViewModelStateToVisibilityConverter}}">
-            <ProgressBar
-                IsIndeterminate="True"
-                Style="{StaticResource MaterialDesignCircularProgressBar}"
-                Value="35" />
-            <TextBlock
-                Margin="5,0,0,0"
-                VerticalAlignment="Center"
-                Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                Text="завантаження проєкту" />
-        </StackPanel>
-
-        <StackPanel
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Orientation="Horizontal"
-            Visibility="{Binding State, Mode=OneWay, Converter={StaticResource ViewModelStateToVisibilityConverterInitializing}}">
-            <ProgressBar
-                IsIndeterminate="True"
-                Style="{StaticResource MaterialDesignCircularProgressBar}"
-                Value="35" />
-            <TextBlock
-                Margin="5,0,0,0"
-                VerticalAlignment="Center"
-                Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                Text="створення проєкту" />
-        </StackPanel>
-
+        <themeControls:WaitingControl Text="завантаження проєкту" Visibility="{Binding State, Mode=OneWay, Converter={StaticResource ViewModelStateToVisibilityConverter}}" />
+        <themeControls:WaitingControl Text="створення проєкту" Visibility="{Binding State, Mode=OneWay, Converter={StaticResource ViewModelStateToVisibilityConverterInitializing}}" />
     </Grid>
 
     <i:Interaction.Triggers>
