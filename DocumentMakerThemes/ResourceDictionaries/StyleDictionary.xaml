@@ -239,6 +239,22 @@
                 <Setter Property="IsDeletable" Value="True" />
             </Style>
 
+            <Style
+                x:Key="WaitingProgressBar"
+                BasedOn="{StaticResource MaterialDesignCircularProgressBar}"
+                TargetType="ProgressBar">
+                <Setter Property="IsIndeterminate" Value="True" />
+                <Setter Property="Value" Value="35" />
+            </Style>
+
+            <Style
+                x:Key="TextBlockOfWaitingControl"
+                BasedOn="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                TargetType="TextBlock">
+                <Setter Property="Margin" Value="5,0,0,0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
