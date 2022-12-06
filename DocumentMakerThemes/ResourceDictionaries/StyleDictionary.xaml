@@ -71,46 +71,65 @@
                 <Setter Property="Margin" Value="2.5,5,2.5,5" />
             </Style>
 
-            <Style x:Key="MyCard" TargetType="materialDesign:Card">
+            <Style x:Key="DefaultCard" TargetType="materialDesign:Card">
                 <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth1" />
+                <Setter Property="Padding" Value="5" />
+            </Style>
+
+            <Style
+                x:Key="MiddleCard"
+                BasedOn="{StaticResource DefaultCard}"
+                TargetType="materialDesign:Card">
                 <Setter Property="Margin" Value="5" />
-                <Setter Property="Padding" Value="5" />
             </Style>
 
-            <Style x:Key="FirstCard" TargetType="materialDesign:Card">
-                <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth1" />
+            <Style
+                x:Key="FirstCard"
+                BasedOn="{StaticResource DefaultCard}"
+                TargetType="materialDesign:Card">
                 <Setter Property="Margin" Value="5,5,2.5,5" />
-                <Setter Property="Padding" Value="5" />
             </Style>
 
-            <Style x:Key="LastCard" TargetType="materialDesign:Card">
-                <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth1" />
+            <Style
+                x:Key="LastCard"
+                BasedOn="{StaticResource DefaultCard}"
+                TargetType="materialDesign:Card">
                 <Setter Property="Margin" Value="2.5,5,5,5" />
-                <Setter Property="Padding" Value="5" />
             </Style>
 
-            <Style x:Key="TopFirstCard" TargetType="materialDesign:Card">
-                <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth1" />
+            <Style
+                x:Key="TopFirstCard"
+                BasedOn="{StaticResource DefaultCard}"
+                TargetType="materialDesign:Card">
                 <Setter Property="Margin" Value="5,5,2.5,2.5" />
-                <Setter Property="Padding" Value="5" />
             </Style>
 
-            <Style x:Key="TopLastCard" TargetType="materialDesign:Card">
-                <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth1" />
+            <Style
+                x:Key="TopLastCard"
+                BasedOn="{StaticResource DefaultCard}"
+                TargetType="materialDesign:Card">
                 <Setter Property="Margin" Value="2.5,5,5,2.5" />
-                <Setter Property="Padding" Value="5" />
             </Style>
 
-            <Style x:Key="BottomFirstCard" TargetType="materialDesign:Card">
-                <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth1" />
+            <Style
+                x:Key="BottomFirstCard"
+                BasedOn="{StaticResource DefaultCard}"
+                TargetType="materialDesign:Card">
                 <Setter Property="Margin" Value="5,2.5,2.5,5" />
-                <Setter Property="Padding" Value="5" />
             </Style>
 
-            <Style x:Key="BottomLastCard" TargetType="materialDesign:Card">
-                <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth1" />
+            <Style
+                x:Key="BottomLastCard"
+                BasedOn="{StaticResource DefaultCard}"
+                TargetType="materialDesign:Card">
                 <Setter Property="Margin" Value="2.5,2.5,5,5" />
-                <Setter Property="Padding" Value="5" />
+            </Style>
+
+            <Style
+                x:Key="TopMiddleCard"
+                BasedOn="{StaticResource DefaultCard}"
+                TargetType="materialDesign:Card">
+                <Setter Property="Margin" Value="2.5,5,2.5,2.5" />
             </Style>
 
             <Style x:Key="LabelHeaderTextBlock" TargetType="TextBlock">
@@ -169,13 +188,6 @@
                 x:Key="PlacedMaterialDesignOutlinedDarkButton"
                 BasedOn="{StaticResource MaterialDesignOutlinedDarkButton}"
                 TargetType="Button">
-                <Setter Property="Margin" Value="10" />
-            </Style>
-
-            <Style
-                x:Key="CheckBoxWithComboBox"
-                BasedOn="{StaticResource MaterialDesignCheckBox}"
-                TargetType="CheckBox">
                 <Setter Property="Margin" Value="10" />
             </Style>
 

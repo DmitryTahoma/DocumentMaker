@@ -11,8 +11,6 @@
     xmlns:validationRules="clr-namespace:Mvvm.ValidationRules;assembly=Mvvm"
     xmlns:validationRulesProps="clr-namespace:Mvvm.ValidationRules.ContentProperties;assembly=Mvvm"
     xmlns:vm="clr-namespace:ActGenerator.ViewModel"
-    MinWidth="850"
-    MinHeight="400"
     d:DesignHeight="400"
     d:DesignWidth="850"
     mc:Ignorable="d">
@@ -34,14 +32,13 @@
             <Grid x:Name="MainGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
-                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="3*" />
                 </Grid.ColumnDefinitions>
 
                 <Grid>
-
                     <Grid.RowDefinitions>
                         <RowDefinition />
-                        <RowDefinition Height="auto" />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
 
                     <materialDesign:Card Style="{StaticResource TopFirstCard}">
@@ -56,21 +53,62 @@
                                 <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Список проектів" />
 
                                 <Menu Grid.Row="1">
-                                    <MenuItem
-                                        Command="{Binding AddProjectCommand}"
-                                        Header="Додати"
-                                        Icon="{materialDesign:PackIcon Kind=PlusCircleOutline}" />
-                                    <MenuItem
-                                        Command="{Binding RemoveProjectCommand}"
-                                        Header="Видалити"
-                                        Icon="{materialDesign:PackIcon Kind=SortVariantRemove}" />
+                                    <MenuItem Command="{Binding AddProjectCommand}" ToolTip="Додати">
+                                        <MenuItem.Header>
+                                            <materialDesign:PackIcon
+                                                Width="24"
+                                                Height="24"
+                                                Kind="PlusCircleOutline" />
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                 </Menu>
 
                                 <ScrollViewer
+                                    x:Name="ProjectsScrollViewer"
                                     Grid.Row="2"
-                                    HorizontalScrollBarVisibility="Auto"
                                     VerticalScrollBarVisibility="Auto">
-                                    <StackPanel x:Name="ProjectsStackWithNames" />
+                                    <WrapPanel x:Name="ProjectsStackWithNames">
+                                        <materialDesign:Chip
+                                            Content="Escape"
+                                            IsDeletable="True"
+                                            Style="{StaticResource MaterialDesignOutlineChip}" />
+                                        <materialDesign:Chip
+                                            Content="Exit"
+                                            IsDeletable="True"
+                                            Style="{StaticResource MaterialDesignOutlineChip}" />
+                                        <materialDesign:Chip
+                                            Content="Lost Lands 8"
+                                            IsDeletable="True"
+                                            Style="{StaticResource MaterialDesignOutlineChip}" />
+                                        <materialDesign:Chip
+                                            Content="Lost Lands 7"
+                                            IsDeletable="True"
+                                            Style="{StaticResource MaterialDesignOutlineChip}" />
+                                        <materialDesign:Chip
+                                            Content="Lost Lands 6"
+                                            IsDeletable="True"
+                                            Style="{StaticResource MaterialDesignOutlineChip}" />
+                                        <materialDesign:Chip
+                                            Content="Lost Lands 5"
+                                            IsDeletable="True"
+                                            Style="{StaticResource MaterialDesignOutlineChip}" />
+                                        <materialDesign:Chip
+                                            Content="Lost Lands 4"
+                                            IsDeletable="True"
+                                            Style="{StaticResource MaterialDesignOutlineChip}" />
+                                        <materialDesign:Chip
+                                            Content="Darkness and Flame 2"
+                                            IsDeletable="True"
+                                            Style="{StaticResource MaterialDesignOutlineChip}" />
+                                        <materialDesign:Chip
+                                            Content="Darkness and Flame 3"
+                                            IsDeletable="True"
+                                            Style="{StaticResource MaterialDesignOutlineChip}" />
+                                        <materialDesign:Chip
+                                            Content="Darkness and Flame 4"
+                                            IsDeletable="True"
+                                            Style="{StaticResource MaterialDesignOutlineChip}" />
+                                    </WrapPanel>
                                 </ScrollViewer>
                             </Grid>
                             <StackPanel
@@ -96,80 +134,77 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
+                                <RowDefinition />
                             </Grid.RowDefinitions>
 
-                            <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Налаштування сум" />
+                            <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Список актів" />
 
-                            <Grid Grid.Row="1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
+                            <Menu Grid.Row="1">
+                                <MenuItem ToolTip="Додати">
+                                    <MenuItem.Header>
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="PlusCircleOutline" />
+                                    </MenuItem.Header>
+                                </MenuItem>
+                            </Menu>
 
-                                <TextBox
-                                    x:Name="MinSumTextBox"
-                                    materialDesign:HintAssist.Hint="Мінімум"
-                                    Style="{StaticResource FirstTextBox}">
-                                    <TextBox.Resources>
-                                        <bindingExtensions:BindingProxy x:Key="MinSumTextBoxStringTargetProxy" Data="{Binding ElementName=MaxSumTextBox, Path=Text, Mode=TwoWay}" />
-                                        <bindingExtensions:BindingProxy x:Key="MinSumTextBoxStringSourceProxy" Data="{Binding ElementName=MaxSumTextBox, Path=Text}" />
-                                    </TextBox.Resources>
-                                    <TextBox.Text>
-                                        <Binding
-                                            Mode="TwoWay"
-                                            Path="MinSumText"
-                                            UpdateSourceTrigger="PropertyChanged">
-                                            <Binding.ValidationRules>
-                                                <validationRules:NotEmptyValidationRule />
-                                                <validationRules:IntPositiveValidationRule />
-                                                <validationRules:LessThanValidationRule>
-                                                    <validationRules:LessThanValidationRule.String>
-                                                        <validationRulesProps:String BindingToTrigger="{Binding Data, Source={StaticResource MinSumTextBoxStringSourceProxy}}" Value="{Binding Data, Source={StaticResource MinSumTextBoxStringTargetProxy}}" />
-                                                    </validationRules:LessThanValidationRule.String>
-                                                </validationRules:LessThanValidationRule>
-                                            </Binding.ValidationRules>
-                                        </Binding>
-                                    </TextBox.Text>
-                                </TextBox>
+                            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                                <StackPanel Orientation="Vertical">
+                                    <DockPanel LastChildFill="True">
+                                        <Menu DockPanel.Dock="Right">
+                                            <MenuItem ToolTip="Інформація">
+                                                <MenuItem.Header>
+                                                    <materialDesign:PackIcon
+                                                        Width="24"
+                                                        Height="24"
+                                                        Kind="InfoCircleOutline" />
+                                                </MenuItem.Header>
+                                            </MenuItem>
+                                            <MenuItem ToolTip="Закрити">
+                                                <MenuItem.Header>
+                                                    <materialDesign:PackIcon
+                                                        Width="24"
+                                                        Height="24"
+                                                        Kind="WindowClose" />
+                                                </MenuItem.Header>
+                                            </MenuItem>
+                                        </Menu>
 
-                                <TextBox
-                                    x:Name="MaxSumTextBox"
-                                    Grid.Column="1"
-                                    materialDesign:HintAssist.Hint="Максимум"
-                                    Style="{StaticResource LastTextBox}">
-                                    <TextBox.Resources>
-                                        <bindingExtensions:BindingProxy x:Key="MaxSumTextBoxStringTargetProxy" Data="{Binding ElementName=MinSumTextBox, Path=Text, Mode=TwoWay}" />
-                                        <bindingExtensions:BindingProxy x:Key="MaxSumTextBoxStringSourceProxy" Data="{Binding ElementName=MinSumTextBox, Path=Text}" />
-                                    </TextBox.Resources>
-                                    <TextBox.Text>
-                                        <Binding
-                                            Mode="TwoWay"
-                                            Path="MaxSumText"
-                                            UpdateSourceTrigger="PropertyChanged">
-                                            <Binding.ValidationRules>
-                                                <validationRules:NotEmptyValidationRule />
-                                                <validationRules:IntPositiveValidationRule />
-                                                <validationRules:MoreThanValidationRule>
-                                                    <validationRules:MoreThanValidationRule.String>
-                                                        <validationRulesProps:String BindingToTrigger="{Binding Data, Source={StaticResource MaxSumTextBoxStringSourceProxy}}" Value="{Binding Data, Source={StaticResource MaxSumTextBoxStringTargetProxy}}" />
-                                                    </validationRules:MoreThanValidationRule.String>
-                                                </validationRules:MoreThanValidationRule>
-                                            </Binding.ValidationRules>
-                                        </Binding>
-                                    </TextBox.Text>
-                                </TextBox>
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            Text="Акт.dcmk"
+                                            ToolTip="C:\Акт.dcmk" />
+                                    </DockPanel>
 
-                                <CheckBox
-                                    Grid.Row="1"
-                                    Grid.ColumnSpan="2"
-                                    Content="неповторні суми"
-                                    IsChecked="{Binding IsUniqueNumbers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    Style="{StaticResource PlacedCheckBox}" />
-                            </Grid>
+                                    <DockPanel LastChildFill="True">
+                                        <Menu DockPanel.Dock="Right">
+                                            <MenuItem ToolTip="Інформація">
+                                                <MenuItem.Header>
+                                                    <materialDesign:PackIcon
+                                                        Width="24"
+                                                        Height="24"
+                                                        Kind="InfoCircleOutline" />
+                                                </MenuItem.Header>
+                                            </MenuItem>
+                                            <MenuItem ToolTip="Закрити">
+                                                <MenuItem.Header>
+                                                    <materialDesign:PackIcon
+                                                        Width="24"
+                                                        Height="24"
+                                                        Kind="WindowClose" />
+                                                </MenuItem.Header>
+                                            </MenuItem>
+                                        </Menu>
+
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            Text="Отрішко Дмитро Романович.dcmk"
+                                            ToolTip="C:\Users\Dmitry Otrishko\Desktop\Отрішко Дмитро Романович.dcmk" />
+                                    </DockPanel>
+                                </StackPanel>
+                            </ScrollViewer>
 
                         </Grid>
                     </materialDesign:Card>
@@ -178,138 +213,16 @@
 
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
-                        <RowDefinition />
                         <RowDefinition Height="auto" />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
 
-                    <materialDesign:Card Style="{StaticResource TopLastCard}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto" />
-                                <RowDefinition Height="auto" />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Список робітників" />
-
-                            <Menu Grid.Row="1">
-                                <MenuItem
-                                    Command="{Binding AddHumanCommand}"
-                                    Header="Додати"
-                                    Icon="{materialDesign:PackIcon Kind=PlusCircleOutline}" />
-                                <MenuItem
-                                    Command="{Binding RemoveHumanCommand}"
-                                    CommandParameter="{Binding ElementName=HumenListView, Path=SelectedItems}"
-                                    Header="Видалити"
-                                    Icon="{materialDesign:PackIcon Kind=SortVariantRemove}" />
-                            </Menu>
-
-                            <Grid Grid.Row="2">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock
-                                    Margin="0,0,0,10"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontWeight="SemiBold"
-                                    Text="ПІБ" />
-                                <TextBlock
-                                    Grid.Column="1"
-                                    Margin="0,0,0,10"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontWeight="SemiBold"
-                                    Text="Сума" />
-                                <TextBlock
-                                    Grid.Column="2"
-                                    Margin="0,0,0,10"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontWeight="SemiBold"
-                                    Text="Шаблони" />
-
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Margin="5"
-                                    Text="Алєйникова Марина Сергіївна" />
-                                <TextBox
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    MinWidth="75"
-                                    Margin="5,0"
-                                    Text="150000" />
-
-                                <StackPanel
-                                    Grid.Row="1"
-                                    Grid.Column="2"
-                                    Orientation="Horizontal">
-                                    <TextBlock
-                                        Margin="5,0,0,0"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Text="Технічний дизайнер, Скриптувальник" />
-
-                                    <materialDesign:PopupBox Padding="0" StaysOpen="True">
-                                        <ListView
-                                            Grid.ColumnSpan="2"
-                                            SelectionMode="Multiple"
-                                            Style="{StaticResource MaterialDesignToolVerticalToggleListBox}">
-                                            <ListViewItem Content="Технічний дизайнер" IsSelected="True" />
-                                            <ListViewItem Content="Скриптувальник" IsSelected="True" />
-                                            <ListViewItem Content="Художник" />
-                                            <ListViewItem Content="Моделлер" />
-                                        </ListView>
-                                    </materialDesign:PopupBox>
-
-                                </StackPanel>
-
-                                <TextBlock
-                                    Grid.Row="2"
-                                    Margin="5,10,5,5"
-                                    Text="Баєв Олександр Євгенович" />
-                                <TextBox
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    MinWidth="75"
-                                    Margin="5,10,5,5"
-                                    Text="76000" />
-                                <StackPanel
-                                    Grid.Row="2"
-                                    Grid.Column="2"
-                                    Margin="5,10,5,5"
-                                    Orientation="Horizontal">
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Text="Художник, Скриптувальник, Технічний дизайнер, Моделлер" />
-
-                                    <materialDesign:PopupBox Padding="0" StaysOpen="True">
-                                        <ListView
-                                            Grid.ColumnSpan="2"
-                                            SelectionMode="Multiple"
-                                            Style="{StaticResource MaterialDesignToolVerticalToggleListBox}">
-                                            <ListViewItem Content="Технічний дизайнер" IsSelected="True" />
-                                            <ListViewItem Content="Скриптувальник" IsSelected="True" />
-                                            <ListViewItem Content="Художник" IsSelected="True" />
-                                            <ListViewItem Content="Моделлер" IsSelected="True" />
-                                        </ListView>
-                                    </materialDesign:PopupBox>
-
-                                </StackPanel>
-                            </Grid>
-                        </Grid>
-                    </materialDesign:Card>
-
-                    <materialDesign:Card Grid.Row="1" Style="{StaticResource BottomLastCard}">
+                    <materialDesign:Card Style="{StaticResource TopMiddleCard}">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition />
@@ -317,34 +230,110 @@
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
-                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.ColumnSpan="2"
+                                Style="{StaticResource LabelHeaderTextBlock}"
+                                Text="Налаштування сум" />
 
-                                <DatePicker materialDesign:HintAssist.Hint="Акт від" Style="{StaticResource FirstDatePicker}" />
-                                <DatePicker
-                                    Grid.Column="1"
-                                    materialDesign:HintAssist.Hint="Акт до"
-                                    Style="{StaticResource LastDatePicker}" />
-                            </Grid>
-
-                            <Button
+                            <TextBox
+                                x:Name="MinSumTextBox"
                                 Grid.Row="1"
-                                Content="Імпорт актів"
-                                Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
+                                MinWidth="112"
+                                materialDesign:HintAssist.Hint="Мінімум"
+                                Style="{StaticResource FirstTextBox}">
+                                <TextBox.Resources>
+                                    <bindingExtensions:BindingProxy x:Key="MinSumTextBoxStringTargetProxy" Data="{Binding ElementName=MaxSumTextBox, Path=Text, Mode=TwoWay}" />
+                                    <bindingExtensions:BindingProxy x:Key="MinSumTextBoxStringSourceProxy" Data="{Binding ElementName=MaxSumTextBox, Path=Text}" />
+                                </TextBox.Resources>
+                                <TextBox.Text>
+                                    <Binding
+                                        Mode="TwoWay"
+                                        Path="MinSumText"
+                                        UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <validationRules:NotEmptyValidationRule />
+                                            <validationRules:IntPositiveValidationRule />
+                                            <validationRules:LessThanValidationRule>
+                                                <validationRules:LessThanValidationRule.String>
+                                                    <validationRulesProps:String BindingToTrigger="{Binding Data, Source={StaticResource MinSumTextBoxStringSourceProxy}}" Value="{Binding Data, Source={StaticResource MinSumTextBoxStringTargetProxy}}" />
+                                                </validationRules:LessThanValidationRule.String>
+                                            </validationRules:LessThanValidationRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
 
-                            <CheckBox
+                            <TextBox
+                                x:Name="MaxSumTextBox"
+                                Grid.Row="1"
                                 Grid.Column="1"
-                                IsChecked="{Binding CanUseOldWorks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                Style="{StaticResource CheckBoxWithComboBox}">
+                                MinWidth="112"
+                                materialDesign:HintAssist.Hint="Максимум"
+                                Style="{StaticResource LastTextBox}">
+                                <TextBox.Resources>
+                                    <bindingExtensions:BindingProxy x:Key="MaxSumTextBoxStringTargetProxy" Data="{Binding ElementName=MinSumTextBox, Path=Text, Mode=TwoWay}" />
+                                    <bindingExtensions:BindingProxy x:Key="MaxSumTextBoxStringSourceProxy" Data="{Binding ElementName=MinSumTextBox, Path=Text}" />
+                                </TextBox.Resources>
+                                <TextBox.Text>
+                                    <Binding
+                                        Mode="TwoWay"
+                                        Path="MaxSumText"
+                                        UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <validationRules:NotEmptyValidationRule />
+                                            <validationRules:IntPositiveValidationRule />
+                                            <validationRules:MoreThanValidationRule>
+                                                <validationRules:MoreThanValidationRule.String>
+                                                    <validationRulesProps:String BindingToTrigger="{Binding Data, Source={StaticResource MaxSumTextBoxStringSourceProxy}}" Value="{Binding Data, Source={StaticResource MaxSumTextBoxStringTargetProxy}}" />
+                                                </validationRules:MoreThanValidationRule.String>
+                                            </validationRules:MoreThanValidationRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </Grid>
+                    </materialDesign:Card>
+
+                    <materialDesign:Card Grid.Column="1" Style="{StaticResource TopMiddleCard}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock
+                                Grid.ColumnSpan="2"
+                                Style="{StaticResource LabelHeaderTextBlock}"
+                                Text="Налаштування дат" />
+
+                            <DatePicker
+                                Grid.Row="1"
+                                MinWidth="134"
+                                materialDesign:HintAssist.Hint="Мінімум"
+                                Style="{StaticResource FirstDatePicker}" />
+                            <DatePicker
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                MinWidth="134"
+                                materialDesign:HintAssist.Hint="Максимум"
+                                Style="{StaticResource LastDatePicker}" />
+                        </Grid>
+                    </materialDesign:Card>
+
+                    <materialDesign:Card Grid.Column="2" Style="{StaticResource TopLastCard}">
+                        <StackPanel Orientation="Vertical">
+
+                            <CheckBox IsChecked="{Binding CanUseOldWorks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource PlacedCheckBox}">
                                 <StackPanel Orientation="Horizontal">
 
-                                    <TextBlock Text="використовувати роботи, що вже були в актах" />
+                                    <TextBlock Text="не використовувати роботи, що вже були в актах" />
 
                                     <ComboBox
                                         DisplayMemberPath="Text"
@@ -358,17 +347,173 @@
                                 </StackPanel>
                             </CheckBox>
 
+                            <CheckBox Content="об’єднувати регіони в одну роботу" Style="{StaticResource PlacedCheckBox}" />
+
                             <Button
-                                Grid.Row="1"
-                                Grid.Column="1"
                                 Command="{Binding GenerateActs}"
                                 CommandParameter="{Binding ElementName=MainGrid}"
                                 Content="Згенерувати акти"
                                 Style="{StaticResource PlacedMaterialDesignOutlinedDarkButton}" />
 
-                        </Grid>
+                        </StackPanel>
                     </materialDesign:Card>
 
+                    <materialDesign:Card
+                        Grid.Row="1"
+                        Grid.ColumnSpan="3"
+                        Style="{StaticResource BottomLastCard}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Список робітників" />
+
+                            <Menu Grid.Row="1">
+                                <MenuItem Command="{Binding AddHumanCommand}" ToolTip="Додати">
+                                    <MenuItem.Header>
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="PlusCircleOutline" />
+                                    </MenuItem.Header>
+                                </MenuItem>
+                                <MenuItem
+                                    Command="{Binding RemoveHumanCommand}"
+                                    CommandParameter="{Binding ElementName=HumenListView, Path=SelectedItems}"
+                                    ToolTip="Видалити">
+                                    <MenuItem.Header>
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="SortVariantRemove" />
+                                    </MenuItem.Header>
+                                </MenuItem>
+                            </Menu>
+
+                            <Grid Grid.Row="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <CheckBox />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Margin="0,0,0,10"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Text="ПІБ" />
+                                <TextBlock
+                                    Grid.Column="2"
+                                    Margin="0,0,0,10"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Text="Сума" />
+                                <TextBlock
+                                    Grid.Column="3"
+                                    Margin="0,0,0,10"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Text="Шаблони" />
+
+                                <CheckBox Grid.Row="1" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="5"
+                                    Text="Алєйникова Марина Сергіївна" />
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    MinWidth="75"
+                                    Margin="5,0"
+                                    Text="150000" />
+
+                                <StackPanel
+                                    Grid.Row="1"
+                                    Grid.Column="3"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="Технічний дизайнер, Скриптувальник" />
+
+                                    <materialDesign:PopupBox Padding="10" StaysOpen="True">
+                                        <StackPanel Orientation="Vertical">
+                                            <Grid>
+                                                <CheckBox IsChecked="{x:Null}" />
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    FontWeight="Bold"
+                                                    Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                    Text="Шаблони" />
+                                            </Grid>
+                                            <CheckBox Content="Технічний дизайнер" IsChecked="True" />
+                                            <CheckBox Content="Скриптувальник" IsChecked="True" />
+                                            <CheckBox Content="Художник" />
+                                            <CheckBox Content="Моделлер" />
+                                        </StackPanel>
+                                    </materialDesign:PopupBox>
+
+                                </StackPanel>
+
+                                <CheckBox Grid.Row="2" />
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Margin="5,10,5,5"
+                                    Text="Баєв Олександр Євгенович" />
+                                <TextBox
+                                    Grid.Row="2"
+                                    Grid.Column="2"
+                                    MinWidth="75"
+                                    Margin="5,10,5,5"
+                                    Text="76000" />
+                                <StackPanel
+                                    Grid.Row="2"
+                                    Grid.Column="3"
+                                    Margin="5,10,5,5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="Художник, Скриптувальник, Технічний дизайнер, Моделлер" />
+
+                                    <materialDesign:PopupBox Padding="10" StaysOpen="True">
+                                        <StackPanel Orientation="Vertical">
+                                            <Grid>
+                                                <CheckBox IsChecked="True" />
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    FontWeight="Bold"
+                                                    Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                    Text="Шаблони" />
+                                            </Grid>
+                                            <CheckBox Content="Технічний дизайнер" IsChecked="True" />
+                                            <CheckBox Content="Скриптувальник" IsChecked="True" />
+                                            <CheckBox Content="Художник" IsChecked="True" />
+                                            <CheckBox Content="Моделлер" IsChecked="True" />
+                                        </StackPanel>
+                                    </materialDesign:PopupBox>
+
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </materialDesign:Card>
                 </Grid>
 
             </Grid>

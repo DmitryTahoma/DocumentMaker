@@ -8,6 +8,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:ActGenerator.ViewModel.Dialogs"
+    MaxHeight="700"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -39,19 +40,70 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition Height="auto" />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <ListView
-            x:Name="ObjectsList"
-            Grid.ColumnSpan="2"
-            DisplayMemberPath="{Binding ItemsDisplayMemberPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-            ItemsSource="{Binding Items, Mode=OneWay}"
-            Style="{StaticResource ObjectsListView}" />
+        <DockPanel MinWidth="200" LastChildFill="True">
+            <Grid DockPanel.Dock="Top">
+                <CheckBox Margin="3" />
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontWeight="Bold"
+                    Style="{StaticResource MaterialDesignButtonTextBlock}"
+                    Text="Проекти" />
+            </Grid>
+            <ScrollViewer>
+                <StackPanel Orientation="Vertical">
+                    <CheckBox Margin="3" Content="Darkness and Flame 2" />
+                    <CheckBox Margin="3" Content="Darkness and Flame 3" />
+                    <CheckBox Margin="3" Content="Darkness and Flame 4" />
+                    <CheckBox
+                        Margin="3"
+                        Content="Escape"
+                        IsChecked="True" />
+                    <CheckBox Margin="3" Content="New York Mysteries 4" />
+                    <CheckBox Margin="3" Content="Lost Lands Stories" />
+                    <CheckBox Margin="3" Content="Lost Lands 4" />
+                    <CheckBox Margin="3" Content="Lost Lands 6" />
+                    <CheckBox Margin="3" Content="Lost Lands 7" />
+                    <CheckBox Margin="3" Content="Lost Lands 8" />
+                    <CheckBox Margin="3" Content="Legendary Tales 1" />
+                    <CheckBox Margin="3" Content="Legendary Tales 2" />
+                    <CheckBox Margin="3" Content="Legendary Tales 3" />
+                    <CheckBox Margin="3" Content="The Legacy 1" />
+                    <CheckBox Margin="3" Content="The Legacy 3" />
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+
+        <DockPanel
+            Grid.Column="1"
+            MinWidth="200"
+            LastChildFill="True">
+            <Grid DockPanel.Dock="Top">
+                <CheckBox Margin="3" />
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontWeight="Bold"
+                    Style="{StaticResource MaterialDesignButtonTextBlock}"
+                    Text="Назви проектів" />
+            </Grid>
+            <ScrollViewer>
+                <StackPanel Orientation="Vertical">
+                    <CheckBox
+                        Margin="3"
+                        Content="Escape"
+                        IsChecked="True" />
+                    <CheckBox Margin="3" Content="Exit" />
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
 
         <Button
             Grid.Row="1"

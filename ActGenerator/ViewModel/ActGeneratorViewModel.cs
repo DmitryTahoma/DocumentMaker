@@ -83,13 +83,6 @@ namespace ActGenerator.ViewModel
 		}
 		public static readonly DependencyProperty MaxSumTextProperty = DependencyProperty.Register(nameof(MaxSumText), typeof(string), typeof(ActGeneratorViewModel));
 
-		public bool IsUniqueNumbers
-		{
-			get { return (bool)GetValue(IsUniqueNumbersProperty); }
-			set { SetValue(IsUniqueNumbersProperty, value); }
-		}
-		public static readonly DependencyProperty IsUniqueNumbersProperty = DependencyProperty.Register(nameof(IsUniqueNumbers), typeof(bool), typeof(ActGeneratorViewModel));
-
 		public bool CanUseOldWorks
 		{
 			get { return (bool)GetValue(CanUseOldWorksProperty); }
@@ -130,22 +123,22 @@ namespace ActGenerator.ViewModel
 		public Command AddProjectCommand { get; private set; }
 		private async void OnAddProjectCommandExecute()
 		{
-			listSelectorViewModel.ItemsDisplayMemberPath = nameof(Project.Name);
-			List<Project> projects = new List<Project>(dbProjects.Where(x => !ProjectsList.Contains(x)));
-			projects.RemoveAll(x => ProjectsList.Contains(x));
-			listSelectorViewModel.SetItems(projects);
+			//listSelectorViewModel.ItemsDisplayMemberPath = nameof(Project.Name);
+			//List<Project> projects = new List<Project>(dbProjects.Where(x => !ProjectsList.Contains(x)));
+			//projects.RemoveAll(x => ProjectsList.Contains(x));
+			//listSelectorViewModel.SetItems(projects);
 			IsOpenActGeneratorDialogHost = true;
 			await DialogHost.Show(listSelector, DialogHostId);
 			if (IsOpenActGeneratorDialogHost)
 			{
 				IsOpenActGeneratorDialogHost = false;
-				if (listSelectorViewModel.IsAddingPressed && listSelectorViewModel.SelectedItems != null)
-				{
-					listSelectorViewModel.SelectedItems
-						.Cast<Project>()
-						.ToList()
-						.ForEach(AddProjectToStack);
-				}
+				//if (listSelectorViewModel.IsAddingPressed && listSelectorViewModel.SelectedItems != null)
+				//{
+				//	listSelectorViewModel.SelectedItems
+				//		.Cast<Project>()
+				//		.ToList()
+				//		.ForEach(AddProjectToStack);
+				//}
 			}
 		}
 
@@ -261,7 +254,6 @@ namespace ActGenerator.ViewModel
 			savedHumanList = actGeneratorSession.HumanList;
 			MinSumText = actGeneratorSession.MinSumText;
 			MaxSumText = actGeneratorSession.MaxSumText;
-			IsUniqueNumbers = actGeneratorSession.IsUniqueNumbers;
 			CanUseOldWorks = actGeneratorSession.CanUseOldWorks;
 			SelectedDateTimeItem = DateTimeItems?.FirstOrDefault(x => x.DateTime == actGeneratorSession.SelectedDateTimeItem?.DateTime)
 				?? DateTimeItems?.FirstOrDefault();

@@ -25,7 +25,6 @@ namespace ActGenerator.Model
 		public List<HumanDataContextSave> HumanList { get; set; } = null;
 		public string MinSumText { get; set; } = "1200";
 		public string MaxSumText { get; set; } = "2500";
-		public bool IsUniqueNumbers { get; set; } = true;
 		public bool CanUseOldWorks { get; set; } = true;
 		public DateTimeItem SelectedDateTimeItem { get; set; } = null;
 		public CryptedConnectionString CryptedConnectionString { get; set; }
@@ -53,7 +52,6 @@ namespace ActGenerator.Model
 						HumanList = loadedObj.HumanList;
 						MinSumText = loadedObj.MinSumText;
 						MaxSumText = loadedObj.MaxSumText;
-						IsUniqueNumbers = loadedObj.IsUniqueNumbers;
 						CanUseOldWorks = loadedObj.CanUseOldWorks;
 						SelectedDateTimeItem = loadedObj.SelectedDateTimeItem;
 						CryptedConnectionString = loadedObj.CryptedConnectionString;

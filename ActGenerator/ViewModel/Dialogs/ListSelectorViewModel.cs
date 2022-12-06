@@ -48,14 +48,14 @@ namespace ActGenerator.ViewModel.Dialogs
 		private void OnAddCommandExecute(IList selectedItems)
 		{
 			DialogHost.CloseDialogCommand.Execute(null, null);
-			SelectedItems = selectedItems;
+			//SelectedItems = selectedItems;
 			IsAddingPressed = true;
 		}
 
 		public Command<ListView> UnselectAllObjectsList { get; private set; }
 		private void OnUnselectAllObjectsListExecute(ListView listView)
 		{
-			listView.UnselectAll();
+			//listView.UnselectAll();
 			IsAddingPressed = false;
 		}
 

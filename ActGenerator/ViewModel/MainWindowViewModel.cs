@@ -119,7 +119,6 @@ namespace ActGenerator.ViewModel
 			model.HumanList = new List<ActGeneratorSession.HumanDataContextSave>(actGeneratorViewModel.HumanList.Select(x => new ActGeneratorSession.HumanDataContextSave(x)));
 			model.MinSumText = actGeneratorViewModel.MinSumText;
 			model.MaxSumText = actGeneratorViewModel.MaxSumText;
-			model.IsUniqueNumbers = actGeneratorViewModel.IsUniqueNumbers;
 			model.CanUseOldWorks = actGeneratorViewModel.CanUseOldWorks;
 			model.SelectedDateTimeItem = actGeneratorViewModel.SelectedDateTimeItem;
 			model.LastOpenedProjectName = ((SelectProjectDialogViewModel)selectProjectDialog.DataContext).LastOpenedProjectName;
