@@ -30,6 +30,7 @@ namespace ProjectEditorLib.ViewModel
 			else
 			{
 				CountText = string.Empty;
+				context = null;
 			}
 		}
 

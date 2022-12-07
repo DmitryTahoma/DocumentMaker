@@ -53,6 +53,7 @@ namespace ProjectEditorLib.ViewModel
 				BackNumberText = string.Empty;
 				BackName = string.Empty;
 				CountRegionsText = string.Empty;
+				context = null;
 			}
 		}
 

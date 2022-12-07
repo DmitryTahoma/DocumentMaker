@@ -53,6 +53,7 @@ namespace ProjectEditorLib.ViewModel
 			else
 			{
 				AltProjectName = string.Empty;
+				context = null;
 			}
 		}
 

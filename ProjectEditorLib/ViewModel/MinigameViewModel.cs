@@ -42,6 +42,7 @@ namespace ProjectEditorLib.ViewModel
 			{
 				MinigameName = string.Empty;
 				MinigameNumberText = string.Empty;
+				context = null;
 			}
 		}
 

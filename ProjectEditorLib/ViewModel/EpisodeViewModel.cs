@@ -63,6 +63,7 @@ namespace ProjectEditorLib.ViewModel
 			{
 				EpisodeName = string.Empty;
 				EpisodeNumber = string.Empty;
+				context = null;
 			}
 		}
 

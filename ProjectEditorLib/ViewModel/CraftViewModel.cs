@@ -54,6 +54,7 @@ namespace ProjectEditorLib.ViewModel
 			else
 			{
 				CraftName = string.Empty;
+				context = null;
 			}
 		}
 

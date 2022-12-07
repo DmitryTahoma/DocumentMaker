@@ -114,6 +114,7 @@ namespace ProjectEditorLib.ViewModel
 			else
 			{
 				ProjectName = string.Empty;
+				context = null;
 			}
 		}
 

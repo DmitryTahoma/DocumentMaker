@@ -53,6 +53,7 @@ namespace ProjectEditorLib.ViewModel
 				HogNumberText = string.Empty;
 				HogName = string.Empty;
 				CountRegionsText = string.Empty;
+				context = null;
 			}
 		}
 

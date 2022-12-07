@@ -42,6 +42,7 @@ namespace ProjectEditorLib.ViewModel
 			{
 				DialogNumberText = string.Empty;
 				DialogName = string.Empty;
+				context = null;
 			}
 		}
 
