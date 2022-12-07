@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace ActGenerator.View.Dialogs
 {
 	/// <summary>
-	/// Interaction logic for ListSelector.xaml
+	/// Interaction logic for AddProjectNameDialog.xaml
 	/// </summary>
-	public partial class ListSelector : UserControl
+	public partial class AddProjectNameDialog : UserControl
 	{
-		public ListSelector()
+		public AddProjectNameDialog()
 		{
 			InitializeComponent();
 		}

@@ -1,5 +1,7 @@
 ﻿using ActGenerator.Model;
+using ActGenerator.View.Controls;
 using ActGenerator.View.Dialogs;
+using ActGenerator.ViewModel.Controls;
 using ActGenerator.ViewModel.Dialogs;
 using Dml;
 using Dml.Model.Template;
@@ -23,9 +25,6 @@ namespace ActGenerator.ViewModel
 		ActGeneratorModel model = new ActGeneratorModel();
 		List<Project> dbProjects = null;
 
-		ListSelector listSelector;
-		ListSelectorViewModel listSelectorViewModel;
-
 		UIElementCollection projectsStackWithNames = null;
 		List<Project> projectsList = new List<Project>();
 
@@ -36,15 +35,10 @@ namespace ActGenerator.ViewModel
 		{
 			InitCommands();
 
-			listSelector = new ListSelector();
-			listSelectorViewModel = (ListSelectorViewModel)listSelector.DataContext;
-
 			State = ViewModelState.Initialized;
 		}
 
 		#region Properties
-
-		public bool IsOpenActGeneratorDialogHost { get; private set; } = false;
 
 		public string DialogHostId { get; } = "ActGeneratorDialogHost";
 
@@ -110,7 +104,6 @@ namespace ActGenerator.ViewModel
 
 		private void InitCommands()
 		{
-			AddProjectCommand = new Command(OnAddProjectCommandExecute);
 			CloseOpenedDialog = new Command(OnCloseOpenedDialogExecute);
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
 			RemoveProjectCommand = new Command(OnRemoveProjectCommandExecute);
@@ -118,28 +111,7 @@ namespace ActGenerator.ViewModel
 			RemoveHumanCommand = new Command<IList>(OnRemoveHumanCommandExecute);
 			BindProjectsStackWithNames = new Command<UIElementCollection>(OnBindProjectsStackWithNamesExecute);
 			GenerateActs = new Command<DependencyObject>(OnGenerateActsExecute);
-		}
-
-		public Command AddProjectCommand { get; private set; }
-		private async void OnAddProjectCommandExecute()
-		{
-			//listSelectorViewModel.ItemsDisplayMemberPath = nameof(Project.Name);
-			//List<Project> projects = new List<Project>(dbProjects.Where(x => !ProjectsList.Contains(x)));
-			//projects.RemoveAll(x => ProjectsList.Contains(x));
-			//listSelectorViewModel.SetItems(projects);
-			IsOpenActGeneratorDialogHost = true;
-			await DialogHost.Show(listSelector, DialogHostId);
-			if (IsOpenActGeneratorDialogHost)
-			{
-				IsOpenActGeneratorDialogHost = false;
-				//if (listSelectorViewModel.IsAddingPressed && listSelectorViewModel.SelectedItems != null)
-				//{
-				//	listSelectorViewModel.SelectedItems
-				//		.Cast<Project>()
-				//		.ToList()
-				//		.ForEach(AddProjectToStack);
-				//}
-			}
+			BindDialogHostName = new Command<ProjectNamesListControlViewModel>(OnBindDialogHostNameExecute);
 		}
 
 		public Command RemoveProjectCommand { get; private set; }
@@ -159,9 +131,8 @@ namespace ActGenerator.ViewModel
 		public Command CloseOpenedDialog { get; private set; }
 		private void OnCloseOpenedDialogExecute()
 		{
-			if(IsOpenActGeneratorDialogHost)
+			if(DialogHost.IsDialogOpen(DialogHostId))
 			{
-				IsOpenActGeneratorDialogHost = false;
 				DialogHost.Close(DialogHostId);
 			}
 		}
@@ -240,8 +211,12 @@ namespace ActGenerator.ViewModel
 				invalid.Focus();
 				return;
 			}
+		}
 
-
+		public Command<ProjectNamesListControlViewModel> BindDialogHostName { get; private set; }
+		private void OnBindDialogHostNameExecute(ProjectNamesListControlViewModel projectNamesListControlViewModel)
+		{
+			projectNamesListControlViewModel.DialogHostId = DialogHostId;
 		}
 
 		#endregion

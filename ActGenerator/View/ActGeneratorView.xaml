@@ -43,7 +43,7 @@
                     </Grid.RowDefinitions>
 
                     <materialDesign:Card Style="{StaticResource TopFirstCard}">
-                        <controls:ProjectNamesListControl />
+                        <controls:ProjectNamesListControl x:Name="ProjectNamesListControl" />
                     </materialDesign:Card>
 
                     <materialDesign:Card Grid.Row="1" Style="{StaticResource BottomFirstCard}">
@@ -448,6 +448,7 @@
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding BindProjectsStackWithNames}" CommandParameter="{Binding ElementName=ProjectsStackWithNames, Path=Children}" />
             <i:InvokeCommandAction Command="{Binding LoadFromDatabase}" />
+            <i:InvokeCommandAction Command="{Binding BindDialogHostName}" CommandParameter="{Binding ElementName=ProjectNamesListControl, Path=DataContext}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 

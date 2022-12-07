@@ -86,7 +86,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Dialogs\ListSelector.xaml">
+    <Page Include="View\Dialogs\AddProjectNameDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -105,7 +105,8 @@
     <Compile Include="Model\HumanDataContextSave.cs" />
     <Compile Include="Model\DateTimeItem.cs" />
     <Compile Include="ViewModel\ActGeneratorViewModel.cs" />
-    <Compile Include="ViewModel\Dialogs\ListSelectorViewModel.cs" />
+    <Compile Include="ViewModel\Controls\ProjectNamesListControlViewModel.cs" />
+    <Compile Include="ViewModel\Dialogs\AddProjectNameDialogViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="View\ActGeneratorView.xaml.cs">
       <DependentUpon>ActGeneratorView.xaml</DependentUpon>
@@ -113,8 +114,8 @@
     <Compile Include="View\Controls\ProjectNamesListControl.xaml.cs">
       <DependentUpon>ProjectNamesListControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Dialogs\ListSelector.xaml.cs">
-      <DependentUpon>ListSelector.xaml</DependentUpon>
+    <Compile Include="View\Dialogs\AddProjectNameDialog.xaml.cs">
+      <DependentUpon>AddProjectNameDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
