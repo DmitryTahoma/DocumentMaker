@@ -5,7 +5,7 @@ using Mvvm;
 using Mvvm.Commands;
 using ProjectEditorLib.ViewModel;
 using ProjectsDb.Context;
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,8 +22,10 @@ namespace ActGenerator.ViewModel.Dialogs
 
 		UIElementCollection projectsCheckBoxCollection = null;
 		UIElementCollection projectNamesCheckBoxCollection = null;
+		Dictionary<CheckBox, List<CheckBox>> dictionaryCheckBoxes = new Dictionary<CheckBox, List<CheckBox>>();
 
 		bool needUpdateProjectsCheckBoxIsChecked = true;
+		bool needUpdateProjectNamesCheckBoxIsChecked = true;
 
 		public AddProjectNameDialogViewModel()
 		{
@@ -50,6 +52,13 @@ namespace ActGenerator.ViewModel.Dialogs
 		}
 		public static readonly DependencyProperty ProjectsCheckBoxIsCheckedProperty = DependencyProperty.Register(nameof(ProjectsCheckBoxIsChecked), typeof(bool?), typeof(AddProjectNameDialogViewModel), new PropertyMetadata(false));
 
+		public bool? ProjectNamesCheckBoxIsChecked
+		{
+			get { return (bool?)GetValue(ProjectNamesCheckBoxIsCheckedProperty); }
+			set { SetValue(ProjectNamesCheckBoxIsCheckedProperty, value); }
+		}
+		public static readonly DependencyProperty ProjectNamesCheckBoxIsCheckedProperty = DependencyProperty.Register(nameof(ProjectNamesCheckBoxIsChecked), typeof(bool?), typeof(AddProjectNameDialogViewModel), new PropertyMetadata(false));
+
 		#endregion
 
 		#region Commands
@@ -60,7 +69,8 @@ namespace ActGenerator.ViewModel.Dialogs
 			BindProjectNamesCheckBoxList = new Command<UIElementCollection>(OnBindProjectNamesCheckBoxListExecute);
 			ViewLoaded = new Command(OnViewLoadedExecute);
 			AddCommand = new Command(OnAddCommandExecute);
-			ChangeIsCheckedAll = new Command(OnChangeIsCheckedAllExecute);
+			ChangeIsCheckedAllProjects = new Command(OnChangeIsCheckedAllProjectsExecute);
+			ChangeIsCheckedAllProjectNames = new Command(OnChangeIsCheckedAllProjectNamesExecute);
 		}
 
 		public Command<UIElementCollection> BindProjectsCheckBoxList { get; private set; }
@@ -75,12 +85,9 @@ namespace ActGenerator.ViewModel.Dialogs
 		public Command<UIElementCollection> BindProjectNamesCheckBoxList { get; private set; }
 		private void OnBindProjectNamesCheckBoxListExecute(UIElementCollection projectNamesCheckBoxCollection)
 		{
-			if(this.projectNamesCheckBoxCollection == null)
+			if (this.projectNamesCheckBoxCollection == null)
 			{
 				this.projectNamesCheckBoxCollection = projectNamesCheckBoxCollection;
-
-				projectNamesCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "Escape" }));
-				projectNamesCheckBoxCollection.Add(CreateProjectCheckBox(new AlternativeProjectName { Name = "Exit" }));
 			}
 		}
 
@@ -91,7 +98,7 @@ namespace ActGenerator.ViewModel.Dialogs
 
 			if (!model.ConnectionStringSetted) return;
 
-			if(State == ViewModelState.Initialized)
+			if (State == ViewModelState.Initialized)
 			{
 				State = ViewModelState.Loading;
 				await model.ConnectDbAsync();
@@ -100,14 +107,15 @@ namespace ActGenerator.ViewModel.Dialogs
 				State = ViewModelState.Loaded;
 
 				projectsCheckBoxCollection.Clear();
-				foreach(Project project in projects)
+				foreach (Project project in projects)
 				{
-					projectsCheckBoxCollection.Add(CreateProjectCheckBox(project));
+					KeyValuePair<CheckBox, List<CheckBox>> checkBoxes = CreateProjectCheckBoxes(project);
+					dictionaryCheckBoxes.Add(checkBoxes.Key, checkBoxes.Value);
 					UpdateProjectsCheckBoxIsChecked();
 					await Task.Delay(1);
 				}
 			}
-			else if(State == ViewModelState.Loaded)
+			else if (State == ViewModelState.Loaded)
 			{
 				State = ViewModelState.Loading;
 				await model.ConnectDbAsync();
@@ -118,9 +126,9 @@ namespace ActGenerator.ViewModel.Dialogs
 				foreach (Project project in projects)
 				{
 					bool finded = false;
-					foreach(CheckBox checkBox in projectsCheckBoxCollection)
+					foreach (CheckBox checkBox in projectsCheckBoxCollection)
 					{
-						if(checkBox.DataContext is Project proj && proj.Id == project.Id)
+						if (checkBox.DataContext is Project proj && proj.Id == project.Id)
 						{
 							checkBox.DataContext = project;
 							checkBox.Content = project.Name;
@@ -130,9 +138,10 @@ namespace ActGenerator.ViewModel.Dialogs
 						}
 					}
 
-					if(!finded)
+					if (!finded)
 					{
-						projectsCheckBoxCollection.Add(CreateProjectCheckBox(project));
+						KeyValuePair<CheckBox, List<CheckBox>> checkBoxes = CreateProjectCheckBoxes(project);
+						dictionaryCheckBoxes.Add(checkBoxes.Key, checkBoxes.Value);
 					}
 				}
 
@@ -149,20 +158,57 @@ namespace ActGenerator.ViewModel.Dialogs
 			DialogHost.CloseDialogCommand.Execute(null, null);
 		}
 
-		public Command ChangeIsCheckedAll { get; private set; }
-		private void OnChangeIsCheckedAllExecute()
+		public Command ChangeIsCheckedAllProjects { get; private set; }
+		private void OnChangeIsCheckedAllProjectsExecute()
 		{
 			needUpdateProjectsCheckBoxIsChecked = false;
+			needUpdateProjectNamesCheckBoxIsChecked = false;
 			foreach (CheckBox checkBox in projectsCheckBoxCollection)
 			{
 				checkBox.IsChecked = ProjectsCheckBoxIsChecked;
 			}
 			needUpdateProjectsCheckBoxIsChecked = true;
+			needUpdateProjectNamesCheckBoxIsChecked = true;
+			UpdateProjectNamesCheckBoxIsChecked();
+		}
+
+		public Command ChangeIsCheckedAllProjectNames { get; private set; }
+		private void OnChangeIsCheckedAllProjectNamesExecute()
+		{
+			needUpdateProjectNamesCheckBoxIsChecked = false;
+			foreach (CheckBox checkBox in projectNamesCheckBoxCollection)
+			{
+				checkBox.IsChecked = ProjectNamesCheckBoxIsChecked;
+			}
+			needUpdateProjectNamesCheckBoxIsChecked = true;
 		}
 
 		#endregion
 
 		#region Methods
+
+		private KeyValuePair<CheckBox, List<CheckBox>> CreateProjectCheckBoxes(Project context)
+		{
+			KeyValuePair<CheckBox, List<CheckBox>> result = new KeyValuePair<CheckBox, List<CheckBox>>(CreateProjectCheckBox(context), new List<CheckBox>());
+			result.Value.Add(CreateProjectCheckBox(context));
+			projectsCheckBoxCollection.Add(result.Key);
+			result.Key.Checked += ProjectCheckBoxCheckedChange;
+			result.Key.Unchecked += ProjectCheckBoxCheckedChange;
+			foreach (AlternativeProjectName alternativeProjectName in context.AlternativeNames)
+			{
+				result.Value.Add(CreateProjectCheckBox(alternativeProjectName));
+			}
+
+			foreach (CheckBox checkBox in result.Value)
+			{
+				projectNamesCheckBoxCollection.Add(checkBox);
+				checkBox.Checked += ProjectNameCheckBoxCheckedChange;
+				checkBox.Unchecked += ProjectNameCheckBoxCheckedChange;
+				checkBox.Visibility = Visibility.Collapsed;
+			}
+
+			return result;
+		}
 
 		private CheckBox CreateProjectCheckBox(IDbObject context)
 		{
@@ -171,14 +217,12 @@ namespace ActGenerator.ViewModel.Dialogs
 				DataContext = context,
 				Style = itemStyle,
 			};
-			checkBox.Checked += ProjectCheckBoxCheckedChange;
-			checkBox.Unchecked += ProjectCheckBoxCheckedChange;
 
-			if(context is Project project)
+			if (context is Project project)
 			{
 				checkBox.Content = project.Name;
 			}
-			else if(context is AlternativeProjectName projectName)
+			else if (context is AlternativeProjectName projectName)
 			{
 				checkBox.Content = projectName.Name;
 			}
@@ -194,35 +238,68 @@ namespace ActGenerator.ViewModel.Dialogs
 		private void UpdateProjectsCheckBoxIsChecked()
 		{
 			if (!needUpdateProjectsCheckBoxIsChecked) return;
+			ProjectsCheckBoxIsChecked = UpdateCheckBoxState(ProjectsCheckBoxIsChecked, projectsCheckBoxCollection);
+		}
 
-			IEnumerator<CheckBox> projectsCheckBoxCollectionEnum = projectsCheckBoxCollection.Cast<CheckBox>().GetEnumerator();
-			if(!projectsCheckBoxCollectionEnum.MoveNext())
+		private void UpdateProjectNamesCheckBoxIsChecked()
+		{
+			if (!needUpdateProjectNamesCheckBoxIsChecked) return;
+			ProjectNamesCheckBoxIsChecked = UpdateCheckBoxState(ProjectNamesCheckBoxIsChecked, projectNamesCheckBoxCollection);
+		}
+
+		private bool? UpdateCheckBoxState(bool? prevState, IEnumerable checkBoxList)
+		{
+			IEnumerator<CheckBox> checkBoxListEnum = checkBoxList.Cast<CheckBox>().GetEnumerator();
+
+			bool findedFirst = false;
+			bool? isChecked = null;
+
+			while (checkBoxListEnum.MoveNext())
 			{
-				if(ProjectsCheckBoxIsChecked == null)
+				if (checkBoxListEnum.Current.Visibility == Visibility.Visible)
 				{
-					ProjectsCheckBoxIsChecked = false;
+					findedFirst = true;
+					isChecked = checkBoxListEnum.Current.IsChecked;
+					break;
 				}
+			}
+
+			if (!findedFirst)
+			{
+				return false;
 			}
 			else
 			{
-				bool? isChecked = projectsCheckBoxCollectionEnum.Current.IsChecked;
-
-				while(projectsCheckBoxCollectionEnum.MoveNext())
+				while (checkBoxListEnum.MoveNext())
 				{
-					if(projectsCheckBoxCollectionEnum.Current.IsChecked != isChecked)
+					if (checkBoxListEnum.Current.Visibility == Visibility.Visible && checkBoxListEnum.Current.IsChecked != isChecked)
 					{
-						ProjectsCheckBoxIsChecked = null;
-						return;
+						return null;
 					}
 				}
 
-				ProjectsCheckBoxIsChecked = isChecked;
+				return isChecked;
 			}
 		}
 
 		private void ProjectCheckBoxCheckedChange(object sender, RoutedEventArgs e)
 		{
+			CheckBox s = sender as CheckBox;
+			bool isChecked = true;
+			foreach (CheckBox checkBox in dictionaryCheckBoxes[s])
+			{
+				checkBox.Visibility = (s.IsChecked.HasValue && s.IsChecked.Value) ? Visibility.Visible : Visibility.Collapsed;
+				checkBox.IsChecked = isChecked;
+				isChecked = false;
+			}
+
 			UpdateProjectsCheckBoxIsChecked();
+			UpdateProjectNamesCheckBoxIsChecked();
+		}
+
+		private void ProjectNameCheckBoxCheckedChange(object sender, RoutedEventArgs e)
+		{
+			UpdateProjectNamesCheckBoxIsChecked();
 		}
 
 		#endregion

@@ -33,7 +33,7 @@
         <DockPanel LastChildFill="True" Style="{StaticResource AddProjectNameDockPanel}">
             <Grid DockPanel.Dock="Top">
                 <CheckBox
-                    Command="{Binding ChangeIsCheckedAll}"
+                    Command="{Binding ChangeIsCheckedAllProjects}"
                     IsChecked="{Binding ProjectsCheckBoxIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource AddProjectNameListItemCheckBox}" />
                 <TextBlock Style="{StaticResource AddProjectNameHeaderTextBlock}" Text="Проекти" />
@@ -48,7 +48,10 @@
             LastChildFill="True"
             Style="{StaticResource AddProjectNameDockPanel}">
             <Grid DockPanel.Dock="Top">
-                <CheckBox Style="{StaticResource AddProjectNameListItemCheckBox}" />
+                <CheckBox
+                    Command="{Binding ChangeIsCheckedAllProjectNames}"
+                    IsChecked="{Binding ProjectNamesCheckBoxIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource AddProjectNameListItemCheckBox}" />
                 <TextBlock Style="{StaticResource AddProjectNameHeaderTextBlock}" Text="Назви проектів" />
             </Grid>
             <ScrollViewer>
