@@ -32,7 +32,7 @@ namespace ProjectEditorLib.Model.Dialogs
 			{
 				if (!cryptedConnectionStringSetted) return;
 
-				await db.SyncCollection(collection);
+				await db.SyncCollectionAsync(collection);
 			}
 		}
 

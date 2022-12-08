@@ -26,52 +26,56 @@ namespace ProjectsDb
 		public DbSet<CountRegions> CountRegions { get; set; }
 		public DbSet<Project> Projects { get; set; }
 
-		public async Task<IEnumerable<T>> GetTable<T>() where T : class, IDbObject
+		public IEnumerable<T> GetTable<T>() where T : class, IDbObject
 		{
-			return await Task.Run(new Func<IEnumerable<T>>(() =>
-			{
-				return tables
-					.Where(x => x.PropertyType.GenericTypeArguments
-						.FirstOrDefault(y => y == typeof(T)) != null)
-					.Select(x =>(IEnumerable<T>)x.GetValue(this))
-					.FirstOrDefault();
-			}));
+			return tables
+				.Where(x => x.PropertyType.GenericTypeArguments
+					.FirstOrDefault(y => y == typeof(T)) != null)
+				.Select(x => (IEnumerable<T>)x.GetValue(this))
+				.FirstOrDefault();
 		}
 
-		public Task SyncCollection<T>(ICollection<T> collection) where T : class, IDbObject
+		public Task<IEnumerable<T>> GetTableAsync<T>() where T : class, IDbObject
 		{
-			return Task.Run(async () =>
+			return Task.Run(GetTable<T>);
+		}
+
+		public void SyncCollection<T>(ICollection<T> collection) where T : class, IDbObject
+		{
+			List<T> dbCollection = new List<T>(GetTable<T>());
+
+			List<T> removeList = new List<T>();
+			foreach (T elem in collection)
 			{
-				List<T> dbCollection = new List<T>(await GetTable<T>());
-
-				List<T> removeList = new List<T>();
-				foreach(T elem in collection)
+				if (dbCollection.FirstOrDefault(x => x.Id == elem.Id) == null)
 				{
-					if(dbCollection.FirstOrDefault(x => x.Id == elem.Id) == null)
-					{
-						removeList.Add(elem);
-					}
+					removeList.Add(elem);
 				}
-				while(removeList.Count > 0)
-				{
-					T first = removeList.First();
-					collection.Remove(first);
-					removeList.Remove(first);
-				}
+			}
+			while (removeList.Count > 0)
+			{
+				T first = removeList.First();
+				collection.Remove(first);
+				removeList.Remove(first);
+			}
 
-				IEnumerator<T> collectionEnum = collection.GetEnumerator();
-				IEnumerator<T> dbCollectionEnum = dbCollection.GetEnumerator();
+			IEnumerator<T> collectionEnum = collection.GetEnumerator();
+			IEnumerator<T> dbCollectionEnum = dbCollection.GetEnumerator();
 
-				while (collectionEnum.MoveNext() && dbCollectionEnum.MoveNext())
-				{
-					collectionEnum.Current.Set(dbCollectionEnum.Current);
-				}
+			while (collectionEnum.MoveNext() && dbCollectionEnum.MoveNext())
+			{
+				collectionEnum.Current.Set(dbCollectionEnum.Current);
+			}
 
-				foreach (T newElem in dbCollection.Where(x => collection.FirstOrDefault(y => y.Id == x.Id) == null))
-				{
-					collection.Add(newElem);
-				}
-			});
+			foreach (T newElem in dbCollection.Where(x => collection.FirstOrDefault(y => y.Id == x.Id) == null))
+			{
+				collection.Add(newElem);
+			}
+		}
+
+		public Task SyncCollectionAsync<T>(ICollection<T> collection) where T : class, IDbObject
+		{
+			return Task.Run(() => SyncCollection(collection));
 		}
 	}
 }

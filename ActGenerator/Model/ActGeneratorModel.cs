@@ -47,7 +47,7 @@ namespace ActGenerator.Model
 
 		public async Task SyncCollection<T>(ICollection<T> collection) where T : class, IDbObject
 		{
-			await db.SyncCollection(collection);
+			await db.SyncCollectionAsync(collection);
 		}
 
 		private void ReleaseContext()
