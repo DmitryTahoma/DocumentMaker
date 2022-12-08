@@ -6,8 +6,9 @@
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mvvmConverters="clr-namespace:Mvvm.Converters;assembly=Mvvm"
+    xmlns:themeControls="clr-namespace:DocumentMakerThemes.View.Controls;assembly=DocumentMakerThemes"
     xmlns:vm="clr-namespace:ActGenerator.ViewModel.Dialogs"
-    Padding="5"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -17,11 +18,22 @@
     </UserControl.DataContext>
 
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <mvvmConverters:ViewModelStateToVisibilityConverter x:Key="ViewModelStateToVisibilityConverter" FalseValue="Hidden" />
+            <mvvmConverters:ViewModelStateToVisibilityConverter
+                x:Key="InvertedViewModelStateToVisibilityConverter"
+                FalseValue="Hidden"
+                IsInverted="True" />
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition />
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
@@ -30,47 +42,78 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <DockPanel LastChildFill="True" Style="{StaticResource AddProjectNameDockPanel}">
-            <Grid DockPanel.Dock="Top">
+        <materialDesign:Card
+            Grid.ColumnSpan="2"
+            Style="{StaticResource AddProjectNameTopCard}"
+            Visibility="{Binding State, Mode=OneWay, Converter={StaticResource InvertedViewModelStateToVisibilityConverter}}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
                 <CheckBox
                     Command="{Binding ChangeIsCheckedAllProjects}"
                     IsChecked="{Binding ProjectsCheckBoxIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource AddProjectNameListItemCheckBox}" />
                 <TextBlock Style="{StaticResource AddProjectNameHeaderTextBlock}" Text="Проекти" />
-            </Grid>
-            <ScrollViewer>
-                <StackPanel x:Name="ProjectsListStackPanel" Orientation="Vertical" />
-            </ScrollViewer>
-        </DockPanel>
 
-        <DockPanel
-            Grid.Column="1"
-            LastChildFill="True"
-            Style="{StaticResource AddProjectNameDockPanel}">
-            <Grid DockPanel.Dock="Top">
                 <CheckBox
+                    Grid.Column="1"
                     Command="{Binding ChangeIsCheckedAllProjectNames}"
                     IsChecked="{Binding ProjectNamesCheckBoxIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource AddProjectNameListItemCheckBox}" />
-                <TextBlock Style="{StaticResource AddProjectNameHeaderTextBlock}" Text="Назви проектів" />
+                    Style="{StaticResource AddProjectNameRightHeaderListItemCheckBox}" />
+                <TextBlock
+                    Grid.Column="1"
+                    Style="{StaticResource AddProjectNameHeaderTextBlock}"
+                    Text="Назви проектів" />
             </Grid>
-            <ScrollViewer>
-                <StackPanel x:Name="ProjectNamesListStackPanel" Orientation="Vertical" />
-            </ScrollViewer>
-        </DockPanel>
+        </materialDesign:Card>
 
-        <Button
+        <ScrollViewer
+            x:Name="ProjectsScrollViewer"
             Grid.Row="1"
-            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-            Content="Скасувати"
-            Style="{StaticResource MaterialDesignFlatDarkButton}" />
+            Style="{StaticResource AddProjectNameScrollViewer}"
+            Visibility="{Binding State, Mode=OneWay, Converter={StaticResource InvertedViewModelStateToVisibilityConverter}}">
+            <StackPanel x:Name="ProjectsListStackPanel" Orientation="Vertical" />
+        </ScrollViewer>
 
-        <Button
+        <ScrollViewer
             Grid.Row="1"
             Grid.Column="1"
-            Command="{Binding AddCommand}"
-            Content="Додати"
-            Style="{StaticResource MaterialDesignFlatDarkButton}" />
+            Width="{Binding ElementName=ProjectsScrollViewer, Path=ActualWidth}"
+            Style="{StaticResource AddProjectNameScrollViewer}"
+            Visibility="{Binding State, Mode=OneWay, Converter={StaticResource InvertedViewModelStateToVisibilityConverter}}">
+            <StackPanel x:Name="ProjectNamesListStackPanel" Orientation="Vertical" />
+        </ScrollViewer>
+
+        <themeControls:WaitingControl
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="2"
+            Text="завантаження проєктів"
+            Visibility="{Binding State, Mode=OneWay, Converter={StaticResource ViewModelStateToVisibilityConverter}}" />
+
+        <materialDesign:Card
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+            Style="{StaticResource AddProjectNameBottomCard}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Button
+                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                    Content="Скасувати"
+                    Style="{StaticResource MaterialDesignFlatDarkButton}" />
+
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding AddCommand}"
+                    Content="Додати"
+                    Style="{StaticResource MaterialDesignFlatDarkButton}" />
+            </Grid>
+        </materialDesign:Card>
     </Grid>
 
     <i:Interaction.Triggers>
