@@ -102,8 +102,9 @@ namespace ActGenerator.ViewModel.Dialogs
 			{
 				State = ViewModelState.Loading;
 				await model.ConnectDbAsync();
-				IEnumerable<Project> projects = await model.LoadProjectsAsync();
+				List<Project> projects = await model.LoadProjectsAsync();
 				await model.DisconnectDbAsync();
+				await model.SortProjectsAsync(projects);
 				State = ViewModelState.Loaded;
 
 				projectsCheckBoxCollection.Clear();

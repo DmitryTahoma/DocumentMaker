@@ -1,4 +1,5 @@
-﻿using ProjectsDb;
+﻿using Dml;
+using ProjectsDb;
 using ProjectsDb.Context;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,9 @@ namespace ActGenerator.Model.Dialogs
 {
 	class AddProjectNameDialogModel : ProjectsDbConnector
 	{
-		public Task<IEnumerable<Project>> LoadProjectsAsync()
+		NaturalStringComparer naturalStringComparer = new NaturalStringComparer();
+
+		public Task<List<Project>> LoadProjectsAsync()
 		{
 			return Task.Run(() =>
 			{
@@ -17,7 +20,20 @@ namespace ActGenerator.Model.Dialogs
 				{
 					project.AlternativeNames = db.AlternativeProjectNames.Where(x => x.ProjectId == project.Id).ToList();
 				}
-				return (IEnumerable<Project>)projects;
+				return projects;
+			});
+		}
+
+		public Task SortProjectsAsync(List<Project> projects)
+		{
+			return Task.Run(() =>
+			{
+				projects.Sort(naturalStringComparer);
+
+				foreach(Project project in projects)
+				{
+					project.AlternativeNames.Sort(naturalStringComparer);
+				}
 			});
 		}
 	}
