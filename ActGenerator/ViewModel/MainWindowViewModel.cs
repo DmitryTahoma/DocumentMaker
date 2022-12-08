@@ -147,7 +147,7 @@ namespace ActGenerator.ViewModel
 
 			SelectProjectDialogViewModel selectProjectDialogDataContext = (SelectProjectDialogViewModel)selectProjectDialog.DataContext;
 			selectProjectDialogDataContext.LastOpenedProjectName = model.LastOpenedProjectName;
-			actGeneratorViewModel.CloseOpenedDialog.Execute();
+			if (SelectedTabIndex == 0) actGeneratorViewModel.CloseOpenedDialog.Execute();
 			await DialogHost.Show(selectProjectDialog, DialogHostId);
 			if(selectProjectDialogDataContext.IsOpen)
 			{
@@ -164,7 +164,7 @@ namespace ActGenerator.ViewModel
 		{
 			if (BeforeSelectedTabIndexChanged()) return;
 
-			actGeneratorViewModel.CloseOpenedDialog.Execute();
+			if (SelectedTabIndex == 0) actGeneratorViewModel.CloseOpenedDialog.Execute();
 			await DialogHost.Show(createProjectDialog, DialogHostId);
 			if(createProjectDialog.DataContext is CreateProjectDialogViewModel createProjectDialogViewModel && createProjectDialogViewModel.IsCreate)
 			{
@@ -190,7 +190,7 @@ namespace ActGenerator.ViewModel
 		{
 			if (BeforeSelectedTabIndexChanged()) return;
 
-			actGeneratorViewModel.CloseOpenedDialog.Execute();
+			if (SelectedTabIndex == 0) actGeneratorViewModel.CloseOpenedDialog.Execute();
 			projectRestoreViewModel.State = ViewModelState.Loading;
 			SelectedTabIndex = 2;
 			await projectRestoreViewModel.LoadRemovedNodes();
