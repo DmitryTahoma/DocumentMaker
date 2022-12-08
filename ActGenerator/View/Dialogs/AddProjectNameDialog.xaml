@@ -32,7 +32,10 @@
 
         <DockPanel LastChildFill="True" Style="{StaticResource AddProjectNameDockPanel}">
             <Grid DockPanel.Dock="Top">
-                <CheckBox Style="{StaticResource AddProjectNameListItemCheckBox}" />
+                <CheckBox
+                    Command="{Binding ChangeIsCheckedAll}"
+                    IsChecked="{Binding ProjectsCheckBoxIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource AddProjectNameListItemCheckBox}" />
                 <TextBlock Style="{StaticResource AddProjectNameHeaderTextBlock}" Text="Проекти" />
             </Grid>
             <ScrollViewer>
