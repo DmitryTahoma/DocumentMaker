@@ -25,5 +25,10 @@ namespace ProjectsDb.Context
 			else
 				throw new InvalidOperationException();
 		}
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 }
