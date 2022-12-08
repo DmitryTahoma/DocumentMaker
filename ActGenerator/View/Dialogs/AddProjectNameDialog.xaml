@@ -103,14 +103,14 @@
                 </Grid.ColumnDefinitions>
 
                 <Button
-                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                    Content="Скасувати"
+                    Command="{Binding AddCommand}"
+                    Content="Додати"
                     Style="{StaticResource MaterialDesignFlatDarkButton}" />
 
                 <Button
                     Grid.Column="1"
-                    Command="{Binding AddCommand}"
-                    Content="Додати"
+                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                    Content="Скасувати"
                     Style="{StaticResource MaterialDesignFlatDarkButton}" />
             </Grid>
         </materialDesign:Card>
