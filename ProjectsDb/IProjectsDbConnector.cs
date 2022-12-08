@@ -7,7 +7,8 @@ namespace ProjectsDb
 {
 	public interface IProjectsDbConnector
 	{
-		bool CryptedConnectionStringSetted { get; }
+		CryptedConnectionString ConnectionString { get; set; }
+		bool ConnectionStringSetted { get; }
 
 		void ConnectDb();
 		Task ConnectDbAsync();
@@ -17,6 +18,5 @@ namespace ProjectsDb
 		Task<IEnumerable<T>> GetTableAsync<T>() where T : class, IDbObject;
 		void SyncCollection<T>(ICollection<T> collection) where T : class, IDbObject;
 		Task SyncCollectionAsync<T>(ICollection<T> collection) where T : class, IDbObject;
-		void SetConnectionString(CryptedConnectionString cryptedConnectionString);
 	}
 }

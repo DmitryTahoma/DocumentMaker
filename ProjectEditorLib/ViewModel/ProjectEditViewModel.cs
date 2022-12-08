@@ -327,7 +327,7 @@ namespace ProjectEditorLib.ViewModel
 
 			TreeViewItem projectTreeItem = treeViewItemFactory.CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject, null);
 
-			if (!model.CryptedConnectionStringSetted) return;
+			if (!model.ConnectionStringSetted) return;
 			await model.ConnectDbAsync();
 			Project project = await model.LoadProjectAsync(SelectedEditProject);
 			await model.DisconnectDbAsync();
@@ -615,7 +615,7 @@ namespace ProjectEditorLib.ViewModel
 			{
 				ProjectNode nodeModel = GetSaveTreeView();
 
-				if (!model.CryptedConnectionStringSetted) return;
+				if (!model.ConnectionStringSetted) return;
 
 				model.ConnectDb();
 				model.SaveNodeChanges(nodeModel);
@@ -636,7 +636,7 @@ namespace ProjectEditorLib.ViewModel
 
 		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
 		{
-			model.SetConnectionString(cryptedConnectionString);
+			model.ConnectionString = cryptedConnectionString;
 		}
 
 		#endregion

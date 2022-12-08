@@ -140,7 +140,7 @@ namespace ActGenerator.ViewModel
 		public Command LoadFromDatabase { get; private set; }
 		private async void OnLoadFromDatabaseExecute()
 		{
-			if (!model.CryptedConnectionStringSetted) return;
+			if (!model.ConnectionStringSetted) return;
 
 			if (State == ViewModelState.Initialized)
 			{
@@ -278,7 +278,7 @@ namespace ActGenerator.ViewModel
 
 		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
 		{
-			model.SetConnectionString(cryptedConnectionString);
+			model.ConnectionString = cryptedConnectionString;
 		}
 
 		#endregion

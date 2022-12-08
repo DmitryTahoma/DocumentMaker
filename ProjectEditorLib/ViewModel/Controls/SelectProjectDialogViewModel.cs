@@ -90,7 +90,7 @@ namespace ProjectEditorLib.ViewModel.Controls
 		{
 			IsOpen = false;
 
-			if (!model.CryptedConnectionStringSetted) return;
+			if (!model.ConnectionStringSetted) return;
 
 			if (State == ViewModelState.Initialized)
 			{
@@ -127,7 +127,7 @@ namespace ProjectEditorLib.ViewModel.Controls
 
 		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
 		{
-			model.SetConnectionString(cryptedConnectionString);
+			model.ConnectionString = cryptedConnectionString;
 		}
 	}
 }

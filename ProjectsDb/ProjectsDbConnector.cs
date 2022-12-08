@@ -15,7 +15,16 @@ namespace ProjectsDb
 			ReleaseContext();
 		}
 
-		public bool CryptedConnectionStringSetted { get; private set; }
+		public CryptedConnectionString ConnectionString
+		{
+			get => cryptedConnectionString;
+			set
+			{
+				cryptedConnectionString = value;
+				ConnectionStringSetted = true;
+			}
+		}
+		public bool ConnectionStringSetted { get; private set; }
 
 		private void ReleaseContext()
 		{
@@ -64,12 +73,6 @@ namespace ProjectsDb
 		public Task SyncCollectionAsync<T>(ICollection<T> collection) where T : class, IDbObject
 		{
 			return db.SyncCollectionAsync(collection);
-		}
-
-		public void SetConnectionString(CryptedConnectionString cryptedConnectionString)
-		{
-			this.cryptedConnectionString = cryptedConnectionString;
-			CryptedConnectionStringSetted = true;
 		}
 	}
 }
