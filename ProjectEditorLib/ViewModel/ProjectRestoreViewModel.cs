@@ -91,9 +91,10 @@ namespace ProjectEditorLib.ViewModel
 				}
 			}
 
-			if (!await model.TryConnectDB()) return;
+			if (!model.CryptedConnectionStringSetted) return;
+			await model.ConnectDbAsync();
 			await model.Restore(projectNode.Context);
-			await model.DisconnectDB();
+			await model.DisconnectDbAsync();
 		}
 
 		public Command<TreeViewItem> RemoveTreeViewItemCommand { get; private set; }
@@ -114,9 +115,10 @@ namespace ProjectEditorLib.ViewModel
 				projectTreeItem = sender.Parent as TreeViewItem;
 			}
 
-			if (!await model.TryConnectDB()) return;
+			if (!model.CryptedConnectionStringSetted) return;
+			await model.ConnectDbAsync();
 			IEnumerable<IDbObject> removedObjects = await model.RemoveForever(projectNode.Context);
-			await model.DisconnectDB();
+			await model.DisconnectDbAsync();
 
 			if(projectTreeItem != null)
 			{
@@ -205,9 +207,10 @@ namespace ProjectEditorLib.ViewModel
 				Dispatcher.Invoke(TreeItems.Clear);
 			});
 
-			if (!await model.TryConnectDB()) return;
+			if (!model.CryptedConnectionStringSetted) return;
+			await model.ConnectDbAsync();
 			List<Project> projects = await model.LoadRemovedNodes();
-			await model.DisconnectDB();
+			await model.DisconnectDbAsync();
 
 			await clearing;
 

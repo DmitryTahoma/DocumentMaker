@@ -1,47 +1,13 @@
-﻿using DocumentMaker.Security;
-using ProjectsDb;
+﻿using ProjectsDb;
 using ProjectsDb.Context;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ProjectEditorLib.Model
 {
-	public class ProjectRestoreModel
+	public class ProjectRestoreModel : ProjectsDbConnector
 	{
-		CryptedConnectionString cryptedConnectionString = null;
-		bool cryptedConnectionStringSetted = false;
-		ProjectsDbContext db = null;
-
-		~ProjectRestoreModel()
-		{
-			ReleaseContext();
-		}
-
-		public Task<bool> TryConnectDB()
-		{
-			return Task.Run(() =>
-			{
-				if(cryptedConnectionStringSetted) db = new ProjectsDbContext(cryptedConnectionString.GetDecryptedConnectionString());
-				return cryptedConnectionStringSetted;
-			});
-		}
-
-		public async Task DisconnectDB()
-		{
-			await Task.Run(ReleaseContext);
-		}
-
-		private void ReleaseContext()
-		{
-			if (db != null)
-			{
-				db.Dispose();
-				db = null;
-			}
-		}
-
 		public Task<List<Project>> LoadRemovedNodes()
 		{
 			return Task.Run(() =>
@@ -227,12 +193,6 @@ namespace ProjectEditorLib.Model
 			return db.CountRegions
 				.FirstOrDefault(x => x.DeletionDate.HasValue && x.BackId.HasValue && backs
 					.Contains(x.BackId.Value));
-		}
-
-		public void SetConnectionString(CryptedConnectionString cryptedConnectionString)
-		{
-			this.cryptedConnectionString = cryptedConnectionString;
-			cryptedConnectionStringSetted = true;
 		}
 	}
 }

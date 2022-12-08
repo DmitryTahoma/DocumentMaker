@@ -1,5 +1,4 @@
-﻿using DocumentMaker.Security;
-using ProjectsDb;
+﻿using ProjectsDb;
 using ProjectsDb.Context;
 using System;
 using System.Collections.Generic;
@@ -9,61 +8,18 @@ using System.Threading.Tasks;
 
 namespace ProjectEditorLib.Model
 {
-	public class ProjectEditModel
+	public class ProjectEditModel : ProjectsDbConnector
 	{
-		CryptedConnectionString cryptedConnectionString = null;
-		bool cryptedConnectionStringSetted = false;
 		const double nodesDaysLifetime = 45;
 
-		ProjectsDbContext db = null;
-
-		~ProjectEditModel()
-		{
-			ReleaseContext();
-		}
-
-		public Task<bool> ConnectDBAsync()
+		public Task<Project> CreateProjectAsync(Project project)
 		{
 			return Task.Run(() =>
-			{
-				if (cryptedConnectionStringSetted) db = new ProjectsDbContext(cryptedConnectionString.GetDecryptedConnectionString());
-				return cryptedConnectionStringSetted;
-			});
-		}
-
-		public async Task DisconnectDBAsync()
-		{
-			await Task.Run(ReleaseContext);
-		}
-
-		public bool TryConnectDB()
-		{
-			if(cryptedConnectionStringSetted) db = new ProjectsDbContext(cryptedConnectionString.GetDecryptedConnectionString());
-			return cryptedConnectionStringSetted;
-		}
-
-		public void DisconnectDB()
-		{
-			ReleaseContext();
-		}
-
-		public async Task<Project> CreateProjectAsync(Project project)
-		{
-			return await Task.Run(() =>
 			{
 				project = db.Projects.Add(project);
 				db.SaveChanges();
 				return project;
 			});
-		}
-
-		private void ReleaseContext()
-		{
-			if(db != null)
-			{
-				db.Dispose();
-				db = null;
-			}
 		}
 
 		public Task SaveNodeChangesAsync(ProjectNode projectNode)
@@ -251,21 +207,6 @@ namespace ProjectEditorLib.Model
 			}
 		}
 
-		private IEnumerable<Back> GetDbBacksOfBacks(IEnumerable<Back> back)
-		{
-			foreach (Back dbBack in db.Backs)
-			{
-				foreach (Back removingBack in back)
-				{
-					if (dbBack.Id == removingBack.Id)
-					{
-						yield return dbBack;
-						break;
-					}
-				}
-			}
-		}
-
 		private void PushChildBacks(ref List<Back> backs)
 		{
 			backs = GetChildBacks(backs);
@@ -300,12 +241,6 @@ namespace ProjectEditorLib.Model
 
 			db.Backs.RemoveRange(removingBacks);
 			db.CountRegions.RemoveRange(removingRegions);
-		}
-
-		public void SetConnectionString(CryptedConnectionString cryptedConnectionString)
-		{
-			this.cryptedConnectionString = cryptedConnectionString;
-			cryptedConnectionStringSetted = true;
 		}
 	}
 }

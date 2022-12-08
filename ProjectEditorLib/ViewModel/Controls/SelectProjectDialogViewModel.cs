@@ -89,10 +89,15 @@ namespace ProjectEditorLib.ViewModel.Controls
 		private async void OnLoadFromDatabaseExecute()
 		{
 			IsOpen = false;
+
+			if (!model.CryptedConnectionStringSetted) return;
+
 			if (State == ViewModelState.Initialized)
 			{
 				State = ViewModelState.Loading;
-				projects.AddRange(await model.LoadProjects());
+				await model.ConnectDbAsync();
+				projects.AddRange(await model.LoadProjectsAsync());
+				await model.DisconnectDbAsync();
 				SelectedProject = null;
 				SelectedProject = projects.FirstOrDefault(x => x.Name == LastOpenedProjectName);
 				State = ViewModelState.Loaded;
@@ -101,7 +106,9 @@ namespace ProjectEditorLib.ViewModel.Controls
 			{
 				State = ViewModelState.Loading;
 				projects.SuppressingNotifications = true;
-				await model.SyncCollection(projects);
+				await model.ConnectDbAsync();
+				await model.SyncCollectionAsync(projects);
+				await model.DisconnectDbAsync();
 				projects.SuppressingNotifications = false;
 				projects.UpdateCollection();
 				SelectedProject = null;

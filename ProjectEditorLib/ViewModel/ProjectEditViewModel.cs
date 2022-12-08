@@ -170,9 +170,9 @@ namespace ProjectEditorLib.ViewModel
 			{
 				if (!GetUserConfirmForRemoving(nodeModel)) return;
 
-				await model.ConnectDBAsync();
+				await model.ConnectDbAsync();
 				removed = await model.RemoveNodeAsync(nodeModel);
-				await model.DisconnectDBAsync();
+				await model.DisconnectDbAsync();
 			}
 
 			if(removed)
@@ -226,9 +226,9 @@ namespace ProjectEditorLib.ViewModel
 			{
 				ProjectNode nodeModel = GetSaveTreeView();
 
-				await model.ConnectDBAsync();
+				await model.ConnectDbAsync();
 				await model.SaveNodeChangesAsync(nodeModel);
-				await model.DisconnectDBAsync();
+				await model.DisconnectDbAsync();
 
 				UpdateContextAfterSaving(nodeModel);
 
@@ -300,9 +300,9 @@ namespace ProjectEditorLib.ViewModel
 		public async Task CreateProject()
 		{
 			Project project = new Project { Name = CreationProjectName };
-			await model.ConnectDBAsync();
+			await model.ConnectDbAsync();
 			project = await model.CreateProjectAsync(project);
-			await model.DisconnectDBAsync();
+			await model.DisconnectDbAsync();
 			CreationProjectName = string.Empty;
 			SelectedEditProject = project;
 		}
@@ -327,9 +327,10 @@ namespace ProjectEditorLib.ViewModel
 
 			TreeViewItem projectTreeItem = treeViewItemFactory.CreateTreeViewItem(ProjectNodeType.Project, SelectedEditProject, null);
 
-			if (!await model.ConnectDBAsync()) return;
+			if (!model.CryptedConnectionStringSetted) return;
+			await model.ConnectDbAsync();
 			Project project = await model.LoadProjectAsync(SelectedEditProject);
-			await model.DisconnectDBAsync();
+			await model.DisconnectDbAsync();
 			projectTreeItem.IsExpanded = true;
 			projectTreeItem.IsSelected = true;
 
@@ -614,9 +615,11 @@ namespace ProjectEditorLib.ViewModel
 			{
 				ProjectNode nodeModel = GetSaveTreeView();
 
-				if (!model.TryConnectDB()) return;
+				if (!model.CryptedConnectionStringSetted) return;
+
+				model.ConnectDb();
 				model.SaveNodeChanges(nodeModel);
-				model.DisconnectDB();
+				model.DisconnectDb();
 			}
 		}
 

@@ -140,12 +140,14 @@ namespace ActGenerator.ViewModel
 		public Command LoadFromDatabase { get; private set; }
 		private async void OnLoadFromDatabaseExecute()
 		{
+			if (!model.CryptedConnectionStringSetted) return;
+
 			if (State == ViewModelState.Initialized)
 			{
 				State = ViewModelState.Loading;
-				if (!await model.TryConnectDB()) return;
-				dbProjects = await model.LoadProjects();
-				await model.DisconnectDB();
+				await model.ConnectDbAsync();
+				dbProjects = await model.LoadProjectsAsync();
+				await model.DisconnectDbAsync();
 
 				if (savedProjectList != null)
 				{
@@ -165,9 +167,9 @@ namespace ActGenerator.ViewModel
 			else if(State == ViewModelState.Loaded)
 			{
 				State = ViewModelState.Loading;
-				if (!await model.TryConnectDB()) return;
-				dbProjects = await model.LoadProjects();
-				await model.DisconnectDB();
+				await model.ConnectDbAsync();
+				dbProjects = await model.LoadProjectsAsync();
+				await model.DisconnectDbAsync();
 
 				IEnumerator projectsStackWithNamesEnum = projectsStackWithNames.GetEnumerator();
 				List<Project>.Enumerator dbProjectsEnum = dbProjects.GetEnumerator();
