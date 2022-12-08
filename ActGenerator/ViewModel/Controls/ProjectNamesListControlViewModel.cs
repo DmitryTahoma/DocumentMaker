@@ -1,12 +1,14 @@
 ﻿using ActGenerator.View.Controls;
 using ActGenerator.View.Dialogs;
 using ActGenerator.ViewModel.Dialogs;
+using DocumentMaker.Security;
 using MaterialDesignThemes.Wpf;
 using Mvvm.Commands;
+using ProjectEditorLib.ViewModel;
 
 namespace ActGenerator.ViewModel.Controls
 {
-	public class ProjectNamesListControlViewModel
+	public class ProjectNamesListControlViewModel : ICryptedConnectionStringRequired
 	{
 		AddProjectNameDialog addProjectNameDialog = null;
 		AddProjectNameDialogViewModel addProjectNameDialogViewModel = null;
@@ -50,6 +52,15 @@ namespace ActGenerator.ViewModel.Controls
 				//		.ForEach(AddProjectToStack);
 				//}
 			//}
+		}
+
+		#endregion
+
+		#region Methods
+
+		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
+		{
+			addProjectNameDialogViewModel.SetCryptedConnectionString(cryptedConnectionString);
 		}
 
 		#endregion

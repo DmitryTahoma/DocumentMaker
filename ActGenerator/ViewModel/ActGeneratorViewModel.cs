@@ -112,6 +112,7 @@ namespace ActGenerator.ViewModel
 			BindProjectsStackWithNames = new Command<UIElementCollection>(OnBindProjectsStackWithNamesExecute);
 			GenerateActs = new Command<DependencyObject>(OnGenerateActsExecute);
 			BindDialogHostName = new Command<ProjectNamesListControlViewModel>(OnBindDialogHostNameExecute);
+			SendCryptedConnectionString = new Command<ICryptedConnectionStringRequired>(OnSendCryptedConnectionStringExecute);
 		}
 
 		public Command RemoveProjectCommand { get; private set; }
@@ -145,41 +146,41 @@ namespace ActGenerator.ViewModel
 			if (State == ViewModelState.Initialized)
 			{
 				State = ViewModelState.Loading;
-				await model.ConnectDbAsync();
-				dbProjects = await model.LoadProjectsAsync();
-				await model.DisconnectDbAsync();
+				//await model.ConnectDbAsync();
+				//dbProjects = await model.LoadProjectsAsync();
+				//await model.DisconnectDbAsync();
 
-				if (savedProjectList != null)
-				{
-					dbProjects
-						.Where(x => savedProjectList
-							.Contains(x.Id))
-						.ToList()
-						.ForEach(AddProjectToStack);
-				}
-				if (savedHumanList != null)
-				{
-					
-				}
+				//if (savedProjectList != null)
+				//{
+				//	dbProjects
+				//		.Where(x => savedProjectList
+				//			.Contains(x.Id))
+				//		.ToList()
+				//		.ForEach(AddProjectToStack);
+				//}
+				//if (savedHumanList != null)
+				//{
+
+				//}
 
 				State = ViewModelState.Loaded;
 			}
-			else if(State == ViewModelState.Loaded)
+			else if (State == ViewModelState.Loaded)
 			{
 				State = ViewModelState.Loading;
-				await model.ConnectDbAsync();
-				dbProjects = await model.LoadProjectsAsync();
-				await model.DisconnectDbAsync();
+				//await model.ConnectDbAsync();
+				//dbProjects = await model.LoadProjectsAsync();
+				//await model.DisconnectDbAsync();
 
-				IEnumerator projectsStackWithNamesEnum = projectsStackWithNames.GetEnumerator();
-				List<Project>.Enumerator dbProjectsEnum = dbProjects.GetEnumerator();
-				while(projectsStackWithNamesEnum.MoveNext() && dbProjectsEnum.MoveNext())
-				{
-					ListView listView = projectsStackWithNamesEnum.Current as ListView;
-					listView.DataContext = dbProjectsEnum.Current;
-					listView.ItemsSource = new List<string> { dbProjectsEnum.Current.Name }.Concat(dbProjectsEnum.Current.AlternativeNames.Select(x => x.Name));
-				}
-				HumanList.UpdateCollection();
+				//IEnumerator projectsStackWithNamesEnum = projectsStackWithNames.GetEnumerator();
+				//List<Project>.Enumerator dbProjectsEnum = dbProjects.GetEnumerator();
+				//while (projectsStackWithNamesEnum.MoveNext() && dbProjectsEnum.MoveNext())
+				//{
+				//	ListView listView = projectsStackWithNamesEnum.Current as ListView;
+				//	listView.DataContext = dbProjectsEnum.Current;
+				//	listView.ItemsSource = new List<string> { dbProjectsEnum.Current.Name }.Concat(dbProjectsEnum.Current.AlternativeNames.Select(x => x.Name));
+				//}
+				//HumanList.UpdateCollection();
 				State = ViewModelState.Loaded;
 			}
 		}
@@ -219,6 +220,15 @@ namespace ActGenerator.ViewModel
 		private void OnBindDialogHostNameExecute(ProjectNamesListControlViewModel projectNamesListControlViewModel)
 		{
 			projectNamesListControlViewModel.DialogHostId = DialogHostId;
+		}
+
+		public Command<ICryptedConnectionStringRequired> SendCryptedConnectionString { get; private set; }
+		private void OnSendCryptedConnectionStringExecute(ICryptedConnectionStringRequired connectionStringRequired)
+		{
+			if (model.ConnectionStringSetted)
+			{
+				connectionStringRequired.SetCryptedConnectionString(model.ConnectionString);
+			}
 		}
 
 		#endregion

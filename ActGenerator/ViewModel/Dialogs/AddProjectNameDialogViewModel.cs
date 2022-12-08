@@ -1,13 +1,22 @@
-﻿using MaterialDesignThemes.Wpf;
+﻿using ActGenerator.Model.Dialogs;
+using DocumentMaker.Security;
+using MaterialDesignThemes.Wpf;
+using Mvvm;
 using Mvvm.Commands;
+using ProjectEditorLib.ViewModel;
 using ProjectsDb.Context;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace ActGenerator.ViewModel.Dialogs
 {
-	public class AddProjectNameDialogViewModel
+	public class AddProjectNameDialogViewModel : DependencyObject, ICryptedConnectionStringRequired
 	{
+		AddProjectNameDialogModel model = new AddProjectNameDialogModel();
+
 		readonly Style itemStyle = Application.Current.FindResource("AddProjectNameListItemCheckBox") as Style;
 
 		UIElementCollection projectsCheckBoxCollection = null;
@@ -16,11 +25,20 @@ namespace ActGenerator.ViewModel.Dialogs
 		public AddProjectNameDialogViewModel()
 		{
 			InitCommands();
+
+			State = ViewModelState.Initialized;
 		}
 
 		#region Properties
 
 		public bool IsPressedAdd { get; private set; }
+
+		public ViewModelState State
+		{
+			get { return (ViewModelState)GetValue(StateProperty); }
+			set { SetValue(StateProperty, value); }
+		}
+		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(AddProjectNameDialogViewModel));
 
 		#endregion
 
@@ -40,22 +58,6 @@ namespace ActGenerator.ViewModel.Dialogs
 			if (this.projectsCheckBoxCollection == null)
 			{
 				this.projectsCheckBoxCollection = projectsCheckBoxCollection;
-
-				projectsCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "Darkness and Flame 2" }));
-				projectsCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "Darkness and Flame 3" }));
-				projectsCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "Darkness and Flame 4" }));
-				projectsCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "Escape" }));
-				projectsCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "New York Mysteries 4" }));
-				projectsCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "Lost Lands Stories" }));
-				projectsCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "Lost Lands 4" }));
-				projectsCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "Lost Lands 6" }));
-				projectsCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "Lost Lands 7" }));
-				projectsCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "Lost Lands 8" }));
-				projectsCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "Legendary Tales 1" }));
-				projectsCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "Legendary Tales 2" }));
-				projectsCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "Legendary Tales 3" }));
-				projectsCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "The Legacy 1" }));
-				projectsCheckBoxCollection.Add(CreateProjectCheckBox(new Project { Name = "The Legacy 3" }));
 			}
 		}
 
@@ -72,9 +74,59 @@ namespace ActGenerator.ViewModel.Dialogs
 		}
 
 		public Command ViewLoaded { get; private set; }
-		private void OnViewLoadedExecute()
+		private async void OnViewLoadedExecute()
 		{
 			IsPressedAdd = false;
+
+			if (!model.ConnectionStringSetted) return;
+
+			if(State == ViewModelState.Initialized)
+			{
+				State = ViewModelState.Loading;
+				await model.ConnectDbAsync();
+				IEnumerable<Project> projects = await model.LoadProjectsAsync();
+				await model.DisconnectDbAsync();
+				State = ViewModelState.Loaded;
+
+				projectsCheckBoxCollection.Clear();
+				foreach(Project project in projects)
+				{
+					projectsCheckBoxCollection.Add(CreateProjectCheckBox(project));
+					await Task.Delay(1);
+				}
+			}
+			else if(State == ViewModelState.Loaded)
+			{
+				State = ViewModelState.Loading;
+				await model.ConnectDbAsync();
+				IEnumerable<Project> projects = await model.LoadProjectsAsync();
+				await model.DisconnectDbAsync();
+
+				List<CheckBox> removedCheckBoxes = projectsCheckBoxCollection.Cast<CheckBox>().ToList();
+				foreach (Project project in projects)
+				{
+					bool finded = false;
+					foreach(CheckBox checkBox in projectsCheckBoxCollection)
+					{
+						if(checkBox.DataContext is Project proj && proj.Id == project.Id)
+						{
+							checkBox.DataContext = project;
+							checkBox.Content = project.Name;
+							removedCheckBoxes.Remove(checkBox);
+							finded = true;
+							break;
+						}
+					}
+
+					if(!finded)
+					{
+						projectsCheckBoxCollection.Add(CreateProjectCheckBox(project));
+					}
+				}
+
+				removedCheckBoxes.ForEach(x => projectNamesCheckBoxCollection.Remove(x));
+				State = ViewModelState.Loaded;
+			}
 		}
 
 		public Command AddCommand { get; private set; }
@@ -106,6 +158,11 @@ namespace ActGenerator.ViewModel.Dialogs
 			}
 
 			return checkBox;
+		}
+
+		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
+		{
+			model.ConnectionString = cryptedConnectionString;
 		}
 
 		#endregion
