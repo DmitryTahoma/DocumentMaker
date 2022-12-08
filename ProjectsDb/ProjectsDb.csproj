@@ -56,6 +56,8 @@
     <Compile Include="Context\BackType.cs" />
     <Compile Include="Context\Project.cs" />
     <Compile Include="Context\CountRegions.cs" />
+    <Compile Include="IProjectsDbConnector.cs" />
+    <Compile Include="ProjectsDbConnector.cs" />
     <Compile Include="ProjectsDbContext.cs" />
     <Compile Include="Context\IDbObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -63,6 +65,12 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Security\Security.csproj">
+      <Project>{DDA90EC4-2B15-454F-8837-CBFE2A5C409D}</Project>
+      <Name>Security</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
