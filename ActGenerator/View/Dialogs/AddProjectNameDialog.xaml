@@ -65,7 +65,7 @@
                 <TextBlock
                     Grid.Column="1"
                     Style="{StaticResource AddProjectNameHeaderTextBlock}"
-                    Text="Назви проектів" />
+                    Text="Алтернативні назви" />
             </Grid>
         </materialDesign:Card>
 

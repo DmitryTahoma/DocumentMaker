@@ -13,28 +13,17 @@ namespace ActGenerator.Model.Dialogs
 
 		public Task<List<Project>> LoadProjectsAsync()
 		{
-			return Task.Run(() =>
-			{
-				List<Project> projects = new List<Project>(db.Projects);
-				foreach (Project project in projects)
-				{
-					project.AlternativeNames = db.AlternativeProjectNames.Where(x => x.ProjectId == project.Id).ToList();
-				}
-				return projects;
-			});
+			return Task.Run(db.Projects.ToList);
 		}
 
-		public Task SortProjectsAsync(List<Project> projects)
+		public Task<List<AlternativeProjectName>> LoadAlternativeProjectNamesAsync()
 		{
-			return Task.Run(() =>
-			{
-				projects.Sort(naturalStringComparer);
+			return Task.Run(db.AlternativeProjectNames.ToList);
+		}
 
-				foreach(Project project in projects)
-				{
-					project.AlternativeNames.Sort(naturalStringComparer);
-				}
-			});
+		public Task SortCollectionAsync<T>(List<T> objects) where T : class
+		{
+			return Task.Run(() => objects.Sort(naturalStringComparer));
 		}
 	}
 }
