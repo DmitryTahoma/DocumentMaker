@@ -37,6 +37,8 @@ namespace ActGenerator.ViewModel.Dialogs
 
 		public bool IsPressedAdd { get; private set; }
 
+		public IEnumerable<IDbObject> SelectedProjectsAndNames { get; private set; }
+
 		public ViewModelState State
 		{
 			get { return (ViewModelState)GetValue(StateProperty); }
@@ -87,6 +89,14 @@ namespace ActGenerator.ViewModel.Dialogs
 			if (this.projectNamesCheckBoxCollection == null)
 			{
 				this.projectNamesCheckBoxCollection = projectNamesCheckBoxCollection;
+
+				SelectedProjectsAndNames =
+					projectsCheckBoxCollection
+						.Cast<CheckBox>()
+						.Union(projectNamesCheckBoxCollection
+							.Cast<CheckBox>())
+						.Where(x => x.IsChecked.HasValue && x.IsChecked.Value)
+						.Select(y => (IDbObject)y.DataContext);
 			}
 		}
 
@@ -116,6 +126,7 @@ namespace ActGenerator.ViewModel.Dialogs
 		private void OnAddCommandExecute()
 		{
 			IsPressedAdd = true;
+
 			DialogHost.CloseDialogCommand.Execute(null, null);
 		}
 
