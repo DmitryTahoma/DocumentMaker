@@ -53,19 +53,16 @@
                 </Grid.ColumnDefinitions>
                 <CheckBox
                     Command="{Binding ChangeIsCheckedAllProjects}"
+                    Content="Проекти"
                     IsChecked="{Binding ProjectsCheckBoxIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource AddProjectNameListItemCheckBox}" />
-                <TextBlock Style="{StaticResource AddProjectNameHeaderTextBlock}" Text="Проекти" />
+                    Style="{StaticResource AddProjectNameHeaderItemCheckBox}" />
 
                 <CheckBox
                     Grid.Column="1"
                     Command="{Binding ChangeIsCheckedAllProjectNames}"
+                    Content="Алтернативні назви"
                     IsChecked="{Binding ProjectNamesCheckBoxIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource AddProjectNameRightHeaderListItemCheckBox}" />
-                <TextBlock
-                    Grid.Column="1"
-                    Style="{StaticResource AddProjectNameHeaderTextBlock}"
-                    Text="Алтернативні назви" />
+                    Style="{StaticResource AddProjectNameRightHeaderItemCheckBox}" />
             </Grid>
         </materialDesign:Card>
 
