@@ -41,6 +41,7 @@ namespace ActGenerator.ViewModel.Controls
 		{
 			OpenAddProjectNameDialog = new Command(OnOpenAddProjectNameDialogExecute);
 			BindProjectCollection = new Command<UIElementCollection>(OnBindProjectCollectionExecute);
+			RemoveChip = new Command<Chip>(OnRemoveChipExecute);
 		}
 
 		public Command OpenAddProjectNameDialog { get; private set; }
@@ -71,6 +72,12 @@ namespace ActGenerator.ViewModel.Controls
 			}
 		}
 
+		public Command<Chip> RemoveChip { get; private set; }
+		private void OnRemoveChipExecute(Chip chip)
+		{
+			projectCollection.Remove(chip);
+		}
+
 		#endregion
 
 		#region Methods
@@ -82,12 +89,15 @@ namespace ActGenerator.ViewModel.Controls
 
 		private Chip CreateProjectChip(IDbObject context)
 		{
-			return new Chip
+			Chip chip = new Chip
 			{
 				DataContext = context,
 				Style = itemStyle,
 				Content = context.ToString(),
 			};
+			chip.DeleteCommand = new Command(() => RemoveChip.Execute(chip));
+
+			return chip;
 		}
 
 		#endregion
