@@ -1,7 +1,5 @@
 ﻿using Dml;
 using DocumentMaker.Security;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -10,7 +8,7 @@ using System.Xml.Serialization;
 
 namespace ActGenerator.Model
 {
-	public partial class ActGeneratorSession
+	public class ActGeneratorSession
 	{
 		public static string SaveFileName => "session_act_generator.xml";
 		public static string CurrentSaveFileName => Path.Combine(PathHelper.ExecutingAssemblyPath, SaveFileName);
@@ -21,8 +19,6 @@ namespace ActGenerator.Model
 		public double WindowWidth { get; set; } = 900;
 		public WindowState WindowState { get; set; } = WindowState.Maximized;
 
-		public List<int> ProjectsList { get; set; } = null;
-		public List<HumanDataContextSave> HumanList { get; set; } = null;
 		public string MinSumText { get; set; } = "1200";
 		public string MaxSumText { get; set; } = "2500";
 		public bool CanUseOldWorks { get; set; } = true;
@@ -48,8 +44,6 @@ namespace ActGenerator.Model
 						WindowWidth = loadedObj.WindowWidth;
 						WindowState = loadedObj.WindowState;
 
-						ProjectsList = loadedObj.ProjectsList;
-						HumanList = loadedObj.HumanList;
 						MinSumText = loadedObj.MinSumText;
 						MaxSumText = loadedObj.MaxSumText;
 						CanUseOldWorks = loadedObj.CanUseOldWorks;

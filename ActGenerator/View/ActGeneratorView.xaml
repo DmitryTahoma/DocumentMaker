@@ -289,7 +289,7 @@
                             <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Список робітників" />
 
                             <Menu Grid.Row="1">
-                                <MenuItem Command="{Binding AddHumanCommand}" ToolTip="Додати">
+                                <MenuItem ToolTip="Додати">
                                     <MenuItem.Header>
                                         <materialDesign:PackIcon
                                             Width="24"
@@ -297,10 +297,7 @@
                                             Kind="PlusCircleOutline" />
                                     </MenuItem.Header>
                                 </MenuItem>
-                                <MenuItem
-                                    Command="{Binding RemoveHumanCommand}"
-                                    CommandParameter="{Binding ElementName=HumenListView, Path=SelectedItems}"
-                                    ToolTip="Видалити">
+                                <MenuItem CommandParameter="{Binding ElementName=HumenListView, Path=SelectedItems}" ToolTip="Видалити">
                                     <MenuItem.Header>
                                         <materialDesign:PackIcon
                                             Width="24"
@@ -447,7 +444,6 @@
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding SendCryptedConnectionString}" CommandParameter="{Binding ElementName=ProjectNamesListControl, Path=DataContext}" />
-            <i:InvokeCommandAction Command="{Binding BindProjectsStackWithNames}" CommandParameter="{Binding ElementName=ProjectsStackWithNames, Path=Children}" />
             <i:InvokeCommandAction Command="{Binding LoadFromDatabase}" />
             <i:InvokeCommandAction Command="{Binding BindDialogHostName}" CommandParameter="{Binding ElementName=ProjectNamesListControl, Path=DataContext}" />
         </i:EventTrigger>

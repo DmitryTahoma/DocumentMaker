@@ -7,9 +7,7 @@ using ProjectEditorLib.View.Dialogs;
 using ProjectEditorLib.ViewModel;
 using ProjectEditorLib.ViewModel.Controls;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
@@ -115,8 +113,6 @@ namespace ActGenerator.ViewModel
 			model.WindowWidth = window.Width;
 			model.WindowState = window.WindowState == WindowState.Minimized ? WindowState.Normal : window.WindowState;
 
-			model.ProjectsList = new List<int>(actGeneratorViewModel.ProjectsList.Select(x => x.Id));
-			model.HumanList = new List<ActGeneratorSession.HumanDataContextSave>(actGeneratorViewModel.HumanList.Select(x => new ActGeneratorSession.HumanDataContextSave(x)));
 			model.MinSumText = actGeneratorViewModel.MinSumText;
 			model.MaxSumText = actGeneratorViewModel.MaxSumText;
 			model.CanUseOldWorks = actGeneratorViewModel.CanUseOldWorks;
