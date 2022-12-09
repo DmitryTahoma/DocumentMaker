@@ -1,15 +1,23 @@
-﻿using ActGenerator.View.Controls;
-using ActGenerator.View.Dialogs;
+﻿using ActGenerator.View.Dialogs;
 using ActGenerator.ViewModel.Dialogs;
 using DocumentMaker.Security;
 using MaterialDesignThemes.Wpf;
 using Mvvm.Commands;
 using ProjectEditorLib.ViewModel;
+using ProjectsDb.Context;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace ActGenerator.ViewModel.Controls
 {
 	public class ProjectNamesListControlViewModel : ICryptedConnectionStringRequired
 	{
+		readonly Style itemStyle = Application.Current.FindResource("DeletableMaterialDesignOutlineChip") as Style;
+
+		UIElementCollection projectCollection = null;
+
 		AddProjectNameDialog addProjectNameDialog = null;
 		AddProjectNameDialogViewModel addProjectNameDialogViewModel = null;
 
@@ -32,26 +40,35 @@ namespace ActGenerator.ViewModel.Controls
 		private void InitCommands()
 		{
 			OpenAddProjectNameDialog = new Command(OnOpenAddProjectNameDialogExecute);
+			BindProjectCollection = new Command<UIElementCollection>(OnBindProjectCollectionExecute);
 		}
 
 		public Command OpenAddProjectNameDialog { get; private set; }
 		private async void OnOpenAddProjectNameDialogExecute()
 		{
-			//listSelectorViewModel.ItemsDisplayMemberPath = nameof(Project.Name);
-			//List<Project> projects = new List<Project>(dbProjects.Where(x => !ProjectsList.Contains(x)));
-			//projects.RemoveAll(x => ProjectsList.Contains(x));
-			//listSelectorViewModel.SetItems(projects);
 			await DialogHost.Show(addProjectNameDialog, DialogHostId);
-			//if (IsOpenActGeneratorDialogHost)
-			//{
-				//if (listSelectorViewModel.IsAddingPressed && listSelectorViewModel.SelectedItems != null)
-				//{
-				//	listSelectorViewModel.SelectedItems
-				//		.Cast<Project>()
-				//		.ToList()
-				//		.ForEach(AddProjectToStack);
-				//}
-			//}
+			if (addProjectNameDialogViewModel.IsPressedAdd)
+			{
+				List<IDbObject> selectedItems = addProjectNameDialogViewModel.SelectedProjectsAndNames.ToList();
+
+				List<Chip> castedProjectCollection = projectCollection.Cast<Chip>().ToList();
+				foreach(IDbObject selectedItem in selectedItems)
+				{
+					if(null == castedProjectCollection.FirstOrDefault(x => x.DataContext.GetType() == selectedItem.GetType() && ((IDbObject)x.DataContext).Id == selectedItem.Id))
+					{
+						projectCollection.Add(CreateProjectChip(selectedItem));
+					}
+				}
+			}
+		}
+
+		public Command<UIElementCollection> BindProjectCollection { get; private set; }
+		private void OnBindProjectCollectionExecute(UIElementCollection projectCollection)
+		{
+			if(this.projectCollection == null)
+			{
+				this.projectCollection = projectCollection;
+			}
 		}
 
 		#endregion
@@ -61,6 +78,16 @@ namespace ActGenerator.ViewModel.Controls
 		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
 		{
 			addProjectNameDialogViewModel.SetCryptedConnectionString(cryptedConnectionString);
+		}
+
+		private Chip CreateProjectChip(IDbObject context)
+		{
+			return new Chip
+			{
+				DataContext = context,
+				Style = itemStyle,
+				Content = context.ToString(),
+			};
 		}
 
 		#endregion
