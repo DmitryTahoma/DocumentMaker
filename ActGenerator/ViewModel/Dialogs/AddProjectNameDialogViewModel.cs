@@ -95,6 +95,11 @@ namespace ActGenerator.ViewModel.Dialogs
 		{
 			IsPressedAdd = false;
 
+			ProjectsCheckBoxIsChecked = false;
+			ChangeIsCheckedAllProjects?.Execute();
+			ProjectNamesCheckBoxIsChecked = false;
+			ChangeIsCheckedAllProjectNames?.Execute();
+
 			if (!model.ConnectionStringSetted) return;
 
 			if (State == ViewModelState.Initialized)
