@@ -6,6 +6,7 @@
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mvvmConverters="clr-namespace:Mvvm.Converters;assembly=Mvvm"
     xmlns:themeControls="clr-namespace:DocumentMakerThemes.View.Controls;assembly=DocumentMakerThemes"
     xmlns:vm="clr-namespace:ActGenerator.ViewModel.Controls"
     d:DesignHeight="450"
@@ -17,11 +18,21 @@
     </UserControl.DataContext>
 
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <mvvmConverters:ViewModelStateToVisibilityConverter x:Key="ViewModelStateToVisibilityConverter" FalseValue="Hidden" />
+            <mvvmConverters:ViewModelStateToVisibilityConverter
+                x:Key="InvertedViewModelStateToVisibilityConverter"
+                FalseValue="Hidden"
+                IsInverted="True" />
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
-        <Grid>
+        <Grid Visibility="{Binding State, Mode=OneWay, Converter={StaticResource InvertedViewModelStateToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
@@ -43,12 +54,13 @@
             </ScrollViewer>
         </Grid>
 
-        <themeControls:WaitingControl Text="підключення до бази даних" Visibility="Collapsed" />
+        <themeControls:WaitingControl Text="завантаження проєктів" Visibility="{Binding State, Mode=OneWay, Converter={StaticResource ViewModelStateToVisibilityConverter}}" />
     </Grid>
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding BindProjectCollection}" CommandParameter="{Binding ElementName=ProjectsWrapPanel, Path=Children}" />
+            <i:InvokeCommandAction Command="{Binding ViewLoaded}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 

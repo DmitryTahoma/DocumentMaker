@@ -1,7 +1,9 @@
-﻿using ActGenerator.View.Dialogs;
+﻿using ActGenerator.Model.Controls;
+using ActGenerator.View.Dialogs;
 using ActGenerator.ViewModel.Dialogs;
 using DocumentMaker.Security;
 using MaterialDesignThemes.Wpf;
+using Mvvm;
 using Mvvm.Commands;
 using ProjectEditorLib.ViewModel;
 using ProjectsDb.Context;
@@ -12,8 +14,10 @@ using System.Windows.Controls;
 
 namespace ActGenerator.ViewModel.Controls
 {
-	public class ProjectNamesListControlViewModel : ICryptedConnectionStringRequired
+	public class ProjectNamesListControlViewModel : DependencyObject, ICryptedConnectionStringRequired
 	{
+		ProjectNamesListControlModel model = new ProjectNamesListControlModel();
+
 		readonly Style itemStyle = Application.Current.FindResource("DeletableMaterialDesignOutlineChip") as Style;
 
 		UIElementCollection projectCollection = null;
@@ -27,11 +31,20 @@ namespace ActGenerator.ViewModel.Controls
 			addProjectNameDialogViewModel = (AddProjectNameDialogViewModel)addProjectNameDialog.DataContext;
 
 			InitCommands();
+
+			State = ViewModelState.Initialized;
 		}
 
 		#region Properties
 
 		public string DialogHostId { get; set; } = null;
+
+		public ViewModelState State
+		{
+			get { return (ViewModelState)GetValue(StateProperty); }
+			set { SetValue(StateProperty, value); }
+		}
+		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(ProjectNamesListControlViewModel));
 
 		#endregion
 
@@ -42,6 +55,7 @@ namespace ActGenerator.ViewModel.Controls
 			OpenAddProjectNameDialog = new Command(OnOpenAddProjectNameDialogExecute);
 			BindProjectCollection = new Command<UIElementCollection>(OnBindProjectCollectionExecute);
 			RemoveChip = new Command<Chip>(OnRemoveChipExecute);
+			ViewLoaded = new Command(OnViewLoadedExecute);
 		}
 
 		public Command OpenAddProjectNameDialog { get; private set; }
@@ -78,12 +92,58 @@ namespace ActGenerator.ViewModel.Controls
 			projectCollection.Remove(chip);
 		}
 
+		public Command ViewLoaded { get; private set; }
+		private async void OnViewLoadedExecute()
+		{
+			if(State == ViewModelState.Initialized)
+			{
+				State = ViewModelState.Loaded;
+			}
+			else if(State == ViewModelState.Loaded)
+			{
+				State = ViewModelState.Loading;
+				if(projectCollection.Count > 0)
+				{
+					bool needLoadProjects = projectCollection.Cast<Chip>().FirstOrDefault(x => x.DataContext is Project) != null;
+					bool needLoadAlternativeName = projectCollection.Cast<Chip>().FirstOrDefault(x => x.DataContext is AlternativeProjectName) != null;
+					List<Project> projects = null;
+					List<AlternativeProjectName> alternativeProjectNames = null;
+
+					await model.ConnectDbAsync();
+					if (needLoadProjects) projects = await model.LoadProjectsAsync();
+					if (needLoadAlternativeName) alternativeProjectNames = await model.LoadAlternativeProjectNamesAsync();
+					await model.DisconnectDbAsync();
+
+					List<IDbObject> loadedObjects = new List<IDbObject>();
+					if (needLoadProjects) loadedObjects.AddRange(projects);
+					if (needLoadAlternativeName) loadedObjects.AddRange(alternativeProjectNames);
+
+					foreach(Chip chip in projectCollection.Cast<Chip>().ToList())
+					{
+						IDbObject context = chip.DataContext as IDbObject;
+						IDbObject loadedContext = loadedObjects.FirstOrDefault(x => x.GetType() == context.GetType() && x.Id == context.Id);
+						if(loadedContext != null)
+						{
+							chip.DataContext = context;
+							chip.Content = context.ToString();
+						}
+						else
+						{
+							projectCollection.Remove(chip);
+						}
+					}
+				}
+				State = ViewModelState.Loaded;
+			}
+		}
+
 		#endregion
 
 		#region Methods
 
 		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
 		{
+			model.ConnectionString = cryptedConnectionString;
 			addProjectNameDialogViewModel.SetCryptedConnectionString(cryptedConnectionString);
 		}
 
