@@ -6,32 +6,27 @@
     xmlns:local="clr-namespace:ActGenerator.View.Controls"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="CodeBehind"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <StackPanel Orientation="Horizontal">
-        <TextBlock
-            Margin="5,0,0,0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Text="Технічний дизайнер, Скриптувальник" />
 
-        <materialDesign:PopupBox Padding="10" StaysOpen="True">
-            <StackPanel Orientation="Vertical">
-                <Grid>
-                    <CheckBox IsChecked="{x:Null}" />
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        FontWeight="Bold"
-                        Style="{StaticResource MaterialDesignButtonTextBlock}"
-                        Text="Шаблони" />
+    <DockPanel LastChildFill="True">
+
+        <materialDesign:PopupBox DockPanel.Dock="Right" Style="{StaticResource CheckBoxListButtonPopupBox}">
+            <DockPanel LastChildFill="True">
+
+                <Grid DockPanel.Dock="Top">
+                    <CheckBox Command="{Binding ElementName=CodeBehind, Path=SelectAllCommand}" IsChecked="{Binding ElementName=CodeBehind, Path=IsSelectedAll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Style="{StaticResource CheckBoxListHeaderTextBlock}" Text="Шаблони" />
                 </Grid>
-                <CheckBox Content="Технічний дизайнер" IsChecked="True" />
-                <CheckBox Content="Скриптувальник" IsChecked="True" />
-                <CheckBox Content="Художник" />
-                <CheckBox Content="Моделлер" />
-            </StackPanel>
+
+                <StackPanel x:Name="ItemsStackPanel" Orientation="Vertical" />
+            </DockPanel>
         </materialDesign:PopupBox>
 
-    </StackPanel>
+        <TextBlock Style="{StaticResource CenterTextBlock}" Text="{Binding ElementName=CodeBehind, Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+    </DockPanel>
+
 </UserControl>

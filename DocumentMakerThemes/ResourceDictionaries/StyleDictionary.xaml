@@ -162,10 +162,15 @@
                 <Setter Property="Padding" Value="5" />
             </Style>
 
-            <Style x:Key="RowHeaderTextBlock" TargetType="TextBlock">
+            <Style x:Key="CenterTextBlock" TargetType="TextBlock">
                 <Setter Property="HorizontalAlignment" Value="Center" />
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
+
+            <Style
+                x:Key="RowHeaderTextBlock"
+                BasedOn="{StaticResource CenterTextBlock}"
+                TargetType="TextBlock" />
 
             <Style x:Key="FirstRightTextBlock" TargetType="TextBlock">
                 <Setter Property="Margin" Value="5,5,2.5,5" />
@@ -295,6 +300,19 @@
                 <Setter Property="Padding" Value="5" />
                 <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth3" />
                 <Setter Property="materialDesign:ShadowAssist.ShadowEdges" Value="Top" />
+            </Style>
+
+            <Style
+                x:Key="CheckBoxListHeaderTextBlock"
+                BasedOn="{StaticResource MaterialDesignButtonTextBlock}"
+                TargetType="TextBlock">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="FontWeight" Value="Bold" />
+            </Style>
+
+            <Style x:Key="CheckBoxListButtonPopupBox" TargetType="materialDesign:PopupBox">
+                <Setter Property="Padding" Value="10" />
+                <Setter Property="StaysOpen" Value="True" />
             </Style>
 
         </ResourceDictionary>

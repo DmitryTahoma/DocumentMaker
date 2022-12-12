@@ -1,4 +1,5 @@
 ﻿using ActGenerator.Model.Dialogs;
+using ActGenerator.View.Controls;
 using DocumentMaker.Security;
 using MaterialDesignThemes.Wpf;
 using Mvvm;
@@ -134,14 +135,11 @@ namespace ActGenerator.ViewModel.Dialogs
 		private void OnChangeIsCheckedAllProjectsExecute()
 		{
 			needUpdateProjectsCheckBoxIsChecked = false;
-			needUpdateProjectNamesCheckBoxIsChecked = false;
 			foreach (CheckBox checkBox in projectsCheckBoxCollection)
 			{
 				checkBox.IsChecked = ProjectsCheckBoxIsChecked;
 			}
 			needUpdateProjectsCheckBoxIsChecked = true;
-			needUpdateProjectNamesCheckBoxIsChecked = true;
-			UpdateProjectNamesCheckBoxIsChecked();
 		}
 
 		public Command ChangeIsCheckedAllProjectNames { get; private set; }
@@ -191,48 +189,13 @@ namespace ActGenerator.ViewModel.Dialogs
 		private void UpdateProjectsCheckBoxIsChecked()
 		{
 			if (!needUpdateProjectsCheckBoxIsChecked) return;
-			ProjectsCheckBoxIsChecked = UpdateCheckBoxState(ProjectsCheckBoxIsChecked, projectsCheckBoxCollection);
+			ProjectsCheckBoxIsChecked = CheckBoxList.UpdateGeneralCheckBoxState(projectsCheckBoxCollection);
 		}
 
 		private void UpdateProjectNamesCheckBoxIsChecked()
 		{
 			if (!needUpdateProjectNamesCheckBoxIsChecked) return;
-			ProjectNamesCheckBoxIsChecked = UpdateCheckBoxState(ProjectNamesCheckBoxIsChecked, projectNamesCheckBoxCollection);
-		}
-
-		private bool? UpdateCheckBoxState(bool? prevState, IEnumerable checkBoxList)
-		{
-			IEnumerator<CheckBox> checkBoxListEnum = checkBoxList.Cast<CheckBox>().GetEnumerator();
-
-			bool findedFirst = false;
-			bool? isChecked = null;
-
-			while (checkBoxListEnum.MoveNext())
-			{
-				if (checkBoxListEnum.Current.Visibility == Visibility.Visible)
-				{
-					findedFirst = true;
-					isChecked = checkBoxListEnum.Current.IsChecked;
-					break;
-				}
-			}
-
-			if (!findedFirst)
-			{
-				return false;
-			}
-			else
-			{
-				while (checkBoxListEnum.MoveNext())
-				{
-					if (checkBoxListEnum.Current.Visibility == Visibility.Visible && checkBoxListEnum.Current.IsChecked != isChecked)
-					{
-						return null;
-					}
-				}
-
-				return isChecked;
-			}
+			ProjectNamesCheckBoxIsChecked = CheckBoxList.UpdateGeneralCheckBoxState(projectNamesCheckBoxCollection);
 		}
 
 		private void ProjectCheckBoxCheckedChange(object sender, RoutedEventArgs e)
