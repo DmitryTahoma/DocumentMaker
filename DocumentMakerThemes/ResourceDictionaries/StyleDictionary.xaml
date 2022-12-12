@@ -303,10 +303,12 @@
             </Style>
 
             <Style
-                x:Key="CheckBoxListHeaderTextBlock"
-                BasedOn="{StaticResource MaterialDesignButtonTextBlock}"
-                TargetType="TextBlock">
-                <Setter Property="HorizontalAlignment" Value="Center" />
+                x:Key="CheckBoxListHeaderCheckBox"
+                BasedOn="{StaticResource MaterialDesignCheckBox}"
+                TargetType="CheckBox">
+                <Setter Property="MinWidth" Value="100" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
                 <Setter Property="FontWeight" Value="Bold" />
             </Style>
 
