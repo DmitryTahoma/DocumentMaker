@@ -1,6 +1,7 @@
 ﻿using ActGenerator.Model.Controls;
 using ActGenerator.View.Dialogs;
 using ActGenerator.ViewModel.Dialogs;
+using ActGenerator.ViewModel.Interfaces;
 using DocumentMaker.Security;
 using MaterialDesignThemes.Wpf;
 using Mvvm;
@@ -14,7 +15,7 @@ using System.Windows.Controls;
 
 namespace ActGenerator.ViewModel.Controls
 {
-	public class ProjectNamesListControlViewModel : DependencyObject, ICryptedConnectionStringRequired
+	public class ProjectNamesListControlViewModel : DependencyObject, IContainDialogHostId, ICryptedConnectionStringRequired
 	{
 		ProjectNamesListControlModel model = new ProjectNamesListControlModel();
 

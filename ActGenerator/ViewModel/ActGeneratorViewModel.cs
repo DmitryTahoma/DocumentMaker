@@ -1,5 +1,6 @@
 ﻿using ActGenerator.Model;
 using ActGenerator.ViewModel.Controls;
+using ActGenerator.ViewModel.Interfaces;
 using Dml;
 using Dml.Model.Template;
 using DocumentMaker.Security;
@@ -91,7 +92,7 @@ namespace ActGenerator.ViewModel
 			CloseOpenedDialog = new Command(OnCloseOpenedDialogExecute);
 			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
 			GenerateActs = new Command<DependencyObject>(OnGenerateActsExecute);
-			BindDialogHostName = new Command<ProjectNamesListControlViewModel>(OnBindDialogHostNameExecute);
+			BindDialogHostName = new Command<IContainDialogHostId>(OnBindDialogHostNameExecute);
 			SendCryptedConnectionString = new Command<ICryptedConnectionStringRequired>(OnSendCryptedConnectionStringExecute);
 		}
 
@@ -120,10 +121,10 @@ namespace ActGenerator.ViewModel
 			}
 		}
 
-		public Command<ProjectNamesListControlViewModel> BindDialogHostName { get; private set; }
-		private void OnBindDialogHostNameExecute(ProjectNamesListControlViewModel projectNamesListControlViewModel)
+		public Command<IContainDialogHostId> BindDialogHostName { get; private set; }
+		private void OnBindDialogHostNameExecute(IContainDialogHostId dialogHostIdContainer)
 		{
-			projectNamesListControlViewModel.DialogHostId = DialogHostId;
+			dialogHostIdContainer.DialogHostId = DialogHostId;
 		}
 
 		public Command<ICryptedConnectionStringRequired> SendCryptedConnectionString { get; private set; }
