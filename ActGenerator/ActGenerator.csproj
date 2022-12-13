@@ -120,6 +120,7 @@
     <Compile Include="ViewModel\ActGeneratorViewModel.cs" />
     <Compile Include="ViewModel\Controls\HumenListControlViewModel.cs" />
     <Compile Include="ViewModel\Controls\ProjectNamesListControlViewModel.cs" />
+    <Compile Include="ViewModel\Dialogs\AddHumanDialogViewModel.cs" />
     <Compile Include="ViewModel\Dialogs\AddProjectNameDialogViewModel.cs" />
     <Compile Include="ViewModel\Interfaces\IContainDialogHostId.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
