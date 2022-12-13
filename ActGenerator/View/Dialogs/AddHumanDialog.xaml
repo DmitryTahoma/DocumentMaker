@@ -13,19 +13,57 @@
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
+        <Grid x:Name="SecondColumn" Grid.Column="1" />
 
-        <CheckBox Content="Працівник" />
-        <TextBlock Grid.Column="1" Text="Професія" />
+        <materialDesign:Card Grid.ColumnSpan="2" Style="{StaticResource AddHumanDialogHeaderCard}" />
 
-        <CheckBox Grid.Row="1" Content="Алєйникова Марина Сергіївна" />
+        <CheckBox Content="Працівник" Style="{StaticResource AddHumanDialogHeaderCheckBox}" />
         <TextBlock
-            Grid.Row="1"
             Grid.Column="1"
-            Text="Різник" />
+            Style="{StaticResource AddHumanDialogHeaderTextBlock}"
+            Text="Основний шаблон" />
+
+        <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2">
+            <StackPanel Orientation="Vertical">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="{Binding ElementName=SecondColumn, Path=ActualWidth}" />
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox Content="Алєйникова Марина Сергіївна" Style="{StaticResource AddHumanDialogItemCheckBox}" />
+
+                    <TextBlock
+                        Grid.Column="1"
+                        Style="{StaticResource AddHumanDialogItemTextBlock}"
+                        Text="Технічний дизайнер" />
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+
+        <materialDesign:Card
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+            Style="{StaticResource AddHumanDialogBottomCard}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Button Content="Додати" Style="{StaticResource MaterialDesignFlatDarkButton}" />
+
+                <Button
+                    Grid.Column="1"
+                    Content="Скасувати"
+                    Style="{StaticResource MaterialDesignFlatDarkButton}" />
+            </Grid>
+        </materialDesign:Card>
     </Grid>
 </UserControl>

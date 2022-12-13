@@ -342,6 +342,46 @@
                 <Setter Property="Margin" Value="15,0" />
             </Style>
 
+            <Style x:Key="AddHumanDialogHeaderCard" TargetType="materialDesign:Card">
+                <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth1" />
+                <Setter Property="materialDesign:ShadowAssist.ShadowEdges" Value="Bottom" />
+            </Style>
+
+            <Style
+                x:Key="AddHumanDialogHeaderCheckBox"
+                BasedOn="{StaticResource MaterialDesignCheckBox}"
+                TargetType="CheckBox">
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="FontWeight" Value="Bold" />
+            </Style>
+
+            <Style x:Key="AddHumanDialogHeaderTextBlock" TargetType="TextBlock">
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="FontWeight" Value="Bold" />
+            </Style>
+
+            <Style
+                x:Key="AddHumanDialogItemCheckBox"
+                BasedOn="{StaticResource MaterialDesignCheckBox}"
+                TargetType="CheckBox">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+
+            <Style x:Key="AddHumanDialogItemTextBlock" TargetType="TextBlock">
+                <Setter Property="Margin" Value="22,5,5,5" />
+                <Setter Property="VerticalAlignment" Value="Bottom" />
+            </Style>
+
+            <Style x:Key="AddHumanDialogBottomCard" TargetType="materialDesign:Card">
+                <Setter Property="Padding" Value="5" />
+                <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth3" />
+                <Setter Property="materialDesign:ShadowAssist.ShadowEdges" Value="Top" />
+            </Style>
+
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
