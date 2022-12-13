@@ -12,6 +12,8 @@ namespace ActGenerator.View.Controls
 	/// </summary>
 	public partial class CheckBoxList : UserControl
 	{
+		private const string emptyTextValue = "<не обрано>";
+
 		private bool needUpdateIsSelectedAll = true;
 
 		public CheckBoxList()
@@ -44,7 +46,7 @@ namespace ActGenerator.View.Controls
 			get { return (string)GetValue(TextProperty); }
 			set { SetValue(TextProperty, value); }
 		}
-		public static readonly DependencyProperty TextProperty = DependencyProperty.Register(nameof(Text), typeof(string), typeof(CheckBoxList));
+		public static readonly DependencyProperty TextProperty = DependencyProperty.Register(nameof(Text), typeof(string), typeof(CheckBoxList), new PropertyMetadata(emptyTextValue));
 
 		public bool? IsSelectedAll
 		{
@@ -144,7 +146,7 @@ namespace ActGenerator.View.Controls
 
 			if (!findedFirst)
 			{
-				Text = null;
+				Text = emptyTextValue;
 			}
 			else
 			{
