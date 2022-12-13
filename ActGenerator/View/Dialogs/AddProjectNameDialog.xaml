@@ -60,7 +60,7 @@
                 <CheckBox
                     Grid.Column="1"
                     Command="{Binding ChangeIsCheckedAllProjectNames}"
-                    Content="Алтернативні назви"
+                    Content="Альтернативні назви"
                     IsChecked="{Binding ProjectNamesCheckBoxIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource AddProjectNameRightHeaderItemCheckBox}" />
             </Grid>
