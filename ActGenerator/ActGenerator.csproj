@@ -94,6 +94,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Dialogs\AddHumanDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Dialogs\AddProjectNameDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -130,6 +134,9 @@
     </Compile>
     <Compile Include="View\Controls\ProjectNamesListControl.xaml.cs">
       <DependentUpon>ProjectNamesListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\AddHumanDialog.xaml.cs">
+      <DependentUpon>AddHumanDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Dialogs\AddProjectNameDialog.xaml.cs">
       <DependentUpon>AddProjectNameDialog.xaml</DependentUpon>

@@ -26,7 +26,7 @@
             <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Список працівників" />
 
             <Menu Grid.Row="1">
-                <MenuItem ToolTip="Додати">
+                <MenuItem Command="{Binding AddHumanCommand}" ToolTip="Додати">
                     <MenuItem.Header>
                         <materialDesign:PackIcon Kind="PlusCircleOutline" Style="{StaticResource IconForMenuItem}" />
                     </MenuItem.Header>
