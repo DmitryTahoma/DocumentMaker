@@ -1,6 +1,7 @@
 ﻿using ActGenerator.Model.Dialogs;
 using ActGenerator.View.Controls;
 using DocumentMakerModelLibrary.OfficeFiles.Human;
+using MaterialDesignThemes.Wpf;
 using Mvvm;
 using Mvvm.Commands;
 using System;
@@ -24,6 +25,9 @@ namespace ActGenerator.ViewModel.Dialogs
 		public AddHumanDialogViewModel()
 		{
 			InitCommands();
+			SelectedHumanData = items
+				.Where(x => x.NameCheckBox.IsChecked == true)
+				.Select(y => y.DataContext);
 
 			State = ViewModelState.Initialized;
 		}
@@ -44,6 +48,10 @@ namespace ActGenerator.ViewModel.Dialogs
 		}
 		public static readonly DependencyProperty HumenCheckBoxIsCheckedProperty = DependencyProperty.Register(nameof(HumenCheckBoxIsChecked), typeof(bool?), typeof(AddHumanDialogViewModel), new PropertyMetadata(false));
 
+		public bool IsPressedAdd { get; private set; } = false;
+
+		public IEnumerable<HumanData> SelectedHumanData { get; private set; } = null;
+
 		#endregion
 
 		#region Commands
@@ -53,6 +61,7 @@ namespace ActGenerator.ViewModel.Dialogs
 			ViewLoaded = new Command(OnViewLoadedExecute);
 			BindHumenGrid = new Command<Grid>(OnBindHumenGridExecute);
 			ChangeIsCheckedAllHumen = new Command(OnChangeIsCheckedAllHumenExecute);
+			AddCommand = new Command(OnAddCommandExecute);
 		}
 
 		public Command<Grid> BindHumenGrid { get; private set; }
@@ -69,6 +78,7 @@ namespace ActGenerator.ViewModel.Dialogs
 		{
 			HumenCheckBoxIsChecked = false;
 			ChangeIsCheckedAllHumen?.Execute();
+			IsPressedAdd = false;
 
 			if (State == ViewModelState.Initialized)
 			{
@@ -96,6 +106,14 @@ namespace ActGenerator.ViewModel.Dialogs
 				item.NameCheckBox.IsChecked = HumenCheckBoxIsChecked;
 			}
 			needUpdateHumenCheckBoxIsChecked = true;
+		}
+
+		public Command AddCommand { get; private set; }
+		private void OnAddCommandExecute()
+		{
+			IsPressedAdd = true;
+
+			DialogHost.CloseDialogCommand.Execute(null, null);
 		}
 
 		#endregion

@@ -63,7 +63,10 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <Button Content="Додати" Style="{StaticResource MaterialDesignFlatDarkButton}" />
+                <Button
+                    Command="{Binding AddCommand}"
+                    Content="Додати"
+                    Style="{StaticResource MaterialDesignFlatDarkButton}" />
 
                 <Button
                     Grid.Column="1"

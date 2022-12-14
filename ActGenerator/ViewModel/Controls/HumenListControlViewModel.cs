@@ -1,7 +1,9 @@
 ﻿using ActGenerator.View.Dialogs;
+using ActGenerator.ViewModel.Dialogs;
 using ActGenerator.ViewModel.Interfaces;
 using Dml;
 using Dml.Model.Template;
+using DocumentMakerModelLibrary.OfficeFiles.Human;
 using MaterialDesignThemes.Wpf;
 using Mvvm.Commands;
 
@@ -10,9 +12,12 @@ namespace ActGenerator.ViewModel.Controls
 	public class HumenListControlViewModel : IContainDialogHostId
 	{
 		AddHumanDialog addHumanDialog = new AddHumanDialog();
+		AddHumanDialogViewModel addHumanDialogViewModel = null;
 
 		public HumenListControlViewModel()
 		{
+			addHumanDialogViewModel = addHumanDialog.DataContext as AddHumanDialogViewModel;
+
 			InitCommands();
 		}
 
@@ -47,6 +52,13 @@ namespace ActGenerator.ViewModel.Controls
 		private async void OnAddHumanCommandExecute()
 		{
 			await DialogHost.Show(addHumanDialog, DialogHostId);
+			if(addHumanDialogViewModel.IsPressedAdd)
+			{
+				foreach (HumanData humanData in addHumanDialogViewModel.SelectedHumanData)
+				{
+
+				}
+			}
 		}
 
 		#endregion
