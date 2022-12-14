@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace DocumentMakerModelLibrary.OfficeFiles
 {
-	internal class XlsxLoader
+	public class XlsxLoader
 	{
 		public void LoadHumans(string path, ObservableRangeCollection<HumanData> humansData)
 		{
