@@ -2,9 +2,9 @@
     x:Class="ActGenerator.View.Controls.HumenListControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cmd="clr-namespace:Mvvm.Commands;assembly=Mvvm"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:local="clr-namespace:ActGenerator.View.Controls"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:ActGenerator.ViewModel.Controls"
@@ -16,37 +16,44 @@
         <vm:HumenListControlViewModel />
     </UserControl.DataContext>
 
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
+    <Grid Grid.IsSharedSizeScope="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
 
-            <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Список працівників" />
+        <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Список працівників" />
 
-            <Menu Grid.Row="1">
-                <MenuItem Command="{Binding AddHumanCommand}" ToolTip="Додати">
-                    <MenuItem.Header>
-                        <materialDesign:PackIcon Kind="PlusCircleOutline" Style="{StaticResource IconForMenuItem}" />
-                    </MenuItem.Header>
-                </MenuItem>
-                <MenuItem CommandParameter="{Binding ElementName=HumenListView, Path=SelectedItems}" ToolTip="Видалити">
-                    <MenuItem.Header>
-                        <materialDesign:PackIcon Kind="SortVariantRemove" Style="{StaticResource IconForMenuItem}" />
-                    </MenuItem.Header>
-                </MenuItem>
-            </Menu>
+        <Menu Grid.Row="1">
+            <MenuItem Command="{Binding AddHumanCommand}" ToolTip="Додати">
+                <MenuItem.Header>
+                    <materialDesign:PackIcon Kind="PlusCircleOutline" Style="{StaticResource IconForMenuItem}" />
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem CommandParameter="{Binding ElementName=HumenListView, Path=SelectedItems}" ToolTip="Видалити">
+                <MenuItem.Header>
+                    <materialDesign:PackIcon Kind="SortVariantRemove" Style="{StaticResource IconForMenuItem}" />
+                </MenuItem.Header>
+            </MenuItem>
+        </Menu>
 
-            <Grid x:Name="HumenGrid" Grid.Row="2">
+        <materialDesign:Card Grid.Row="2" Style="{StaticResource HumenListControlHeaderCard}" />
+        <ScrollViewer
+            x:Name="HumenHeaderScrollViewer"
+            Grid.Row="2"
+            HorizontalScrollBarVisibility="Hidden"
+            VerticalScrollBarVisibility="Hidden">
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" SharedSizeGroup="HumenListControlGridNameColumn" />
+                    <ColumnDefinition Width="auto" SharedSizeGroup="HumenListControlGridSumColumn" />
+                    <ColumnDefinition Width="auto" SharedSizeGroup="HumenListControlGridTemplatesColumn" />
+                    <ColumnDefinition Width="17" />
                 </Grid.ColumnDefinitions>
 
                 <CheckBox Content="ПІБ" Style="{StaticResource HumenListControlHeaderCheckBox}" />
@@ -59,12 +66,32 @@
                     Style="{StaticResource HumenListControlHeaderTextBlock}"
                     Text="Шаблони" />
             </Grid>
-        </Grid>
-    </ScrollViewer>
+        </ScrollViewer>
+
+        <ScrollViewer
+            Grid.Row="3"
+            HorizontalScrollBarVisibility="Auto"
+            VerticalScrollBarVisibility="Auto">
+            <Grid x:Name="HumenGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="HumenListControlGridNameColumn" />
+                    <ColumnDefinition SharedSizeGroup="HumenListControlGridSumColumn" />
+                    <ColumnDefinition SharedSizeGroup="HumenListControlGridTemplatesColumn" />
+                </Grid.ColumnDefinitions>
+            </Grid>
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="ScrollChanged">
+                    <cmd:EventToCommand Command="{Binding SetScrollChanges}" PassEventArgsToCommand="True" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ScrollViewer>
+    </Grid>
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding BindHumenGrid}" CommandParameter="{Binding ElementName=HumenGrid}" />
+            <i:InvokeCommandAction Command="{Binding BindHumenHeaderScrollViewer}" CommandParameter="{Binding ElementName=HumenHeaderScrollViewer}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 

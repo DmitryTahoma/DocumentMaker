@@ -317,6 +317,12 @@
                 <Setter Property="StaysOpen" Value="True" />
             </Style>
 
+            <Style x:Key="HumenListControlHeaderCard" TargetType="materialDesign:Card">
+                <Setter Property="Margin" Value="-5,0" />
+                <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth1" />
+                <Setter Property="materialDesign:ShadowAssist.ShadowEdges" Value="Bottom" />
+            </Style>
+
             <Style
                 x:Key="HumenListControlHeaderCheckBox"
                 BasedOn="{StaticResource MaterialDesignCheckBox}"

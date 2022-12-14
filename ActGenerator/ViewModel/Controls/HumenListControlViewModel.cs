@@ -15,13 +15,14 @@ using System.Windows.Controls;
 
 namespace ActGenerator.ViewModel.Controls
 {
-	public class HumenListControlViewModel : IContainDialogHostId
+	public class HumenListControlViewModel : DependencyObject, IContainDialogHostId
 	{
 		HumenListControlModel model = new HumenListControlModel();
 
 		AddHumanDialog addHumanDialog = new AddHumanDialog();
 		AddHumanDialogViewModel addHumanDialogViewModel = null;
 
+		ScrollViewer humenHeaderScrollViewer = null;
 		Grid humenGrid = null;
 		List<Item> items = new List<Item>();
 
@@ -36,6 +37,20 @@ namespace ActGenerator.ViewModel.Controls
 
 		public string DialogHostId { get; set; } = null;
 
+		public double ScrollViewerHorizontalOffset
+		{
+			get { return (double)GetValue(ScrollViewerHorizontalOffsetProperty); }
+			set { SetValue(ScrollViewerHorizontalOffsetProperty, value); }
+		}
+		public static readonly DependencyProperty ScrollViewerHorizontalOffsetProperty = DependencyProperty.Register(nameof(ScrollViewerHorizontalOffset), typeof(double), typeof(HumenListControlViewModel));
+
+		public double ScrollViewerVerticalOffset
+		{
+			get { return (double)GetValue(ScrollViewerVerticalOffsetProperty); }
+			set { SetValue(ScrollViewerVerticalOffsetProperty, value); }
+		}
+		public static readonly DependencyProperty ScrollViewerVerticalOffsetProperty = DependencyProperty.Register(nameof(ScrollViewerVerticalOffset), typeof(double), typeof(HumenListControlViewModel));
+
 		#endregion
 
 		#region Commands
@@ -44,6 +59,8 @@ namespace ActGenerator.ViewModel.Controls
 		{
 			AddHumanCommand = new Command(OnAddHumanCommandExecute);
 			BindHumenGrid = new Command<Grid>(OnBindHumenGridExecute);
+			BindHumenHeaderScrollViewer = new Command<ScrollViewer>(OnBindHumenHeaderScrollViewerExecute);
+			SetScrollChanges = new Command<ScrollChangedEventArgs>(OnSetScrollChangesExecute);
 		}
 
 		public Command AddHumanCommand { get; private set; }
@@ -69,6 +86,24 @@ namespace ActGenerator.ViewModel.Controls
 			if(this.humenGrid == null)
 			{
 				this.humenGrid = humenGrid;
+			}
+		}
+
+		public Command<ScrollViewer> BindHumenHeaderScrollViewer { get; private set; }
+		private void OnBindHumenHeaderScrollViewerExecute(ScrollViewer humenHeaderScrollViewer)
+		{
+			if (this.humenHeaderScrollViewer == null)
+			{
+				this.humenHeaderScrollViewer = humenHeaderScrollViewer;
+			}
+		}
+
+		public Command<ScrollChangedEventArgs> SetScrollChanges { get; private set; }
+		private void OnSetScrollChangesExecute(ScrollChangedEventArgs e)
+		{
+			if (humenHeaderScrollViewer != null)
+			{
+				humenHeaderScrollViewer.ScrollToHorizontalOffset(e.HorizontalOffset);
 			}
 		}
 
