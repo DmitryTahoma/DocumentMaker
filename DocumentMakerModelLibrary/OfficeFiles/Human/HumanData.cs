@@ -16,6 +16,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles.Human
 		public string AddressText { get; set; }
 		public string CityName { get; set; }
 		public string MfoText { get; set; }
+		public string DefaultTemplate { get; set; }
 
 		public void SetData(char type, string value)
 		{
@@ -36,6 +37,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles.Human
 					case 'I': CityName = value; break;
 					case 'J': AddressText = value; break;
 					case 'K': MfoText = value; break;
+					case 'L': DefaultTemplate = value; break;
 				}
 			}
 		}
