@@ -67,6 +67,7 @@
 
                 <Button
                     Grid.Column="1"
+                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
                     Content="Скасувати"
                     Style="{StaticResource MaterialDesignFlatDarkButton}" />
             </Grid>
