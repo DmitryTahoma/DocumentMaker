@@ -114,6 +114,7 @@
     <Compile Include="Model\ActGeneratorSession.cs" />
     <Compile Include="Model\ActPartType.cs" />
     <Compile Include="Model\Controls\ProjectNamesListControlModel.cs" />
+    <Compile Include="Model\Dialogs\AddHumanDialogModel.cs" />
     <Compile Include="Model\Dialogs\AddProjectNameDialogModel.cs" />
     <Compile Include="Model\HumanDataContext.cs" />
     <Compile Include="Model\DateTimeItem.cs" />

@@ -1,5 +1,8 @@
-﻿using Mvvm;
+﻿using ActGenerator.Model.Dialogs;
+using DocumentMakerModelLibrary.OfficeFiles.Human;
+using Mvvm;
 using Mvvm.Commands;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,6 +11,8 @@ namespace ActGenerator.ViewModel.Dialogs
 {
 	public class AddHumanDialogViewModel : DependencyObject
 	{
+		AddHumanDialogModel model = new AddHumanDialogModel();
+
 		Grid humenGrid = null;
 
 		public AddHumanDialogViewModel()
@@ -51,9 +56,9 @@ namespace ActGenerator.ViewModel.Dialogs
 			if(State == ViewModelState.Initialized)
 			{
 				State = ViewModelState.Loading;
-				for(int i = 0; i < 100; ++i)
+				foreach (HumanData humanData in model.LoadHumans().OrderBy(x => x.Name))
 				{
-					new Item("Алєйникова Марина Сергіївна", "Технічний дизайнер").AddToGrid(humenGrid);
+					new Item(humanData.Name, humanData.DefaultTemplate).AddToGrid(humenGrid);
 					await Task.Delay(1);
 				}
 				State = ViewModelState.Loaded;
