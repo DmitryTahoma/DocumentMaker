@@ -58,7 +58,7 @@ namespace ActGenerator.ViewModel.Dialogs
 				State = ViewModelState.Loading;
 				foreach (HumanData humanData in model.LoadHumans().OrderBy(x => x.Name))
 				{
-					new Item(humanData.Name, humanData.DefaultTemplate).AddToGrid(humenGrid);
+					new Item(humanData).AddToGrid(humenGrid);
 					await Task.Delay(1);
 				}
 				State = ViewModelState.Loaded;
@@ -76,15 +76,17 @@ namespace ActGenerator.ViewModel.Dialogs
 			static readonly Style checkBoxItemStyle = Application.Current.FindResource("AddHumanDialogItemCheckBox") as Style;
 			static readonly Style textBlockItemStyle = Application.Current.FindResource("AddHumanDialogItemTextBlock") as Style;
 
-			public Item(string name, string template)
+			public Item(HumanData dataContext)
 			{
-				NameCheckBox = new CheckBox { Content = name, Style = checkBoxItemStyle };
-				TemplateTextBlock = new TextBlock { Text = template, Style = textBlockItemStyle };
+				NameCheckBox = new CheckBox { Content = dataContext.Name, Style = checkBoxItemStyle };
+				TemplateTextBlock = new TextBlock { Text = dataContext.DefaultTemplate, Style = textBlockItemStyle };
 				Grid.SetColumn(TemplateTextBlock, 1);
+				DataContext = dataContext;
 			}
 
 			public CheckBox NameCheckBox { get; private set; }
 			public TextBlock TemplateTextBlock { get; private set; }
+			public HumanData DataContext { get; set; }
 
 			public void AddToGrid(Grid grid)
 			{
