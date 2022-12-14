@@ -1,18 +1,29 @@
-﻿using ActGenerator.View.Dialogs;
+﻿using ActGenerator.Model.Controls;
+using ActGenerator.View.Controls;
+using ActGenerator.View.Dialogs;
 using ActGenerator.ViewModel.Dialogs;
 using ActGenerator.ViewModel.Interfaces;
-using Dml;
-using Dml.Model.Template;
+using DocumentMakerModelLibrary;
 using DocumentMakerModelLibrary.OfficeFiles.Human;
 using MaterialDesignThemes.Wpf;
 using Mvvm.Commands;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace ActGenerator.ViewModel.Controls
 {
 	public class HumenListControlViewModel : IContainDialogHostId
 	{
+		HumenListControlModel model = new HumenListControlModel();
+
 		AddHumanDialog addHumanDialog = new AddHumanDialog();
 		AddHumanDialogViewModel addHumanDialogViewModel = null;
+
+		Grid humenGrid = null;
+		List<Item> items = new List<Item>();
 
 		public HumenListControlViewModel()
 		{
@@ -23,20 +34,6 @@ namespace ActGenerator.ViewModel.Controls
 
 		#region Properties
 
-		public ObservableRangeCollection<DocumentTemplate> DocumentTemplatesList => new ObservableRangeCollection<DocumentTemplate>
-			{
-				new DocumentTemplate("Скриптувальник", DocumentTemplateType.Scripter),
-				new DocumentTemplate("Технічний дизайнер", DocumentTemplateType.Cutter),
-				new DocumentTemplate("Художник", DocumentTemplateType.Painter),
-				new DocumentTemplate("Моделлер", DocumentTemplateType.Modeller),
-				new DocumentTemplate("Тестувальник", DocumentTemplateType.Tester),
-				new DocumentTemplate("Програміст", DocumentTemplateType.Programmer),
-				new DocumentTemplate("Звукорежисер", DocumentTemplateType.Soundman),
-				new DocumentTemplate("Аніматор", DocumentTemplateType.Animator),
-				new DocumentTemplate("Перекладач", DocumentTemplateType.Translator),
-				new DocumentTemplate("Підтримка", DocumentTemplateType.Support),
-			};
-
 		public string DialogHostId { get; set; } = null;
 
 		#endregion
@@ -46,6 +43,7 @@ namespace ActGenerator.ViewModel.Controls
 		private void InitCommands()
 		{
 			AddHumanCommand = new Command(OnAddHumanCommandExecute);
+			BindHumenGrid = new Command<Grid>(OnBindHumenGridExecute);
 		}
 
 		public Command AddHumanCommand { get; private set; }
@@ -56,11 +54,78 @@ namespace ActGenerator.ViewModel.Controls
 			{
 				foreach (HumanData humanData in addHumanDialogViewModel.SelectedHumanData)
 				{
-
+					if(items.FirstOrDefault(x => x.DataContext == humanData) == null)
+					{
+						items.Add(CreateItem(humanData));
+						await Task.Delay(1);
+					}
 				}
 			}
 		}
 
+		public Command<Grid> BindHumenGrid { get; private set; }
+		private void OnBindHumenGridExecute(Grid humenGrid)
+		{
+			if(this.humenGrid == null)
+			{
+				this.humenGrid = humenGrid;
+			}
+		}
+
 		#endregion
+
+		#region Methods
+
+		private Item CreateItem(HumanData humanData)
+		{
+			Item item = new Item(humanData);
+			List<FullDocumentTemplate> itemsSource = model.DocumentTemplatesList.ToList();
+			FullDocumentTemplate deafultTemplate = itemsSource.FirstOrDefault(x => x.Name == humanData.DefaultTemplate);
+			if (deafultTemplate != null)
+			{
+				itemsSource.Remove(deafultTemplate);
+				itemsSource.Insert(0, deafultTemplate);
+			}
+			item.TemplateCheckBoxList.ItemsSource = itemsSource;
+			if (deafultTemplate != null)
+			{
+				item.TemplateCheckBoxList.CheckFirst();
+			}
+			item.AddToGrid(humenGrid);
+			return item;
+		}
+
+		#endregion
+
+		class Item
+		{
+			static readonly Style textBoxItemStyle = Application.Current.FindResource("HumenListControlItemTextBox") as Style;
+
+			public Item(HumanData dataContext)
+			{
+				NameCheckBox = new CheckBox { Content = dataContext.Name };
+				SumTextBox = new TextBox { Style = textBoxItemStyle };
+				Grid.SetColumn(SumTextBox, 1);
+				TemplateCheckBoxList = new CheckBoxList();
+				Grid.SetColumn(TemplateCheckBoxList, 2);
+				DataContext = dataContext;
+			}
+
+			public CheckBox NameCheckBox { get; private set; }
+			public TextBox SumTextBox { get; private set; }
+			public CheckBoxList TemplateCheckBoxList { get; private set; }
+			public HumanData DataContext { get; set; }
+
+			public void AddToGrid(Grid grid)
+			{
+				Grid.SetRow(NameCheckBox, grid.RowDefinitions.Count);
+				Grid.SetRow(SumTextBox, grid.RowDefinitions.Count);
+				Grid.SetRow(TemplateCheckBoxList, grid.RowDefinitions.Count);
+				grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+				grid.Children.Add(NameCheckBox);
+				grid.Children.Add(SumTextBox);
+				grid.Children.Add(TemplateCheckBoxList);
+			}
+		}
 	}
 }

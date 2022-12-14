@@ -202,6 +202,15 @@ namespace ActGenerator.View.Controls
 			}
 		}
 
+		public void CheckFirst()
+		{
+			CheckBox first = ItemsStackPanel.Children.Cast<CheckBox>().FirstOrDefault();
+			if(first != null)
+			{
+				first.IsChecked = true;
+			}
+		}
+
 		#endregion
 	}
 }
