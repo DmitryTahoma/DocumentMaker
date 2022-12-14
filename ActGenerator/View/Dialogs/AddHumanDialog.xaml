@@ -29,7 +29,11 @@
 
         <materialDesign:Card Grid.ColumnSpan="2" Style="{StaticResource AddHumanDialogHeaderCard}" />
 
-        <CheckBox Content="Працівник" Style="{StaticResource AddHumanDialogHeaderCheckBox}" />
+        <CheckBox
+            Command="{Binding ChangeIsCheckedAllHumen}"
+            Content="Працівник"
+            IsChecked="{Binding HumenCheckBoxIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Style="{StaticResource AddHumanDialogHeaderCheckBox}" />
         <TextBlock
             Grid.Column="1"
             Style="{StaticResource AddHumanDialogHeaderTextBlock}"

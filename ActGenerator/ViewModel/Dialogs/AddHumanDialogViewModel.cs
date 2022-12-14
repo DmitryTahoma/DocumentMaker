@@ -1,7 +1,10 @@
 ﻿using ActGenerator.Model.Dialogs;
+using ActGenerator.View.Controls;
 using DocumentMakerModelLibrary.OfficeFiles.Human;
 using Mvvm;
 using Mvvm.Commands;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +15,9 @@ namespace ActGenerator.ViewModel.Dialogs
 	public class AddHumanDialogViewModel : DependencyObject
 	{
 		AddHumanDialogModel model = new AddHumanDialogModel();
+
+		List<Item> items = new List<Item>();
+		bool needUpdateHumenCheckBoxIsChecked = true;
 
 		Grid humenGrid = null;
 
@@ -31,6 +37,13 @@ namespace ActGenerator.ViewModel.Dialogs
 		}
 		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(AddHumanDialogViewModel));
 
+		public bool? HumenCheckBoxIsChecked
+		{
+			get { return (bool?)GetValue(HumenCheckBoxIsCheckedProperty); }
+			set { SetValue(HumenCheckBoxIsCheckedProperty, value); }
+		}
+		public static readonly DependencyProperty HumenCheckBoxIsCheckedProperty = DependencyProperty.Register(nameof(HumenCheckBoxIsChecked), typeof(bool?), typeof(AddHumanDialogViewModel), new PropertyMetadata(false));
+
 		#endregion
 
 		#region Commands
@@ -39,6 +52,7 @@ namespace ActGenerator.ViewModel.Dialogs
 		{
 			ViewLoaded = new Command(OnViewLoadedExecute);
 			BindHumenGrid = new Command<Grid>(OnBindHumenGridExecute);
+			ChangeIsCheckedAllHumen = new Command(OnChangeIsCheckedAllHumenExecute);
 		}
 
 		public Command<Grid> BindHumenGrid { get; private set; }
@@ -53,21 +67,52 @@ namespace ActGenerator.ViewModel.Dialogs
 		public Command ViewLoaded { get; private set; }
 		private async void OnViewLoadedExecute()
 		{
-			if(State == ViewModelState.Initialized)
+			HumenCheckBoxIsChecked = false;
+			ChangeIsCheckedAllHumen?.Execute();
+
+			if (State == ViewModelState.Initialized)
 			{
 				State = ViewModelState.Loading;
 				foreach (HumanData humanData in model.LoadHumans().OrderBy(x => x.Name))
 				{
-					new Item(humanData).AddToGrid(humenGrid);
+					Item item = new Item(humanData);
+					item.NameCheckBox.Checked += NameCheckBoxCheckedChanged;
+					item.NameCheckBox.Unchecked += NameCheckBoxCheckedChanged;
+					item.AddToGrid(humenGrid);
+					items.Add(item);
 					await Task.Delay(1);
 				}
+				UpdateHumenCheckBoxIsChecked();
 				State = ViewModelState.Loaded;
 			}
+		}
+
+		public Command ChangeIsCheckedAllHumen { get; private set; }
+		private void OnChangeIsCheckedAllHumenExecute()
+		{
+			needUpdateHumenCheckBoxIsChecked = false;
+			foreach(Item item in items)
+			{
+				item.NameCheckBox.IsChecked = HumenCheckBoxIsChecked;
+			}
+			needUpdateHumenCheckBoxIsChecked = true;
 		}
 
 		#endregion
 
 		#region Methods
+
+		private void UpdateHumenCheckBoxIsChecked()
+		{
+			if (!needUpdateHumenCheckBoxIsChecked) return;
+
+			HumenCheckBoxIsChecked = CheckBoxList.UpdateGeneralCheckBoxState(items.Select(x => x.NameCheckBox));
+		}
+
+		private void NameCheckBoxCheckedChanged(object sender, RoutedEventArgs e)
+		{
+			UpdateHumenCheckBoxIsChecked();
+		}
 
 		#endregion
 
