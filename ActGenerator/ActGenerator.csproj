@@ -86,6 +86,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Controls\DocumentListControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Controls\HumenListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -131,6 +135,9 @@
     </Compile>
     <Compile Include="View\Controls\CheckBoxList.xaml.cs">
       <DependentUpon>CheckBoxList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Controls\DocumentListControl.xaml.cs">
+      <DependentUpon>DocumentListControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Controls\HumenListControl.xaml.cs">
       <DependentUpon>HumenListControl.xaml</DependentUpon>
