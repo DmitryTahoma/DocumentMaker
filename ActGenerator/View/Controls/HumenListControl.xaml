@@ -56,7 +56,11 @@
                     <ColumnDefinition Width="17" />
                 </Grid.ColumnDefinitions>
 
-                <CheckBox Content="ПІБ" Style="{StaticResource HumenListControlHeaderCheckBox}" />
+                <CheckBox
+                    Command="{Binding ChangeIsCheckedAllHumen}"
+                    Content="ПІБ"
+                    IsChecked="{Binding HumenCheckBoxIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource HumenListControlHeaderCheckBox}" />
                 <TextBlock
                     Grid.Column="1"
                     Style="{StaticResource HumenListControlHeaderTextBlock}"
