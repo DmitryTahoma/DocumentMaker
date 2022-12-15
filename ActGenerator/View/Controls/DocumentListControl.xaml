@@ -9,6 +9,7 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -21,10 +22,7 @@
         <Menu Grid.Row="1">
             <MenuItem ToolTip="Додати">
                 <MenuItem.Header>
-                    <materialDesign:PackIcon
-                        Width="24"
-                        Height="24"
-                        Kind="PlusCircleOutline" />
+                    <materialDesign:PackIcon Kind="PlusCircleOutline" Style="{StaticResource IconForMenuItem}" />
                 </MenuItem.Header>
             </MenuItem>
         </Menu>
@@ -35,6 +33,6 @@
                 <controls:DocumentListItemControl />
             </StackPanel>
         </ScrollViewer>
-
     </Grid>
+
 </UserControl>
