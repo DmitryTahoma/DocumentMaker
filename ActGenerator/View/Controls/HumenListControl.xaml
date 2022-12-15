@@ -32,7 +32,7 @@
                     <materialDesign:PackIcon Kind="PlusCircleOutline" Style="{StaticResource IconForMenuItem}" />
                 </MenuItem.Header>
             </MenuItem>
-            <MenuItem CommandParameter="{Binding ElementName=HumenListView, Path=SelectedItems}" ToolTip="Видалити">
+            <MenuItem Command="{Binding RemoveSelectedHumen}" ToolTip="Видалити">
                 <MenuItem.Header>
                     <materialDesign:PackIcon Kind="SortVariantRemove" Style="{StaticResource IconForMenuItem}" />
                 </MenuItem.Header>

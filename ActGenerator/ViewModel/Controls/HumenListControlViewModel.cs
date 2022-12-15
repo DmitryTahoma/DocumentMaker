@@ -71,6 +71,7 @@ namespace ActGenerator.ViewModel.Controls
 			BindHumenHeaderScrollViewer = new Command<ScrollViewer>(OnBindHumenHeaderScrollViewerExecute);
 			SetScrollChanges = new Command<ScrollChangedEventArgs>(OnSetScrollChangesExecute);
 			ChangeIsCheckedAllHumen = new Command(OnChangeIsCheckedAllHumenExecute);
+			RemoveSelectedHumen = new Command(OnRemoveSelectedHumenExecute);
 		}
 
 		public Command AddHumanCommand { get; private set; }
@@ -127,6 +128,45 @@ namespace ActGenerator.ViewModel.Controls
 				item.NameCheckBox.IsChecked = HumenCheckBoxIsChecked;
 			}
 			needUpdateHumenCheckBoxIsChecked = true;
+		}
+
+		public Command RemoveSelectedHumen { get; private set; }
+		private async void OnRemoveSelectedHumenExecute()
+		{
+			List<Item> removeList = new List<Item>();
+			foreach(Item item in items)
+			{
+				if(item.NameCheckBox.IsChecked == true)
+				{
+					humenGrid.Children.Remove(item.NameCheckBox);
+					humenGrid.Children.Remove(item.SumTextBox);
+					humenGrid.Children.Remove(item.TemplateCheckBoxList);
+					removeList.Add(item);
+					await Task.Delay(1);
+				}
+			}
+
+			HumenCheckBoxIsChecked = false;
+
+			foreach (Item removeItem in removeList)
+			{
+				items.Remove(removeItem);
+			}
+
+			int row = 0;
+			foreach(Item item in items)
+			{
+				Grid.SetRow(item.NameCheckBox, row);
+				Grid.SetRow(item.SumTextBox, row);
+				Grid.SetRow(item.TemplateCheckBoxList, row);
+
+				++row;
+			}
+
+			foreach(Item _ in removeList)
+			{
+				humenGrid.RowDefinitions.RemoveAt(0);
+			}
 		}
 
 		#endregion
