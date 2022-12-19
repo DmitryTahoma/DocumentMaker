@@ -29,8 +29,8 @@
 
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
             <StackPanel Orientation="Vertical">
-                <controls:DocumentListItemControl />
-                <controls:DocumentListItemControl />
+                <controls:DocumentListItemControl FileName="Test.dcmk" FullName="D:\Projects\DocumentMaker\Test.dcmk" />
+                <controls:DocumentListItemControl FileName="SomeAct.dcmk" FullName="C:\Program Files\Common Files\SomeAct.dcmk" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

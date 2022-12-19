@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="CodeBehind"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -25,8 +26,9 @@
 
         <TextBlock
             Style="{StaticResource DocumentListItemControlTextBlock}"
-            Text="Акт.dcmk"
-            ToolTip="C:\Акт.dcmk" />
+            Text="{Binding ElementName=CodeBehind, Path=FileName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+            ToolTip="{Binding ElementName=CodeBehind, Path=FullName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+
     </DockPanel>
 
 </UserControl>

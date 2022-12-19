@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ActGenerator.View.Controls
 {
@@ -24,5 +12,23 @@ namespace ActGenerator.View.Controls
 		{
 			InitializeComponent();
 		}
+
+		#region Properties
+
+		public string FullName
+		{
+			get { return (string)GetValue(FullNameProperty); }
+			set { SetValue(FullNameProperty, value); }
+		}
+		public static readonly DependencyProperty FullNameProperty = DependencyProperty.Register(nameof(FullName), typeof(string), typeof(DocumentListItemControl), new PropertyMetadata(null));
+
+		public string FileName
+		{
+			get { return (string)GetValue(FileNameProperty); }
+			set { SetValue(FileNameProperty, value); }
+		}
+		public static readonly DependencyProperty FileNameProperty = DependencyProperty.Register(nameof(FileName), typeof(string), typeof(DocumentListItemControl), new PropertyMetadata(null));
+
+		#endregion
 	}
 }
