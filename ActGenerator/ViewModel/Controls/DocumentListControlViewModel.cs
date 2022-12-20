@@ -3,6 +3,7 @@ using DocumentMakerModelLibrary.Files;
 using Mvvm.Commands;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
 
@@ -37,7 +38,7 @@ namespace ActGenerator.ViewModel.Controls
 		}
 
 		public Command AddAct { get; private set; }
-		private void OnAddActExecute()
+		private async void OnAddActExecute()
 		{
 			if (openFileDialog.ShowDialog() == DialogResult.OK)
 			{
@@ -51,6 +52,7 @@ namespace ActGenerator.ViewModel.Controls
 							FileName = Path.GetFileName(filename),
 						});
 					}
+					await Task.Delay(1);
 				}
 			}
 		}
