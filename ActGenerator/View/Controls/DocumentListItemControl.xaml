@@ -12,12 +12,12 @@
 
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Right">
-            <MenuItem ToolTip="Інформація">
+            <MenuItem Style="{StaticResource MaterialDesignBasedMenuItem}" ToolTip="Інформація">
                 <MenuItem.Header>
                     <materialDesign:PackIcon Kind="InfoCircleOutline" Style="{StaticResource IconForMenuItem}" />
                 </MenuItem.Header>
             </MenuItem>
-            <MenuItem ToolTip="Закрити">
+            <MenuItem Style="{StaticResource MaterialDesignBasedMenuItem}" ToolTip="Закрити">
                 <MenuItem.Header>
                     <materialDesign:PackIcon Kind="WindowClose" Style="{StaticResource IconForMenuItem}" />
                 </MenuItem.Header>
