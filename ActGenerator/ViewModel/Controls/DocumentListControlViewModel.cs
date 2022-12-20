@@ -54,6 +54,10 @@ namespace ActGenerator.ViewModel.Controls
 						};
 						documentListItemControl.RemoveCommand = new Command(() => RemoveAct.Execute(documentListItemControl));
 
+						DcmkFile context = new DcmkFile(filename);
+						context.Load();
+						documentListItemControl.DataContext = context;
+
 						itemsCollection.Add(documentListItemControl);
 					}
 					await Task.Delay(1);
