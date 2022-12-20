@@ -4,11 +4,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:ActGenerator.View.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:ActGenerator.ViewModel.Controls"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
+    <UserControl.DataContext>
+        <vm:DocumentListControlViewModel />
+    </UserControl.DataContext>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -20,7 +26,7 @@
         <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Список актів" />
 
         <Menu Grid.Row="1">
-            <MenuItem ToolTip="Додати">
+            <MenuItem Command="{Binding AddAct}" ToolTip="Додати">
                 <MenuItem.Header>
                     <materialDesign:PackIcon Kind="PlusCircleOutline" Style="{StaticResource IconForMenuItem}" />
                 </MenuItem.Header>
@@ -28,11 +34,14 @@
         </Menu>
 
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-            <StackPanel Orientation="Vertical">
-                <controls:DocumentListItemControl FileName="Test.dcmk" FullName="D:\Projects\DocumentMaker\Test.dcmk" />
-                <controls:DocumentListItemControl FileName="SomeAct.dcmk" FullName="C:\Program Files\Common Files\SomeAct.dcmk" />
-            </StackPanel>
+            <StackPanel x:Name="ItemsCollectionStackPanel" Orientation="Vertical" />
         </ScrollViewer>
     </Grid>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding BindItemsCollection}" CommandParameter="{Binding ElementName=ItemsCollectionStackPanel, Path=Children}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
 </UserControl>
