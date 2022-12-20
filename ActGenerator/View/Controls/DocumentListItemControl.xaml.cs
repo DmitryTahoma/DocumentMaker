@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Mvvm.Commands;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace ActGenerator.View.Controls
@@ -28,6 +29,13 @@ namespace ActGenerator.View.Controls
 			set { SetValue(FileNameProperty, value); }
 		}
 		public static readonly DependencyProperty FileNameProperty = DependencyProperty.Register(nameof(FileName), typeof(string), typeof(DocumentListItemControl), new PropertyMetadata(null));
+
+		public Command RemoveCommand
+		{
+			get { return (Command)GetValue(RemoveCommandProperty); }
+			set { SetValue(RemoveCommandProperty, value); }
+		}
+		public static readonly DependencyProperty RemoveCommandProperty = DependencyProperty.Register(nameof(RemoveCommand), typeof(Command), typeof(DocumentListItemControl), new PropertyMetadata(null));
 
 		#endregion
 	}

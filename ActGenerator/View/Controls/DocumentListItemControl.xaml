@@ -17,7 +17,10 @@
                     <materialDesign:PackIcon Kind="InfoCircleOutline" Style="{StaticResource IconForMenuItem}" />
                 </MenuItem.Header>
             </MenuItem>
-            <MenuItem Style="{StaticResource MaterialDesignBasedMenuItem}" ToolTip="Закрити">
+            <MenuItem
+                Command="{Binding ElementName=CodeBehind, Path=RemoveCommand, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource MaterialDesignBasedMenuItem}"
+                ToolTip="Закрити">
                 <MenuItem.Header>
                     <materialDesign:PackIcon Kind="WindowClose" Style="{StaticResource IconForMenuItem}" />
                 </MenuItem.Header>

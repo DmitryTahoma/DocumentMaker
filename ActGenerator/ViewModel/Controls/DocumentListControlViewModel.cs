@@ -26,6 +26,7 @@ namespace ActGenerator.ViewModel.Controls
 		{
 			BindItemsCollection = new Command<UIElementCollection>(OnBindItemsCollectionExecute);
 			AddAct = new Command(OnAddActExecute);
+			RemoveAct = new Command<DocumentListItemControl>(OnRemoveActExecute);
 		}
 
 		public Command<UIElementCollection> BindItemsCollection { get; private set; }
@@ -46,15 +47,24 @@ namespace ActGenerator.ViewModel.Controls
 				{
 					if(itemsCollection.Cast<DocumentListItemControl>().FirstOrDefault(x => x.FullName == filename) == null)
 					{
-						itemsCollection.Add(new DocumentListItemControl
+						DocumentListItemControl documentListItemControl = new DocumentListItemControl
 						{
 							FullName = filename,
 							FileName = Path.GetFileName(filename),
-						});
+						};
+						documentListItemControl.RemoveCommand = new Command(() => RemoveAct.Execute(documentListItemControl));
+
+						itemsCollection.Add(documentListItemControl);
 					}
 					await Task.Delay(1);
 				}
 			}
+		}
+
+		private Command<DocumentListItemControl> RemoveAct { get; set; }
+		private void OnRemoveActExecute(DocumentListItemControl documentListItemControl)
+		{
+			itemsCollection.Remove(documentListItemControl);
 		}
 
 		#endregion
