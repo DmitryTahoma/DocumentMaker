@@ -135,7 +135,7 @@ namespace DocumentMaker
 				SetDataFromController();
 				ViewModel.OpenFiles(ViewModel.ApplicationArgs);
 				ResetHaveUnsavedChanges();
-				LoadFiles();
+				ViewModel.LoadFiles();
 				if (ViewModel.ApplicationArgs != null && ViewModel.ApplicationArgs.Length > 0)
 				{
 					ViewModel.SetSelectedFile(ViewModel.ApplicationArgs.Last());
@@ -359,7 +359,7 @@ namespace DocumentMaker
 			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
 				ViewModel.OpenFiles(openFileDialog.FileNames);
-				LoadFiles();
+				ViewModel.LoadFiles();
 				ViewModel.SetSelectedFile(openFileDialog.FileNames.Last());
 				ViewModel.ChangeOpenedFilesExtension();
 			}
@@ -718,7 +718,7 @@ namespace DocumentMaker
 			{
 				string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
 				ViewModel.OpenFiles(filenames);
-				LoadFiles();
+				ViewModel.LoadFiles();
 				ViewModel.SetSelectedFile(filenames.Last(filename => filename.EndsWith(BaseDmxFile.Extension) || filename.EndsWith(DcmkFile.Extension)));
 				ViewModel.ChangeOpenedFilesExtension();
 				e.Handled = true;
@@ -1141,12 +1141,6 @@ namespace DocumentMaker
 			ViewModel.ActSum = ActSumInput.Text;
 			ViewModel.ActSaldo = ActSaldoInput.Text;
 			if (actionsStackingEnable) ViewModel.EnableActionsStacking();
-		}
-
-		private void LoadFiles()
-		{
-			ViewModel.LoadFiles();
-			ViewModel.SetSelectedFile(ViewModel.GetSelectedFile()?.FullName);
 		}
 
 		private void AddLoadedBackData()

@@ -292,6 +292,7 @@ namespace DocumentMaker.ViewModel
 		public void LoadFiles()
 		{
 			model.LoadFiles();
+			SetSelectedFile(GetSelectedFile()?.FullName);
 		}
 
 		public void SetDataFromFile(DmxFile file)
