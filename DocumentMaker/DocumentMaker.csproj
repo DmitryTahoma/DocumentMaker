@@ -85,6 +85,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controller\Controls\FullBackDataController.cs" />
+    <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="View\Dialogs\ChangeDatesDialog.xaml.cs">
       <DependentUpon>ChangeDatesDialog.xaml</DependentUpon>
     </Compile>

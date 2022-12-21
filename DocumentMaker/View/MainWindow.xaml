@@ -8,6 +8,7 @@
     xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:uc="clr-namespace:DocumentMaker.View.Controls"
+    xmlns:vm="clr-namespace:DocumentMaker.ViewModel"
     x:Name="WindowContext"
     Title="DocumentMaker"
     MinWidth="700"
@@ -22,6 +23,10 @@
     PreviewDrop="WindowPreviewDrop"
     PreviewKeyDown="WindowKeyDown"
     mc:Ignorable="d">
+
+    <Window.DataContext>
+        <vm:MainWindowViewModel />
+    </Window.DataContext>
 
     <Window.Resources>
         <CollectionViewSource x:Key="OpenedFilesListView" Source="{Binding ElementName=WindowContext, Path=OpenedFilesList, UpdateSourceTrigger=PropertyChanged}">
