@@ -175,7 +175,7 @@ namespace DocumentMaker
 				UpdateViewBackData();
 
 				if (OpenedFilesComboBox != null
-					&& OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+					&& ViewModel.SelectedOpenedFile is DmxFile selectedFile)
 				{
 					selectedFile.TemplateType = documentTemplate.Type;
 				}
@@ -192,7 +192,7 @@ namespace DocumentMaker
 				SetDataFromController();
 
 				if (OpenedFilesComboBox != null
-					&& OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+					&& ViewModel.SelectedOpenedFile is DmxFile selectedFile)
 				{
 					selectedFile.SelectedHuman = humanData.Name;
 				}
@@ -203,7 +203,7 @@ namespace DocumentMaker
 		{
 			try
 			{
-				if (!(OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded))
+				if (!(ViewModel.SelectedOpenedFile is DmxFile selectedFile && selectedFile.Loaded))
 				{
 					MessageBox.Show("Спочатку необхідно відкрити файл.",
 									"DocumentMaker | Експорт актів",
@@ -271,7 +271,7 @@ namespace DocumentMaker
 		{
 			try
 			{
-				if (!(OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded))
+				if (!(ViewModel.SelectedOpenedFile is DmxFile selectedFile && selectedFile.Loaded))
 				{
 					MessageBox.Show("Спочатку необхідно відкрити файл.",
 									"DocumentMaker | Експорт актів",
@@ -367,7 +367,7 @@ namespace DocumentMaker
 
 		private void CloseFileClick(object sender, RoutedEventArgs e)
 		{
-			if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
+			if (ViewModel.SelectedOpenedFile is DmxFile selectedFile && selectedFile.Loaded)
 			{
 				CheckNeedSaveBeforeClosing(out DialogResult res);
 				if (res == System.Windows.Forms.DialogResult.Cancel)
@@ -425,7 +425,7 @@ namespace DocumentMaker
 
 		private async void InfoBtnClick(object sender, RoutedEventArgs e)
 		{
-			if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
+			if (ViewModel.SelectedOpenedFile is DmxFile selectedFile && selectedFile.Loaded)
 			{
 				await DialogHost.Show(new HumanInformationDialog(ViewModel.GetSelectedHuman()));
 			}
@@ -781,7 +781,7 @@ namespace DocumentMaker
 				return;
 			}
 
-			if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
+			if (OpenedFilesComboBox != null && ViewModel.SelectedOpenedFile is DmxFile selectedFile && selectedFile.Loaded)
 			{
 				if (HaveUnsavedChangesAtAll())
 				{
@@ -809,7 +809,7 @@ namespace DocumentMaker
 					if (res == System.Windows.Forms.DialogResult.Cancel)
 					{
 						cancelOpenedFilesSelectionChanged = true;
-						OpenedFilesComboBox.SelectedItem = ViewModel.GetSelectedFile();
+						ViewModel.SelectedOpenedFile = ViewModel.GetSelectedFile();
 						return;
 					}
 				}
@@ -846,7 +846,7 @@ namespace DocumentMaker
 
 			ViewModel.ActSum = ActSumInput.Text;
 			if (OpenedFilesComboBox != null
-				 && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+				 && ViewModel.SelectedOpenedFile is DmxFile selectedFile)
 			{
 				selectedFile.ActSum = ActSumInput.Text;
 			}
@@ -894,7 +894,7 @@ namespace DocumentMaker
 
 		private void ExportDcmkClick(object sender, RoutedEventArgs e)
 		{
-			if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
+			if (ViewModel.SelectedOpenedFile is DmxFile selectedFile && selectedFile.Loaded)
 			{
 				saveFileDialog.FileName = ViewModel.GetDcmkFileName();
 				if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -1247,7 +1247,7 @@ namespace DocumentMaker
 			{
 				if (Path.ChangeExtension(file.FullName, null) == Path.ChangeExtension(filename, null) || Path.ChangeExtension(file.Name, null) == Path.ChangeExtension(filename, null))
 				{
-					OpenedFilesComboBox.SelectedItem = file;
+					ViewModel.SelectedOpenedFile = file;
 					break;
 				}
 			}
@@ -1606,7 +1606,7 @@ namespace DocumentMaker
 		private void TechnicalTaskDatePicker_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			ViewModel.TechnicalTaskDateText = TechnicalTaskDatePicker.Text;
-			if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+			if (OpenedFilesComboBox != null && ViewModel.SelectedOpenedFile is DmxFile selectedFile)
 			{
 				selectedFile.TechnicalTaskDateText = TechnicalTaskDatePicker.Text;
 			}
@@ -1615,7 +1615,7 @@ namespace DocumentMaker
 		private void ActDatePicker_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			ViewModel.ActDateText = ActDatePicker.Text;
-			if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+			if (OpenedFilesComboBox != null && ViewModel.SelectedOpenedFile is DmxFile selectedFile)
 			{
 				selectedFile.ActDateText = ActDatePicker.Text;
 			}
@@ -1624,7 +1624,7 @@ namespace DocumentMaker
 		private void TechnicalTaskNumTextInput_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			ViewModel.TechnicalTaskNumText = TechnicalTaskNumTextInput.Text;
-			if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+			if (OpenedFilesComboBox != null && ViewModel.SelectedOpenedFile is DmxFile selectedFile)
 			{
 				selectedFile.TechnicalTaskNumText = TechnicalTaskNumTextInput.Text;
 			}

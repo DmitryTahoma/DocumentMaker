@@ -94,6 +94,13 @@ namespace DocumentMaker.ViewModel
 		public bool CanUndo => model.CanUndo;
 		public bool HaveUnsavedChanges { get => model.HaveUnsavedChanges; set => model.HaveUnsavedChanges = value; }
 
+		public DmxFile SelectedOpenedFile
+		{
+			get { return (DmxFile)GetValue(SelectedOpenedFileProperty); }
+			set { SetValue(SelectedOpenedFileProperty, value); }
+		}
+		public static readonly DependencyProperty SelectedOpenedFileProperty = DependencyProperty.Register(nameof(SelectedOpenedFile), typeof(DmxFile), typeof(MainWindowViewModel));
+
 		#endregion
 
 		#region Methods

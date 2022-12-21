@@ -180,6 +180,7 @@
                 Grid.Row="2"
                 materialDesign:HintAssist.Hint="Файл"
                 ItemsSource="{Binding Source={StaticResource OpenedFilesListView}}"
+                SelectedItem="{Binding SelectedOpenedFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 SelectionChanged="OpenedFilesSelectionChanged"
                 Style="{StaticResource MaterialDesignFilledComboBox}" />
 
