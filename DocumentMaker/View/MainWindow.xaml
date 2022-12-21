@@ -104,17 +104,17 @@
                 </MenuItem>
                 <MenuItem Header="Редагування" Icon="{materialDesign:PackIcon Kind=FileDocumentEditOutline}">
                     <MenuItem
+                        x:Name="MenuUndoButton"
                         Click="UndoClick"
                         Header="Повернути"
                         Icon="{materialDesign:PackIcon Kind=Undo}"
-                        InputGestureText="Ctrl+Z"
-                        IsEnabled="{Binding ElementName=WindowContext, Path=CanUndo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        InputGestureText="Ctrl+Z" />
                     <MenuItem
+                        x:Name="MenuRedoButton"
                         Click="RedoClick"
                         Header="Повторити"
                         Icon="{materialDesign:PackIcon Kind=Redo}"
-                        InputGestureText="Ctrl+Y"
-                        IsEnabled="{Binding ElementName=WindowContext, Path=CanRedo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        InputGestureText="Ctrl+Y" />
                     <Separator />
                     <MenuItem
                         Click="ChangeAllDates"
@@ -148,9 +148,9 @@
                             Kind="FileWordOutline" />
                     </Button>
                     <Button
+                        x:Name="ToolBarUndoButton"
                         Padding="5"
                         Click="UndoClick"
-                        IsEnabled="{Binding ElementName=WindowContext, Path=CanUndo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         ToolTip="Повернути (Ctrl+Z)">
                         <materialDesign:PackIcon
                             Width="18"
@@ -158,9 +158,9 @@
                             Kind="Undo" />
                     </Button>
                     <Button
+                        x:Name="ToolBarRedoButton"
                         Padding="5"
                         Click="RedoClick"
-                        IsEnabled="{Binding ElementName=WindowContext, Path=CanRedo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         ToolTip="Повторити (Ctrl+Y)">
                         <materialDesign:PackIcon
                             Width="18"
@@ -179,18 +179,19 @@
                 Style="{StaticResource MaterialDesignFilledComboBox}" />
 
             <Button
+                x:Name="ButtonOpenContent"
                 Grid.Row="3"
                 Height="{Binding ElementName=FileContentGrid, Path=Height}"
                 Click="OpenFileClick"
                 Content="Відкрити файл"
                 FontSize="25"
                 Style="{StaticResource MaterialDesignOutlinedDarkButton}"
-                Visibility="{Binding ElementName=WindowContext, Path=ButtonOpenContentVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                Visibility="Visible" />
 
             <Grid
                 x:Name="FileContentGrid"
                 Grid.Row="3"
-                Visibility="{Binding ElementName=WindowContext, Path=ContentVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                Visibility="Hidden">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="5*" />
@@ -219,7 +220,7 @@
                     materialDesign:HintAssist.Hint="Технічне завдання від:"
                     Keyboard.PreviewKeyDown="UnfocusOnEnter"
                     Style="{StaticResource MaterialDesignOutlinedDatePicker}"
-                    Text="{Binding ElementName=WindowContext, Path=TechnicalTaskDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    TextBoxBase.TextChanged="TechnicalTaskDatePicker_TextChanged" />
                 <DatePicker
                     x:Name="ActDatePicker"
                     Grid.Column="2"
@@ -227,7 +228,7 @@
                     materialDesign:HintAssist.Hint="Акт від:"
                     Keyboard.PreviewKeyDown="UnfocusOnEnter"
                     Style="{StaticResource MaterialDesignOutlinedDatePicker}"
-                    Text="{Binding ElementName=WindowContext, Path=ActDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    TextBoxBase.TextChanged="ActDatePicker_TextChanged" />
                 <TextBox
                     x:Name="TechnicalTaskNumTextInput"
                     Grid.Column="3"
@@ -235,7 +236,7 @@
                     VerticalAlignment="Top"
                     materialDesign:HintAssist.Hint="Номер ТЗ"
                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                    Text="{Binding ElementName=WindowContext, Path=TechnicalTaskNumText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    TextChanged="TechnicalTaskNumTextInput_TextChanged"
                     VerticalScrollBarVisibility="Auto" />
                 <!--  Grid.Row="0"  -->
 
@@ -263,7 +264,6 @@
                         MaxLength="9"
                         PreviewTextInput="UIntValidating"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding ElementName=WindowContext, Path=ActSum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextChanged="ActSumTextChanged" />
 
 
@@ -279,8 +279,7 @@
                         ContextMenu="{x:Null}"
                         IsReadOnly="True"
                         IsUndoEnabled="False"
-                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding ElementName=WindowContext, Path=ActSumSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}" />
 
                     <TextBlock
                         Grid.Column="4"
@@ -294,8 +293,7 @@
                         ContextMenu="{x:Null}"
                         IsReadOnly="True"
                         IsUndoEnabled="False"
-                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding ElementName=WindowContext, Path=ActSaldo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}" />
                     <Button
                         Grid.Column="6"
                         Margin="5,0,10,0"

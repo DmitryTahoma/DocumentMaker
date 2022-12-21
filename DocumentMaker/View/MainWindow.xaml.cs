@@ -35,35 +35,6 @@ namespace DocumentMaker
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		#region Dependency Properties
-
-		public static readonly DependencyProperty TechnicalTaskDateTextProperty;
-		public static readonly DependencyProperty ActDateTextProperty;
-		public static readonly DependencyProperty TechnicalTaskNumTextProperty;
-		public static readonly DependencyProperty ActSumProperty;
-		public static readonly DependencyProperty ActSumSelectedProperty;
-		public static readonly DependencyProperty ActSaldoProperty;
-		public static readonly DependencyProperty ContentVisibilityProperty;
-		public static readonly DependencyProperty ButtonOpenContentVisibilityProperty;
-		public static readonly DependencyProperty CanRedoProperty;
-		public static readonly DependencyProperty CanUndoProperty;
-
-		static MainWindow()
-		{
-			TechnicalTaskDateTextProperty = DependencyProperty.Register("TechnicalTaskDateText", typeof(string), typeof(MainWindowController));
-			ActDateTextProperty = DependencyProperty.Register("ActDateText", typeof(string), typeof(MainWindowController));
-			TechnicalTaskNumTextProperty = DependencyProperty.Register("TechnicalTaskNumText", typeof(string), typeof(MainWindowController));
-			ActSumProperty = DependencyProperty.Register("ActSum", typeof(string), typeof(MainWindowController));
-			ActSumSelectedProperty = DependencyProperty.Register("ActSumSelected", typeof(string), typeof(MainWindowController));
-			ActSaldoProperty = DependencyProperty.Register("ActSaldo", typeof(string), typeof(MainWindowController));
-			ContentVisibilityProperty = DependencyProperty.Register("ContentVisibility", typeof(Visibility), typeof(MainWindow));
-			ButtonOpenContentVisibilityProperty = DependencyProperty.Register("ButtonOpenContentVisibility", typeof(Visibility), typeof(MainWindow));
-			CanRedoProperty = DependencyProperty.Register("CanRedo", typeof(bool), typeof(MainWindow));
-			CanUndoProperty = DependencyProperty.Register("CanUndo", typeof(bool), typeof(MainWindow));
-		}
-
-		#endregion
-
 		private readonly MainWindowController controller;
 		private readonly FolderBrowserDialog folderBrowserDialog;
 		private readonly OpenFileDialog openFileDialog;
@@ -92,9 +63,6 @@ namespace DocumentMaker
 				Filter = "Файл повного акту (*" + DcmkFile.Extension + ")|*" + DcmkFile.Extension
 			};
 			inputingValidator = new InputingValidator();
-
-			ContentVisibility = Visibility.Hidden;
-			ButtonOpenContentVisibility = Visibility.Visible;
 
 			InitializeComponent();
 			InitializeComponentFromCode();
@@ -134,103 +102,9 @@ namespace DocumentMaker
 
 		public IList<FullDocumentTemplate> DocumentTemplatesList => controller.DocumentTemplatesList;
 
-		public string TechnicalTaskDateText
-		{
-			get => (string)GetValue(TechnicalTaskDateTextProperty);
-			set
-			{
-				SetValue(TechnicalTaskDateTextProperty, value);
-				controller.TechnicalTaskDateText = value;
-
-				if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
-				{
-					selectedFile.TechnicalTaskDateText = value;
-				}
-			}
-		}
-
-		public string ActDateText
-		{
-			get => (string)GetValue(ActDateTextProperty);
-			set
-			{
-				SetValue(ActDateTextProperty, value);
-				controller.ActDateText = value;
-
-				if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
-				{
-					selectedFile.ActDateText = value;
-				}
-			}
-		}
-
-		public string TechnicalTaskNumText
-		{
-			get => (string)GetValue(TechnicalTaskNumTextProperty);
-			set
-			{
-				SetValue(TechnicalTaskNumTextProperty, value);
-				controller.TechnicalTaskNumText = value;
-
-				if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
-				{
-					selectedFile.TechnicalTaskNumText = value;
-				}
-			}
-		}
-
-		public string ActSum
-		{
-			get => (string)GetValue(ActSumProperty);
-			set
-			{
-				SetValue(ActSumProperty, value);
-				controller.ActSum = value;
-
-				if (OpenedFilesComboBox != null
-					 && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
-				{
-					selectedFile.ActSum = value;
-				}
-			}
-		}
-
-
-		public string ActSumSelected
-		{
-			get => (string)GetValue(ActSumSelectedProperty);
-			set
-			{
-				SetValue(ActSumSelectedProperty, value);
-				//controller.ActSum = value;
-			}
-		}
-
-		public string ActSaldo
-		{
-			get => (string)GetValue(ActSaldoProperty);
-			set => SetValue(ActSaldoProperty, value);
-		}
-
 		public double IconSize { get; } = 24;
 
-		public Visibility ContentVisibility { get => (Visibility)GetValue(ContentVisibilityProperty); set => SetValue(ContentVisibilityProperty, value); }
-
-		public Visibility ButtonOpenContentVisibility { get => (Visibility)GetValue(ButtonOpenContentVisibilityProperty); set => SetValue(ButtonOpenContentVisibilityProperty, value); }
-
 		private bool CanUndoNeedUpdateSum { get; set; } = true;
-
-		public bool CanRedo
-		{
-			get => (bool)GetValue(CanRedoProperty);
-			set => SetValue(CanRedoProperty, value);
-		}
-
-		public bool CanUndo
-		{
-			get => (bool)GetValue(CanUndoProperty);
-			set => SetValue(CanUndoProperty, value);
-		}
 
 		public bool HaveUnsavedChanges { get => controller.HaveUnsavedChanges; set => controller.HaveUnsavedChanges = value; }
 
@@ -946,8 +820,8 @@ namespace DocumentMaker
 				controller.ClearUndoRedo();
 				UpdateUndoRedoState();
 
-				ContentVisibility = Visibility.Visible;
-				ButtonOpenContentVisibility = Visibility.Hidden;
+				FileContentGrid.Visibility = Visibility.Visible;
+				ButtonOpenContent.Visibility = Visibility.Hidden;
 
 				SetDataToController();
 				controller.SetDataFromFile(selectedFile);
@@ -964,13 +838,24 @@ namespace DocumentMaker
 			}
 			else
 			{
-				ContentVisibility = Visibility.Hidden;
-				ButtonOpenContentVisibility = Visibility.Visible;
+				FileContentGrid.Visibility = Visibility.Hidden;
+				ButtonOpenContent.Visibility = Visibility.Visible;
 			}
 		}
 
 		private void ActSumTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
 		{
+			#region Old logic (On dependency property value set)
+
+			controller.ActSum = ActSumInput.Text;
+			if (OpenedFilesComboBox != null
+				 && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+			{
+				selectedFile.ActSum = ActSumInput.Text;
+			}
+
+			#endregion
+
 			HaveUnsavedChanges = true;
 			if (controller.IsActionsStackingEnabled && sender is System.Windows.Controls.TextBox textBox)
 			{
@@ -1103,8 +988,8 @@ namespace DocumentMaker
 		{
 			ChangeDatesDialog dialog = new ChangeDatesDialog
 			{
-				TechnicalTaskDateText = TechnicalTaskDateText,
-				ActDateText = ActDateText
+				TechnicalTaskDateText = TechnicalTaskDatePicker.Text,
+				ActDateText = ActDatePicker.Text
 			};
 			await DialogHost.Show(dialog);
 			if (dialog.IsChanging)
@@ -1253,11 +1138,11 @@ namespace DocumentMaker
 		{
 			bool actionsStackingEnable = controller.IsActionsStackingEnabled;
 			controller.DisableActionsStacking();
-			controller.TechnicalTaskDateText = TechnicalTaskDateText;
-			controller.ActDateText = ActDateText;
-			controller.TechnicalTaskNumText = TechnicalTaskNumText;
-			controller.ActSum = ActSum;
-			controller.ActSaldo = ActSaldo;
+			controller.TechnicalTaskDateText = TechnicalTaskDatePicker.Text;
+			controller.ActDateText = ActDatePicker.Text;
+			controller.TechnicalTaskNumText = TechnicalTaskNumTextInput.Text;
+			controller.ActSum = ActSumInput.Text;
+			controller.ActSaldo = ActSaldoInput.Text;
 			if (actionsStackingEnable) controller.EnableActionsStacking();
 		}
 
@@ -1398,7 +1283,7 @@ namespace DocumentMaker
 			bool actionsStackingEnable = controller.IsActionsStackingEnabled;
 			if (controller.NeedUpdateSum) controller.DisableActionsStacking();
 
-			uint sum = uint.TryParse(ActSum, out uint s) ? s : 0;
+			uint sum = uint.TryParse(ActSumInput.Text, out uint s) ? s : 0;
 			UpdateActSumBackDataPanel(BacksData, sum);
 			UpdateActSumBackDataPanel(ReworkBacksData, sum);
 			UpdateActSumBackDataPanel(OtherBacksData, sum);
@@ -1414,7 +1299,7 @@ namespace DocumentMaker
 
 		private void DropSaldoToLast()
 		{
-			if (!int.TryParse(ActSaldo, out int currentSaldo)) return;
+			if (!int.TryParse(ActSaldoInput.Text, out int currentSaldo)) return;
 
 			FullBackDataController last = controller.BackDataControllers.LastOrDefault();
 			if (last != null && int.TryParse(last.SumText, out int lastSum))
@@ -1466,7 +1351,7 @@ namespace DocumentMaker
 		{
 			UpdateActSumSelected();
 			uint sum = 0;
-			if (uint.TryParse(ActSum, out uint s))
+			if (uint.TryParse(ActSumInput.Text, out uint s))
 			{
 				sum = s;
 			}
@@ -1475,8 +1360,7 @@ namespace DocumentMaker
 				&& uint.TryParse(ReworkDataFooter.AllSum, out uint curSumRework)
 				&& uint.TryParse(OtherDataFooter.AllSum, out uint curSumOther))
 			{
-				ActSaldo = ((int)sum - (int)(curSum + curSumRework + curSumOther)).ToString();
-				ActSaldoInput.Text = ActSaldo;
+				ActSaldoInput.Text = ((int)sum - (int)(curSum + curSumRework + curSumOther)).ToString();
 			}
 		}
 
@@ -1628,8 +1512,10 @@ namespace DocumentMaker
 
 		private void UpdateUndoRedoState()
 		{
-			CanUndo = controller.CanUndo;
-			CanRedo = controller.CanRedo;
+			MenuUndoButton.IsEnabled = controller.CanUndo;
+			ToolBarUndoButton.IsEnabled = controller.CanUndo;
+			MenuRedoButton.IsEnabled = controller.CanRedo;
+			ToolBarRedoButton.IsEnabled = controller.CanRedo;
 		}
 
 		private bool HaveUnsavedChangesAtAll()
@@ -1727,6 +1613,37 @@ namespace DocumentMaker
 				DisableUpdatingSum();
 			}
 			UpdateSaldo();
+		}
+
+		#endregion
+
+		#region Old logic (On dependency property value set)
+
+		private void TechnicalTaskDatePicker_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			controller.TechnicalTaskDateText = TechnicalTaskDatePicker.Text;
+			if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+			{
+				selectedFile.TechnicalTaskDateText = TechnicalTaskDatePicker.Text;
+			}
+		}
+
+		private void ActDatePicker_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			controller.ActDateText = ActDatePicker.Text;
+			if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+			{
+				selectedFile.ActDateText = ActDatePicker.Text;
+			}
+		}
+
+		private void TechnicalTaskNumTextInput_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			controller.TechnicalTaskNumText = TechnicalTaskNumTextInput.Text;
+			if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+			{
+				selectedFile.TechnicalTaskNumText = TechnicalTaskNumTextInput.Text;
+			}
 		}
 
 		#endregion
