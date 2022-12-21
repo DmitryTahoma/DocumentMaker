@@ -523,6 +523,18 @@ namespace DocumentMaker.ViewModel
 			}
 		}
 
+		public void SetSelectedFile(string filename)
+		{
+			foreach (DmxFile file in OpenedFilesList)
+			{
+				if (Path.ChangeExtension(file.FullName, null) == Path.ChangeExtension(filename, null) || Path.ChangeExtension(file.Name, null) == Path.ChangeExtension(filename, null))
+				{
+					SelectedOpenedFile = file;
+					break;
+				}
+			}
+		}
+
 		#endregion
 	}
 }

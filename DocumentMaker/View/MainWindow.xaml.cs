@@ -138,7 +138,7 @@ namespace DocumentMaker
 				LoadFiles();
 				if (ViewModel.ApplicationArgs != null && ViewModel.ApplicationArgs.Length > 0)
 				{
-					SetSelectedFile(ViewModel.ApplicationArgs.Last());
+					ViewModel.SetSelectedFile(ViewModel.ApplicationArgs.Last());
 				}
 				ViewModel.ChangeOpenedFilesExtension();
 				UpdateActSum();
@@ -285,7 +285,7 @@ namespace DocumentMaker
 					bool isShowResult = false;
 					foreach (DmxFile file in OpenedFilesList)
 					{
-						SetSelectedFile(file.FullName);
+						ViewModel.SetSelectedFile(file.FullName);
 						SetDataToController();
 						ViewModel.TrimAllStrings();
 
@@ -360,7 +360,7 @@ namespace DocumentMaker
 			{
 				ViewModel.OpenFiles(openFileDialog.FileNames);
 				LoadFiles();
-				SetSelectedFile(openFileDialog.FileNames.Last());
+				ViewModel.SetSelectedFile(openFileDialog.FileNames.Last());
 				ViewModel.ChangeOpenedFilesExtension();
 			}
 		}
@@ -719,7 +719,7 @@ namespace DocumentMaker
 				string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
 				ViewModel.OpenFiles(filenames);
 				LoadFiles();
-				SetSelectedFile(filenames.Last(filename => filename.EndsWith(BaseDmxFile.Extension) || filename.EndsWith(DcmkFile.Extension)));
+				ViewModel.SetSelectedFile(filenames.Last(filename => filename.EndsWith(BaseDmxFile.Extension) || filename.EndsWith(DcmkFile.Extension)));
 				ViewModel.ChangeOpenedFilesExtension();
 				e.Handled = true;
 			}
@@ -922,7 +922,7 @@ namespace DocumentMaker
 
 				foreach (DmxFile file in OpenedFilesList)
 				{
-					SetSelectedFile(file.FullName);
+					ViewModel.SetSelectedFile(file.FullName);
 					saveFileDialog.FileName = ViewModel.GetDcmkFileName();
 					if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 					{
@@ -1146,7 +1146,7 @@ namespace DocumentMaker
 		private void LoadFiles()
 		{
 			ViewModel.LoadFiles();
-			SetSelectedFile(ViewModel.GetSelectedFile()?.FullName);
+			ViewModel.SetSelectedFile(ViewModel.GetSelectedFile()?.FullName);
 		}
 
 		private void AddLoadedBackData()
@@ -1239,18 +1239,6 @@ namespace DocumentMaker
 			if (actionsStackingEnable) ViewModel.EnableActionsStacking();
 
 			return addedNewSupport;
-		}
-
-		private void SetSelectedFile(string filename)
-		{
-			foreach (DmxFile file in OpenedFilesList)
-			{
-				if (Path.ChangeExtension(file.FullName, null) == Path.ChangeExtension(filename, null) || Path.ChangeExtension(file.Name, null) == Path.ChangeExtension(filename, null))
-				{
-					ViewModel.SelectedOpenedFile = file;
-					break;
-				}
-			}
 		}
 
 		private void SetWindowSettingsFromController()
