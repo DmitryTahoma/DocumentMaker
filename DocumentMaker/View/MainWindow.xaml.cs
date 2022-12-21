@@ -2,7 +2,6 @@
 using Dml.Model.Files;
 using Dml.Model.Template;
 using Dml.UndoRedo;
-using DocumentMaker.Controller;
 using DocumentMaker.Controller.Controls;
 using DocumentMakerModelLibrary;
 using DocumentMakerModelLibrary.Back;
@@ -35,7 +34,6 @@ namespace DocumentMaker
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private readonly MainWindowController controller;
 		private readonly FolderBrowserDialog folderBrowserDialog;
 		private readonly OpenFileDialog openFileDialog;
 		private readonly SaveFileDialog saveFileDialog;
@@ -45,10 +43,6 @@ namespace DocumentMaker
 
 		public MainWindow(string[] args)
 		{
-			controller = new MainWindowController();
-			controller.Load();
-			SetWindowSettingsFromController();
-
 			folderBrowserDialog = new FolderBrowserDialog();
 			openFileDialog = new OpenFileDialog
 			{
@@ -68,6 +62,8 @@ namespace DocumentMaker
 			InitializeComponentFromCode();
 
 			ViewModel.ApplicationArgs = args;
+			ViewModel.Load();
+			SetWindowSettingsFromController();
 
 #if INCLUDED_UPDATER_API
 			AssemblyLoader.LoadWinScp();
@@ -82,33 +78,33 @@ namespace DocumentMaker
 			DataHeader.SubscribeSelectionChanged((b) => OnSelectionChanged(b, false, false));
 			DataFooter.SubscribeAddition((x) => OnAdded(x, false, false));
 			DataFooter.SubscribeChangingSum(OnSumChanged);
-			DataFooter.ActionsStack = controller.GetActionsStack();
+			DataFooter.ActionsStack = ViewModel.GetActionsStack();
 
 			ReworkDataHeader.SubscribeSelectionChanged((b) => OnSelectionChanged(b, true, false));
 			ReworkDataFooter.SubscribeAddition((x) => OnAdded(x, true, false));
 			ReworkDataFooter.SubscribeChangingSum(OnSumChanged);
-			ReworkDataFooter.ActionsStack = controller.GetActionsStack();
+			ReworkDataFooter.ActionsStack = ViewModel.GetActionsStack();
 
 			OtherDataHeader.HideWorkTypeLabel();
 			OtherDataHeader.SubscribeSelectionChanged((b) => OnSelectionChanged(b, false, true));
 			OtherDataFooter.SubscribeAddition((x) => OnAdded(x, false, true));
 			OtherDataFooter.SubscribeChangingSum(OnSumChanged);
-			OtherDataFooter.ActionsStack = controller.GetActionsStack();
+			OtherDataFooter.ActionsStack = ViewModel.GetActionsStack();
 
 			ActSumInput.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, inputingValidator.BlockingCommand));
 		}
 
 		#region Properties
 
-		public IList<DmxFile> OpenedFilesList => controller.OpenedFilesList;
+		public IList<DmxFile> OpenedFilesList => ViewModel.OpenedFilesList;
 
-		public IList<FullDocumentTemplate> DocumentTemplatesList => controller.DocumentTemplatesList;
+		public IList<FullDocumentTemplate> DocumentTemplatesList => ViewModel.DocumentTemplatesList;
 
 		public double IconSize { get; } = 24;
 
 		private bool CanUndoNeedUpdateSum { get; set; } = true;
 
-		public bool HaveUnsavedChanges { get => controller.HaveUnsavedChanges; set => controller.HaveUnsavedChanges = value; }
+		public bool HaveUnsavedChanges { get => ViewModel.HaveUnsavedChanges; set => ViewModel.HaveUnsavedChanges = value; }
 
 		#endregion
 
@@ -117,13 +113,13 @@ namespace DocumentMaker
 		private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			SetDataToController();
-			controller.WindowTop = Top;
-			controller.WindowLeft = Left;
-			controller.WindowHeight = Height;
-			controller.WindowWidth = Width;
-			controller.WindowState = WindowState == WindowState.Minimized ? WindowState.Normal : WindowState;
+			ViewModel.WindowTop = Top;
+			ViewModel.WindowLeft = Left;
+			ViewModel.WindowHeight = Height;
+			ViewModel.WindowWidth = Width;
+			ViewModel.WindowState = WindowState == WindowState.Minimized ? WindowState.Normal : WindowState;
 
-			controller.Save();
+			ViewModel.Save();
 		}
 
 #if INCLUDED_UPDATER_API
@@ -133,8 +129,8 @@ namespace DocumentMaker
 #endif
 		{
 			CheckFiles();
-			WindowState = controller.WindowState;
-			if (controller != null)
+			WindowState = ViewModel.WindowState;
+			if (ViewModel != null)
 			{
 				SetDataFromController();
 				OpenFiles(ViewModel.ApplicationArgs);
@@ -144,7 +140,7 @@ namespace DocumentMaker
 				{
 					SetSelectedFile(ViewModel.ApplicationArgs.Last());
 				}
-				controller.ChangeOpenedFilesExtension();
+				ViewModel.ChangeOpenedFilesExtension();
 				UpdateActSum();
 
 #if INCLUDED_UPDATER_API
@@ -163,19 +159,19 @@ namespace DocumentMaker
 				});
 #endif
 			}
-			controller.EnableActionsStacking();
-			controller.SubscribeActionPushed((action) => { UpdateUndoRedoState(); });
+			ViewModel.EnableActionsStacking();
+			ViewModel.SubscribeActionPushed((action) => { UpdateUndoRedoState(); });
 			ResetHaveUnsavedChanges();
 		}
 
 		private void ChangedDocumentTemplate(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
-			if (controller != null
+			if (ViewModel != null
 				&& sender is System.Windows.Controls.ComboBox comboBox
 				&& comboBox.SelectedItem is DocumentTemplate documentTemplate)
 			{
 				HaveUnsavedChanges = true;
-				controller.TemplateType = documentTemplate.Type;
+				ViewModel.TemplateType = documentTemplate.Type;
 				UpdateViewBackData();
 
 				if (OpenedFilesComboBox != null
@@ -188,11 +184,11 @@ namespace DocumentMaker
 
 		private void ChangedHuman(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
-			if (controller != null
+			if (ViewModel != null
 				&& sender is System.Windows.Controls.ComboBox comboBox
 				&& comboBox.SelectedItem is HumanData humanData)
 			{
-				controller.SetHuman(humanData);
+				ViewModel.SetHuman(humanData);
 				SetDataFromController();
 
 				if (OpenedFilesComboBox != null
@@ -217,27 +213,27 @@ namespace DocumentMaker
 				}
 
 				SetDataToController();
-				controller.TrimAllStrings();
-				if (controller.Validate(out string errorText))
+				ViewModel.TrimAllStrings();
+				if (ViewModel.Validate(out string errorText))
 				{
 					if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 					{
 						bool isShowResult = true;
-						controller.Export(folderBrowserDialog.SelectedPath);
+						ViewModel.Export(folderBrowserDialog.SelectedPath);
 
-						if (controller.HasNoMovedFiles)
+						if (ViewModel.HasNoMovedFiles)
 						{
-							if (MessageBox.Show("Файли за заданними путями вже існують.\n\n" + controller.GetInfoNoMovedFiles() + "\nЗамінити?",
+							if (MessageBox.Show("Файли за заданними путями вже існують.\n\n" + ViewModel.GetInfoNoMovedFiles() + "\nЗамінити?",
 												"DocumentMaker | Export",
 												MessageBoxButtons.YesNo,
 												MessageBoxIcon.Question)
 													== System.Windows.Forms.DialogResult.Yes)
 							{
-								controller.ReplaceCreatedFiles();
+								ViewModel.ReplaceCreatedFiles();
 
-								if (controller.HasNoMovedFiles)
+								if (ViewModel.HasNoMovedFiles)
 								{
-									MessageBox.Show("Не вдалось перемістити наступні файли. Можливо вони відкриті в іншій програмі.\n\n" + controller.GetInfoNoMovedFiles(),
+									MessageBox.Show("Не вдалось перемістити наступні файли. Можливо вони відкриті в іншій програмі.\n\n" + ViewModel.GetInfoNoMovedFiles(),
 													"DocumentMaker | Export",
 													MessageBoxButtons.OK,
 													MessageBoxIcon.Warning);
@@ -250,7 +246,7 @@ namespace DocumentMaker
 							}
 						}
 
-						controller.RemoveTemplates();
+						ViewModel.RemoveTemplates();
 						if (isShowResult)
 						{
 							MessageBox.Show("Файли збережені.",
@@ -291,9 +287,9 @@ namespace DocumentMaker
 					{
 						SetSelectedFile(file.FullName);
 						SetDataToController();
-						controller.TrimAllStrings();
+						ViewModel.TrimAllStrings();
 
-						if (!controller.Validate(out string errorText))
+						if (!ViewModel.Validate(out string errorText))
 						{
 							if (MessageBox.Show(errorText,
 								"DocumentMaker | Validation | " + file.Name,
@@ -310,24 +306,24 @@ namespace DocumentMaker
 							}
 						}
 
-						controller.Export(folderBrowserDialog.SelectedPath);
+						ViewModel.Export(folderBrowserDialog.SelectedPath);
 						isShowResult = true;
 					}
 
-					if (controller.HasNoMovedFiles)
+					if (ViewModel.HasNoMovedFiles)
 					{
-						string startInfoNoMoved = controller.GetInfoNoMovedFiles();
+						string startInfoNoMoved = ViewModel.GetInfoNoMovedFiles();
 						if (MessageBox.Show("Файли за заданними путями вже існують.\n\n" + startInfoNoMoved + "\nЗамінити?",
 											"DocumentMaker | Export",
 											MessageBoxButtons.YesNo,
 											MessageBoxIcon.Question)
 												== System.Windows.Forms.DialogResult.Yes)
 						{
-							controller.ReplaceCreatedFiles();
+							ViewModel.ReplaceCreatedFiles();
 
-							if (controller.HasNoMovedFiles)
+							if (ViewModel.HasNoMovedFiles)
 							{
-								string infoNoMoved = controller.GetInfoNoMovedFiles();
+								string infoNoMoved = ViewModel.GetInfoNoMovedFiles();
 								MessageBox.Show("Не вдалось перемістити наступні файли. Можливо вони відкриті в іншій програмі.\n\n" + infoNoMoved,
 												"DocumentMaker | Export",
 												MessageBoxButtons.OK,
@@ -342,7 +338,7 @@ namespace DocumentMaker
 						}
 					}
 
-					controller.RemoveTemplates();
+					ViewModel.RemoveTemplates();
 					if (isShowResult)
 					{
 						MessageBox.Show("Файли збережені.",
@@ -365,7 +361,7 @@ namespace DocumentMaker
 				OpenFiles(openFileDialog.FileNames);
 				LoadFiles();
 				SetSelectedFile(openFileDialog.FileNames.Last());
-				controller.ChangeOpenedFilesExtension();
+				ViewModel.ChangeOpenedFilesExtension();
 			}
 		}
 
@@ -383,11 +379,11 @@ namespace DocumentMaker
 				if (index != -1)
 				{
 					ResetHaveUnsavedChanges();
-					controller.CloseFile(selectedFile);
+					ViewModel.CloseFile(selectedFile);
 					int newIndex = OpenedFilesComboBox.Items.Count <= index ? index - 1 : index;
 					if (newIndex < 0)
 					{
-						controller.ClearUndoRedo();
+						ViewModel.ClearUndoRedo();
 						UpdateUndoRedoState();
 					}
 					ResetHaveUnsavedChanges();
@@ -414,10 +410,10 @@ namespace DocumentMaker
 				while (OpenedFilesList.Count > 0)
 				{
 					ResetHaveUnsavedChanges();
-					controller.CloseFile(OpenedFilesList[0]);
+					ViewModel.CloseFile(OpenedFilesList[0]);
 				}
 				OpenedFilesComboBox.SelectedIndex = -1;
-				controller.ClearUndoRedo();
+				ViewModel.ClearUndoRedo();
 				UpdateUndoRedoState();
 			}
 			else
@@ -431,7 +427,7 @@ namespace DocumentMaker
 		{
 			if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
 			{
-				await DialogHost.Show(new HumanInformationDialog(controller.GetSelectedHuman()));
+				await DialogHost.Show(new HumanInformationDialog(ViewModel.GetSelectedHuman()));
 			}
 			else
 				MessageBox.Show("Спочатку необхідно відкрити файл.",
@@ -442,12 +438,12 @@ namespace DocumentMaker
 
 		private void CorrectSaldoClick(object sender, RoutedEventArgs e)
 		{
-			bool isNeedUpdateSum = controller.NeedUpdateSum;
+			bool isNeedUpdateSum = ViewModel.NeedUpdateSum;
 			DisableUpdatingSum();
 			SetDataToController();
 
 			List<FullBackData> selectedBackDatas = new List<FullBackData>(GetSelectedBackDatas());
-			IEnumerable<int> resultSums = controller.CorrectSaldo(selectedBackDatas.Select(x => x.Controller));
+			IEnumerable<int> resultSums = ViewModel.CorrectSaldo(selectedBackDatas.Select(x => x.Controller));
 
 			IEnumerator<FullBackData> selectedBackDatasEnum = selectedBackDatas.GetEnumerator();
 			IEnumerator<int> resultSumsEnum = resultSums.GetEnumerator();
@@ -465,11 +461,11 @@ namespace DocumentMaker
 				if (!pushedFirst)
 				{
 					pushedFirst = true;
-					controller.DisableActionsStacking();
+					ViewModel.DisableActionsStacking();
 					AddUndoRedoLinkNeedUpdateSum(isNeedUpdateSum);
 				}
 			}
-			controller.EnableActionsStacking();
+			ViewModel.EnableActionsStacking();
 
 			if (pushedFirst)
 			{
@@ -494,26 +490,26 @@ namespace DocumentMaker
 		{
 			CorrectDevelopmentDialog dialog = new CorrectDevelopmentDialog
 			{
-				NumberText = controller.CorrectDevelopmentWindow_NumberText,
-				TakeSumFromSupport = controller.CorrectDevelopmentWindow_TakeSumFromSupport,
-				IsRemoveIdenticalNumbers = controller.CorrectDevelopmentDialog_IsRemoveIdenticalNumbers,
+				NumberText = ViewModel.CorrectDevelopmentWindow_NumberText,
+				TakeSumFromSupport = ViewModel.CorrectDevelopmentWindow_TakeSumFromSupport,
+				IsRemoveIdenticalNumbers = ViewModel.CorrectDevelopmentDialog_IsRemoveIdenticalNumbers,
 			};
 			await DialogHost.Show(dialog);
 
-			controller.CorrectDevelopmentWindow_NumberText = dialog.NumberText;
-			controller.CorrectDevelopmentWindow_TakeSumFromSupport = dialog.TakeSumFromSupport;
-			controller.CorrectDevelopmentDialog_IsRemoveIdenticalNumbers = dialog.IsRemoveIdenticalNumbers;
+			ViewModel.CorrectDevelopmentWindow_NumberText = dialog.NumberText;
+			ViewModel.CorrectDevelopmentWindow_TakeSumFromSupport = dialog.TakeSumFromSupport;
+			ViewModel.CorrectDevelopmentDialog_IsRemoveIdenticalNumbers = dialog.IsRemoveIdenticalNumbers;
 
 			if (dialog.IsCorrection && int.TryParse(dialog.NumberText, out int sum))
 			{
-				bool isNeedUpdateSum = controller.NeedUpdateSum;
+				bool isNeedUpdateSum = ViewModel.NeedUpdateSum;
 				DisableUpdatingSum();
-				IEnumerable<int> resultSums = controller.CorrectDevelopment(sum, dialog.TakeSumFromSupport, dialog.IsRemoveIdenticalNumbers);
-				IEnumerator<FullBackDataController> backDataControllersEnum = controller.BackDataControllers.GetEnumerator();
+				IEnumerable<int> resultSums = ViewModel.CorrectDevelopment(sum, dialog.TakeSumFromSupport, dialog.IsRemoveIdenticalNumbers);
+				IEnumerator<FullBackDataController> backDataControllersEnum = ViewModel.BackDataControllers.GetEnumerator();
 				IEnumerator<int> resultSumsEnum = resultSums.GetEnumerator();
 				List<FullBackData> allFullBackDatas = new List<FullBackData>(GetAllFullBacksData());
 				bool pushedFirst = false;
-				controller.DisableActionsStacking();
+				ViewModel.DisableActionsStacking();
 				while (backDataControllersEnum.MoveNext() && resultSumsEnum.MoveNext())
 				{
 					FullBackData current = allFullBackDatas.FirstOrDefault(x => x.Controller == backDataControllersEnum.Current);
@@ -527,7 +523,7 @@ namespace DocumentMaker
 						{
 							pushedFirst = true;
 							current.SetSumTextChangesWithAction(resultSumsEnum.Current.ToString());
-							controller.AddUndoRedoLink(new UndoRedoLink(() =>
+							ViewModel.AddUndoRedoLink(new UndoRedoLink(() =>
 							{
 								current.SumTextInput.Text = current.Controller.SumText;
 							}));
@@ -536,7 +532,7 @@ namespace DocumentMaker
 						current.SumTextInput.Text = resultSumsEnum.Current.ToString();
 					}
 				}
-				controller.EnableActionsStacking();
+				ViewModel.EnableActionsStacking();
 
 				if (pushedFirst)
 				{
@@ -557,28 +553,28 @@ namespace DocumentMaker
 		{
 			CorrectSupportDialog dialog = new CorrectSupportDialog
 			{
-				NumberText = controller.CorrectSupportWindow_NumberText,
-				TakeSumFromDevelopment = controller.CorrectSupportWindow_TakeSumFromDevelopment,
-				IsCreateNewWorks = controller.CorrectSupportDialog_IsCreateNewWorks,
-				IsRemoveIdenticalNumbers = controller.CorrectSupportDialog_IsRemoveIdenticalNumbers,
+				NumberText = ViewModel.CorrectSupportWindow_NumberText,
+				TakeSumFromDevelopment = ViewModel.CorrectSupportWindow_TakeSumFromDevelopment,
+				IsCreateNewWorks = ViewModel.CorrectSupportDialog_IsCreateNewWorks,
+				IsRemoveIdenticalNumbers = ViewModel.CorrectSupportDialog_IsRemoveIdenticalNumbers,
 			};
 			await DialogHost.Show(dialog);
 
-			controller.CorrectSupportWindow_NumberText = dialog.NumberText;
-			controller.CorrectSupportWindow_TakeSumFromDevelopment = dialog.TakeSumFromDevelopment;
-			controller.CorrectSupportDialog_IsCreateNewWorks = dialog.IsCreateNewWorks;
-			controller.CorrectSupportDialog_IsRemoveIdenticalNumbers = dialog.IsRemoveIdenticalNumbers;
+			ViewModel.CorrectSupportWindow_NumberText = dialog.NumberText;
+			ViewModel.CorrectSupportWindow_TakeSumFromDevelopment = dialog.TakeSumFromDevelopment;
+			ViewModel.CorrectSupportDialog_IsCreateNewWorks = dialog.IsCreateNewWorks;
+			ViewModel.CorrectSupportDialog_IsRemoveIdenticalNumbers = dialog.IsRemoveIdenticalNumbers;
 
 			if (dialog.IsCorrection && int.TryParse(dialog.NumberText, out int sum))
 			{
-				bool isNeedUpdateSum = controller.NeedUpdateSum;
+				bool isNeedUpdateSum = ViewModel.NeedUpdateSum;
 				DisableUpdatingSum();
-				IEnumerable<int> resultSums = controller.CorrectSupport(sum, dialog.TakeSumFromDevelopment, dialog.IsCreateNewWorks, dialog.IsRemoveIdenticalNumbers, out List<KeyValuePair<FullBackDataController, int>> newControllers);
-				IEnumerator<FullBackDataController> backDataControllersEnum = controller.BackDataControllers.GetEnumerator();
+				IEnumerable<int> resultSums = ViewModel.CorrectSupport(sum, dialog.TakeSumFromDevelopment, dialog.IsCreateNewWorks, dialog.IsRemoveIdenticalNumbers, out List<KeyValuePair<FullBackDataController, int>> newControllers);
+				IEnumerator<FullBackDataController> backDataControllersEnum = ViewModel.BackDataControllers.GetEnumerator();
 				IEnumerator<int> resultSumsEnum = resultSums.GetEnumerator();
 				List<FullBackData> allFullBackDatas = new List<FullBackData>(GetAllFullBacksData());
 				bool pushedFirst = false;
-				controller.DisableActionsStacking();
+				ViewModel.DisableActionsStacking();
 				while (backDataControllersEnum.MoveNext() && resultSumsEnum.MoveNext())
 				{
 					FullBackData current = allFullBackDatas.FirstOrDefault(x => x.Controller == backDataControllersEnum.Current);
@@ -592,7 +588,7 @@ namespace DocumentMaker
 						{
 							pushedFirst = true;
 							current.SetSumTextChangesWithAction(resultSumsEnum.Current.ToString());
-							controller.AddUndoRedoLink(new UndoRedoLink(() =>
+							ViewModel.AddUndoRedoLink(new UndoRedoLink(() =>
 							{
 								current.SumTextInput.Text = current.Controller.SumText;
 							}));
@@ -612,7 +608,7 @@ namespace DocumentMaker
 					}
 					UpdateViewBackData();
 				}
-				controller.EnableActionsStacking();
+				ViewModel.EnableActionsStacking();
 
 				if (pushedFirst)
 				{
@@ -643,7 +639,7 @@ namespace DocumentMaker
 				DisableUpdatingSum();
 				CanUndoNeedUpdateSum = false;
 				IEnumerable<FullBackData> removedElems = DeleteSelectedBackData(BacksData);
-				controller.RemoveFromActionsStack(removedElems.Select(x => x.Controller));
+				ViewModel.RemoveFromActionsStack(removedElems.Select(x => x.Controller));
 				DataHeader.UpdateIsCheckedState();
 				DataFooter.UpdateBackDataIds();
 				DataFooter.UpdateAllSum();
@@ -664,7 +660,7 @@ namespace DocumentMaker
 				DisableUpdatingSum();
 				CanUndoNeedUpdateSum = false;
 				IEnumerable<FullBackData> removedElems = DeleteSelectedBackData(ReworkBacksData);
-				controller.RemoveFromActionsStack(removedElems.Select(x => x.Controller));
+				ViewModel.RemoveFromActionsStack(removedElems.Select(x => x.Controller));
 				ReworkDataHeader.UpdateIsCheckedState();
 				ReworkDataFooter.UpdateBackDataIds();
 				ReworkDataFooter.UpdateAllSum();
@@ -685,7 +681,7 @@ namespace DocumentMaker
 				DisableUpdatingSum();
 				CanUndoNeedUpdateSum = false;
 				IEnumerable<FullBackData> removedElems = DeleteSelectedBackData(OtherBacksData);
-				controller.RemoveFromActionsStack(removedElems.Select(x => x.Controller));
+				ViewModel.RemoveFromActionsStack(removedElems.Select(x => x.Controller));
 				OtherDataHeader.UpdateIsCheckedState();
 				OtherDataFooter.UpdateBackDataIds();
 				OtherDataFooter.UpdateAllSum();
@@ -724,7 +720,7 @@ namespace DocumentMaker
 				OpenFiles(filenames);
 				LoadFiles();
 				SetSelectedFile(filenames.Last(filename => filename.EndsWith(BaseDmxFile.Extension) || filename.EndsWith(DcmkFile.Extension)));
-				controller.ChangeOpenedFilesExtension();
+				ViewModel.ChangeOpenedFilesExtension();
 				e.Handled = true;
 			}
 		}
@@ -797,11 +793,11 @@ namespace DocumentMaker
 
 					if (res == System.Windows.Forms.DialogResult.Yes)
 					{
-						saveFileDialog.FileName = controller.GetDcmkFileName();
+						saveFileDialog.FileName = ViewModel.GetDcmkFileName();
 						res = saveFileDialog.ShowDialog();
 						if (res == System.Windows.Forms.DialogResult.OK)
 						{
-							controller.ExportDcmk(saveFileDialog.FileName);
+							ViewModel.ExportDcmk(saveFileDialog.FileName);
 
 							MessageBox.Show("Файл збережений.",
 								"DocumentMaker | Export dcmk",
@@ -813,25 +809,25 @@ namespace DocumentMaker
 					if (res == System.Windows.Forms.DialogResult.Cancel)
 					{
 						cancelOpenedFilesSelectionChanged = true;
-						OpenedFilesComboBox.SelectedItem = controller.GetSelectedFile();
+						OpenedFilesComboBox.SelectedItem = ViewModel.GetSelectedFile();
 						return;
 					}
 				}
 
-				controller.ClearUndoRedo();
+				ViewModel.ClearUndoRedo();
 				UpdateUndoRedoState();
 
 				FileContentGrid.Visibility = Visibility.Visible;
 				ButtonOpenContent.Visibility = Visibility.Hidden;
 
 				SetDataToController();
-				controller.SetDataFromFile(selectedFile);
+				ViewModel.SetDataFromFile(selectedFile);
 				AddLoadedBackData();
 				DataFooter?.UpdateAllSum();
 				ReworkDataFooter?.UpdateAllSum();
 				OtherDataFooter?.UpdateAllSum();
 				SetDataFromController();
-				controller.SetSelectedFile(selectedFile);
+				ViewModel.SetSelectedFile(selectedFile);
 				UpdateViewBackData();
 				UpdateSaldo();
 
@@ -848,7 +844,7 @@ namespace DocumentMaker
 		{
 			#region Old logic (On dependency property value set)
 
-			controller.ActSum = ActSumInput.Text;
+			ViewModel.ActSum = ActSumInput.Text;
 			if (OpenedFilesComboBox != null
 				 && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
 			{
@@ -858,11 +854,11 @@ namespace DocumentMaker
 			#endregion
 
 			HaveUnsavedChanges = true;
-			if (controller.IsActionsStackingEnabled && sender is System.Windows.Controls.TextBox textBox)
+			if (ViewModel.IsActionsStackingEnabled && sender is System.Windows.Controls.TextBox textBox)
 			{
-				controller.AddUndoRedoLink(new UndoRedoLink(() =>
+				ViewModel.AddUndoRedoLink(new UndoRedoLink(() =>
 				{
-					textBox.Text = controller.ActSum;
+					textBox.Text = ViewModel.ActSum;
 					textBox.Focus();
 					textBox.SelectionStart = textBox.Text.Length;
 					textBox.SelectionLength = 0;
@@ -879,8 +875,8 @@ namespace DocumentMaker
 		private void RandomizeWorkTypes(object sender, RoutedEventArgs e)
 		{
 			HaveUnsavedChanges = true;
-			controller.TrimAllStrings();
-			controller.RandomizeWorkTypes(GetSelectedBackDatas(BacksData).Select(x => x.Controller));
+			ViewModel.TrimAllStrings();
+			ViewModel.RandomizeWorkTypes(GetSelectedBackDatas(BacksData).Select(x => x.Controller));
 			if (DataHeader != null) DataHeader.IsChecked = false;
 			SetDataFromController();
 			SetDataFromControllerBackDatas();
@@ -889,8 +885,8 @@ namespace DocumentMaker
 		private void RandomizeReworkWorkTypes(object sender, RoutedEventArgs e)
 		{
 			HaveUnsavedChanges = true;
-			controller.TrimAllStrings();
-			controller.RandomizeReworkWorkTypes(GetSelectedBackDatas(ReworkBacksData).Select(x => x.Controller));
+			ViewModel.TrimAllStrings();
+			ViewModel.RandomizeReworkWorkTypes(GetSelectedBackDatas(ReworkBacksData).Select(x => x.Controller));
 			if (ReworkDataHeader != null) ReworkDataHeader.IsChecked = false;
 			SetDataFromController();
 			SetDataFromControllerBackDatas();
@@ -900,10 +896,10 @@ namespace DocumentMaker
 		{
 			if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
 			{
-				saveFileDialog.FileName = controller.GetDcmkFileName();
+				saveFileDialog.FileName = ViewModel.GetDcmkFileName();
 				if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 				{
-					controller.ExportDcmk(saveFileDialog.FileName);
+					ViewModel.ExportDcmk(saveFileDialog.FileName);
 
 					MessageBox.Show("Файл збережений.",
 						"DocumentMaker | Export dcmk",
@@ -927,10 +923,10 @@ namespace DocumentMaker
 				foreach (DmxFile file in OpenedFilesList)
 				{
 					SetSelectedFile(file.FullName);
-					saveFileDialog.FileName = controller.GetDcmkFileName();
+					saveFileDialog.FileName = ViewModel.GetDcmkFileName();
 					if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 					{
-						controller.ExportDcmk(saveFileDialog.FileName);
+						ViewModel.ExportDcmk(saveFileDialog.FileName);
 
 						savedFiles += "\n" + saveFileDialog.FileName;
 					}
@@ -995,15 +991,15 @@ namespace DocumentMaker
 			await DialogHost.Show(dialog);
 			if (dialog.IsChanging)
 			{
-				bool changed = controller.ChangeTechnicalTaskDateAtAllFiles(dialog.TechnicalTaskDateText);
-				changed = controller.ChangeActDateAtAllFiles(dialog.ActDateText) || changed;
+				bool changed = ViewModel.ChangeTechnicalTaskDateAtAllFiles(dialog.TechnicalTaskDateText);
+				changed = ViewModel.ChangeActDateAtAllFiles(dialog.ActDateText) || changed;
 				if (changed)
 				{
-					DmxFile selectedFile = controller.GetSelectedFile();
+					DmxFile selectedFile = ViewModel.GetSelectedFile();
 					if (selectedFile != null)
 					{
-						controller.TechnicalTaskDateText = selectedFile.TechnicalTaskDateText;
-						controller.ActDateText = selectedFile.ActDateText;
+						ViewModel.TechnicalTaskDateText = selectedFile.TechnicalTaskDateText;
+						ViewModel.ActDateText = selectedFile.ActDateText;
 						SetDataFromController();
 					}
 				}
@@ -1016,7 +1012,7 @@ namespace DocumentMaker
 
 		private IEnumerable<FullBackData> DeleteSelectedBackData(StackPanel stackPanel)
 		{
-			DmxFile selectedFile = controller.GetSelectedFile();
+			DmxFile selectedFile = ViewModel.GetSelectedFile();
 			List<UIElement> elems = new List<UIElement>();
 			foreach (UIElement elem in stackPanel.Children)
 			{
@@ -1026,7 +1022,7 @@ namespace DocumentMaker
 					{
 						elems.Add(elem);
 						backData.UnsubscribeAllEvents();
-						controller.BackDataControllers.Remove(backData.Controller);
+						ViewModel.BackDataControllers.Remove(backData.Controller);
 						selectedFile?.BackDataModels.Remove(backData.Controller.GetModel());
 					}
 				}
@@ -1043,7 +1039,7 @@ namespace DocumentMaker
 
 		private void MoveBackData(FullBackDataHeader headerFrom, StackPanel dataFrom, FullBackDataFooter footerFrom, FullBackDataHeader headerTo, FullBackDataFooter footerTo)
 		{
-			bool isNeedUpdateSum = controller.NeedUpdateSum;
+			bool isNeedUpdateSum = ViewModel.NeedUpdateSum;
 			IEnumerable<FullBackData> removed = DeleteSelectedBackData(dataFrom);
 			headerFrom.UpdateIsCheckedState();
 			footerFrom.UpdateBackDataIds();
@@ -1056,12 +1052,12 @@ namespace DocumentMaker
 
 		private void SetDataFromControllerBackDatas()
 		{
-			bool actionsStackingEnable = controller.IsActionsStackingEnabled;
-			controller.DisableActionsStacking();
+			bool actionsStackingEnable = ViewModel.IsActionsStackingEnabled;
+			ViewModel.DisableActionsStacking();
 			SetDataFromControllerBackDatas(BacksData);
 			SetDataFromControllerBackDatas(ReworkBacksData);
 			SetDataFromControllerBackDatas(OtherBacksData);
-			if (actionsStackingEnable) controller.EnableActionsStacking();
+			if (actionsStackingEnable) ViewModel.EnableActionsStacking();
 		}
 
 		private void SetDataFromControllerBackDatas(StackPanel stackPanel)
@@ -1080,76 +1076,76 @@ namespace DocumentMaker
 
 		private void UpdateViewBackData()
 		{
-			IList<WorkObject> currentWorkTypesList = controller.CurrentWorkTypesList,
-				currentReworkWorkTypesList = controller.CurrentReworkWorkTypesList;
+			IList<WorkObject> currentWorkTypesList = ViewModel.CurrentWorkTypesList,
+				currentReworkWorkTypesList = ViewModel.CurrentReworkWorkTypesList;
 
 			foreach (UIElement control in BacksData.Children)
 			{
 				if (control is FullBackData backData)
 				{
-					backData.SetViewByTemplate(controller.TemplateType);
+					backData.SetViewByTemplate(ViewModel.TemplateType);
 					backData.SetWorkTypesList(currentWorkTypesList);
-					backData.SetGameNameList(controller.GameNameList);
-					backData.SetBackDataTypesList(controller.CurrentBackDataTypesList);
+					backData.SetGameNameList(ViewModel.GameNameList);
+					backData.SetBackDataTypesList(ViewModel.CurrentBackDataTypesList);
 				}
 			}
 			foreach (UIElement control in ReworkBacksData.Children)
 			{
 				if (control is FullBackData backData)
 				{
-					backData.SetViewByTemplate(controller.TemplateType);
+					backData.SetViewByTemplate(ViewModel.TemplateType);
 					backData.SetWorkTypesList(currentReworkWorkTypesList);
-					backData.SetGameNameList(controller.GameNameList);
-					backData.SetBackDataTypesList(controller.CurrentBackDataTypesList);
+					backData.SetGameNameList(ViewModel.GameNameList);
+					backData.SetBackDataTypesList(ViewModel.CurrentBackDataTypesList);
 				}
 			}
 			foreach (UIElement control in OtherBacksData.Children)
 			{
 				if (control is FullBackData backData)
 				{
-					backData.SetViewByTemplate(controller.TemplateType);
-					backData.SetGameNameList(controller.GameNameList);
-					backData.SetBackDataTypesList(controller.CurrentBackDataTypesList);
+					backData.SetViewByTemplate(ViewModel.TemplateType);
+					backData.SetGameNameList(ViewModel.GameNameList);
+					backData.SetBackDataTypesList(ViewModel.CurrentBackDataTypesList);
 				}
 			}
 
-			DataHeader.SetViewByTemplate(controller.TemplateType);
-			ReworkDataHeader.SetViewByTemplate(controller.TemplateType);
-			OtherDataHeader.SetViewByTemplate(controller.TemplateType);
+			DataHeader.SetViewByTemplate(ViewModel.TemplateType);
+			ReworkDataHeader.SetViewByTemplate(ViewModel.TemplateType);
+			OtherDataHeader.SetViewByTemplate(ViewModel.TemplateType);
 
-			DataFooter.SetViewByTemplate(controller.TemplateType);
-			ReworkDataFooter.SetViewByTemplate(controller.TemplateType);
-			OtherDataFooter.SetViewByTemplate(controller.TemplateType);
+			DataFooter.SetViewByTemplate(ViewModel.TemplateType);
+			ReworkDataFooter.SetViewByTemplate(ViewModel.TemplateType);
+			OtherDataFooter.SetViewByTemplate(ViewModel.TemplateType);
 		}
 
 		private void SetDataFromController()
 		{
-			bool actionsStackingEnable = controller.IsActionsStackingEnabled;
-			controller.DisableActionsStacking();
-			DocumentTemplateComboBox.SelectedIndex = (int)controller.TemplateType;
-			TechnicalTaskDatePicker.Text = controller.TechnicalTaskDateText;
-			ActDatePicker.Text = controller.ActDateText;
-			TechnicalTaskNumTextInput.Text = controller.TechnicalTaskNumText;
-			ActSumInput.Text = controller.ActSum;
-			ActSaldoInput.Text = controller.ActSaldo;
-			if (actionsStackingEnable) controller.EnableActionsStacking();
+			bool actionsStackingEnable = ViewModel.IsActionsStackingEnabled;
+			ViewModel.DisableActionsStacking();
+			DocumentTemplateComboBox.SelectedIndex = (int)ViewModel.TemplateType;
+			TechnicalTaskDatePicker.Text = ViewModel.TechnicalTaskDateText;
+			ActDatePicker.Text = ViewModel.ActDateText;
+			TechnicalTaskNumTextInput.Text = ViewModel.TechnicalTaskNumText;
+			ActSumInput.Text = ViewModel.ActSum;
+			ActSaldoInput.Text = ViewModel.ActSaldo;
+			if (actionsStackingEnable) ViewModel.EnableActionsStacking();
 		}
 
 		private void SetDataToController()
 		{
-			bool actionsStackingEnable = controller.IsActionsStackingEnabled;
-			controller.DisableActionsStacking();
-			controller.TechnicalTaskDateText = TechnicalTaskDatePicker.Text;
-			controller.ActDateText = ActDatePicker.Text;
-			controller.TechnicalTaskNumText = TechnicalTaskNumTextInput.Text;
-			controller.ActSum = ActSumInput.Text;
-			controller.ActSaldo = ActSaldoInput.Text;
-			if (actionsStackingEnable) controller.EnableActionsStacking();
+			bool actionsStackingEnable = ViewModel.IsActionsStackingEnabled;
+			ViewModel.DisableActionsStacking();
+			ViewModel.TechnicalTaskDateText = TechnicalTaskDatePicker.Text;
+			ViewModel.ActDateText = ActDatePicker.Text;
+			ViewModel.TechnicalTaskNumText = TechnicalTaskNumTextInput.Text;
+			ViewModel.ActSum = ActSumInput.Text;
+			ViewModel.ActSaldo = ActSaldoInput.Text;
+			if (actionsStackingEnable) ViewModel.EnableActionsStacking();
 		}
 
 		private void OpenFiles(string[] filenames)
 		{
-			controller.OpenFiles(filenames, out string skippedFiles);
+			ViewModel.OpenFiles(filenames, out string skippedFiles);
 
 			if (!string.IsNullOrEmpty(skippedFiles))
 			{
@@ -1162,21 +1158,21 @@ namespace DocumentMaker
 
 		private void LoadFiles()
 		{
-			controller.LoadFiles();
-			SetSelectedFile(controller.GetSelectedFile()?.FullName);
+			ViewModel.LoadFiles();
+			SetSelectedFile(ViewModel.GetSelectedFile()?.FullName);
 		}
 
 		private void AddLoadedBackData()
 		{
-			bool actionsStackingEnable = controller.IsActionsStackingEnabled;
-			controller.DisableActionsStacking();
+			bool actionsStackingEnable = ViewModel.IsActionsStackingEnabled;
+			ViewModel.DisableActionsStacking();
 
 			DataFooter.ClearData();
 			ReworkDataFooter.ClearData();
 			OtherDataFooter.ClearData();
-			foreach (FullBackDataController backDataController in controller.BackDataControllers)
+			foreach (FullBackDataController backDataController in ViewModel.BackDataControllers)
 			{
-				backDataController.SetActionsStack(controller.GetActionsStack());
+				backDataController.SetActionsStack(ViewModel.GetActionsStack());
 				if (backDataController.IsOtherType)
 				{
 					FullBackData backData = OtherDataFooter.AddLoadedBackData(backDataController);
@@ -1218,15 +1214,15 @@ namespace DocumentMaker
 			ReworkDataFooter.UpdateBackDataIds();
 			OtherDataFooter.UpdateBackDataIds();
 
-			if (actionsStackingEnable) controller.EnableActionsStacking();
+			if (actionsStackingEnable) ViewModel.EnableActionsStacking();
 		}
 
 		private IEnumerable<FullBackData> AddNewSupport(IEnumerable<FullBackDataController> controllers)
 		{
-			bool actionsStackingEnable = controller.IsActionsStackingEnabled;
-			controller.DisableActionsStacking();
+			bool actionsStackingEnable = ViewModel.IsActionsStackingEnabled;
+			ViewModel.DisableActionsStacking();
 
-			DmxFile selectedFile = controller.GetSelectedFile();
+			DmxFile selectedFile = ViewModel.GetSelectedFile();
 			if (selectedFile != null)
 			{
 				selectedFile.AddRangeBackModel(controllers.Select(x => x.GetModel()));
@@ -1235,10 +1231,10 @@ namespace DocumentMaker
 			List<FullBackData> addedNewSupport = new List<FullBackData>();
 			foreach (FullBackDataController backDataController in controllers)
 			{
-				backDataController.SetActionsStack(controller.GetActionsStack());
+				backDataController.SetActionsStack(ViewModel.GetActionsStack());
 				if (!backDataController.IsOtherType && backDataController.IsRework)
 				{
-					controller.BackDataControllers.Add(backDataController);
+					ViewModel.BackDataControllers.Add(backDataController);
 					FullBackData backData = ReworkDataFooter.AddLoadedBackData(backDataController);
 					if (backData != null)
 					{
@@ -1253,7 +1249,7 @@ namespace DocumentMaker
 			}
 			ReworkDataFooter.UpdateBackDataIds();
 
-			if (actionsStackingEnable) controller.EnableActionsStacking();
+			if (actionsStackingEnable) ViewModel.EnableActionsStacking();
 
 			return addedNewSupport;
 		}
@@ -1272,17 +1268,17 @@ namespace DocumentMaker
 
 		private void SetWindowSettingsFromController()
 		{
-			Top = controller.WindowTop;
-			Left = controller.WindowLeft;
-			Height = controller.WindowHeight;
-			Width = controller.WindowWidth;
+			Top = ViewModel.WindowTop;
+			Left = ViewModel.WindowLeft;
+			Height = ViewModel.WindowHeight;
+			Width = ViewModel.WindowWidth;
 			WindowValidator.MoveToValidPosition(this);
 		}
 
 		private void UpdateActSum()
 		{
-			bool actionsStackingEnable = controller.IsActionsStackingEnabled;
-			if (controller.NeedUpdateSum) controller.DisableActionsStacking();
+			bool actionsStackingEnable = ViewModel.IsActionsStackingEnabled;
+			if (ViewModel.NeedUpdateSum) ViewModel.DisableActionsStacking();
 
 			uint sum = uint.TryParse(ActSumInput.Text, out uint s) ? s : 0;
 			UpdateActSumBackDataPanel(BacksData, sum);
@@ -1290,11 +1286,11 @@ namespace DocumentMaker
 			UpdateActSumBackDataPanel(OtherBacksData, sum);
 			UpdateSaldo();
 
-			if (controller.NeedUpdateSum)
+			if (ViewModel.NeedUpdateSum)
 			{
 				DropSaldoToLast();
 
-				if (actionsStackingEnable) controller.EnableActionsStacking();
+				if (actionsStackingEnable) ViewModel.EnableActionsStacking();
 			}
 		}
 
@@ -1302,7 +1298,7 @@ namespace DocumentMaker
 		{
 			if (!int.TryParse(ActSaldoInput.Text, out int currentSaldo)) return;
 
-			FullBackDataController last = controller.BackDataControllers.LastOrDefault();
+			FullBackDataController last = ViewModel.BackDataControllers.LastOrDefault();
 			if (last != null && int.TryParse(last.SumText, out int lastSum))
 			{
 				last.SumText = (lastSum + currentSaldo).ToString();
@@ -1342,7 +1338,7 @@ namespace DocumentMaker
 				{
 					if (elem is FullBackData backData)
 					{
-						backData.SetActSum(sum, controller.NeedUpdateSum);
+						backData.SetActSum(sum, ViewModel.NeedUpdateSum);
 					}
 				}
 			}
@@ -1389,7 +1385,7 @@ namespace DocumentMaker
 					MessageBoxIcon.Error);
 			}
 
-			List<string> notLoadedFilesList = controller.GetNotLoadedFilesList();
+			List<string> notLoadedFilesList = ViewModel.GetNotLoadedFilesList();
 			if (notLoadedFilesList != null && notLoadedFilesList.Count > 0)
 			{
 				string notLoadedFiles = "";
@@ -1410,7 +1406,7 @@ namespace DocumentMaker
 			SetNeedUpdateSumState(true);
 			if (CanUndoNeedUpdateSum)
 			{
-				controller.ResetWeights();
+				ViewModel.ResetWeights();
 			}
 		}
 
@@ -1421,8 +1417,8 @@ namespace DocumentMaker
 
 		private void SetNeedUpdateSumState(bool state)
 		{
-			controller.NeedUpdateSum = state;
-			DmxFile selectedFile = controller.GetSelectedFile();
+			ViewModel.NeedUpdateSum = state;
+			DmxFile selectedFile = ViewModel.GetSelectedFile();
 			if (selectedFile != null)
 			{
 				selectedFile.NeedUpdateSum = state;
@@ -1454,7 +1450,7 @@ namespace DocumentMaker
 
 		private void AddUndoRedoLinkNeedUpdateSum(bool isNeedUpdateSum)
 		{
-			controller.AddUndoRedoLink(new UndoRedoLink(
+			ViewModel.AddUndoRedoLink(new UndoRedoLink(
 					redo: (data) =>
 					{
 						if ((bool)data && CanUndoNeedUpdateSum)
@@ -1471,7 +1467,7 @@ namespace DocumentMaker
 
 		private void AddUndoRedoLinkNeedUpdateSumWithCheck(bool isNeedUpdateSum)
 		{
-			if (controller.IsActionsStackingEnabled)
+			if (ViewModel.IsActionsStackingEnabled)
 			{
 				AddUndoRedoLinkNeedUpdateSum(isNeedUpdateSum);
 			}
@@ -1497,36 +1493,36 @@ namespace DocumentMaker
 
 		private void Redo()
 		{
-			controller.DisableActionsStacking();
-			controller.Redo();
-			controller.EnableActionsStacking();
+			ViewModel.DisableActionsStacking();
+			ViewModel.Redo();
+			ViewModel.EnableActionsStacking();
 			UpdateUndoRedoState();
 		}
 
 		private void Undo()
 		{
-			controller.DisableActionsStacking();
-			controller.Undo();
-			controller.EnableActionsStacking();
+			ViewModel.DisableActionsStacking();
+			ViewModel.Undo();
+			ViewModel.EnableActionsStacking();
 			UpdateUndoRedoState();
 		}
 
 		private void UpdateUndoRedoState()
 		{
-			MenuUndoButton.IsEnabled = controller.CanUndo;
-			ToolBarUndoButton.IsEnabled = controller.CanUndo;
-			MenuRedoButton.IsEnabled = controller.CanRedo;
-			ToolBarRedoButton.IsEnabled = controller.CanRedo;
+			MenuUndoButton.IsEnabled = ViewModel.CanUndo;
+			ToolBarUndoButton.IsEnabled = ViewModel.CanUndo;
+			MenuRedoButton.IsEnabled = ViewModel.CanRedo;
+			ToolBarRedoButton.IsEnabled = ViewModel.CanRedo;
 		}
 
 		private bool HaveUnsavedChangesAtAll()
 		{
-			return controller.HaveUnsavedChangesAtAll();
+			return ViewModel.HaveUnsavedChangesAtAll();
 		}
 
 		private void ResetHaveUnsavedChanges()
 		{
-			controller.ResetHaveUnsavedChanges();
+			ViewModel.ResetHaveUnsavedChanges();
 		}
 
 		private void CheckNeedSaveBeforeClosing(out DialogResult dialogResult)
@@ -1542,11 +1538,11 @@ namespace DocumentMaker
 
 				if (dialogResult == System.Windows.Forms.DialogResult.Yes)
 				{
-					saveFileDialog.FileName = controller.GetDcmkFileName();
+					saveFileDialog.FileName = ViewModel.GetDcmkFileName();
 					dialogResult = saveFileDialog.ShowDialog();
 					if (dialogResult == System.Windows.Forms.DialogResult.OK)
 					{
-						controller.ExportDcmk(saveFileDialog.FileName);
+						ViewModel.ExportDcmk(saveFileDialog.FileName);
 
 						MessageBox.Show("Файл збережений.",
 							"DocumentMaker | Export dcmk",
@@ -1564,15 +1560,15 @@ namespace DocumentMaker
 			CanUndoNeedUpdateSum = false;
 			backData.Controller.IsRework = isRework;
 			backData.Controller.IsOtherType = isOtherType;
-			backData.Controller.SetActionsStack(controller.GetActionsStack());
-			controller.BackDataControllers.Add(backData.Controller);
-			backData.SetViewByTemplate(controller.TemplateType);
+			backData.Controller.SetActionsStack(ViewModel.GetActionsStack());
+			ViewModel.BackDataControllers.Add(backData.Controller);
+			backData.SetViewByTemplate(ViewModel.TemplateType);
 			if (!isOtherType)
 			{
-				backData.SetWorkTypesList(isRework ? controller.CurrentReworkWorkTypesList : controller.CurrentWorkTypesList);
+				backData.SetWorkTypesList(isRework ? ViewModel.CurrentReworkWorkTypesList : ViewModel.CurrentWorkTypesList);
 			}
-			backData.SetBackDataTypesList(controller.CurrentBackDataTypesList);
-			backData.SetGameNameList(controller.GameNameList);
+			backData.SetBackDataTypesList(ViewModel.CurrentBackDataTypesList);
+			backData.SetGameNameList(ViewModel.GameNameList);
 			FullBackDataHeader header = isOtherType ? OtherDataHeader : (isRework ? ReworkDataHeader : DataHeader);
 			backData.SubscribeSelectionChanged(() =>
 			{
@@ -1582,7 +1578,7 @@ namespace DocumentMaker
 			UpdateActSum();
 			header.UpdateIsCheckedState();
 
-			DmxFile selectedFile = controller.GetSelectedFile();
+			DmxFile selectedFile = ViewModel.GetSelectedFile();
 			if (selectedFile != null)
 			{
 				selectedFile.AddBackModel(backData.Controller.GetModel());
@@ -1610,7 +1606,7 @@ namespace DocumentMaker
 		{
 			if (changedWeight)
 			{
-				AddUndoRedoLinkNeedUpdateSumWithCheck(controller.NeedUpdateSum);
+				AddUndoRedoLinkNeedUpdateSumWithCheck(ViewModel.NeedUpdateSum);
 				DisableUpdatingSum();
 			}
 			UpdateSaldo();
@@ -1622,7 +1618,7 @@ namespace DocumentMaker
 
 		private void TechnicalTaskDatePicker_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			controller.TechnicalTaskDateText = TechnicalTaskDatePicker.Text;
+			ViewModel.TechnicalTaskDateText = TechnicalTaskDatePicker.Text;
 			if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
 			{
 				selectedFile.TechnicalTaskDateText = TechnicalTaskDatePicker.Text;
@@ -1631,7 +1627,7 @@ namespace DocumentMaker
 
 		private void ActDatePicker_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			controller.ActDateText = ActDatePicker.Text;
+			ViewModel.ActDateText = ActDatePicker.Text;
 			if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
 			{
 				selectedFile.ActDateText = ActDatePicker.Text;
@@ -1640,7 +1636,7 @@ namespace DocumentMaker
 
 		private void TechnicalTaskNumTextInput_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			controller.TechnicalTaskNumText = TechnicalTaskNumTextInput.Text;
+			ViewModel.TechnicalTaskNumText = TechnicalTaskNumTextInput.Text;
 			if (OpenedFilesComboBox != null && OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
 			{
 				selectedFile.TechnicalTaskNumText = TechnicalTaskNumTextInput.Text;
