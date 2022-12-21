@@ -77,7 +77,7 @@
             <Menu>
                 <MenuItem Header="Файл" Icon="{materialDesign:PackIcon Kind=FileOutline}">
                     <MenuItem
-                        Click="OpenFileClick"
+                        Command="{Binding OpenFileCommand}"
                         Header="Відкрити"
                         Icon="{materialDesign:PackIcon Kind=FileOutline}" />
                     <MenuItem
@@ -188,7 +188,7 @@
                 x:Name="ButtonOpenContent"
                 Grid.Row="3"
                 Height="{Binding ElementName=FileContentGrid, Path=Height}"
-                Click="OpenFileClick"
+                Command="{Binding OpenFileCommand}"
                 Content="Відкрити файл"
                 FontSize="25"
                 Style="{StaticResource MaterialDesignOutlinedDarkButton}"

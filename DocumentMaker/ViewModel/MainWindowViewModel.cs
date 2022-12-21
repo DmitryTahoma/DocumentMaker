@@ -1,5 +1,6 @@
 ﻿using Dml.Controller.Validation;
 using Dml.Model.Back;
+using Dml.Model.Files;
 using Dml.Model.Template;
 using Dml.UndoRedo;
 using DocumentMaker.Controller.Controls;
@@ -8,6 +9,7 @@ using DocumentMakerModelLibrary.Back;
 using DocumentMakerModelLibrary.Controls;
 using DocumentMakerModelLibrary.Files;
 using DocumentMakerModelLibrary.OfficeFiles.Human;
+using Mvvm.Commands;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,6 +32,8 @@ namespace DocumentMaker.ViewModel
 
 		private readonly List<string> notLoadedFiles;
 
+		private readonly OpenFileDialog openFileDialog;
+
 		public MainWindowViewModel()
 		{
 			validator = new StringValidator();
@@ -37,6 +41,16 @@ namespace DocumentMaker.ViewModel
 			BackDataControllers = new List<FullBackDataController>();
 
 			notLoadedFiles = new List<string>();
+
+			openFileDialog = new OpenFileDialog
+			{
+				Multiselect = true,
+				Filter = "Всі файли акту (*" + BaseDmxFile.Extension + ";*" + DcmkFile.Extension + ")|*" + BaseDmxFile.Extension + ";*" + DcmkFile.Extension
+					+ "|Файли акту (*" + BaseDmxFile.Extension + ")|*" + BaseDmxFile.Extension
+					+ "|Файли повного акту (*" + DcmkFile.Extension + ")|*" + DcmkFile.Extension
+			};
+
+			InitCommands();
 		}
 
 		#region Properties
@@ -100,6 +114,27 @@ namespace DocumentMaker.ViewModel
 			set { SetValue(SelectedOpenedFileProperty, value); }
 		}
 		public static readonly DependencyProperty SelectedOpenedFileProperty = DependencyProperty.Register(nameof(SelectedOpenedFile), typeof(DmxFile), typeof(MainWindowViewModel));
+
+		#endregion
+
+		#region Commands
+
+		private void InitCommands()
+		{
+			OpenFileCommand = new Command(OnOpenFileCommandExecute);
+		}
+
+		public Command OpenFileCommand { get; private set; }
+		private void OnOpenFileCommandExecute()
+		{
+			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				OpenFiles(openFileDialog.FileNames);
+				LoadFiles();
+				SetSelectedFile(openFileDialog.FileNames.Last());
+				ChangeOpenedFilesExtension();
+			}
+		}
 
 		#endregion
 

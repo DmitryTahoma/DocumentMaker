@@ -184,6 +184,10 @@
       <Project>{c6bc5f49-e36f-46cd-a0e9-86b180eaafdf}</Project>
       <Name>DocumentMakerModelLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Mvvm\Mvvm.csproj">
+      <Project>{12B44B0C-2061-40F6-8835-228785862A79}</Project>
+      <Name>Mvvm</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon.ico" />

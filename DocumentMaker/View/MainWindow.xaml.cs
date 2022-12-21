@@ -35,7 +35,6 @@ namespace DocumentMaker
 	public partial class MainWindow : Window
 	{
 		private readonly FolderBrowserDialog folderBrowserDialog;
-		private readonly OpenFileDialog openFileDialog;
 		private readonly SaveFileDialog saveFileDialog;
 		private readonly InputingValidator inputingValidator;
 
@@ -44,13 +43,6 @@ namespace DocumentMaker
 		public MainWindow(string[] args)
 		{
 			folderBrowserDialog = new FolderBrowserDialog();
-			openFileDialog = new OpenFileDialog
-			{
-				Multiselect = true,
-				Filter = "Всі файли акту (*" + BaseDmxFile.Extension + ";*" + DcmkFile.Extension + ")|*" + BaseDmxFile.Extension + ";*" + DcmkFile.Extension
-					+ "|Файли акту (*" + BaseDmxFile.Extension + ")|*" + BaseDmxFile.Extension
-					+ "|Файли повного акту (*" + DcmkFile.Extension + ")|*" + DcmkFile.Extension
-			};
 			saveFileDialog = new SaveFileDialog
 			{
 				DefaultExt = DcmkFile.Extension,
@@ -351,17 +343,6 @@ namespace DocumentMaker
 			catch (Exception exc)
 			{
 				MessageBox.Show("Виникла непередбачена помилка під час експорту! Надішліть, будь ласка, скріншот помилки розробнику.\n" + exc.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
-
-		private void OpenFileClick(object sender, RoutedEventArgs e)
-		{
-			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-			{
-				ViewModel.OpenFiles(openFileDialog.FileNames);
-				ViewModel.LoadFiles();
-				ViewModel.SetSelectedFile(openFileDialog.FileNames.Last());
-				ViewModel.ChangeOpenedFilesExtension();
 			}
 		}
 
