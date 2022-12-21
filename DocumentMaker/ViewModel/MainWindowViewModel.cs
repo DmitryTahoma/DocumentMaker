@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Forms;
 
 namespace DocumentMaker.ViewModel
 {
@@ -259,10 +260,10 @@ namespace DocumentMaker.ViewModel
 			CityName = humanData.CityName;
 		}
 
-		public void OpenFiles(string[] files, out string skippedFiles)
+		public void OpenFiles(string[] files)
 		{
 			model.OpenFiles(files, out List<string> skipped);
-			skippedFiles = string.Empty;
+			string skippedFiles = string.Empty;
 			if (skipped.Count > 0)
 			{
 				foreach (string file in skipped)
@@ -270,6 +271,14 @@ namespace DocumentMaker.ViewModel
 					skippedFiles += file + '\n';
 				}
 				skippedFiles = skippedFiles.Substring(0, skippedFiles.Length - 1);
+			}
+
+			if (!string.IsNullOrEmpty(skippedFiles))
+			{
+				System.Windows.Forms.MessageBox.Show("Формат файлів не підтримується:\n\n" + skippedFiles,
+					"DocumentMaker | Open Files",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
 			}
 		}
 

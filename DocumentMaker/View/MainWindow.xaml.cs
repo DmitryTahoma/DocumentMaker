@@ -133,7 +133,7 @@ namespace DocumentMaker
 			if (ViewModel != null)
 			{
 				SetDataFromController();
-				OpenFiles(ViewModel.ApplicationArgs);
+				ViewModel.OpenFiles(ViewModel.ApplicationArgs);
 				ResetHaveUnsavedChanges();
 				LoadFiles();
 				if (ViewModel.ApplicationArgs != null && ViewModel.ApplicationArgs.Length > 0)
@@ -358,7 +358,7 @@ namespace DocumentMaker
 		{
 			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
-				OpenFiles(openFileDialog.FileNames);
+				ViewModel.OpenFiles(openFileDialog.FileNames);
 				LoadFiles();
 				SetSelectedFile(openFileDialog.FileNames.Last());
 				ViewModel.ChangeOpenedFilesExtension();
@@ -717,7 +717,7 @@ namespace DocumentMaker
 			if (e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop, true))
 			{
 				string[] filenames = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
-				OpenFiles(filenames);
+				ViewModel.OpenFiles(filenames);
 				LoadFiles();
 				SetSelectedFile(filenames.Last(filename => filename.EndsWith(BaseDmxFile.Extension) || filename.EndsWith(DcmkFile.Extension)));
 				ViewModel.ChangeOpenedFilesExtension();
@@ -1141,19 +1141,6 @@ namespace DocumentMaker
 			ViewModel.ActSum = ActSumInput.Text;
 			ViewModel.ActSaldo = ActSaldoInput.Text;
 			if (actionsStackingEnable) ViewModel.EnableActionsStacking();
-		}
-
-		private void OpenFiles(string[] filenames)
-		{
-			ViewModel.OpenFiles(filenames, out string skippedFiles);
-
-			if (!string.IsNullOrEmpty(skippedFiles))
-			{
-				MessageBox.Show("Формат файлів не підтримується:\n\n" + skippedFiles,
-					"DocumentMaker | Open Files",
-					MessageBoxButtons.OK,
-					MessageBoxIcon.Error);
-			}
 		}
 
 		private void LoadFiles()
