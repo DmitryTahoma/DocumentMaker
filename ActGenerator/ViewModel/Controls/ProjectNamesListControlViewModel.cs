@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace ActGenerator.ViewModel.Controls
 {
@@ -20,8 +21,6 @@ namespace ActGenerator.ViewModel.Controls
 		ProjectNamesListControlModel model = new ProjectNamesListControlModel();
 
 		readonly Style itemStyle = Application.Current.FindResource("DeletableMaterialDesignOutlineChip") as Style;
-
-		UIElementCollection projectCollection = null;
 
 		AddProjectNameDialog addProjectNameDialog = null;
 		AddProjectNameDialogViewModel addProjectNameDialogViewModel = null;
@@ -47,6 +46,13 @@ namespace ActGenerator.ViewModel.Controls
 		}
 		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(ProjectNamesListControlViewModel));
 
+		public UIElementCollection ProjectCollection
+		{
+			get { return (UIElementCollection)GetValue(ProjectCollectionProperty); }
+			set { SetValue(ProjectCollectionProperty, value); }
+		}
+		public static readonly DependencyProperty ProjectCollectionProperty = DependencyProperty.Register(nameof(ProjectCollection), typeof(UIElementCollection), typeof(ProjectNamesListControlViewModel));
+
 		#endregion
 
 		#region Commands
@@ -54,7 +60,7 @@ namespace ActGenerator.ViewModel.Controls
 		private void InitCommands()
 		{
 			OpenAddProjectNameDialog = new Command(OnOpenAddProjectNameDialogExecute);
-			BindProjectCollection = new Command<UIElementCollection>(OnBindProjectCollectionExecute);
+			BindProjectCollection = new Command<WrapPanel>(OnBindProjectCollectionExecute);
 			RemoveChip = new Command<Chip>(OnRemoveChipExecute);
 			ViewLoaded = new Command(OnViewLoadedExecute);
 		}
@@ -67,30 +73,34 @@ namespace ActGenerator.ViewModel.Controls
 			{
 				List<IDbObject> selectedItems = addProjectNameDialogViewModel.SelectedProjectsAndNames.ToList();
 
-				List<Chip> castedProjectCollection = projectCollection.Cast<Chip>().ToList();
+				List<Chip> castedProjectCollection = ProjectCollection.Cast<Chip>().ToList();
 				foreach(IDbObject selectedItem in selectedItems)
 				{
 					if(null == castedProjectCollection.FirstOrDefault(x => x.DataContext.GetType() == selectedItem.GetType() && ((IDbObject)x.DataContext).Id == selectedItem.Id))
 					{
-						projectCollection.Add(CreateProjectChip(selectedItem));
+						ProjectCollection.Add(CreateProjectChip(selectedItem));
 					}
 				}
 			}
 		}
 
-		public Command<UIElementCollection> BindProjectCollection { get; private set; }
-		private void OnBindProjectCollectionExecute(UIElementCollection projectCollection)
+		public Command<WrapPanel> BindProjectCollection { get; private set; }
+		private void OnBindProjectCollectionExecute(WrapPanel projectsWrapPanel)
 		{
-			if(this.projectCollection == null)
+			Binding uiElementCollectionBinding = new Binding()
 			{
-				this.projectCollection = projectCollection;
-			}
+				Source = projectsWrapPanel,
+				Path = new PropertyPath(nameof(projectsWrapPanel.Children)),
+				Mode = BindingMode.OneWay,
+				UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+			};
+			BindingOperations.SetBinding(this, ProjectCollectionProperty, uiElementCollectionBinding);
 		}
 
 		public Command<Chip> RemoveChip { get; private set; }
 		private void OnRemoveChipExecute(Chip chip)
 		{
-			projectCollection.Remove(chip);
+			ProjectCollection.Remove(chip);
 		}
 
 		public Command ViewLoaded { get; private set; }
@@ -103,10 +113,10 @@ namespace ActGenerator.ViewModel.Controls
 			else if(State == ViewModelState.Loaded)
 			{
 				State = ViewModelState.Loading;
-				if(projectCollection.Count > 0)
+				if(ProjectCollection.Count > 0)
 				{
-					bool needLoadProjects = projectCollection.Cast<Chip>().FirstOrDefault(x => x.DataContext is Project) != null;
-					bool needLoadAlternativeName = projectCollection.Cast<Chip>().FirstOrDefault(x => x.DataContext is AlternativeProjectName) != null;
+					bool needLoadProjects = ProjectCollection.Cast<Chip>().FirstOrDefault(x => x.DataContext is Project) != null;
+					bool needLoadAlternativeName = ProjectCollection.Cast<Chip>().FirstOrDefault(x => x.DataContext is AlternativeProjectName) != null;
 					List<Project> projects = null;
 					List<AlternativeProjectName> alternativeProjectNames = null;
 
@@ -119,7 +129,7 @@ namespace ActGenerator.ViewModel.Controls
 					if (needLoadProjects) loadedObjects.AddRange(projects);
 					if (needLoadAlternativeName) loadedObjects.AddRange(alternativeProjectNames);
 
-					foreach(Chip chip in projectCollection.Cast<Chip>().ToList())
+					foreach(Chip chip in ProjectCollection.Cast<Chip>().ToList())
 					{
 						IDbObject context = chip.DataContext as IDbObject;
 						IDbObject loadedContext = loadedObjects.FirstOrDefault(x => x.GetType() == context.GetType() && x.Id == context.Id);
@@ -130,7 +140,7 @@ namespace ActGenerator.ViewModel.Controls
 						}
 						else
 						{
-							projectCollection.Remove(chip);
+							ProjectCollection.Remove(chip);
 						}
 					}
 				}

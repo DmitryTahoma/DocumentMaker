@@ -59,7 +59,7 @@
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding BindProjectCollection}" CommandParameter="{Binding ElementName=ProjectsWrapPanel, Path=Children}" />
+            <i:InvokeCommandAction Command="{Binding BindProjectCollection}" CommandParameter="{Binding ElementName=ProjectsWrapPanel}" />
             <i:InvokeCommandAction Command="{Binding ViewLoaded}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
