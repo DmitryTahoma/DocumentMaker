@@ -83,6 +83,27 @@ namespace ActGenerator.ViewModel
 		}
 		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(ActGeneratorViewModel), new PropertyMetadata(), CommandHelper.UpdateAllCanExecute);
 
+		public DateTime? MinActDate
+		{
+			get { return (DateTime?)GetValue(MinActDateProperty); }
+			set { SetValue(MinActDateProperty, value); }
+		}
+		public static readonly DependencyProperty MinActDateProperty = DependencyProperty.Register(nameof(MinActDate), typeof(DateTime?), typeof(ActGeneratorViewModel));
+
+		public DateTime? MaxActDate
+		{
+			get { return (DateTime?)GetValue(MaxActDateProperty); }
+			set { SetValue(MaxActDateProperty, value); }
+		}
+		public static readonly DependencyProperty MaxActDateProperty = DependencyProperty.Register(nameof(MaxActDate), typeof(DateTime?), typeof(ActGeneratorViewModel));
+
+		public bool CollapseRegionsWorks
+		{
+			get { return (bool)GetValue(CollapseRegionsWorksProperty); }
+			set { SetValue(CollapseRegionsWorksProperty, value); }
+		}
+		public static readonly DependencyProperty CollapseRegionsWorksProperty = DependencyProperty.Register(nameof(CollapseRegionsWorks), typeof(bool), typeof(ActGeneratorViewModel));
+
 		#endregion
 
 		#region Commands
@@ -144,7 +165,10 @@ namespace ActGenerator.ViewModel
 		{
 			MinSumText = actGeneratorSession.MinSumText;
 			MaxSumText = actGeneratorSession.MaxSumText;
+			MinActDate = actGeneratorSession.MinActDate;
+			MaxActDate = actGeneratorSession.MaxActDate;
 			NotUseOldWorks = actGeneratorSession.NotUseOldWorks;
+			CollapseRegionsWorks = actGeneratorSession.CollapseRegionsWorks;
 			SelectedDateTimeItem = DateTimeItems?.FirstOrDefault(x => x.DateTime == actGeneratorSession.SelectedDateTimeItem?.DateTime)
 				?? DateTimeItems?.FirstOrDefault();
 		}

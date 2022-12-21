@@ -158,12 +158,14 @@
                                 Grid.Row="1"
                                 MinWidth="134"
                                 materialDesign:HintAssist.Hint="Мінімум"
+                                SelectedDate="{Binding MinActDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource FirstDatePicker}" />
                             <DatePicker
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 MinWidth="134"
                                 materialDesign:HintAssist.Hint="Максимум"
+                                SelectedDate="{Binding MaxActDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource LastDatePicker}" />
                         </Grid>
                     </materialDesign:Card>
@@ -188,7 +190,10 @@
                                 </StackPanel>
                             </CheckBox>
 
-                            <CheckBox Content="об’єднувати регіони в одну роботу" Style="{StaticResource PlacedCheckBox}" />
+                            <CheckBox
+                                Content="об’єднувати регіони в одну роботу"
+                                IsChecked="{Binding CollapseRegionsWorks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource PlacedCheckBox}" />
 
                             <Button
                                 Command="{Binding GenerateActs}"
