@@ -171,7 +171,7 @@
                     <materialDesign:Card Grid.Column="2" Style="{StaticResource TopLastCard}">
                         <StackPanel Orientation="Vertical">
 
-                            <CheckBox IsChecked="{Binding CanUseOldWorks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource PlacedCheckBox}">
+                            <CheckBox IsChecked="{Binding NotUseOldWorks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource PlacedCheckBox}">
                                 <StackPanel Orientation="Horizontal">
 
                                     <TextBlock Text="не використовувати роботи, що вже були в актах" />

@@ -115,7 +115,7 @@ namespace ActGenerator.ViewModel
 
 			model.MinSumText = actGeneratorViewModel.MinSumText;
 			model.MaxSumText = actGeneratorViewModel.MaxSumText;
-			model.CanUseOldWorks = actGeneratorViewModel.CanUseOldWorks;
+			model.NotUseOldWorks = actGeneratorViewModel.NotUseOldWorks;
 			model.SelectedDateTimeItem = actGeneratorViewModel.SelectedDateTimeItem;
 			model.LastOpenedProjectName = ((SelectProjectDialogViewModel)selectProjectDialog.DataContext).LastOpenedProjectName;
 

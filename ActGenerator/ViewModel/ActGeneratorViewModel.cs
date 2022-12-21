@@ -62,12 +62,12 @@ namespace ActGenerator.ViewModel
 		}
 		public static readonly DependencyProperty MaxSumTextProperty = DependencyProperty.Register(nameof(MaxSumText), typeof(string), typeof(ActGeneratorViewModel));
 
-		public bool CanUseOldWorks
+		public bool NotUseOldWorks
 		{
-			get { return (bool)GetValue(CanUseOldWorksProperty); }
-			set { SetValue(CanUseOldWorksProperty, value); }
+			get { return (bool)GetValue(NotUseOldWorksProperty); }
+			set { SetValue(NotUseOldWorksProperty, value); }
 		}
-		public static readonly DependencyProperty CanUseOldWorksProperty = DependencyProperty.Register(nameof(CanUseOldWorks), typeof(bool), typeof(ActGeneratorViewModel));
+		public static readonly DependencyProperty NotUseOldWorksProperty = DependencyProperty.Register(nameof(NotUseOldWorks), typeof(bool), typeof(ActGeneratorViewModel));
 
 		public DateTimeItem SelectedDateTimeItem
 		{
@@ -144,7 +144,7 @@ namespace ActGenerator.ViewModel
 		{
 			MinSumText = actGeneratorSession.MinSumText;
 			MaxSumText = actGeneratorSession.MaxSumText;
-			CanUseOldWorks = actGeneratorSession.CanUseOldWorks;
+			NotUseOldWorks = actGeneratorSession.NotUseOldWorks;
 			SelectedDateTimeItem = DateTimeItems?.FirstOrDefault(x => x.DateTime == actGeneratorSession.SelectedDateTimeItem?.DateTime)
 				?? DateTimeItems?.FirstOrDefault();
 		}
