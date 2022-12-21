@@ -45,7 +45,7 @@ namespace DocumentMaker
 
 		public MainWindow(string[] args)
 		{
-			controller = new MainWindowController(args);
+			controller = new MainWindowController();
 			controller.Load();
 			SetWindowSettingsFromController();
 
@@ -66,6 +66,8 @@ namespace DocumentMaker
 
 			InitializeComponent();
 			InitializeComponentFromCode();
+
+			ViewModel.ApplicationArgs = args;
 
 #if INCLUDED_UPDATER_API
 			AssemblyLoader.LoadWinScp();
@@ -135,13 +137,12 @@ namespace DocumentMaker
 			if (controller != null)
 			{
 				SetDataFromController();
-				string[] files = controller.GetOpenLaterFiles();
-				OpenFiles(files);
+				OpenFiles(ViewModel.ApplicationArgs);
 				ResetHaveUnsavedChanges();
 				LoadFiles();
-				if (files != null && files.Length > 0)
+				if (ViewModel.ApplicationArgs != null && ViewModel.ApplicationArgs.Length > 0)
 				{
-					SetSelectedFile(files.Last());
+					SetSelectedFile(ViewModel.ApplicationArgs.Last());
 				}
 				controller.ChangeOpenedFilesExtension();
 				UpdateActSum();

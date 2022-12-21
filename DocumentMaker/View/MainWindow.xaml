@@ -25,7 +25,7 @@
     mc:Ignorable="d">
 
     <Window.DataContext>
-        <vm:MainWindowViewModel />
+        <vm:MainWindowViewModel x:Name="ViewModel" />
     </Window.DataContext>
 
     <Window.Resources>
