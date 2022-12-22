@@ -1,4 +1,5 @@
 ﻿using ActGenerator.Model;
+using ActGenerator.View.Dialogs;
 using ActGenerator.ViewModel.Controls;
 using ActGenerator.ViewModel.Interfaces;
 using Dml;
@@ -133,13 +134,16 @@ namespace ActGenerator.ViewModel
 		}
 
 		public Command<DependencyObject> GenerateActs { get; private set; }
-		private void OnGenerateActsExecute(DependencyObject validateObj)
+		private async void OnGenerateActsExecute(DependencyObject validateObj)
 		{
 			if (ValidationHelper.GetFirstInvalid(validateObj, true) is UIElement invalid)
 			{
 				invalid.Focus();
 				return;
 			}
+
+			GeneratingProgressDialog generatingProgressDialog = new GeneratingProgressDialog();
+			await DialogHost.Show(generatingProgressDialog, DialogHostId);
 		}
 
 		public Command<IContainDialogHostId> BindDialogHostName { get; private set; }

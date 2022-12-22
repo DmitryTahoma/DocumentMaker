@@ -111,6 +111,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Dialogs\GeneratingProgressDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -159,6 +163,9 @@
     </Compile>
     <Compile Include="View\Dialogs\AddProjectNameDialog.xaml.cs">
       <DependentUpon>AddProjectNameDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\GeneratingProgressDialog.xaml.cs">
+      <DependentUpon>GeneratingProgressDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

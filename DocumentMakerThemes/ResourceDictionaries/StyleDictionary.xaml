@@ -464,6 +464,23 @@
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
 
+            <Style
+                x:Key="GeneratingProgressDialogTextBlock"
+                BasedOn="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                TargetType="TextBlock">
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style
+                x:Key="GeneratingProgressDialogProgressBar"
+                BasedOn="{StaticResource MaterialDesignLinearProgressBar}"
+                TargetType="ProgressBar">
+                <Setter Property="Height" Value="10" />
+                <Setter Property="Margin" Value="5" />
+            </Style>
+
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
