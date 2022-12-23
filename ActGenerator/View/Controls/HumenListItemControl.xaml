@@ -4,7 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ActGenerator.View.Controls"
+    xmlns:localValidationRules="clr-namespace:ActGenerator.ViewModel.ValidationRules"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:validationRules="clr-namespace:Mvvm.ValidationRules;assembly=Mvvm"
     xmlns:vm="clr-namespace:ActGenerator.ViewModel.Controls"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -25,15 +28,34 @@
             x:Name="CheckBox"
             Content="{Binding Name, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
             IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBox
-            Grid.Column="1"
-            Style="{StaticResource HumenListControlItemTextBox}"
-            Text="{Binding SumText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox Grid.Column="1" Style="{StaticResource HumenListControlItemTextBox}">
+            <TextBox.Text>
+                <Binding
+                    Mode="TwoWay"
+                    Path="SumText"
+                    UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <validationRules:IntPositiveValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
         <local:CheckBoxList
             x:Name="CheckBoxList"
             Grid.Column="2"
-            ItemsSource="{Binding DocumentTemplatesList, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+            ItemsSource="{Binding DocumentTemplatesList, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+            <local:CheckBoxList.CheckedList>
+                <Binding
+                    Mode="TwoWay"
+                    Path="SelectedTemplates"
+                    UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <localValidationRules:NotEmptyIListValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </local:CheckBoxList.CheckedList>
+        </local:CheckBoxList>
 
     </Grid>
-    
+
 </UserControl>

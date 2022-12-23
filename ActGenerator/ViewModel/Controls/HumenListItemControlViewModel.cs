@@ -9,6 +9,11 @@ namespace ActGenerator.ViewModel.Controls
 	{
 		private HumanData model = null;
 
+		public HumenListItemControlViewModel()
+		{
+			SelectedTemplates = new List<object>();
+		}
+
 		#region Properties
 
 		public string Name
@@ -38,6 +43,13 @@ namespace ActGenerator.ViewModel.Controls
 			set { SetValue(DocumentTemplatesListProperty, value); }
 		}
 		public static readonly DependencyProperty DocumentTemplatesListProperty = DependencyProperty.Register(nameof(DocumentTemplatesList), typeof(IEnumerable<FullDocumentTemplate>), typeof(HumenListItemControlViewModel));
+
+		public List<object> SelectedTemplates
+		{
+			get { return (List<object>)GetValue(SelectedTemplatesProperty); }
+			set { SetValue(SelectedTemplatesProperty, value); }
+		}
+		public static readonly DependencyProperty SelectedTemplatesProperty = DependencyProperty.Register(nameof(SelectedTemplates), typeof(List<object>), typeof(HumenListItemControlViewModel));
 
 		public HumanData Model
 		{

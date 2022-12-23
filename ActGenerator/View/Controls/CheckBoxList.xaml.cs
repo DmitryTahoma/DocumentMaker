@@ -113,13 +113,14 @@ namespace ActGenerator.View.Controls
 
 		private void CheckBoxChecked(object sender, RoutedEventArgs e)
 		{
-			CheckedList.Add((sender as CheckBox).Content);
+			CheckedList = CheckedList.Append((sender as CheckBox).Content).ToList();
 			CheckBoxCheckedChanged(sender, e);
 		}
 
 		private void CheckBoxUnchecked(object sender, RoutedEventArgs e)
 		{
-			CheckedList.Remove((sender as CheckBox).Content);
+			object obj = (sender as CheckBox).Content;
+			CheckedList = CheckedList.Where(x => x != obj).ToList();
 			CheckBoxCheckedChanged(sender, e);
 		}
 
