@@ -12,8 +12,6 @@ namespace ActGenerator.View.Controls
 	/// </summary>
 	public partial class CheckBoxList : UserControl
 	{
-		private const string emptyTextValue = "<не обрано>";
-
 		private bool needUpdateIsSelectedAll = true;
 
 		public CheckBoxList()
@@ -46,7 +44,7 @@ namespace ActGenerator.View.Controls
 			get { return (string)GetValue(TextProperty); }
 			set { SetValue(TextProperty, value); }
 		}
-		public static readonly DependencyProperty TextProperty = DependencyProperty.Register(nameof(Text), typeof(string), typeof(CheckBoxList), new PropertyMetadata(emptyTextValue));
+		public static readonly DependencyProperty TextProperty = DependencyProperty.Register(nameof(Text), typeof(string), typeof(CheckBoxList));
 
 		public bool? IsSelectedAll
 		{
@@ -54,6 +52,13 @@ namespace ActGenerator.View.Controls
 			set { SetValue(IsSelectedAllProperty, value); }
 		}
 		public static readonly DependencyProperty IsSelectedAllProperty = DependencyProperty.Register(nameof(IsSelectedAll), typeof(bool?), typeof(CheckBoxList), new PropertyMetadata(false));
+
+		public bool IsEmptyText
+		{
+			get { return (bool)GetValue(IsEmptyTextProperty); }
+			set { SetValue(IsEmptyTextProperty, value); }
+		}
+		public static readonly DependencyProperty IsEmptyTextProperty = DependencyProperty.Register(nameof(IsEmptyText), typeof(bool), typeof(CheckBoxList));
 
 		#endregion
 
@@ -147,10 +152,11 @@ namespace ActGenerator.View.Controls
 
 			if (!findedFirst)
 			{
-				Text = emptyTextValue;
+				IsEmptyText = true;
 			}
 			else
 			{
+				IsEmptyText = false;
 				while (checkedListEnum.MoveNext())
 				{
 					if (checkedListEnum.Current.IsChecked == true)
