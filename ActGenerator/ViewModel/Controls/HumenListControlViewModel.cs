@@ -23,8 +23,10 @@ namespace ActGenerator.ViewModel.Controls
 		AddHumanDialogViewModel addHumanDialogViewModel = null;
 
 		ScrollViewer humenHeaderScrollViewer = null;
-		Grid humenGrid = null;
-		List<Item> items = new List<Item>();
+
+		UIElementCollection humenStackCollection = null;
+		IEnumerable<HumenListItemControl> items = null;
+		IEnumerable<HumenListItemControlViewModel> itemsViewModel = null;
 
 		bool needUpdateHumenCheckBoxIsChecked = true;
 
@@ -67,7 +69,7 @@ namespace ActGenerator.ViewModel.Controls
 		private void InitCommands()
 		{
 			AddHumanCommand = new Command(OnAddHumanCommandExecute);
-			BindHumenGrid = new Command<Grid>(OnBindHumenGridExecute);
+			BindHumenStack = new Command<UIElementCollection>(OnBindHumenStackExecute);
 			BindHumenHeaderScrollViewer = new Command<ScrollViewer>(OnBindHumenHeaderScrollViewerExecute);
 			SetScrollChanges = new Command<ScrollChangedEventArgs>(OnSetScrollChangesExecute);
 			ChangeIsCheckedAllHumen = new Command(OnChangeIsCheckedAllHumenExecute);
@@ -82,9 +84,9 @@ namespace ActGenerator.ViewModel.Controls
 			{
 				foreach (HumanData humanData in addHumanDialogViewModel.SelectedHumanData)
 				{
-					if(items.FirstOrDefault(x => x.DataContext == humanData) == null)
+					if(items.FirstOrDefault(x => ((HumenListItemControlViewModel)x.DataContext).Model == humanData) == null)
 					{
-						items.Add(CreateItem(humanData));
+						AddItem(humanData);
 						UpdateHumenCheckBoxIsChecked();
 						await Task.Delay(1);
 					}
@@ -92,12 +94,14 @@ namespace ActGenerator.ViewModel.Controls
 			}
 		}
 
-		public Command<Grid> BindHumenGrid { get; private set; }
-		private void OnBindHumenGridExecute(Grid humenGrid)
+		public Command<UIElementCollection> BindHumenStack { get; private set; }
+		private void OnBindHumenStackExecute(UIElementCollection humenStackCollection)
 		{
-			if(this.humenGrid == null)
+			if(this.humenStackCollection == null)
 			{
-				this.humenGrid = humenGrid;
+				this.humenStackCollection = humenStackCollection;
+				items = this.humenStackCollection.Cast<HumenListItemControl>();
+				itemsViewModel = items.Select(x => (HumenListItemControlViewModel)x.DataContext);
 			}
 		}
 
@@ -123,9 +127,9 @@ namespace ActGenerator.ViewModel.Controls
 		private void OnChangeIsCheckedAllHumenExecute()
 		{
 			needUpdateHumenCheckBoxIsChecked = false;
-			foreach(Item item in items)
+			foreach(HumenListItemControlViewModel item in itemsViewModel)
 			{
-				item.NameCheckBox.IsChecked = HumenCheckBoxIsChecked;
+				item.IsChecked = HumenCheckBoxIsChecked.HasValue && HumenCheckBoxIsChecked.Value;
 			}
 			needUpdateHumenCheckBoxIsChecked = true;
 		}
@@ -133,49 +137,33 @@ namespace ActGenerator.ViewModel.Controls
 		public Command RemoveSelectedHumen { get; private set; }
 		private async void OnRemoveSelectedHumenExecute()
 		{
-			List<Item> removeList = new List<Item>();
-			foreach(Item item in items)
+			List<HumenListItemControl> removeList = new List<HumenListItemControl>();
+			foreach (HumenListItemControl item in items)
 			{
-				if(item.NameCheckBox.IsChecked == true)
+				if (item.CheckBox.IsChecked == true)
 				{
-					humenGrid.Children.Remove(item.NameCheckBox);
-					humenGrid.Children.Remove(item.SumTextBox);
-					humenGrid.Children.Remove(item.TemplateCheckBoxList);
 					removeList.Add(item);
-					await Task.Delay(1);
 				}
 			}
 
+			foreach(HumenListItemControl removeItem in removeList)
+			{
+				humenStackCollection.Remove(removeItem);
+				UpdateHumenCheckBoxIsChecked();
+				await Task.Delay(1);
+			}
 			HumenCheckBoxIsChecked = false;
-
-			foreach (Item removeItem in removeList)
-			{
-				items.Remove(removeItem);
-			}
-
-			int row = 0;
-			foreach(Item item in items)
-			{
-				Grid.SetRow(item.NameCheckBox, row);
-				Grid.SetRow(item.SumTextBox, row);
-				Grid.SetRow(item.TemplateCheckBoxList, row);
-
-				++row;
-			}
-
-			foreach(Item _ in removeList)
-			{
-				humenGrid.RowDefinitions.RemoveAt(0);
-			}
 		}
 
 		#endregion
 
 		#region Methods
 
-		private Item CreateItem(HumanData humanData)
+		private void AddItem(HumanData humanData)
 		{
-			Item item = new Item(humanData);
+			HumenListItemControl item = new HumenListItemControl();
+			HumenListItemControlViewModel itemViewModel = (HumenListItemControlViewModel)item.DataContext;
+			itemViewModel.Model = humanData;
 			List<FullDocumentTemplate> itemsSource = model.DocumentTemplatesList.ToList();
 			FullDocumentTemplate deafultTemplate = itemsSource.FirstOrDefault(x => x.Name == humanData.DefaultTemplate);
 			if (deafultTemplate != null)
@@ -183,22 +171,21 @@ namespace ActGenerator.ViewModel.Controls
 				itemsSource.Remove(deafultTemplate);
 				itemsSource.Insert(0, deafultTemplate);
 			}
-			item.TemplateCheckBoxList.ItemsSource = itemsSource;
+			itemViewModel.DocumentTemplatesList = itemsSource;
 			if (deafultTemplate != null)
 			{
-				item.TemplateCheckBoxList.CheckFirst();
+				item.CheckBoxList.CheckFirst();
 			}
-			item.NameCheckBox.Checked += NameCheckBoxCheckedChanged;
-			item.NameCheckBox.Unchecked += NameCheckBoxCheckedChanged;
-			item.AddToGrid(humenGrid);
-			return item;
+			item.CheckBox.Checked += NameCheckBoxCheckedChanged;
+			item.CheckBox.Unchecked += NameCheckBoxCheckedChanged;
+			humenStackCollection.Add(item);
 		}
 
 		private void UpdateHumenCheckBoxIsChecked()
 		{
 			if (!needUpdateHumenCheckBoxIsChecked) return;
 
-			HumenCheckBoxIsChecked = CheckBoxList.UpdateGeneralCheckBoxState(items.Select(x => x.NameCheckBox));
+			HumenCheckBoxIsChecked = CheckBoxList.UpdateGeneralCheckBoxState(items.Select(x => x.CheckBox));
 		}
 
 		private void NameCheckBoxCheckedChanged(object sender, RoutedEventArgs e)
@@ -207,36 +194,5 @@ namespace ActGenerator.ViewModel.Controls
 		}
 
 		#endregion
-
-		class Item
-		{
-			static readonly Style textBoxItemStyle = Application.Current.FindResource("HumenListControlItemTextBox") as Style;
-
-			public Item(HumanData dataContext)
-			{
-				NameCheckBox = new CheckBox { Content = dataContext.Name };
-				SumTextBox = new TextBox { Style = textBoxItemStyle };
-				Grid.SetColumn(SumTextBox, 1);
-				TemplateCheckBoxList = new CheckBoxList();
-				Grid.SetColumn(TemplateCheckBoxList, 2);
-				DataContext = dataContext;
-			}
-
-			public CheckBox NameCheckBox { get; private set; }
-			public TextBox SumTextBox { get; private set; }
-			public CheckBoxList TemplateCheckBoxList { get; private set; }
-			public HumanData DataContext { get; set; }
-
-			public void AddToGrid(Grid grid)
-			{
-				Grid.SetRow(NameCheckBox, grid.RowDefinitions.Count);
-				Grid.SetRow(SumTextBox, grid.RowDefinitions.Count);
-				Grid.SetRow(TemplateCheckBoxList, grid.RowDefinitions.Count);
-				grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-				grid.Children.Add(NameCheckBox);
-				grid.Children.Add(SumTextBox);
-				grid.Children.Add(TemplateCheckBoxList);
-			}
-		}
 	}
 }

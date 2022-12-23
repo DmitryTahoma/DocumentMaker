@@ -76,13 +76,8 @@
             Grid.Row="3"
             HorizontalScrollBarVisibility="Auto"
             VerticalScrollBarVisibility="Auto">
-            <Grid x:Name="HumenGrid">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition SharedSizeGroup="HumenListControlGridNameColumn" />
-                    <ColumnDefinition SharedSizeGroup="HumenListControlGridSumColumn" />
-                    <ColumnDefinition SharedSizeGroup="HumenListControlGridTemplatesColumn" />
-                </Grid.ColumnDefinitions>
-            </Grid>
+
+            <StackPanel x:Name="HumenStack" />
 
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="ScrollChanged">
@@ -94,7 +89,7 @@
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding BindHumenGrid}" CommandParameter="{Binding ElementName=HumenGrid}" />
+            <i:InvokeCommandAction Command="{Binding BindHumenStack}" CommandParameter="{Binding ElementName=HumenStack, Path=Children}" />
             <i:InvokeCommandAction Command="{Binding BindHumenHeaderScrollViewer}" CommandParameter="{Binding ElementName=HumenHeaderScrollViewer}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>

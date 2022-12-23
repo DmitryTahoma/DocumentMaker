@@ -99,6 +99,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Controls\HumenListItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Controls\ProjectNamesListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -135,6 +139,7 @@
     <Compile Include="ViewModel\ActGeneratorViewModel.cs" />
     <Compile Include="ViewModel\Controls\DocumentListControlViewModel.cs" />
     <Compile Include="ViewModel\Controls\HumenListControlViewModel.cs" />
+    <Compile Include="ViewModel\Controls\HumenListItemControlViewModel.cs" />
     <Compile Include="ViewModel\Controls\ProjectNamesListControlViewModel.cs" />
     <Compile Include="ViewModel\Dialogs\AddHumanDialogViewModel.cs" />
     <Compile Include="ViewModel\Dialogs\AddProjectNameDialogViewModel.cs" />
@@ -154,6 +159,9 @@
     </Compile>
     <Compile Include="View\Controls\HumenListControl.xaml.cs">
       <DependentUpon>HumenListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Controls\HumenListItemControl.xaml.cs">
+      <DependentUpon>HumenListItemControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Controls\ProjectNamesListControl.xaml.cs">
       <DependentUpon>ProjectNamesListControl.xaml</DependentUpon>
