@@ -1,4 +1,5 @@
 ﻿using ActGenerator.Model;
+using ActGenerator.View.Controls;
 using ActGenerator.View.Dialogs;
 using ActGenerator.ViewModel.Controls;
 using ActGenerator.ViewModel.Interfaces;
@@ -138,6 +139,7 @@ namespace ActGenerator.ViewModel
 		{
 			if (ValidationHelper.GetFirstInvalid(validateObj, true) is UIElement invalid)
 			{
+				if (invalid is FrameworkElement frameworkElement) frameworkElement.BringIntoView();
 				invalid.Focus();
 				return;
 			}
