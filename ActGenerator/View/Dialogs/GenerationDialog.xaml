@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:ActGenerator.ViewModel.Dialogs"
     MinWidth="400"
@@ -14,20 +15,36 @@
         <vm:GenerationDialogViewModel />
     </UserControl.DataContext>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
+    <StackPanel Orientation="Vertical">
 
-        <TextBlock Style="{StaticResource GeneratingProgressDialogTextBlock}" Text="{Binding LabelText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBlock Style="{StaticResource GenerationDialogTextBlock}" Text="Шлях для збереження" />
+
+        <TextBlock Style="{StaticResource GenerationDialogPathTextBlock}" Text="D:\Content\FableF2P_fbnEngine\mg\e1back_6_mg2\f2p_e1b6mg2_fin" />
+
+        <Button Content="Обрати" Style="{StaticResource GenerationDialogButton}" />
+
+        <Grid Margin="10" />
+
+        <TextBlock Style="{StaticResource GenerationDialogTextBlock}" Text="{Binding LabelText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <ProgressBar
-            Grid.Row="1"
             Maximum="{Binding ProgressMaximum, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-            Style="{StaticResource GeneratingProgressDialogProgressBar}"
+            Style="{StaticResource GenerationDialogProgressBar}"
             Value="{Binding ProgressValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
-    </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Button Content="Згенерувати акти" Style="{StaticResource GenerationDialogButton}" />
+            <Button
+                Grid.Column="1"
+                Content="Скасувати"
+                Style="{StaticResource GenerationDialogButton}" />
+        </Grid>
+
+    </StackPanel>
 
 </UserControl>

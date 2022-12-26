@@ -465,19 +465,31 @@
             </Style>
 
             <Style
-                x:Key="GeneratingProgressDialogTextBlock"
-                BasedOn="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                x:Key="GenerationDialogTextBlock"
+                BasedOn="{StaticResource MaterialDesignHeadline6TextBlock}"
                 TargetType="TextBlock">
-                <Setter Property="Margin" Value="5" />
+                <Setter Property="Margin" Value="5,0" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
 
             <Style
-                x:Key="GeneratingProgressDialogProgressBar"
+                x:Key="GenerationDialogProgressBar"
                 BasedOn="{StaticResource MaterialDesignLinearProgressBar}"
                 TargetType="ProgressBar">
                 <Setter Property="Height" Value="10" />
+                <Setter Property="Margin" Value="5" />
+            </Style>
+
+            <Style x:Key="GenerationDialogPathTextBlock" TargetType="TextBlock">
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style
+                x:Key="GenerationDialogButton"
+                BasedOn="{StaticResource MaterialDesignOutlinedDarkButton}"
+                TargetType="Button">
                 <Setter Property="Margin" Value="5" />
             </Style>
 

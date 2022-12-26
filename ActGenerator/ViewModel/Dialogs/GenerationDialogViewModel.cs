@@ -4,6 +4,15 @@ namespace ActGenerator.ViewModel.Dialogs
 {
 	public class GenerationDialogViewModel : DependencyObject
 	{
+		string defaultStateText = "Готовий до генерації";
+
+		public GenerationDialogViewModel()
+		{
+			LabelText = defaultStateText;
+			ProgressValue = 0;
+			ProgressMaximum = 1000;
+		}
+
 		#region Properties
 
 		public string LabelText
