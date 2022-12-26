@@ -155,18 +155,60 @@
                                 Text="Налаштування дат" />
 
                             <DatePicker
+                                x:Name="MinActDatePicker"
                                 Grid.Row="1"
                                 MinWidth="134"
                                 materialDesign:HintAssist.Hint="Мінімум"
                                 SelectedDate="{Binding MinActDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                Style="{StaticResource FirstDatePicker}" />
+                                Style="{StaticResource FirstDatePicker}">
+                                <DatePicker.Resources>
+                                    <bindingExtensions:BindingProxy x:Key="MinActDatePickerStringTargetProxy" Data="{Binding ElementName=MaxActDatePicker, Path=Text, Mode=TwoWay}" />
+                                    <bindingExtensions:BindingProxy x:Key="MinActDatePickerStringSourceProxy" Data="{Binding ElementName=MaxActDatePicker, Path=Text}" />
+                                </DatePicker.Resources>
+                                <DatePicker.Text>
+                                    <Binding
+                                        Mode="TwoWay"
+                                        Path="MinActDateString"
+                                        UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <validationRules:DateTimeLessThenValidationRule>
+                                                <validationRules:DateTimeLessThenValidationRule.DateTimeString>
+                                                    <validationRulesProps:String BindingToTrigger="{Binding Data, Source={StaticResource MinActDatePickerStringSourceProxy}}" Value="{Binding Data, Source={StaticResource MinActDatePickerStringTargetProxy}}" />
+                                                </validationRules:DateTimeLessThenValidationRule.DateTimeString>
+                                            </validationRules:DateTimeLessThenValidationRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </DatePicker.Text>
+                            </DatePicker>
+
                             <DatePicker
+                                x:Name="MaxActDatePicker"
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 MinWidth="134"
                                 materialDesign:HintAssist.Hint="Максимум"
                                 SelectedDate="{Binding MaxActDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                Style="{StaticResource LastDatePicker}" />
+                                Style="{StaticResource LastDatePicker}">
+                                <DatePicker.Resources>
+                                    <bindingExtensions:BindingProxy x:Key="MaxActDatePickerStringTargetProxy" Data="{Binding ElementName=MinActDatePicker, Path=Text, Mode=TwoWay}" />
+                                    <bindingExtensions:BindingProxy x:Key="MaxActDatePickerStringSourceProxy" Data="{Binding ElementName=MinActDatePicker, Path=Text}" />
+                                </DatePicker.Resources>
+                                <DatePicker.Text>
+                                    <Binding
+                                        Mode="TwoWay"
+                                        Path="MaxActDateString"
+                                        UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <validationRules:DateTimeMoreThenValidationRule>
+                                                <validationRules:DateTimeMoreThenValidationRule.DateTimeString>
+                                                    <validationRulesProps:String BindingToTrigger="{Binding Data, Source={StaticResource MaxActDatePickerStringSourceProxy}}" Value="{Binding Data, Source={StaticResource MaxActDatePickerStringTargetProxy}}" />
+                                                </validationRules:DateTimeMoreThenValidationRule.DateTimeString>
+                                            </validationRules:DateTimeMoreThenValidationRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </DatePicker.Text>
+                            </DatePicker>
+
                         </Grid>
                     </materialDesign:Card>
 

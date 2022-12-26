@@ -92,12 +92,26 @@ namespace ActGenerator.ViewModel
 		}
 		public static readonly DependencyProperty MinActDateProperty = DependencyProperty.Register(nameof(MinActDate), typeof(DateTime?), typeof(ActGeneratorViewModel));
 
+		public string MinActDateString
+		{
+			get { return (string)GetValue(MinActDateStringProperty); }
+			set { SetValue(MinActDateStringProperty, value); }
+		}
+		public static readonly DependencyProperty MinActDateStringProperty = DependencyProperty.Register(nameof(MinActDateString), typeof(string), typeof(ActGeneratorViewModel));
+
 		public DateTime? MaxActDate
 		{
 			get { return (DateTime?)GetValue(MaxActDateProperty); }
 			set { SetValue(MaxActDateProperty, value); }
 		}
 		public static readonly DependencyProperty MaxActDateProperty = DependencyProperty.Register(nameof(MaxActDate), typeof(DateTime?), typeof(ActGeneratorViewModel));
+
+		public string MaxActDateString
+		{
+			get { return (string)GetValue(MaxActDateStringProperty); }
+			set { SetValue(MaxActDateStringProperty, value); }
+		}
+		public static readonly DependencyProperty MaxActDateStringProperty = DependencyProperty.Register(nameof(MaxActDateString), typeof(string), typeof(ActGeneratorViewModel));
 
 		public bool CollapseRegionsWorks
 		{
