@@ -143,6 +143,7 @@
     <Compile Include="ViewModel\Controls\ProjectNamesListControlViewModel.cs" />
     <Compile Include="ViewModel\Dialogs\AddHumanDialogViewModel.cs" />
     <Compile Include="ViewModel\Dialogs\AddProjectNameDialogViewModel.cs" />
+    <Compile Include="ViewModel\Dialogs\GenerationDialogViewModel.cs" />
     <Compile Include="ViewModel\Interfaces\IContainDialogHostId.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\ValidationRules\NotEmptyIListValidationRule.cs" />
