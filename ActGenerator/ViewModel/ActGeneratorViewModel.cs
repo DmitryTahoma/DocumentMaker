@@ -2,6 +2,7 @@
 using ActGenerator.View.Controls;
 using ActGenerator.View.Dialogs;
 using ActGenerator.ViewModel.Controls;
+using ActGenerator.ViewModel.Dialogs;
 using ActGenerator.ViewModel.Interfaces;
 using Dml;
 using Dml.Model.Template;
@@ -19,6 +20,8 @@ namespace ActGenerator.ViewModel
 	class ActGeneratorViewModel : DependencyObject, ICryptedConnectionStringRequired, IContainDialogHostId
 	{
 		ActGeneratorModel model = new ActGeneratorModel();
+
+		GenerationDialog generationDialog = new GenerationDialog();
 
 		public ActGeneratorViewModel()
 		{
@@ -167,8 +170,10 @@ namespace ActGenerator.ViewModel
 				return;
 			}
 
-			GenerationDialog generationDialog = new GenerationDialog();
+			CloseOnClickAwayDialogHost = false;
+			((GenerationDialogViewModel)generationDialog.DataContext).DialogHostId = DialogHostId;
 			await DialogHost.Show(generationDialog, DialogHostId);
+			CloseOnClickAwayDialogHost = true;
 		}
 
 		public Command<IContainDialogHostId> BindDialogHostName { get; private set; }

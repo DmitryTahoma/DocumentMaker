@@ -1,4 +1,5 @@
-﻿using Mvvm.Commands;
+﻿using MaterialDesignThemes.Wpf;
+using Mvvm.Commands;
 using System.Windows;
 using System.Windows.Forms;
 
@@ -59,6 +60,10 @@ namespace ActGenerator.ViewModel.Dialogs
 		}
 		public static readonly DependencyProperty GenerationStartedProperty = DependencyProperty.Register(nameof(GenerationStarted), typeof(bool), typeof(GenerationDialogViewModel));
 
+		public string DialogHostId { get; set; }
+
+		public bool IsClosing { get; private set; }
+
 		#endregion
 
 		#region Commands
@@ -67,6 +72,8 @@ namespace ActGenerator.ViewModel.Dialogs
 		{
 			DialogLoaded = new Command(OnDialogLoadedExecute);
 			SelectFolder = new Command(OnSelectFolderExecute, CanExecuteSelectFolder);
+			GenerateActs = new Command(OnGenerateActsExecute, CanExecuteGenerateActs);
+			Cancel = new Command(OnCancelExecute, CanExecuteCancel);
 		}
 
 		public Command DialogLoaded { get; private set; }
@@ -78,6 +85,7 @@ namespace ActGenerator.ViewModel.Dialogs
 			SelectedFolderPath = string.Empty;
 			FolderSelected = false;
 			GenerationStarted = false;
+			IsClosing = false;
 		}
 
 		public Command SelectFolder { get; private set; }
@@ -90,13 +98,36 @@ namespace ActGenerator.ViewModel.Dialogs
 			}
 		}
 
+		public Command GenerateActs { get; private set; }
+		private void OnGenerateActsExecute()
+		{
+			GenerationStarted = true;
+		}
+
+		public Command Cancel { get; private set; }
+		private void OnCancelExecute()
+		{
+			DialogHost.Close(DialogHostId);
+			IsClosing = true;
+		}
+
 		#endregion
 
 		#region Methods
 
 		private bool CanExecuteSelectFolder()
 		{
-			return !GenerationStarted;
+			return !GenerationStarted && !IsClosing;
+		}
+
+		private bool CanExecuteGenerateActs()
+		{
+			return FolderSelected && !GenerationStarted && !IsClosing;
+		}
+
+		private bool CanExecuteCancel()
+		{
+			return !IsClosing;
 		}
 
 		#endregion

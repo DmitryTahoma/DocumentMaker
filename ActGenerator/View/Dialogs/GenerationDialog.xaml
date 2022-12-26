@@ -52,9 +52,13 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <Button Content="Згенерувати акти" Style="{StaticResource GenerationDialogButton}" />
+            <Button
+                Command="{Binding GenerateActs}"
+                Content="Згенерувати акти"
+                Style="{StaticResource GenerationDialogButton}" />
             <Button
                 Grid.Column="1"
+                Command="{Binding Cancel}"
                 Content="Скасувати"
                 Style="{StaticResource GenerationDialogButton}" />
         </Grid>
