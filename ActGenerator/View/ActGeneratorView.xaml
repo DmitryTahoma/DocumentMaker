@@ -27,7 +27,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <materialDesign:DialogHost CloseOnClickAway="True" Identifier="{Binding DialogHostId}">
+    <materialDesign:DialogHost CloseOnClickAway="True" Identifier="{Binding InnerDialogHostId}">
 
         <Grid>
             <Grid x:Name="MainGrid">

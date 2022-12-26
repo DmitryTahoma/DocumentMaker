@@ -29,7 +29,7 @@ namespace ActGenerator.ViewModel
 
 		#region Properties
 
-		public string DialogHostId { get; } = "ActGeneratorDialogHost";
+		public string InnerDialogHostId { get; } = "ActGeneratorDialogHost";
 
 		public ObservableRangeCollection<HumanDataContext> HumanList { get; private set; } = new ObservableRangeCollection<HumanDataContext>();
 
@@ -136,9 +136,9 @@ namespace ActGenerator.ViewModel
 		public Command CloseOpenedDialog { get; private set; }
 		private void OnCloseOpenedDialogExecute()
 		{
-			if(DialogHost.IsDialogOpen(DialogHostId))
+			if(DialogHost.IsDialogOpen(InnerDialogHostId))
 			{
-				DialogHost.Close(DialogHostId);
+				DialogHost.Close(InnerDialogHostId);
 			}
 		}
 
@@ -159,13 +159,13 @@ namespace ActGenerator.ViewModel
 			}
 
 			GeneratingProgressDialog generatingProgressDialog = new GeneratingProgressDialog();
-			await DialogHost.Show(generatingProgressDialog, DialogHostId);
+			await DialogHost.Show(generatingProgressDialog, InnerDialogHostId);
 		}
 
 		public Command<IContainDialogHostId> BindDialogHostName { get; private set; }
 		private void OnBindDialogHostNameExecute(IContainDialogHostId dialogHostIdContainer)
 		{
-			dialogHostIdContainer.DialogHostId = DialogHostId;
+			dialogHostIdContainer.DialogHostId = InnerDialogHostId;
 		}
 
 		public Command<ICryptedConnectionStringRequired> SendCryptedConnectionString { get; private set; }
