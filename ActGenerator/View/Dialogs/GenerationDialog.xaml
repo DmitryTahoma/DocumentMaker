@@ -2,7 +2,9 @@
     x:Class="ActGenerator.View.Dialogs.GenerationDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:ActGenerator.ViewModel.Dialogs"
@@ -15,13 +17,25 @@
         <vm:GenerationDialogViewModel />
     </UserControl.DataContext>
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <StackPanel Orientation="Vertical">
 
         <TextBlock Style="{StaticResource GenerationDialogTextBlock}" Text="Шлях для збереження" />
 
-        <TextBlock Style="{StaticResource GenerationDialogPathTextBlock}" Text="D:\Content\FableF2P_fbnEngine\mg\e1back_6_mg2\f2p_e1b6mg2_fin" />
+        <TextBlock
+            Style="{StaticResource GenerationDialogPathTextBlock}"
+            Text="{Binding SelectedFolderPath, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+            Visibility="{Binding FolderSelected, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-        <Button Content="Обрати" Style="{StaticResource GenerationDialogButton}" />
+        <Button
+            Command="{Binding SelectFolder}"
+            Content="Обрати"
+            Style="{StaticResource GenerationDialogButton}" />
 
         <Grid Margin="10" />
 
@@ -46,5 +60,11 @@
         </Grid>
 
     </StackPanel>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding DialogLoaded}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
 </UserControl>
