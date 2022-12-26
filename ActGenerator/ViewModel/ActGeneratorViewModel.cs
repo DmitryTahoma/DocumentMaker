@@ -167,8 +167,8 @@ namespace ActGenerator.ViewModel
 				return;
 			}
 
-			GeneratingProgressDialog generatingProgressDialog = new GeneratingProgressDialog();
-			await DialogHost.Show(generatingProgressDialog, DialogHostId);
+			GenerationDialog generationDialog = new GenerationDialog();
+			await DialogHost.Show(generationDialog, DialogHostId);
 		}
 
 		public Command<IContainDialogHostId> BindDialogHostName { get; private set; }
