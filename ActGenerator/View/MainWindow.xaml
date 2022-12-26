@@ -27,7 +27,7 @@
         <ResourceDictionary Source="pack://application:,,,/DocumentMakerThemes;component/ResourceDictionaries/StyleDictionary.xaml" />
     </Window.Resources>
 
-    <materialDesign:DialogHost CloseOnClickAway="True" Identifier="{Binding DialogHostId}">
+    <materialDesign:DialogHost CloseOnClickAway="{Binding CloseOnClickAwayDialogHost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Identifier="{Binding DialogHostId}">
 
         <Grid>
             <Grid.RowDefinitions>

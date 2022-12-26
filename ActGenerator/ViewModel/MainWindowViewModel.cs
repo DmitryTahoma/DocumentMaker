@@ -11,6 +11,7 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace ActGenerator.ViewModel
@@ -31,6 +32,8 @@ namespace ActGenerator.ViewModel
 
 			((SelectProjectDialogViewModel)selectProjectDialog.DataContext).DialogHostId = DialogHostId;
 			((CreateProjectDialogViewModel)createProjectDialog.DataContext).DialogHostId = DialogHostId;
+
+			CloseOnClickAwayDialogHost = true;
 		}
 
 		#region Properties
@@ -43,6 +46,13 @@ namespace ActGenerator.ViewModel
 		public static readonly DependencyProperty SelectedTabIndexProperty = DependencyProperty.Register(nameof(SelectedTabIndex), typeof(int), typeof(MainWindowViewModel));
 
 		public string DialogHostId => "TopDialogHost";
+
+		public bool CloseOnClickAwayDialogHost
+		{
+			get { return (bool)GetValue(CloseOnClickAwayDialogHostProperty); }
+			set { SetValue(CloseOnClickAwayDialogHostProperty, value); }
+		}
+		public static readonly DependencyProperty CloseOnClickAwayDialogHostProperty = DependencyProperty.Register(nameof(CloseOnClickAwayDialogHost), typeof(bool), typeof(MainWindowViewModel));
 
 		#endregion
 
@@ -131,6 +141,15 @@ namespace ActGenerator.ViewModel
 		private void OnBindActGeneratorExecute(ActGeneratorViewModel actGenerator)
 		{
 			actGeneratorViewModel = actGenerator;
+
+			Binding closeOnClickAwayDialogHostBinding = new Binding
+			{
+				Source = this,
+				Path = new PropertyPath(nameof(CloseOnClickAwayDialogHost)),
+				Mode = BindingMode.TwoWay,
+				UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+			};
+			BindingOperations.SetBinding(actGenerator, ActGeneratorViewModel.CloseOnClickAwayDialogHostProperty, closeOnClickAwayDialogHostBinding);
 		}
 
 		public Command ShowGeneratorTab { get; private set; }

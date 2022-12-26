@@ -33,6 +33,13 @@ namespace ActGenerator.ViewModel
 
 		public string DialogHostId { get; set; }
 
+		public bool CloseOnClickAwayDialogHost
+		{
+			get { return (bool)GetValue(CloseOnClickAwayDialogHostProperty); }
+			set { SetValue(CloseOnClickAwayDialogHostProperty, value); }
+		}
+		public static readonly DependencyProperty CloseOnClickAwayDialogHostProperty = DependencyProperty.Register(nameof(CloseOnClickAwayDialogHost), typeof(bool), typeof(ActGeneratorViewModel));
+
 		public ObservableRangeCollection<HumanDataContext> HumanList { get; private set; } = new ObservableRangeCollection<HumanDataContext>();
 
 		public ObservableRangeCollection<DocumentTemplate> DocumentTemplates { get; private set; } = new ObservableRangeCollection<DocumentTemplate> 
