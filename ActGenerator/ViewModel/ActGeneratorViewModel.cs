@@ -16,7 +16,7 @@ using System.Windows;
 
 namespace ActGenerator.ViewModel
 {
-	class ActGeneratorViewModel : DependencyObject, ICryptedConnectionStringRequired
+	class ActGeneratorViewModel : DependencyObject, ICryptedConnectionStringRequired, IContainDialogHostId
 	{
 		ActGeneratorModel model = new ActGeneratorModel();
 
@@ -30,6 +30,8 @@ namespace ActGenerator.ViewModel
 		#region Properties
 
 		public string InnerDialogHostId { get; } = "ActGeneratorDialogHost";
+
+		public string DialogHostId { get; set; }
 
 		public ObservableRangeCollection<HumanDataContext> HumanList { get; private set; } = new ObservableRangeCollection<HumanDataContext>();
 
@@ -159,7 +161,7 @@ namespace ActGenerator.ViewModel
 			}
 
 			GeneratingProgressDialog generatingProgressDialog = new GeneratingProgressDialog();
-			await DialogHost.Show(generatingProgressDialog, InnerDialogHostId);
+			await DialogHost.Show(generatingProgressDialog, DialogHostId);
 		}
 
 		public Command<IContainDialogHostId> BindDialogHostName { get; private set; }

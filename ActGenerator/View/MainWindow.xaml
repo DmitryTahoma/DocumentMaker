@@ -75,6 +75,7 @@
             <i:InvokeCommandAction Command="{Binding SendCryptedConnectionString}" CommandParameter="{Binding ElementName=ProjectEditor, Path=DataContext}" />
             <i:InvokeCommandAction Command="{Binding SendCryptedConnectionString}" CommandParameter="{Binding ElementName=ProjectRestore, Path=DataContext}" />
             <i:InvokeCommandAction Command="{Binding SetInvariantNumberFormat}" />
+            <i:InvokeCommandAction Command="{Binding SendDialogHostId}" CommandParameter="{Binding ElementName=ActGeneratorControl, Path=DataContext}" />
         </i:EventTrigger>
         <i:EventTrigger EventName="Closing">
             <cmd:EventToCommand Command="{Binding CheckHaveUnsavedChanges}" PassEventArgsToCommand="True" />

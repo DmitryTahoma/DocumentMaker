@@ -1,4 +1,5 @@
 ﻿using ActGenerator.Model;
+using ActGenerator.ViewModel.Interfaces;
 using Dml.Controller.Validation;
 using MaterialDesignThemes.Wpf;
 using Mvvm;
@@ -64,6 +65,7 @@ namespace ActGenerator.ViewModel
 			SendCryptedConnectionString = new Command<ICryptedConnectionStringRequired>(OnSendCryptedConnectionStringExecute);
 			SetInvariantNumberFormat = new Command(OnSetInvariantNumberFormatExecute);
 			BindProjectRestore = new Command<ProjectRestoreViewModel>(OnBindProjectRestoreExecute);
+			SendDialogHostId = new Command<IContainDialogHostId>(OnSendDialogHostIdExecute);
 		}
 
 		public Command<MainWindow> LoadSession { get; private set; }
@@ -250,6 +252,12 @@ namespace ActGenerator.ViewModel
 		private void OnBindProjectRestoreExecute(ProjectRestoreViewModel projectRestoreViewModel)
 		{
 			this.projectRestoreViewModel = projectRestoreViewModel;
+		}
+
+		public Command<IContainDialogHostId> SendDialogHostId { get; private set; }
+		private void OnSendDialogHostIdExecute(IContainDialogHostId containDialogHostId)
+		{
+			containDialogHostId.DialogHostId = DialogHostId;
 		}
 
 		#endregion
