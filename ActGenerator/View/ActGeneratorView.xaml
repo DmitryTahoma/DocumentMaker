@@ -271,6 +271,7 @@
             <i:InvokeCommandAction Command="{Binding LoadFromDatabase}" />
             <i:InvokeCommandAction Command="{Binding BindDialogHostName}" CommandParameter="{Binding ElementName=ProjectNamesListControl, Path=DataContext}" />
             <i:InvokeCommandAction Command="{Binding BindDialogHostName}" CommandParameter="{Binding ElementName=HumenListControl, Path=DataContext}" />
+            <i:InvokeCommandAction Command="{Binding BindProjectNamesListControl}" CommandParameter="{Binding ElementName=ProjectNamesListControl, Path=DataContext}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 

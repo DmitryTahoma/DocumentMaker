@@ -74,6 +74,7 @@ namespace ActGenerator.ViewModel.Dialogs
 			SelectFolder = new Command(OnSelectFolderExecute, CanExecuteSelectFolder);
 			GenerateActs = new Command(OnGenerateActsExecute, CanExecuteGenerateActs);
 			Cancel = new Command(OnCancelExecute, CanExecuteCancel);
+			DialogUnloaded = new Command(OnDialogUnloadedExecute);
 		}
 
 		public Command DialogLoaded { get; private set; }
@@ -84,8 +85,6 @@ namespace ActGenerator.ViewModel.Dialogs
 			ProgressMaximum = 1000;
 			SelectedFolderPath = string.Empty;
 			FolderSelected = false;
-			GenerationStarted = false;
-			IsClosing = false;
 		}
 
 		public Command SelectFolder { get; private set; }
@@ -109,6 +108,13 @@ namespace ActGenerator.ViewModel.Dialogs
 		{
 			DialogHost.Close(DialogHostId);
 			IsClosing = true;
+		}
+
+		public Command DialogUnloaded { get; private set; }
+		private void OnDialogUnloadedExecute()
+		{
+			GenerationStarted = false;
+			IsClosing = false;
 		}
 
 		#endregion

@@ -53,6 +53,8 @@ namespace ActGenerator.ViewModel.Controls
 		}
 		public static readonly DependencyProperty ProjectCollectionProperty = DependencyProperty.Register(nameof(ProjectCollection), typeof(UIElementCollection), typeof(ProjectNamesListControlViewModel));
 
+		public List<IDbObject> SelectedDbProjects { get => ProjectCollection.Cast<Chip>().Select(x => (IDbObject)x.DataContext).ToList(); }
+
 		#endregion
 
 		#region Commands

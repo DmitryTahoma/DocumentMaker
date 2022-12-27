@@ -13,6 +13,7 @@ using Mvvm.Commands;
 using ProjectEditorLib.ViewModel;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ActGenerator.ViewModel
@@ -22,6 +23,8 @@ namespace ActGenerator.ViewModel
 		ActGeneratorModel model = new ActGeneratorModel();
 
 		GenerationDialog generationDialog = new GenerationDialog();
+
+		ProjectNamesListControlViewModel projectNamesListControlViewModel = null;
 
 		public ActGeneratorViewModel()
 		{
@@ -143,6 +146,7 @@ namespace ActGenerator.ViewModel
 			GenerateActs = new Command<DependencyObject>(OnGenerateActsExecute);
 			BindDialogHostName = new Command<IContainDialogHostId>(OnBindDialogHostNameExecute);
 			SendCryptedConnectionString = new Command<ICryptedConnectionStringRequired>(OnSendCryptedConnectionStringExecute);
+			BindProjectNamesListControl = new Command<ProjectNamesListControlViewModel>(OnBindProjectNamesListControlExecute);
 		}
 
 		public Command CloseOpenedDialog { get; private set; }
@@ -171,8 +175,12 @@ namespace ActGenerator.ViewModel
 			}
 
 			CloseOnClickAwayDialogHost = false;
-			((GenerationDialogViewModel)generationDialog.DataContext).DialogHostId = DialogHostId;
-			await DialogHost.Show(generationDialog, DialogHostId);
+			GenerationDialogViewModel generationDialogViewModel = (GenerationDialogViewModel)generationDialog.DataContext;
+			generationDialogViewModel.DialogHostId = DialogHostId;
+			Task dialogTask = DialogHost.Show(generationDialog, DialogHostId);
+			model.SetProjects(projectNamesListControlViewModel.SelectedDbProjects);
+			_ = Task.Run(async() => { await model.StartGeneration(generationDialogViewModel); });
+			await dialogTask;
 			CloseOnClickAwayDialogHost = true;
 		}
 
@@ -188,6 +196,15 @@ namespace ActGenerator.ViewModel
 			if (model.ConnectionStringSetted)
 			{
 				connectionStringRequired.SetCryptedConnectionString(model.ConnectionString);
+			}
+		}
+
+		public Command<ProjectNamesListControlViewModel> BindProjectNamesListControl{ get; private set; }
+		private void OnBindProjectNamesListControlExecute(ProjectNamesListControlViewModel projectNamesListControlViewModel)
+		{
+			if(this.projectNamesListControlViewModel == null)
+			{
+				this.projectNamesListControlViewModel = projectNamesListControlViewModel;
 			}
 		}
 
