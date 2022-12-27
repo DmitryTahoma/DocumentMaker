@@ -46,16 +46,6 @@ namespace ActGenerator.ViewModel
 		}
 		public static readonly DependencyProperty CloseOnClickAwayDialogHostProperty = DependencyProperty.Register(nameof(CloseOnClickAwayDialogHost), typeof(bool), typeof(ActGeneratorViewModel));
 
-		public ObservableRangeCollection<HumanDataContext> HumanList { get; private set; } = new ObservableRangeCollection<HumanDataContext>();
-
-		public ObservableRangeCollection<DocumentTemplate> DocumentTemplates { get; private set; } = new ObservableRangeCollection<DocumentTemplate> 
-		{
-			new DocumentTemplate("Скриптувальник", DocumentTemplateType.Scripter),
-			new DocumentTemplate("Технічний дизайнер", DocumentTemplateType.Cutter),
-			new DocumentTemplate("Художник", DocumentTemplateType.Painter),
-			new DocumentTemplate("Моделлер", DocumentTemplateType.Modeller),
-		};
-
 		public ObservableRangeCollection<DateTimeItem> DateTimeItems { get; private set; } = new ObservableRangeCollection<DateTimeItem>()
 		{
 			new DateTimeItem{ Text = "тиждень", DateTime = new DateTime(1, 1, 8) },
