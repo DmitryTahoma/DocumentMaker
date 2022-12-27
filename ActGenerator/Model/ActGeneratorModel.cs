@@ -1,4 +1,5 @@
 ﻿using ActGenerator.ViewModel.Dialogs;
+using DocumentMakerModelLibrary;
 using ProjectsDb;
 using ProjectsDb.Context;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace ActGenerator.Model
 		List<GeneratingPart> generatingParts = new List<GeneratingPart>();
 
 		List<IDbObject> projects = null;
+		IEnumerable<FullDocumentTemplate> documentTemplates = null;
 
 		public ActGeneratorModel()
 		{
@@ -23,6 +25,11 @@ namespace ActGenerator.Model
 		public void SetProjects(List<IDbObject> projects)
 		{
 			this.projects = projects;
+		}
+
+		public void SetTemplates(IEnumerable<FullDocumentTemplate> documentTemplates)
+		{
+			this.documentTemplates = documentTemplates;
 		}
 
 		public async Task StartGeneration(GenerationDialogViewModel dialogContext)

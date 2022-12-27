@@ -23,11 +23,15 @@ namespace ActGenerator.ViewModel
 		ActGeneratorModel model = new ActGeneratorModel();
 
 		GenerationDialog generationDialog = new GenerationDialog();
+		GenerationDialogViewModel generationDialogViewModel = null;
 
 		ProjectNamesListControlViewModel projectNamesListControlViewModel = null;
+		HumenListControlViewModel humenListControlViewModel = null;
 
 		public ActGeneratorViewModel()
 		{
+			generationDialogViewModel = (GenerationDialogViewModel)generationDialog.DataContext;
+
 			InitCommands();
 
 			State = ViewModelState.Initialized;
@@ -132,11 +136,12 @@ namespace ActGenerator.ViewModel
 		private void InitCommands()
 		{
 			CloseOpenedDialog = new Command(OnCloseOpenedDialogExecute);
-			LoadFromDatabase = new Command(OnLoadFromDatabaseExecute);
+			ActGeneratorLoaded = new Command(OnActGeneratorLoadedExecute);
 			GenerateActs = new Command<DependencyObject>(OnGenerateActsExecute);
 			BindDialogHostName = new Command<IContainDialogHostId>(OnBindDialogHostNameExecute);
 			SendCryptedConnectionString = new Command<ICryptedConnectionStringRequired>(OnSendCryptedConnectionStringExecute);
 			BindProjectNamesListControl = new Command<ProjectNamesListControlViewModel>(OnBindProjectNamesListControlExecute);
+			BindHumenListControl = new Command<HumenListControlViewModel>(OnBindHumenListControlExecute);
 		}
 
 		public Command CloseOpenedDialog { get; private set; }
@@ -148,10 +153,10 @@ namespace ActGenerator.ViewModel
 			}
 		}
 
-		public Command LoadFromDatabase { get; private set; }
-		private void OnLoadFromDatabaseExecute()
+		public Command ActGeneratorLoaded { get; private set; }
+		private void OnActGeneratorLoadedExecute()
 		{
-
+			model.SetTemplates(humenListControlViewModel.GetDocumentTemplatesList());
 		}
 
 		public Command<DependencyObject> GenerateActs { get; private set; }
@@ -165,7 +170,6 @@ namespace ActGenerator.ViewModel
 			}
 
 			CloseOnClickAwayDialogHost = false;
-			GenerationDialogViewModel generationDialogViewModel = (GenerationDialogViewModel)generationDialog.DataContext;
 			generationDialogViewModel.DialogHostId = DialogHostId;
 			Task dialogTask = DialogHost.Show(generationDialog, DialogHostId);
 			model.SetProjects(projectNamesListControlViewModel.SelectedDbProjects);
@@ -195,6 +199,15 @@ namespace ActGenerator.ViewModel
 			if(this.projectNamesListControlViewModel == null)
 			{
 				this.projectNamesListControlViewModel = projectNamesListControlViewModel;
+			}
+		}
+
+		public Command<HumenListControlViewModel> BindHumenListControl { get; private set; }
+		private void OnBindHumenListControlExecute(HumenListControlViewModel humenListControlViewModel)
+		{
+			if(this.humenListControlViewModel == null)
+			{
+				this.humenListControlViewModel = humenListControlViewModel;
 			}
 		}
 

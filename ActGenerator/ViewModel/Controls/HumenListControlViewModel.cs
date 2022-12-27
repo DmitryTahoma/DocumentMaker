@@ -200,6 +200,11 @@ namespace ActGenerator.ViewModel.Controls
 			UpdateHumenCheckBoxIsChecked();
 		}
 
+		public IEnumerable<FullDocumentTemplate> GetDocumentTemplatesList()
+		{
+			return model.DocumentTemplatesList;
+		}
+
 		#endregion
 	}
 }
