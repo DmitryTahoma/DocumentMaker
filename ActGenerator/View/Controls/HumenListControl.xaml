@@ -91,6 +91,7 @@
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding BindHumenStack}" CommandParameter="{Binding ElementName=HumenStack, Path=Children}" />
             <i:InvokeCommandAction Command="{Binding BindHumenHeaderScrollViewer}" CommandParameter="{Binding ElementName=HumenHeaderScrollViewer}" />
+            <i:InvokeCommandAction Command="{Binding LoadWorkTypes}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 

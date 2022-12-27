@@ -74,6 +74,7 @@ namespace ActGenerator.ViewModel.Controls
 			SetScrollChanges = new Command<ScrollChangedEventArgs>(OnSetScrollChangesExecute);
 			ChangeIsCheckedAllHumen = new Command(OnChangeIsCheckedAllHumenExecute);
 			RemoveSelectedHumen = new Command(OnRemoveSelectedHumenExecute);
+			LoadWorkTypes = new Command(OnLoadWorkTypesExecute);
 		}
 
 		public Command AddHumanCommand { get; private set; }
@@ -153,6 +154,12 @@ namespace ActGenerator.ViewModel.Controls
 				await Task.Delay(1);
 			}
 			HumenCheckBoxIsChecked = false;
+		}
+
+		public Command LoadWorkTypes { get; private set; }
+		private void OnLoadWorkTypesExecute()
+		{
+			model.LoadWorkTypes();
 		}
 
 		#endregion
