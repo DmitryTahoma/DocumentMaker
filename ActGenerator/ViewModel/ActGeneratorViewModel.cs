@@ -173,6 +173,7 @@ namespace ActGenerator.ViewModel
 			generationDialogViewModel.DialogHostId = DialogHostId;
 			Task dialogTask = DialogHost.Show(generationDialog, DialogHostId);
 			model.SetProjects(projectNamesListControlViewModel.SelectedDbProjects);
+			model.SetHumen(humenListControlViewModel.GetHumen());
 			_ = Task.Run(async() => { await model.StartGeneration(generationDialogViewModel); });
 			await dialogTask;
 			CloseOnClickAwayDialogHost = true;

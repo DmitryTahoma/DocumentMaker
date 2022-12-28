@@ -1,5 +1,6 @@
 ﻿using ActGenerator.ViewModel.Dialogs;
 using DocumentMakerModelLibrary;
+using DocumentMakerModelLibrary.OfficeFiles.Human;
 using ProjectsDb;
 using ProjectsDb.Context;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace ActGenerator.Model
 
 		List<IDbObject> projects = null;
 		IEnumerable<FullDocumentTemplate> documentTemplates = null;
+		Dictionary<HumanData, IEnumerable<FullDocumentTemplate>> humen = null;
 
 		public ActGeneratorModel()
 		{
@@ -25,6 +27,11 @@ namespace ActGenerator.Model
 		public void SetProjects(List<IDbObject> projects)
 		{
 			this.projects = projects;
+		}
+		
+		public void SetHumen(Dictionary<HumanData, IEnumerable<FullDocumentTemplate>> humen)
+		{
+			this.humen = humen;
 		}
 
 		public void SetTemplates(IEnumerable<FullDocumentTemplate> documentTemplates)

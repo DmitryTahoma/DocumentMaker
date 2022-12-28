@@ -205,6 +205,11 @@ namespace ActGenerator.ViewModel.Controls
 			return model.DocumentTemplatesList;
 		}
 
+		public Dictionary<HumanData, IEnumerable<FullDocumentTemplate>> GetHumen()
+		{
+			return itemsViewModel.ToDictionary(key => key.Model, elem => elem.SelectedTemplates.Cast<FullDocumentTemplate>());
+		}
+
 		#endregion
 	}
 }
