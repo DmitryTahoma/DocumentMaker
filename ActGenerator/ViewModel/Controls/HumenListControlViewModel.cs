@@ -200,11 +200,6 @@ namespace ActGenerator.ViewModel.Controls
 			UpdateHumenCheckBoxIsChecked();
 		}
 
-		public IEnumerable<FullDocumentTemplate> GetDocumentTemplatesList()
-		{
-			return model.DocumentTemplatesList;
-		}
-
 		public Dictionary<HumanData, IEnumerable<FullDocumentTemplate>> GetHumen()
 		{
 			return itemsViewModel.ToDictionary(key => key.Model, elem => elem.SelectedTemplates.Cast<FullDocumentTemplate>());

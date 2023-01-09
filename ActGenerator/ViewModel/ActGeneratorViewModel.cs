@@ -156,7 +156,7 @@ namespace ActGenerator.ViewModel
 		public Command ActGeneratorLoaded { get; private set; }
 		private void OnActGeneratorLoadedExecute()
 		{
-			model.SetTemplates(humenListControlViewModel.GetDocumentTemplatesList());
+
 		}
 
 		public Command<DependencyObject> GenerateActs { get; private set; }

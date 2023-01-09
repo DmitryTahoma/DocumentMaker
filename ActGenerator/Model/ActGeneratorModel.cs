@@ -34,11 +34,6 @@ namespace ActGenerator.Model
 			this.humen = humen;
 		}
 
-		public void SetTemplates(IEnumerable<FullDocumentTemplate> documentTemplates)
-		{
-			this.documentTemplates = documentTemplates;
-		}
-
 		public async Task StartGeneration(GenerationDialogViewModel dialogContext)
 		{
 			while(!dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing) && !dialogContext.Dispatcher.Invoke(() => dialogContext.GenerationStarted))
