@@ -73,16 +73,16 @@ namespace ActGenerator.Model
 				if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) break;
 				dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Завантаження проєкту \"" + dbObject.ToString() + '"');
 
-				if (!TrySkipLoading(dbObject))
+				Project project = dbObject as Project ?? ((AlternativeProjectName)dbObject).Project;
+
+				Project prevLoadedProject = GetPrevProject(dbObject);
+				if (prevLoadedProject != null)
 				{
-					if (dbObject is Project proj)
-					{
-						await LoadProject(proj, dialogContext);
-					}
-					else if (dbObject is AlternativeProjectName altProjectName)
-					{
-						await LoadProject(altProjectName.Project, dialogContext);
-					}
+					project.Backs = prevLoadedProject.Backs;
+				}
+				else
+				{
+					await LoadProject(project, dialogContext);
 				}
 
 				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
@@ -103,55 +103,24 @@ namespace ActGenerator.Model
 			}
 		}
 
-		private bool TrySkipLoading(IDbObject currentDbObject)
+		private Project GetPrevProject(IDbObject currentDbObject)
 		{
-			bool loadingSkipped = false;
+			int? projectId = currentDbObject is Project project ? project.Id : ((AlternativeProjectName)currentDbObject).ProjectId;
+
 			foreach (IDbObject loadedDbObject in projects)
 			{
 				if (loadedDbObject == currentDbObject)
 				{
-					loadingSkipped = false;
-					break;
+					return null;
 				}
+				Project loadedProject = loadedDbObject as Project ?? ((AlternativeProjectName)loadedDbObject).Project;
 
-				Project project = currentDbObject as Project;
-				AlternativeProjectName alternativeProjectName = currentDbObject as AlternativeProjectName;
-
-				Project loadedProject = loadedDbObject as Project;
-				AlternativeProjectName loadedAlternativeProjectName = loadedDbObject as AlternativeProjectName;
-
-				if (project != null)
+				if (projectId == loadedProject.Id)
 				{
-					if (loadedProject != null && project.Id == loadedProject.Id)
-					{
-						project.Backs = loadedProject.Backs;
-						loadingSkipped = true;
-						break;
-					}
-					else if (loadedAlternativeProjectName != null && project.Id == loadedAlternativeProjectName.ProjectId)
-					{
-						project.Backs = loadedAlternativeProjectName.Project.Backs;
-						loadingSkipped = true;
-						break;
-					}
-				}
-				else if (alternativeProjectName != null)
-				{
-					if (loadedProject != null && alternativeProjectName.ProjectId == loadedProject.Id)
-					{
-						alternativeProjectName.Project = loadedProject;
-						loadingSkipped = true;
-						break;
-					}
-					else if (loadedAlternativeProjectName != null && alternativeProjectName.ProjectId == loadedAlternativeProjectName.ProjectId)
-					{
-						alternativeProjectName.Project = loadedAlternativeProjectName.Project;
-						loadingSkipped = true;
-						break;
-					}
+					return loadedProject;
 				}
 			}
-			return loadingSkipped;
+			return null;
 		}
 
 		private async Task GeneratingAllWorks(GenerationDialogViewModel dialogContext)
