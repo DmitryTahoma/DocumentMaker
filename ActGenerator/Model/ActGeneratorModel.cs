@@ -1,6 +1,7 @@
 ﻿using ActGenerator.ViewModel.Dialogs;
 using DocumentMakerModelLibrary;
 using DocumentMakerModelLibrary.Back;
+using DocumentMakerModelLibrary.Files;
 using DocumentMakerModelLibrary.OfficeFiles.Human;
 using ProjectsDb;
 using ProjectsDb.Context;
@@ -19,8 +20,10 @@ namespace ActGenerator.Model
 		// contain Project or AlternativeProjectName with reference to Project
 		List<IDbObject> projects = null;
 		Dictionary<HumanData, IEnumerable<FullDocumentTemplate>> humen = null;
+		List<DcmkFile> dcmkFiles = null;
 
 		List<FullDocumentTemplate> documentTemplates = null;
+
 		List<GeneratedWorkList> generatedWorkLists = null;
 
 		public ActGeneratorModel()
@@ -38,6 +41,11 @@ namespace ActGenerator.Model
 		{
 			this.humen = humen;
 			documentTemplates = humen.SelectMany(x => x.Value).Distinct().ToList();
+		}
+
+		public void SetDocumentList(List<DcmkFile> dcmkFiles)
+		{
+			this.dcmkFiles = dcmkFiles;
 		}
 
 		public async Task StartGeneration(GenerationDialogViewModel dialogContext)

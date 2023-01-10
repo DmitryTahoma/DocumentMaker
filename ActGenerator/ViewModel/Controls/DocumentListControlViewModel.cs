@@ -1,6 +1,7 @@
 ﻿using ActGenerator.View.Controls;
 using DocumentMakerModelLibrary.Files;
 using Mvvm.Commands;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,6 +70,18 @@ namespace ActGenerator.ViewModel.Controls
 		private void OnRemoveActExecute(DocumentListItemControl documentListItemControl)
 		{
 			itemsCollection.Remove(documentListItemControl);
+		}
+
+		#endregion
+
+		#region Methods
+
+		public List<DcmkFile> GetDocumentList()
+		{
+			return itemsCollection
+				.Cast<DocumentListItemControl>()
+				.Select(x => (DcmkFile)x.DataContext)
+				.ToList();
 		}
 
 		#endregion

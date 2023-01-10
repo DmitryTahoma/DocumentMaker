@@ -27,6 +27,7 @@ namespace ActGenerator.ViewModel
 
 		ProjectNamesListControlViewModel projectNamesListControlViewModel = null;
 		HumenListControlViewModel humenListControlViewModel = null;
+		DocumentListControlViewModel documentListControlViewModel = null;
 
 		public ActGeneratorViewModel()
 		{
@@ -142,6 +143,7 @@ namespace ActGenerator.ViewModel
 			SendCryptedConnectionString = new Command<ICryptedConnectionStringRequired>(OnSendCryptedConnectionStringExecute);
 			BindProjectNamesListControl = new Command<ProjectNamesListControlViewModel>(OnBindProjectNamesListControlExecute);
 			BindHumenListControl = new Command<HumenListControlViewModel>(OnBindHumenListControlExecute);
+			BindDocumentListControl = new Command<DocumentListControlViewModel>(OnBindDocumentListControlExecute);
 		}
 
 		public Command CloseOpenedDialog { get; private set; }
@@ -174,6 +176,7 @@ namespace ActGenerator.ViewModel
 			Task dialogTask = DialogHost.Show(generationDialog, DialogHostId);
 			model.SetProjects(projectNamesListControlViewModel.SelectedDbProjects);
 			model.SetHumen(humenListControlViewModel.GetHumen());
+			model.SetDocumentList(documentListControlViewModel.GetDocumentList());
 			_ = Task.Run(async() => { await model.StartGeneration(generationDialogViewModel); });
 			await dialogTask;
 			CloseOnClickAwayDialogHost = true;
@@ -209,6 +212,15 @@ namespace ActGenerator.ViewModel
 			if(this.humenListControlViewModel == null)
 			{
 				this.humenListControlViewModel = humenListControlViewModel;
+			}
+		}
+
+		public Command<DocumentListControlViewModel> BindDocumentListControl { get; private set; }
+		private void OnBindDocumentListControlExecute(DocumentListControlViewModel documentListControlViewModel)
+		{
+			if(this.documentListControlViewModel == null)
+			{
+				this.documentListControlViewModel = documentListControlViewModel;
 			}
 		}
 
