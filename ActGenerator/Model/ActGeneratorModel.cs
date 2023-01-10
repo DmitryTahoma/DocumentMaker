@@ -21,7 +21,7 @@ namespace ActGenerator.Model
 		Dictionary<HumanData, IEnumerable<FullDocumentTemplate>> humen = null;
 
 		List<FullDocumentTemplate> documentTemplates = null;
-		List<GeneratedWork> generatedWorks = null;
+		List<GeneratedWorkList> generatedWorkLists = null;
 
 		public ActGeneratorModel()
 		{
@@ -156,7 +156,7 @@ namespace ActGenerator.Model
 
 		private async Task GeneratingAllWorks(GenerationDialogViewModel dialogContext)
 		{
-			generatedWorks = new List<GeneratedWork>();
+			generatedWorkLists = new List<GeneratedWorkList>();
 			double progressPart = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressMaximum)
 				/ generatingParts.Count
 				/ projects.SelectMany(x => x is Project project ? project.Backs : ((AlternativeProjectName)x).Project.Backs).Count()
@@ -168,6 +168,10 @@ namespace ActGenerator.Model
 				if (project == null) project = ((AlternativeProjectName)dbObject).Project;
 
 				dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Генерація робіт проєкту \"" + dbObject.ToString() + '"');
+				GeneratedWorkList generatedWorkList = new GeneratedWorkList
+				{
+					Project = project,
+				};
 
 				foreach (Back back in project.Backs)
 				{
@@ -177,10 +181,9 @@ namespace ActGenerator.Model
 					{
 						foreach (WorkObject workObject in documentTemplate.ReworkWorkTypesList)
 						{
-							generatedWorks.Add(new GeneratedWork
+							generatedWorkList.GeneratedWorks.Add(new GeneratedWork
 							{
 								WorkObject = workObject,
-								Project = project,
 								Back = back,
 							});
 

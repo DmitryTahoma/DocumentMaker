@@ -135,6 +135,7 @@
     <Compile Include="Model\Dialogs\AddHumanDialogModel.cs" />
     <Compile Include="Model\Dialogs\AddProjectNameDialogModel.cs" />
     <Compile Include="Model\GeneratedWork.cs" />
+    <Compile Include="Model\GeneratedWorkList.cs" />
     <Compile Include="Model\HumanDataContext.cs" />
     <Compile Include="Model\DateTimeItem.cs" />
     <Compile Include="ViewModel\ActGeneratorViewModel.cs" />
