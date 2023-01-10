@@ -142,24 +142,44 @@ namespace ActGenerator.Model
 					Project = project,
 				};
 
-				foreach (Back back in project.Backs)
+				Project prevProject = GetPrevProject(dbObject);
+				if (prevProject != null)
 				{
-					if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) break;
-
-					foreach (FullDocumentTemplate documentTemplate in documentTemplates)
+					foreach(GeneratedWorkList prevWorkList in generatedWorkLists)
 					{
-						foreach (WorkObject workObject in documentTemplate.ReworkWorkTypesList)
+						if(prevProject.Id == (prevWorkList.Project is AlternativeProjectName alternativeProjectName ? alternativeProjectName.ProjectId : prevWorkList.Project.Id))
 						{
-							generatedWorkList.GeneratedWorks.Add(new GeneratedWork
-							{
-								WorkObject = workObject,
-								Back = back,
-							});
-
-							dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
+							generatedWorkList.GeneratedWorks = prevWorkList.GeneratedWorks;
+							double skippedProgress = progressPart * generatedWorkList.GeneratedWorks.Count;
+							dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += skippedProgress);
 							await Task.Delay(1);
+							break;
 						}
 					}
+				}
+				else
+				{
+					foreach (Back back in project.Backs)
+					{
+						if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) break;
+
+						foreach (FullDocumentTemplate documentTemplate in documentTemplates)
+						{
+							foreach (WorkObject workObject in documentTemplate.ReworkWorkTypesList)
+							{
+								generatedWorkList.GeneratedWorks.Add(new GeneratedWork
+								{
+									WorkObject = workObject,
+									Back = back,
+								});
+
+								dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
+								await Task.Delay(1);
+							}
+						}
+					}
+
+					generatedWorkLists.Add(generatedWorkList);
 				}
 			}
 		}
