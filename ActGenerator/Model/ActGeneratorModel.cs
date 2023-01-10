@@ -1,5 +1,6 @@
 ﻿using ActGenerator.ViewModel.Dialogs;
 using DocumentMakerModelLibrary;
+using DocumentMakerModelLibrary.Back;
 using DocumentMakerModelLibrary.OfficeFiles.Human;
 using ProjectsDb;
 using ProjectsDb.Context;
@@ -15,13 +16,17 @@ namespace ActGenerator.Model
 
 		List<GeneratingPart> generatingParts = new List<GeneratingPart>();
 
+		// contain Project or AlternativeProjectName with reference to Project
 		List<IDbObject> projects = null;
-		IEnumerable<FullDocumentTemplate> documentTemplates = null;
 		Dictionary<HumanData, IEnumerable<FullDocumentTemplate>> humen = null;
+
+		List<FullDocumentTemplate> documentTemplates = null;
+		List<GeneratedWork> generatedWorks = null;
 
 		public ActGeneratorModel()
 		{
 			generatingParts.Add(LoadingProjects);
+			generatingParts.Add(GeneratingAllWorks);
 		}
 
 		public void SetProjects(List<IDbObject> projects)
@@ -32,6 +37,7 @@ namespace ActGenerator.Model
 		public void SetHumen(Dictionary<HumanData, IEnumerable<FullDocumentTemplate>> humen)
 		{
 			this.humen = humen;
+			documentTemplates = humen.SelectMany(x => x.Value).Distinct().ToList();
 		}
 
 		public async Task StartGeneration(GenerationDialogViewModel dialogContext)
@@ -91,6 +97,44 @@ namespace ActGenerator.Model
 
 				project.Backs.Add(back);
 				await Task.Delay(1);
+			}
+		}
+
+		private async Task GeneratingAllWorks(GenerationDialogViewModel dialogContext)
+		{
+			generatedWorks = new List<GeneratedWork>();
+			double progressPart = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressMaximum)
+				/ generatingParts.Count
+				/ projects.SelectMany(x => x is Project project ? project.Backs : ((AlternativeProjectName)x).Project.Backs).Count()
+				/ documentTemplates.SelectMany(y => y.ReworkWorkTypesList).Count();
+
+			foreach (IDbObject dbObject in projects)
+			{
+				Project project = dbObject as Project;
+				if (project == null) project = ((AlternativeProjectName)dbObject).Project;
+
+				dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Генерація робіт проєкту \"" + dbObject.ToString() + '"');
+
+				foreach (Back back in project.Backs)
+				{
+					if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) break;
+
+					foreach (FullDocumentTemplate documentTemplate in documentTemplates)
+					{
+						foreach (WorkObject workObject in documentTemplate.ReworkWorkTypesList)
+						{
+							generatedWorks.Add(new GeneratedWork
+							{
+								WorkObject = workObject,
+								Project = project,
+								Back = back,
+							});
+
+							dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
+							await Task.Delay(1);
+						}
+					}
+				}
 			}
 		}
 	}
