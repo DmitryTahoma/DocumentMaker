@@ -68,18 +68,21 @@ namespace ActGenerator.Model
 			await ConnectDbAsync();
 
 			double progressPart = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressMaximum) / generatingParts.Count / projects.Count;
-			foreach (IDbObject project in projects)
+			foreach (IDbObject dbObject in projects)
 			{
 				if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) break;
-				dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Завантаження проєкту \"" + project.ToString() + '"');
+				dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Завантаження проєкту \"" + dbObject.ToString() + '"');
 
-				if (project is Project proj)
+				if (!TrySkipLoading(dbObject))
 				{
-					await LoadProject(proj, dialogContext);
-				}
-				else if(project is AlternativeProjectName altProjectName && projects.Where(x => x is Project).FirstOrDefault(y => y.Id == altProjectName.ProjectId) == null)
-				{
-					await LoadProject(altProjectName.Project, dialogContext);
+					if (dbObject is Project proj)
+					{
+						await LoadProject(proj, dialogContext);
+					}
+					else if (dbObject is AlternativeProjectName altProjectName)
+					{
+						await LoadProject(altProjectName.Project, dialogContext);
+					}
 				}
 
 				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
@@ -98,6 +101,57 @@ namespace ActGenerator.Model
 				project.Backs.Add(back);
 				await Task.Delay(1);
 			}
+		}
+
+		private bool TrySkipLoading(IDbObject currentDbObject)
+		{
+			bool loadingSkipped = false;
+			foreach (IDbObject loadedDbObject in projects)
+			{
+				if (loadedDbObject == currentDbObject)
+				{
+					loadingSkipped = false;
+					break;
+				}
+
+				Project project = currentDbObject as Project;
+				AlternativeProjectName alternativeProjectName = currentDbObject as AlternativeProjectName;
+
+				Project loadedProject = loadedDbObject as Project;
+				AlternativeProjectName loadedAlternativeProjectName = loadedDbObject as AlternativeProjectName;
+
+				if (project != null)
+				{
+					if (loadedProject != null && project.Id == loadedProject.Id)
+					{
+						project.Backs = loadedProject.Backs;
+						loadingSkipped = true;
+						break;
+					}
+					else if (loadedAlternativeProjectName != null && project.Id == loadedAlternativeProjectName.ProjectId)
+					{
+						project.Backs = loadedAlternativeProjectName.Project.Backs;
+						loadingSkipped = true;
+						break;
+					}
+				}
+				else if (alternativeProjectName != null)
+				{
+					if (loadedProject != null && alternativeProjectName.ProjectId == loadedProject.Id)
+					{
+						alternativeProjectName.Project = loadedProject;
+						loadingSkipped = true;
+						break;
+					}
+					else if (loadedAlternativeProjectName != null && alternativeProjectName.ProjectId == loadedAlternativeProjectName.ProjectId)
+					{
+						alternativeProjectName.Project = loadedAlternativeProjectName.Project;
+						loadingSkipped = true;
+						break;
+					}
+				}
+			}
+			return loadingSkipped;
 		}
 
 		private async Task GeneratingAllWorks(GenerationDialogViewModel dialogContext)
