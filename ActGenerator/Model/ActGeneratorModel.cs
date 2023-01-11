@@ -178,7 +178,7 @@ namespace ActGenerator.Model
 				dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Генерація робіт проєкту \"" + dbObject.ToString() + '"');
 				GeneratedWorkList generatedWorkList = new GeneratedWorkList
 				{
-					Project = project,
+					Project = dbObject,
 				};
 
 				Project prevProject = GetPrevProject(dbObject);
@@ -230,9 +230,8 @@ namespace ActGenerator.Model
 							}
 						}
 					}
-
-					generatedWorkLists.Add(generatedWorkList);
 				}
+				generatedWorkLists.Add(generatedWorkList);
 			}
 		}
 
@@ -269,25 +268,27 @@ namespace ActGenerator.Model
 													&& back.BackName == generatedWork.Back.Name)
 												|| (back.BackName == generatedWork.Back.Number.ToString() + ". " + generatedWork.Back.Name)))
 										{
+											GeneratedWork changedGeneratedWork = generatedWork.Clone();
+
 											string regs = Regex.Replace(BackTaskStrings.GetRegionString(back.Type, back.BackCountRegionsText), @"\s+", "");
 											if (string.IsNullOrEmpty(regs))
 											{
-												generatedWork.BackUsed = true;
+												changedGeneratedWork.BackUsed = true;
 											}
 											else
 											{
 												int[] iregs = regs.Split(',').Select(x => int.Parse(x)).ToArray();
 												foreach(int reg in iregs)
 												{
-													generatedWork.Regions.Remove(reg);
+													changedGeneratedWork.Regions.Remove(reg);
 												}
 											}
 
-											if(!generatedWork.ContainWork())
+											if(changedGeneratedWork.ContainWork())
 											{
-												workList.GeneratedWorks.Remove(generatedWork);
+												workList.GeneratedWorks.Insert(0, changedGeneratedWork);
 											}
-
+											workList.GeneratedWorks.Remove(generatedWork);
 											break;
 										}
 									}

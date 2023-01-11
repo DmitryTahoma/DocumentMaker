@@ -17,5 +17,17 @@ namespace ActGenerator.Model
 		{
 			return !BackUsed || (Regions != null && Regions.Count > 0);
 		}
+
+		public GeneratedWork Clone()
+		{
+			return new GeneratedWork
+			{
+				WorkObject = WorkObject,
+				Back = Back,
+				DocumentTemplate = DocumentTemplate,
+				Regions = Regions == null ? null : new List<int>(Regions),
+				BackUsed = BackUsed,
+			};
+		}
 	}
 }
