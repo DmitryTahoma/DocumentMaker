@@ -238,7 +238,10 @@ namespace ActGenerator.Model
 
 		private async Task RemovingUsedWorks(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
-			double progressPart = totalProgressPart / dcmkFiles.Count;
+			dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Видалення використаних робіт");
+			double progressPart = totalProgressPart
+				/ dcmkFiles.SelectMany(x => x.BackDataModels).Count()
+				/ generatedWorkLists.Count;
 
 			foreach(DcmkFile dcmkFile in dcmkFiles)
 			{
@@ -246,10 +249,14 @@ namespace ActGenerator.Model
 				{
 					foreach (FullBackDataModel back in dcmkFile.BackDataModels)
 					{
+						if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) return;
+
 						if (back.IsRework)
 						{
 							foreach (GeneratedWorkList workList in generatedWorkLists)
 							{
+								if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) return;
+
 								if (back.GameName == workList.Project.ToString())
 								{
 									foreach(GeneratedWork generatedWork in workList.GeneratedWorks)
@@ -285,13 +292,13 @@ namespace ActGenerator.Model
 										}
 									}
 								}
+
+								dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
+								await Task.Delay(1);
 							}
 						}
 					}
 				}
-
-				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
-				await Task.Delay(1);
 			}
 		}
 
