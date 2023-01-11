@@ -87,28 +87,37 @@ namespace ActGenerator.Model
 				if (prevLoadedProject != null)
 				{
 					project.Backs = prevLoadedProject.Backs;
+					dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
+					await Task.Delay(1);
 				}
 				else
 				{
-					await LoadProject(project, dialogContext);
+					await LoadProject(project, dialogContext, progressPart);
 				}
-
-				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
 			}
 
 			await DisconnectDbAsync();
 		}
 
-		private async Task LoadProject(Project project, GenerationDialogViewModel dialogContext)
+		private async Task LoadProject(Project project, GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
+			double startProgress = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue);
+			double progressPart = totalProgressPart / db.Backs.Count(x => x.ProjectId == project.Id);
+
 			project.Backs = new List<Back>();
 			foreach (Back back in db.Backs.Where(x => x.ProjectId == project.Id))
 			{
 				if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) return;
 
 				project.Backs.Add(back);
+
+
+				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
 				await Task.Delay(1);
 			}
+
+			dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue = startProgress + totalProgressPart);
+			await Task.Delay(1);
 		}
 
 		private Project GetPrevProject(IDbObject currentDbObject)
@@ -157,7 +166,7 @@ namespace ActGenerator.Model
 					{
 						if(prevProject.Id == (prevWorkList.Project is AlternativeProjectName alternativeProjectName ? alternativeProjectName.ProjectId : prevWorkList.Project.Id))
 						{
-							generatedWorkList.GeneratedWorks = prevWorkList.GeneratedWorks;
+							generatedWorkList.GeneratedWorks = new List<GeneratedWork>(prevWorkList.GeneratedWorks);
 							double skippedProgress = progressPart * generatedWorkList.GeneratedWorks.Count;
 							dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += skippedProgress);
 							await Task.Delay(1);
