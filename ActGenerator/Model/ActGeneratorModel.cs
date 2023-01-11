@@ -238,6 +238,7 @@ namespace ActGenerator.Model
 		private async Task RemovingUsedWorks(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
 			dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Видалення використаних робіт");
+			double startProgress = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue);
 			double progressPart = totalProgressPart
 				/ dcmkFiles.SelectMany(x => x.BackDataModels).Count()
 				/ generatedWorkLists.Count;
@@ -301,6 +302,9 @@ namespace ActGenerator.Model
 					}
 				}
 			}
+
+			dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue = startProgress + totalProgressPart);
+			await Task.Delay(1);
 		}
 
 		private bool IsEqualTypes(Dml.Model.Back.BackType backType, BackType dbBackType)
