@@ -1,12 +1,17 @@
 ﻿using ActGenerator.ViewModel.Dialogs;
 using DocumentMakerModelLibrary;
 using DocumentMakerModelLibrary.Back;
+using DocumentMakerModelLibrary.Controls;
 using DocumentMakerModelLibrary.Files;
+using DocumentMakerModelLibrary.OfficeFiles;
 using DocumentMakerModelLibrary.OfficeFiles.Human;
+using ProjectEditorLib.Model;
 using ProjectsDb;
 using ProjectsDb.Context;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ActGenerator.Model
@@ -30,6 +35,7 @@ namespace ActGenerator.Model
 		{
 			generatingParts.Add(LoadingProjects);
 			generatingParts.Add(GeneratingAllWorks);
+			generatingParts.Add(RemovingUsedWorks);
 		}
 
 		public void SetProjects(List<IDbObject> projects)
@@ -104,16 +110,31 @@ namespace ActGenerator.Model
 			double startProgress = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue);
 			double progressPart = totalProgressPart / db.Backs.Count(x => x.ProjectId == project.Id);
 
+			List<BackType> backTypes = db.BackTypes.ToList();
+
 			project.Backs = new List<Back>();
-			foreach (Back back in db.Backs.Where(x => x.ProjectId == project.Id))
+			foreach (Back back in db.Backs.Where(x => x.ProjectId == project.Id).ToList())
 			{
 				if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) return;
 
 				project.Backs.Add(back);
-
+				back.BackType = backTypes.First(y => y.Id == back.BackTypeId);
+				back.Regions = db.CountRegions.Where(y => y.BackId == back.Id).ToList();
 
 				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
 				await Task.Delay(1);
+			}
+
+			List<Back> episodes = project.Backs.Where(x => x.BackType.Name == ProjectNodeType.Episode.ToString()).ToList();
+			episodes.ForEach(x => project.Backs.Remove(x));
+			foreach (Back back in project.Backs)
+			{
+				back.BaseBack = episodes.FirstOrDefault(x => x.Id == back.BaseBackId);
+
+				foreach(CountRegions countRegions in back.Regions)
+				{
+					countRegions.Back = back;
+				}
 			}
 
 			dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue = startProgress + totalProgressPart);
@@ -184,11 +205,24 @@ namespace ActGenerator.Model
 						{
 							foreach (WorkObject workObject in documentTemplate.ReworkWorkTypesList)
 							{
-								generatedWorkList.GeneratedWorks.Add(new GeneratedWork
+								GeneratedWork generatedWork = new GeneratedWork
 								{
 									WorkObject = workObject,
 									Back = back,
-								});
+									DocumentTemplate = documentTemplate,
+								};
+
+								CountRegions countRegions = back.Regions.FirstOrDefault();
+								if(countRegions != null)
+								{
+									generatedWork.Regions = new List<int>();
+									for (int i = 1; i <= countRegions.Count; ++i)
+									{
+										generatedWork.Regions.Add(i);
+									}
+								}
+
+								generatedWorkList.GeneratedWorks.Add(generatedWork);
 
 								dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
 								await Task.Delay(1);
@@ -199,6 +233,75 @@ namespace ActGenerator.Model
 					generatedWorkLists.Add(generatedWorkList);
 				}
 			}
+		}
+
+		private async Task RemovingUsedWorks(GenerationDialogViewModel dialogContext)
+		{
+			double progressPart = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressMaximum) / generatingParts.Count / dcmkFiles.Count;
+
+			foreach(DcmkFile dcmkFile in dcmkFiles)
+			{
+				if (documentTemplates.FirstOrDefault(x => x.Type == dcmkFile.TemplateType) != null)
+				{
+					foreach (FullBackDataModel back in dcmkFile.BackDataModels)
+					{
+						if (back.IsRework)
+						{
+							foreach (GeneratedWorkList workList in generatedWorkLists)
+							{
+								if (back.GameName == workList.Project.ToString())
+								{
+									foreach(GeneratedWork generatedWork in workList.GeneratedWorks)
+									{
+										if (back.WorkObjectId == generatedWork.WorkObject.Id
+											&& IsEqualTypes(back.Type, generatedWork.Back.BackType)
+											&& (generatedWork.Back.BaseBack == null || generatedWork.Back.BaseBack.Number.ToString() == back.EpisodeNumberText)
+											&& ((generatedWork.Back.BackType.Name == ProjectNodeType.Back.ToString()
+													&& back.BackNumberText == generatedWork.Back.Number.ToString()
+													&& back.BackName == generatedWork.Back.Name)
+												|| (back.BackName == generatedWork.Back.Number.ToString() + ". " + generatedWork.Back.Name)))
+										{
+											string regs = Regex.Replace(BackTaskStrings.GetRegionString(back.Type, back.BackCountRegionsText), @"\s+", "");
+											if (string.IsNullOrEmpty(regs))
+											{
+												generatedWork.BackUsed = true;
+											}
+											else
+											{
+												int[] iregs = regs.Split(',').Select(x => int.Parse(x)).ToArray();
+												foreach(int reg in iregs)
+												{
+													generatedWork.Regions.Remove(reg);
+												}
+											}
+
+											if(!generatedWork.ContainWork())
+											{
+												workList.GeneratedWorks.Remove(generatedWork);
+											}
+
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
+				await Task.Delay(1);
+			}
+		}
+
+		private bool IsEqualTypes(Dml.Model.Back.BackType backType, BackType dbBackType)
+		{
+			return Enum.TryParse(dbBackType.Name, out ProjectNodeType projectNodeType)
+				&& (((backType == Dml.Model.Back.BackType.Back || backType == Dml.Model.Back.BackType.Regions) && projectNodeType == ProjectNodeType.Back)
+					|| (backType == Dml.Model.Back.BackType.Dialog && projectNodeType == ProjectNodeType.Dialog)
+					|| (backType == Dml.Model.Back.BackType.Mg && projectNodeType == ProjectNodeType.Minigame)
+					|| ((backType == Dml.Model.Back.BackType.Hog || backType == Dml.Model.Back.BackType.HogRegions) && projectNodeType == ProjectNodeType.Hog)
+					|| (backType == Dml.Model.Back.BackType.Craft && projectNodeType == ProjectNodeType.Craft));
 		}
 	}
 }
