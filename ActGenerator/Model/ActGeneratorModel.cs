@@ -18,7 +18,7 @@ namespace ActGenerator.Model
 {
 	class ActGeneratorModel : ProjectsDbConnector
 	{
-		delegate Task GeneratingPart(GenerationDialogViewModel dialogContext);
+		delegate Task GeneratingPart(GenerationDialogViewModel dialogContext, double totalProgressPart);
 
 		List<GeneratingPart> generatingParts = new List<GeneratingPart>();
 
@@ -63,9 +63,11 @@ namespace ActGenerator.Model
 
 			if(dialogContext.Dispatcher.Invoke(() => dialogContext.GenerationStarted))
 			{
-				foreach(GeneratingPart generatingPart in generatingParts)
+				double progressPart = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressMaximum) / generatingParts.Count;
+
+				foreach (GeneratingPart generatingPart in generatingParts)
 				{
-					await generatingPart(dialogContext);
+					await generatingPart(dialogContext, progressPart);
 
 					if(dialogContext.IsClosing)
 					{
@@ -77,11 +79,11 @@ namespace ActGenerator.Model
 			}
 		}
 
-		private async Task LoadingProjects(GenerationDialogViewModel dialogContext)
+		private async Task LoadingProjects(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
 			await ConnectDbAsync();
 
-			double progressPart = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressMaximum) / generatingParts.Count / projects.Count;
+			double progressPart = totalProgressPart / projects.Count;
 			foreach (IDbObject dbObject in projects)
 			{
 				if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) break;
@@ -161,11 +163,10 @@ namespace ActGenerator.Model
 			return null;
 		}
 
-		private async Task GeneratingAllWorks(GenerationDialogViewModel dialogContext)
+		private async Task GeneratingAllWorks(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
 			generatedWorkLists = new List<GeneratedWorkList>();
-			double progressPart = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressMaximum)
-				/ generatingParts.Count
+			double progressPart = totalProgressPart
 				/ projects.SelectMany(x => x is Project project ? project.Backs : ((AlternativeProjectName)x).Project.Backs).Count()
 				/ documentTemplates.SelectMany(y => y.ReworkWorkTypesList).Count();
 
@@ -235,9 +236,9 @@ namespace ActGenerator.Model
 			}
 		}
 
-		private async Task RemovingUsedWorks(GenerationDialogViewModel dialogContext)
+		private async Task RemovingUsedWorks(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
-			double progressPart = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressMaximum) / generatingParts.Count / dcmkFiles.Count;
+			double progressPart = totalProgressPart / dcmkFiles.Count;
 
 			foreach(DcmkFile dcmkFile in dcmkFiles)
 			{
