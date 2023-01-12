@@ -255,6 +255,8 @@
                 </Grid>
 
             </Grid>
+
+            <materialDesign:Snackbar x:Name="ActGeneratorSnackbar" MessageQueue="{materialDesign:MessageQueue}" />
         </Grid>
 
         <i:Interaction.Triggers>
@@ -273,6 +275,7 @@
             <i:InvokeCommandAction Command="{Binding BindProjectNamesListControl}" CommandParameter="{Binding ElementName=ProjectNamesListControl, Path=DataContext}" />
             <i:InvokeCommandAction Command="{Binding BindHumenListControl}" CommandParameter="{Binding ElementName=HumenListControl, Path=DataContext}" />
             <i:InvokeCommandAction Command="{Binding BindDocumentListControl}" CommandParameter="{Binding ElementName=DocumentListControl, Path=DataContext}" />
+            <i:InvokeCommandAction Command="{Binding BindSnackbar}" CommandParameter="{Binding ElementName=ActGeneratorSnackbar}" />
             <i:InvokeCommandAction Command="{Binding ActGeneratorLoaded}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>

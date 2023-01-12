@@ -24,6 +24,7 @@ namespace ActGenerator.ViewModel
 
 		GenerationDialog generationDialog = new GenerationDialog();
 		GenerationDialogViewModel generationDialogViewModel = null;
+		Snackbar snackbar = null;
 
 		ProjectNamesListControlViewModel projectNamesListControlViewModel = null;
 		HumenListControlViewModel humenListControlViewModel = null;
@@ -144,6 +145,7 @@ namespace ActGenerator.ViewModel
 			BindProjectNamesListControl = new Command<ProjectNamesListControlViewModel>(OnBindProjectNamesListControlExecute);
 			BindHumenListControl = new Command<HumenListControlViewModel>(OnBindHumenListControlExecute);
 			BindDocumentListControl = new Command<DocumentListControlViewModel>(OnBindDocumentListControlExecute);
+			BindSnackbar = new Command<Snackbar>(OnBindSnackbarExecute);
 		}
 
 		public Command CloseOpenedDialog { get; private set; }
@@ -168,6 +170,18 @@ namespace ActGenerator.ViewModel
 			{
 				if (invalid is FrameworkElement frameworkElement) frameworkElement.BringIntoView();
 				invalid.Focus();
+				return;
+			}
+			else if(!projectNamesListControlViewModel.IsSelectedProject())
+			{
+				snackbar.MessageQueue.Clear();
+				snackbar.MessageQueue.Enqueue("Необрані проєкти", null, null, null, false, true, TimeSpan.FromSeconds(3));
+				return;
+			}
+			else if(!humenListControlViewModel.IsSelectedHuman())
+			{
+				snackbar.MessageQueue.Clear();
+				snackbar.MessageQueue.Enqueue("Необрані працівники", null, null, null, false, true, TimeSpan.FromSeconds(3));
 				return;
 			}
 
@@ -221,6 +235,15 @@ namespace ActGenerator.ViewModel
 			if(this.documentListControlViewModel == null)
 			{
 				this.documentListControlViewModel = documentListControlViewModel;
+			}
+		}
+
+		public Command<Snackbar> BindSnackbar { get; private set; }
+		private void OnBindSnackbarExecute(Snackbar snackbar)
+		{
+			if(this.snackbar == null)
+			{
+				this.snackbar = snackbar;
 			}
 		}
 

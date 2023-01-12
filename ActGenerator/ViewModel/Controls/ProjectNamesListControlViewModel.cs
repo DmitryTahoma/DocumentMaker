@@ -173,6 +173,11 @@ namespace ActGenerator.ViewModel.Controls
 			return chip;
 		}
 
+		public bool IsSelectedProject()
+		{
+			return ProjectCollection.Count > 0;
+		}
+
 		#endregion
 	}
 }

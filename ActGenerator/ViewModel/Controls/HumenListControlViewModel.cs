@@ -205,6 +205,11 @@ namespace ActGenerator.ViewModel.Controls
 			return itemsViewModel.ToDictionary(key => key.Model, elem => elem.SelectedTemplates.Cast<FullDocumentTemplate>());
 		}
 
+		public bool IsSelectedHuman()
+		{
+			return humenStackCollection.Count > 0;
+		}
+
 		#endregion
 	}
 }
