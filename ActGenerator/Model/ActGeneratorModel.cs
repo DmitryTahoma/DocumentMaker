@@ -27,6 +27,8 @@ namespace ActGenerator.Model
 		List<IDbObject> projects = null;
 		IEnumerable<HumanListItemControlModel> humen = null;
 		List<DcmkFile> dcmkFiles = null;
+		int minSum = default;
+		int maxSum = default;
 
 		List<FullDocumentTemplate> documentTemplates = null;
 
@@ -55,6 +57,12 @@ namespace ActGenerator.Model
 			this.dcmkFiles = dcmkFiles;
 		}
 
+		public void SetSumLimits(int minSum, int maxSum)
+		{
+			this.minSum = minSum;
+			this.maxSum = maxSum;
+		}
+
 		public async Task StartGeneration(GenerationDialogViewModel dialogContext)
 		{
 			while(!dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing) && !dialogContext.Dispatcher.Invoke(() => dialogContext.GenerationStarted))
@@ -78,6 +86,11 @@ namespace ActGenerator.Model
 
 				dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Згенеровано!");
 			}
+		}
+
+		public bool IsPosibleSum(int sum)
+		{
+			return sum >= minSum && Math.Ceiling((double)sum / maxSum) <= sum / minSum;
 		}
 
 		private async Task LoadingProjects(GenerationDialogViewModel dialogContext, double totalProgressPart)

@@ -1,4 +1,5 @@
 ﻿using ActGenerator.Model;
+using ActGenerator.Model.Controls;
 using ActGenerator.View.Controls;
 using ActGenerator.View.Dialogs;
 using ActGenerator.ViewModel.Controls;
@@ -12,9 +13,11 @@ using Mvvm;
 using Mvvm.Commands;
 using ProjectEditorLib.ViewModel;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace ActGenerator.ViewModel
 {
@@ -25,6 +28,7 @@ namespace ActGenerator.ViewModel
 		GenerationDialog generationDialog = new GenerationDialog();
 		GenerationDialogViewModel generationDialogViewModel = null;
 		Snackbar snackbar = null;
+		TextBlock snackbarTextBlock = new TextBlock { HorizontalAlignment = HorizontalAlignment.Center };
 
 		ProjectNamesListControlViewModel projectNamesListControlViewModel = null;
 		HumenListControlViewModel humenListControlViewModel = null;
@@ -166,6 +170,9 @@ namespace ActGenerator.ViewModel
 		public Command<DependencyObject> GenerateActs { get; private set; }
 		private async void OnGenerateActsExecute(DependencyObject validateObj)
 		{
+			List<HumanListItemControlModel> humen;
+			int minSum, maxSum;
+
 			if (ValidationHelper.GetFirstInvalid(validateObj, true) is UIElement invalid)
 			{
 				if (invalid is FrameworkElement frameworkElement) frameworkElement.BringIntoView();
@@ -174,22 +181,36 @@ namespace ActGenerator.ViewModel
 			}
 			else if(!projectNamesListControlViewModel.IsSelectedProject())
 			{
-				snackbar.MessageQueue.Clear();
-				snackbar.MessageQueue.Enqueue("Необрані проєкти", null, null, null, false, true, TimeSpan.FromSeconds(3));
+				await SendSnackbarMessage("Необрані проєкти", 3);
 				return;
 			}
 			else if(!humenListControlViewModel.IsSelectedHuman())
 			{
-				snackbar.MessageQueue.Clear();
-				snackbar.MessageQueue.Enqueue("Необрані працівники", null, null, null, false, true, TimeSpan.FromSeconds(3));
+				await SendSnackbarMessage("Необрані працівники", 3);
 				return;
+			}
+			else
+			{
+				humen = humenListControlViewModel.GetHumen().ToList();
+				minSum = int.Parse(MinSumText);
+				maxSum = int.Parse(MaxSumText);
+
+				model.SetSumLimits(minSum, maxSum);
+				foreach(HumanListItemControlModel human in humen)
+				{
+					if(!model.IsPosibleSum((int)human.Sum))
+					{
+						await SendSnackbarMessage("Неможливо згенерувати акт для працівника \"" + human.HumanData.Name + "\". Змініть налаштування сум або суму акту.", 7);
+						return;
+					}
+				}
 			}
 
 			CloseOnClickAwayDialogHost = false;
 			generationDialogViewModel.DialogHostId = DialogHostId;
 			Task dialogTask = DialogHost.Show(generationDialog, DialogHostId);
 			model.SetProjects(projectNamesListControlViewModel.SelectedDbProjects);
-			model.SetHumen(humenListControlViewModel.GetHumen());
+			model.SetHumen(humen);
 			model.SetDocumentList(documentListControlViewModel.GetDocumentList());
 			_ = Task.Run(async() => { await model.StartGeneration(generationDialogViewModel); });
 			await dialogTask;
@@ -266,6 +287,18 @@ namespace ActGenerator.ViewModel
 		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
 		{
 			model.ConnectionString = cryptedConnectionString;
+		}
+
+		private async Task SendSnackbarMessage(string message, double durationSeconds)
+		{
+			bool waitClosing = snackbar.MessageQueue.QueuedMessages.Count != 0;
+
+			snackbar.MessageQueue.Clear();
+			if (waitClosing) await Task.Delay(300);
+
+			snackbarTextBlock.Text = message;
+			snackbar.Width = snackbarTextBlock.Text.Length * 8;
+			snackbar.MessageQueue.Enqueue(snackbarTextBlock, null, null, null, false, true, TimeSpan.FromSeconds(durationSeconds));
 		}
 
 		#endregion
