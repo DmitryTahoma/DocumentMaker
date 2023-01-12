@@ -1,4 +1,5 @@
-﻿using ActGenerator.ViewModel.Dialogs;
+﻿using ActGenerator.Model.Controls;
+using ActGenerator.ViewModel.Dialogs;
 using DocumentMakerModelLibrary;
 using DocumentMakerModelLibrary.Back;
 using DocumentMakerModelLibrary.Controls;
@@ -24,7 +25,7 @@ namespace ActGenerator.Model
 
 		// contain Project or AlternativeProjectName with reference to Project
 		List<IDbObject> projects = null;
-		Dictionary<HumanData, IEnumerable<FullDocumentTemplate>> humen = null;
+		IEnumerable<HumanListItemControlModel> humen = null;
 		List<DcmkFile> dcmkFiles = null;
 
 		List<FullDocumentTemplate> documentTemplates = null;
@@ -43,10 +44,10 @@ namespace ActGenerator.Model
 			this.projects = projects;
 		}
 		
-		public void SetHumen(Dictionary<HumanData, IEnumerable<FullDocumentTemplate>> humen)
+		public void SetHumen(IEnumerable<HumanListItemControlModel> humen)
 		{
 			this.humen = humen;
-			documentTemplates = humen.SelectMany(x => x.Value).Distinct().ToList();
+			documentTemplates = humen.SelectMany(x => x.SelectedTemplates).Distinct().ToList();
 		}
 
 		public void SetDocumentList(List<DcmkFile> dcmkFiles)

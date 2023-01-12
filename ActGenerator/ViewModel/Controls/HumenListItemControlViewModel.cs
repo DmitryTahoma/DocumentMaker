@@ -1,13 +1,15 @@
-﻿using DocumentMakerModelLibrary;
+﻿using ActGenerator.Model.Controls;
+using DocumentMakerModelLibrary;
 using DocumentMakerModelLibrary.OfficeFiles.Human;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace ActGenerator.ViewModel.Controls
 {
-	public class HumenListItemControlViewModel : DependencyObject
+	class HumenListItemControlViewModel : DependencyObject
 	{
-		private HumanData model = null;
+		HumanListItemControlModel model = new HumanListItemControlModel();
 
 		public HumenListItemControlViewModel()
 		{
@@ -51,13 +53,13 @@ namespace ActGenerator.ViewModel.Controls
 		}
 		public static readonly DependencyProperty SelectedTemplatesProperty = DependencyProperty.Register(nameof(SelectedTemplates), typeof(List<object>), typeof(HumenListItemControlViewModel));
 
-		public HumanData Model
+		public HumanListItemControlModel Model
 		{
-			get => model;
-			set
+			get
 			{
-				model = value;
-				Name = model.Name;
+				model.SelectedTemplates = SelectedTemplates.Cast<FullDocumentTemplate>().ToList();
+				if (!string.IsNullOrEmpty(SumText)) model.Sum = int.Parse(SumText);
+				return model;
 			}
 		}
 

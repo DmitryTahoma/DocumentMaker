@@ -15,7 +15,7 @@ using System.Windows.Controls;
 
 namespace ActGenerator.ViewModel.Controls
 {
-	public class HumenListControlViewModel : DependencyObject, IContainDialogHostId
+	class HumenListControlViewModel : DependencyObject, IContainDialogHostId
 	{
 		HumenListControlModel model = new HumenListControlModel();
 
@@ -85,7 +85,7 @@ namespace ActGenerator.ViewModel.Controls
 			{
 				foreach (HumanData humanData in addHumanDialogViewModel.SelectedHumanData)
 				{
-					if(items.FirstOrDefault(x => ((HumenListItemControlViewModel)x.DataContext).Model == humanData) == null)
+					if(items.FirstOrDefault(x => ((HumenListItemControlViewModel)x.DataContext).Model.HumanData == humanData) == null)
 					{
 						AddItem(humanData);
 						UpdateHumenCheckBoxIsChecked();
@@ -170,7 +170,8 @@ namespace ActGenerator.ViewModel.Controls
 		{
 			HumenListItemControl item = new HumenListItemControl();
 			HumenListItemControlViewModel itemViewModel = (HumenListItemControlViewModel)item.DataContext;
-			itemViewModel.Model = humanData;
+			itemViewModel.Model.HumanData = humanData;
+			itemViewModel.Name = humanData.Name;
 			List<FullDocumentTemplate> itemsSource = model.DocumentTemplatesList.ToList();
 			FullDocumentTemplate deafultTemplate = itemsSource.FirstOrDefault(x => x.Name == humanData.DefaultTemplate);
 			if (deafultTemplate != null)
@@ -200,9 +201,9 @@ namespace ActGenerator.ViewModel.Controls
 			UpdateHumenCheckBoxIsChecked();
 		}
 
-		public Dictionary<HumanData, IEnumerable<FullDocumentTemplate>> GetHumen()
+		public IEnumerable<HumanListItemControlModel> GetHumen()
 		{
-			return itemsViewModel.ToDictionary(key => key.Model, elem => elem.SelectedTemplates.Cast<FullDocumentTemplate>());
+			return itemsViewModel.Select(x => x.Model);
 		}
 
 		public bool IsSelectedHuman()

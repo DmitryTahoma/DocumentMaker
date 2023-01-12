@@ -130,6 +130,7 @@
     <Compile Include="Model\ActGeneratorModel.cs" />
     <Compile Include="Model\ActGeneratorSession.cs" />
     <Compile Include="Model\ActPartType.cs" />
+    <Compile Include="Model\Controls\HumanListItemControlModel.cs" />
     <Compile Include="Model\Controls\HumenListControlModel.cs" />
     <Compile Include="Model\Controls\ProjectNamesListControlModel.cs" />
     <Compile Include="Model\Dialogs\AddHumanDialogModel.cs" />
