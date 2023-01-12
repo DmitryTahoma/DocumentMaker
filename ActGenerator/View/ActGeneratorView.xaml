@@ -256,7 +256,10 @@
 
             </Grid>
 
-            <materialDesign:Snackbar x:Name="ActGeneratorSnackbar" MessageQueue="{materialDesign:MessageQueue}" />
+            <materialDesign:Snackbar
+                x:Name="ActGeneratorSnackbar"
+                HorizontalAlignment="Stretch"
+                MessageQueue="{materialDesign:MessageQueue}" />
         </Grid>
 
         <i:Interaction.Triggers>
