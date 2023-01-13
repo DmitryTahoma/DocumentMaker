@@ -1,6 +1,7 @@
 ﻿using ActGenerator.Model.Controls;
 using ActGenerator.ViewModel.Dialogs;
 using DocumentMakerModelLibrary;
+using DocumentMakerModelLibrary.Algorithm;
 using DocumentMakerModelLibrary.Back;
 using DocumentMakerModelLibrary.Controls;
 using DocumentMakerModelLibrary.Files;
@@ -33,6 +34,7 @@ namespace ActGenerator.Model
 		List<FullDocumentTemplate> documentTemplates = null;
 
 		List<GeneratedWorkList> generatedWorkLists = null;
+		Dictionary<HumanListItemControlModel, List<GeneratedWorkList>> acts = null;
 
 		public ActGeneratorModel()
 		{
@@ -40,6 +42,7 @@ namespace ActGenerator.Model
 			generatingParts.Add(GeneratingAllWorks);
 			generatingParts.Add(RemovingUsedWorks);
 			generatingParts.Add(GeneratingAllRegionsWork);
+			generatingParts.Add(GeneratingActs);
 		}
 
 		public void SetProjects(List<IDbObject> projects)
@@ -375,6 +378,87 @@ namespace ActGenerator.Model
 					dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += localProgressPart);
 					await Task.Delay(1);
 				}
+			}
+		}
+
+		private async Task GeneratingActs(GenerationDialogViewModel dialogContext, double totalProgressPart)
+		{
+			dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Генерація актів");
+			await Task.Delay(1);
+			Random random = new Random();
+
+			acts = new Dictionary<HumanListItemControlModel, List<GeneratedWorkList>>();
+			foreach (HumanListItemControlModel human in humen)
+			{
+				KeyValuePair<HumanListItemControlModel, List<GeneratedWorkList>> act =
+					new KeyValuePair<HumanListItemControlModel, List<GeneratedWorkList>>(human, new List<GeneratedWorkList>());
+
+				int sum = (int)human.Sum;
+				int minCountWorks = (int)Math.Ceiling((double)sum / maxSum);
+				int maxCountWorks = (int)Math.Floor((double)sum / minSum);
+
+				int countWorks = minCountWorks;
+				if (minCountWorks != maxCountWorks)
+				{
+					countWorks = random.Next(minCountWorks, maxCountWorks + 1);
+				}
+
+				foreach(FullDocumentTemplate documentTemplate in human.SelectedTemplates)
+				{
+					Dictionary<GeneratedWorkList, List<GeneratedWork>> enableWorks = generatedWorkLists.ToDictionary(key => key, value => value.GeneratedWorks[documentTemplate]);
+					int countEnableWorks = enableWorks.SelectMany(x => x.Value).Count();
+
+					while (countEnableWorks > 0 && act.Value.SelectMany(x => x.GeneratedWorks.SelectMany(y => y.Value)).Count() < countWorks)
+					{
+						int randomWorkIndex = random.Next(0, countEnableWorks);
+
+						foreach (KeyValuePair<GeneratedWorkList, List<GeneratedWork>> workList in enableWorks)
+						{
+							if(randomWorkIndex < workList.Value.Count)
+							{
+								GeneratedWork randomWork = workList.Value[randomWorkIndex];
+								workList.Value.Remove(randomWork);
+								--countEnableWorks;
+
+								GeneratedWorkList generatedWorkList = act.Value.FirstOrDefault(x => x.Project == workList.Key.Project);
+								if(generatedWorkList == null)
+								{
+									generatedWorkList = new GeneratedWorkList { Project = workList.Key.Project };
+									act.Value.Add(generatedWorkList);
+								}
+								generatedWorkList.AddGeneratedWork(randomWork);
+								break;
+							}
+							randomWorkIndex -= workList.Value.Count;
+						}
+					}
+				}
+
+				List<int> sums = new List<int>();
+
+				int remainder = sum;
+				for (int i = 0; i < countWorks; ++i)
+				{
+					int randomSum = random.Next(minSum + 1, maxSum);
+					remainder -= randomSum;
+					sums.Add(randomSum);
+				}
+
+				while(remainder != 0)
+				{
+					int direction = remainder > 0 ? 1 : -1;
+					for (int i = 0; i < countWorks && remainder != 0; ++i)
+					{
+						int nextSum = sums[i] + direction;
+						if (remainder > 0 ? nextSum < maxSum : nextSum > minSum)
+						{
+							sums[i] += direction;
+							remainder -= direction;
+						}
+					}
+				}
+
+				MixingSumAlgorithm.RemoveIdenticalNumbers(ref sums, minSum, maxSum);
 			}
 		}
 	}

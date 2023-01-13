@@ -437,5 +437,11 @@ namespace DocumentMakerModelLibrary.Algorithm
 				}
 			}
 		}
+
+		public static void RemoveIdenticalNumbers(ref List<int> _array, int _minNumber, int _maxNumber)
+		{
+			RemoveIdenticalNumbers(ref _array, true, _maxNumber);
+			RemoveIdenticalNumbers(ref _array, false, _minNumber);
+		}
 	}
 }

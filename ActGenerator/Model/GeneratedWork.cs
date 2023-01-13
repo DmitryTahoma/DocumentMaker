@@ -12,6 +12,7 @@ namespace ActGenerator.Model
 		public FullDocumentTemplate DocumentTemplate { get; set; }
 		public List<int> Regions { get; set; }
 		public bool BackUsed { get; set; } = false;
+		public int Sum { get; set; } = 0;
 
 		public bool ContainWork()
 		{
