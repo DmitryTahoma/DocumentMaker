@@ -202,7 +202,7 @@ namespace ActGenerator.Model
 					{
 						if(prevProject.Id == (prevWorkList.Project is AlternativeProjectName alternativeProjectName ? alternativeProjectName.ProjectId : prevWorkList.Project.Id))
 						{
-							generatedWorkList.GeneratedWorks = new List<GeneratedWork>(prevWorkList.GeneratedWorks);
+							generatedWorkList.CopyWorks(prevWorkList.GeneratedWorks);
 							double skippedProgress = progressPart * generatedWorkList.GeneratedWorks.Count;
 							dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += skippedProgress);
 							await Task.Delay(1);
@@ -237,7 +237,7 @@ namespace ActGenerator.Model
 									}
 								}
 
-								generatedWorkList.GeneratedWorks.Add(generatedWork);
+								generatedWorkList.AddGeneratedWork(generatedWork);
 
 								dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
 								await Task.Delay(1);
@@ -273,7 +273,7 @@ namespace ActGenerator.Model
 
 								if (back.GameName == workList.Project.ToString())
 								{
-									foreach(GeneratedWork generatedWork in workList.GeneratedWorks)
+									foreach(GeneratedWork generatedWork in workList.GeneratedWorks.SelectMany(x => x.Value))
 									{
 										if (back.WorkObjectId == generatedWork.WorkObject.Id
 											&& IsEqualTypes(back.Type, generatedWork.Back.BackType)
@@ -301,9 +301,9 @@ namespace ActGenerator.Model
 
 											if(changedGeneratedWork.ContainWork())
 											{
-												workList.GeneratedWorks.Insert(0, changedGeneratedWork);
+												workList.InsertGeneratedWork(0, changedGeneratedWork);
 											}
-											workList.GeneratedWorks.Remove(generatedWork);
+											workList.RemoveGeneratedWork(generatedWork);
 											break;
 										}
 									}
