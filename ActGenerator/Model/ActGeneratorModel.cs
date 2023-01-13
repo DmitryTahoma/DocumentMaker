@@ -39,6 +39,7 @@ namespace ActGenerator.Model
 			generatingParts.Add(LoadingProjects);
 			generatingParts.Add(GeneratingAllWorks);
 			generatingParts.Add(RemovingUsedWorks);
+			generatingParts.Add(GeneratingAllRegionsWork);
 		}
 
 		public void SetProjects(List<IDbObject> projects)
@@ -329,6 +330,52 @@ namespace ActGenerator.Model
 					|| (backType == Dml.Model.Back.BackType.Mg && projectNodeType == ProjectNodeType.Minigame)
 					|| ((backType == Dml.Model.Back.BackType.Hog || backType == Dml.Model.Back.BackType.HogRegions) && projectNodeType == ProjectNodeType.Hog)
 					|| (backType == Dml.Model.Back.BackType.Craft && projectNodeType == ProjectNodeType.Craft));
+		}
+
+		private async Task GeneratingAllRegionsWork(GenerationDialogViewModel dialogContext, double totalProgressPart)
+		{
+			dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Розгортання регіонів");
+			double progressPart = totalProgressPart / 2 / generatedWorkLists.SelectMany(x => x.GeneratedWorks.SelectMany(y => y.Value)).Count();
+
+			foreach (GeneratedWorkList generatedWorkList in generatedWorkLists)
+			{
+				List<GeneratedWork> newGeneratedWorks = new List<GeneratedWork>();
+
+				foreach (GeneratedWork generatedWork in generatedWorkList.GeneratedWorks.SelectMany(x => x.Value))
+				{
+					if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) return;
+
+					if (!generatedWork.BackUsed && generatedWork.Regions != null && generatedWork.Regions.Count > 0)
+					{
+						GeneratedWork backWork = generatedWork.Clone();
+						GeneratedWork regionsWork = generatedWork.Clone();
+						backWork.Regions.Clear();
+						regionsWork.BackUsed = true;
+						newGeneratedWorks.Add(backWork);
+						newGeneratedWorks.Add(regionsWork);
+					}
+					else
+					{
+						newGeneratedWorks.Add(generatedWork);
+					}
+
+					dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
+					await Task.Delay(1);
+				}
+
+				double localProgressPart = totalProgressPart / 2 / generatedWorkLists.Count / newGeneratedWorks.Count;
+
+				generatedWorkList.ClearWorks();
+				foreach(GeneratedWork work in newGeneratedWorks)
+				{
+					if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) return;
+
+					generatedWorkList.AddGeneratedWork(work);
+
+					dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += localProgressPart);
+					await Task.Delay(1);
+				}
+			}
 		}
 	}
 }

@@ -48,5 +48,10 @@ namespace ActGenerator.Model
 		{
 			generatedWorks = new Dictionary<FullDocumentTemplate, List<GeneratedWork>>(worksSource);
 		}
+
+		public void ClearWorks()
+		{
+			generatedWorks.Clear();
+		}
 	}
 }
