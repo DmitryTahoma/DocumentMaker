@@ -374,7 +374,8 @@ namespace ActGenerator.Model
 
 		private async Task GeneratingActs(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
-			double progressPart = totalProgressPart / humen.Count() / 3;
+			const int parts = 3;
+			double progressPart = totalProgressPart / humen.Count() / parts;
 
 			acts = new Dictionary<HumanListItemControlModel, List<GeneratedWorkList>>();
 			foreach (HumanListItemControlModel human in humen)
@@ -391,6 +392,9 @@ namespace ActGenerator.Model
 				{
 					if (IsBreakGeneration(dialogContext)) return;
 
+					dialogContext.Dispatcher.Invoke(() => System.Windows.MessageBox.Show("Не достатньо робіт для акту \"" + human.HumanData.Name + "\". Акт буде пропущений.", "Генерація", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning));
+					ReturnBackUsedWorks(act);
+					await AddPogress(dialogContext, progressPart * parts);
 					continue;
 				}
 
@@ -506,6 +510,24 @@ namespace ActGenerator.Model
 			}
 
 			return sums;
+		}
+
+		private void ReturnBackUsedWorks(KeyValuePair<HumanListItemControlModel, List<GeneratedWorkList>> act)
+		{
+			foreach (GeneratedWorkList actGeneratedWorkList in act.Value)
+			{
+				foreach (GeneratedWorkList generatedWorkList in generatedWorkLists)
+				{
+					if (actGeneratedWorkList.Project == generatedWorkList.Project)
+					{
+						foreach (List<GeneratedWork> values in actGeneratedWorkList.GeneratedWorks.Values)
+						{
+							values.ForEach(x => generatedWorkList.AddGeneratedWork(x));
+						}
+						break;
+					}
+				}
+			}
 		}
 
 		private void InvokeInDialogDispatcher(GenerationDialogViewModel dialogContext, Action action)
