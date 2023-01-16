@@ -6,7 +6,6 @@ using DocumentMakerModelLibrary.Back;
 using DocumentMakerModelLibrary.Controls;
 using DocumentMakerModelLibrary.Files;
 using DocumentMakerModelLibrary.OfficeFiles;
-using DocumentMakerModelLibrary.OfficeFiles.Human;
 using ProjectEditorLib.Model;
 using ProjectsDb;
 using ProjectsDb.Context;
@@ -89,7 +88,7 @@ namespace ActGenerator.Model
 					}
 				}
 
-				dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Згенеровано!");
+				await SetProcessDescription(dialogContext, "Згенеровано!");
 			}
 		}
 
@@ -105,8 +104,8 @@ namespace ActGenerator.Model
 			double progressPart = totalProgressPart / projects.Count;
 			foreach (IDbObject dbObject in projects)
 			{
-				if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) break;
-				dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Завантаження проєкту \"" + dbObject.ToString() + '"');
+				if (IsBreakGeneration(dialogContext)) break;
+				await SetProcessDescription(dialogContext, "Завантаження проєкту \"" + dbObject.ToString() + '"');
 
 				Project project = dbObject as Project ?? ((AlternativeProjectName)dbObject).Project;
 
@@ -114,8 +113,7 @@ namespace ActGenerator.Model
 				if (prevLoadedProject != null)
 				{
 					project.Backs = prevLoadedProject.Backs;
-					dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
-					await Task.Delay(1);
+					await AddPogress(dialogContext, progressPart);
 				}
 				else
 				{
@@ -136,14 +134,13 @@ namespace ActGenerator.Model
 			project.Backs = new List<Back>();
 			foreach (Back back in db.Backs.Where(x => x.ProjectId == project.Id).ToList())
 			{
-				if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) return;
+				if (IsBreakGeneration(dialogContext)) return;
 
 				project.Backs.Add(back);
 				back.BackType = backTypes.First(y => y.Id == back.BackTypeId);
 				back.Regions = db.CountRegions.Where(y => y.BackId == back.Id).ToList();
 
-				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
-				await Task.Delay(1);
+				await AddPogress(dialogContext, progressPart);
 			}
 
 			List<Back> episodes = project.Backs.Where(x => x.BackType.Name == ProjectNodeType.Episode.ToString()).ToList();
@@ -158,8 +155,7 @@ namespace ActGenerator.Model
 				}
 			}
 
-			dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue = startProgress + totalProgressPart);
-			await Task.Delay(1);
+			await SetProgress(dialogContext, startProgress + totalProgressPart);
 		}
 
 		private Project GetPrevProject(IDbObject currentDbObject)
@@ -194,7 +190,7 @@ namespace ActGenerator.Model
 				Project project = dbObject as Project;
 				if (project == null) project = ((AlternativeProjectName)dbObject).Project;
 
-				dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Генерація робіт проєкту \"" + dbObject.ToString() + '"');
+				await SetProcessDescription(dialogContext, "Генерація робіт проєкту \"" + dbObject.ToString() + '"');
 				GeneratedWorkList generatedWorkList = new GeneratedWorkList
 				{
 					Project = dbObject,
@@ -209,8 +205,7 @@ namespace ActGenerator.Model
 						{
 							generatedWorkList.CopyWorks(prevWorkList.GeneratedWorks);
 							double skippedProgress = progressPart * generatedWorkList.GeneratedWorks.Count;
-							dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += skippedProgress);
-							await Task.Delay(1);
+							await AddPogress(dialogContext, skippedProgress);
 							break;
 						}
 					}
@@ -219,7 +214,7 @@ namespace ActGenerator.Model
 				{
 					foreach (Back back in project.Backs)
 					{
-						if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) break;
+						if (IsBreakGeneration(dialogContext)) break;
 
 						foreach (FullDocumentTemplate documentTemplate in documentTemplates)
 						{
@@ -244,8 +239,7 @@ namespace ActGenerator.Model
 
 								generatedWorkList.AddGeneratedWork(generatedWork);
 
-								dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
-								await Task.Delay(1);
+								await AddPogress(dialogContext, progressPart);
 							}
 						}
 					}
@@ -256,7 +250,7 @@ namespace ActGenerator.Model
 
 		private async Task RemovingUsedWorks(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
-			dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Видалення використаних робіт");
+			await SetProcessDescription(dialogContext, "Видалення використаних робіт");
 			double startProgress = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue);
 			double progressPart = totalProgressPart
 				/ dcmkFiles.SelectMany(x => x.BackDataModels).Count()
@@ -268,13 +262,13 @@ namespace ActGenerator.Model
 				{
 					foreach (FullBackDataModel back in dcmkFile.BackDataModels)
 					{
-						if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) return;
+						if (IsBreakGeneration(dialogContext)) return;
 
 						if (back.IsRework)
 						{
 							foreach (GeneratedWorkList workList in generatedWorkLists)
 							{
-								if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) return;
+								if (IsBreakGeneration(dialogContext)) return;
 
 								if (back.GameName == workList.Project.ToString())
 								{
@@ -314,16 +308,14 @@ namespace ActGenerator.Model
 									}
 								}
 
-								dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
-								await Task.Delay(1);
+								await AddPogress(dialogContext, progressPart);
 							}
 						}
 					}
 				}
 			}
 
-			dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue = startProgress + totalProgressPart);
-			await Task.Delay(1);
+			await SetProgress(dialogContext, startProgress + totalProgressPart);
 		}
 
 		private bool IsEqualTypes(Dml.Model.Back.BackType backType, BackType dbBackType)
@@ -338,7 +330,7 @@ namespace ActGenerator.Model
 
 		private async Task GeneratingAllRegionsWork(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
-			dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Розгортання регіонів");
+			await SetProcessDescription(dialogContext, "Розгортання регіонів");
 			double progressPart = totalProgressPart / 2 / generatedWorkLists.SelectMany(x => x.GeneratedWorks.SelectMany(y => y.Value)).Count();
 
 			foreach (GeneratedWorkList generatedWorkList in generatedWorkLists)
@@ -347,7 +339,7 @@ namespace ActGenerator.Model
 
 				foreach (GeneratedWork generatedWork in generatedWorkList.GeneratedWorks.SelectMany(x => x.Value))
 				{
-					if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) return;
+					if (IsBreakGeneration(dialogContext)) return;
 
 					if (!generatedWork.BackUsed && generatedWork.Regions != null && generatedWork.Regions.Count > 0)
 					{
@@ -363,8 +355,7 @@ namespace ActGenerator.Model
 						newGeneratedWorks.Add(generatedWork);
 					}
 
-					dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
-					await Task.Delay(1);
+					await AddPogress(dialogContext, progressPart);
 				}
 
 				double localProgressPart = totalProgressPart / 2 / generatedWorkLists.Count / newGeneratedWorks.Count;
@@ -372,12 +363,11 @@ namespace ActGenerator.Model
 				generatedWorkList.ClearWorks();
 				foreach(GeneratedWork work in newGeneratedWorks)
 				{
-					if (dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing)) return;
+					if (IsBreakGeneration(dialogContext)) return;
 
 					generatedWorkList.AddGeneratedWork(work);
 
-					dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += localProgressPart);
-					await Task.Delay(1);
+					await AddPogress(dialogContext, localProgressPart);
 				}
 			}
 		}
@@ -389,7 +379,7 @@ namespace ActGenerator.Model
 			acts = new Dictionary<HumanListItemControlModel, List<GeneratedWorkList>>();
 			foreach (HumanListItemControlModel human in humen)
 			{
-				dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Створення акту \"" + human.HumanData.Name + "\"");
+				await SetProcessDescription(dialogContext, "Створення акту \"" + human.HumanData.Name + "\"");
 
 				KeyValuePair<HumanListItemControlModel, List<GeneratedWorkList>> act =
 					new KeyValuePair<HumanListItemControlModel, List<GeneratedWorkList>>(human, new List<GeneratedWorkList>());
@@ -397,33 +387,37 @@ namespace ActGenerator.Model
 				int sum = (int)human.Sum;
 				int countWorks = GetRandomCountWorks(sum);
 
-				if (!TryGetActWithRandomWorks(countWorks, human.SelectedTemplates, act))
+				if (!TryGetActWithRandomWorks(dialogContext, countWorks, human.SelectedTemplates, act))
 				{
+					if (IsBreakGeneration(dialogContext)) return;
+
 					continue;
 				}
 
-				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
-				await Task.Delay(1);
+				await AddPogress(dialogContext, progressPart);
 
 				List<int> sums = GetRandomSums(sum, countWorks);
 
-				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
-				await Task.Delay(1);
+				if (IsBreakGeneration(dialogContext)) return;
+
+				await AddPogress(dialogContext, progressPart);
 
 				MixingSumAlgorithm.RemoveIdenticalNumbers(ref sums, minSum, maxSum);
+				if (IsBreakGeneration(dialogContext)) return;
 
 				List<int>.Enumerator sumsEnum = sums.GetEnumerator();
 				sumsEnum.MoveNext();
 				foreach (GeneratedWork generatedWork in act.Value.SelectMany(x => x.GeneratedWorks.SelectMany(y => y.Value)))
 				{
+					if (IsBreakGeneration(dialogContext)) return;
+
 					generatedWork.Sum = sumsEnum.Current;
 					sumsEnum.MoveNext();
 				}
 
 				acts.Add(act.Key, act.Value);
 
-				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
-				await Task.Delay(1);
+				await AddPogress(dialogContext, progressPart);
 			}
 		}
 
@@ -440,21 +434,27 @@ namespace ActGenerator.Model
 			return countWorks;
 		}
 
-		private bool TryGetActWithRandomWorks(int countWorks, IEnumerable<FullDocumentTemplate> enableTemplates, KeyValuePair<HumanListItemControlModel, List<GeneratedWorkList>> act)
+		private bool TryGetActWithRandomWorks(GenerationDialogViewModel dialogContext, int countWorks, IEnumerable<FullDocumentTemplate> enableTemplates, KeyValuePair<HumanListItemControlModel, List<GeneratedWorkList>> act)
 		{
 			int countAddedWorks = 0;
 
 			foreach (FullDocumentTemplate documentTemplate in enableTemplates)
 			{
+				if (IsBreakGeneration(dialogContext)) return false;
+
 				Dictionary<GeneratedWorkList, List<GeneratedWork>> enableWorks = generatedWorkLists.ToDictionary(key => key, value => value.GeneratedWorks[documentTemplate]);
 				int countEnableWorks = enableWorks.SelectMany(x => x.Value).Count();
 
 				while (countEnableWorks > 0 && countAddedWorks < countWorks)
 				{
+					if (IsBreakGeneration(dialogContext)) return false;
+
 					int randomWorkIndex = random.Next(0, countEnableWorks);
 
 					foreach (KeyValuePair<GeneratedWorkList, List<GeneratedWork>> workList in enableWorks)
 					{
+						if (IsBreakGeneration(dialogContext)) return false;
+
 						if (randomWorkIndex < workList.Value.Count)
 						{
 							GeneratedWork randomWork = workList.Value[randomWorkIndex];
@@ -506,6 +506,34 @@ namespace ActGenerator.Model
 			}
 
 			return sums;
+		}
+
+		private void InvokeInDialogDispatcher(GenerationDialogViewModel dialogContext, Action action)
+		{
+			dialogContext.Dispatcher.Invoke(action);
+		}
+
+		private async Task AddPogress(GenerationDialogViewModel dialogContext, double progress)
+		{
+			InvokeInDialogDispatcher(dialogContext, () => dialogContext.ProgressValue += progress);
+			await Task.Delay(1);
+		}
+
+		private async Task SetProgress(GenerationDialogViewModel dialogContext, double progress)
+		{
+			InvokeInDialogDispatcher(dialogContext, () => dialogContext.ProgressValue = progress);
+			await Task.Delay(1);
+		}
+
+		private async Task SetProcessDescription(GenerationDialogViewModel dialogContext, string text)
+		{
+			InvokeInDialogDispatcher(dialogContext, () => dialogContext.LabelText = text);
+			await Task.Delay(1);
+		}
+
+		private bool IsBreakGeneration(GenerationDialogViewModel dialogContext)
+		{
+			return dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing);
 		}
 	}
 }
