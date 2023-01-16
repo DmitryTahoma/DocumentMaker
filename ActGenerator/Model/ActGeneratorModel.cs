@@ -23,6 +23,7 @@ namespace ActGenerator.Model
 		delegate Task GeneratingPart(GenerationDialogViewModel dialogContext, double totalProgressPart);
 
 		List<GeneratingPart> generatingParts = new List<GeneratingPart>();
+		Random random = new Random();
 
 		// contain Project or AlternativeProjectName with reference to Project
 		List<IDbObject> projects = null;
@@ -383,83 +384,128 @@ namespace ActGenerator.Model
 
 		private async Task GeneratingActs(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
-			dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Генерація актів");
-			await Task.Delay(1);
-			Random random = new Random();
+			double progressPart = totalProgressPart / humen.Count() / 3;
 
 			acts = new Dictionary<HumanListItemControlModel, List<GeneratedWorkList>>();
 			foreach (HumanListItemControlModel human in humen)
 			{
+				dialogContext.Dispatcher.Invoke(() => dialogContext.LabelText = "Створення акту \"" + human.HumanData.Name + "\"");
+
 				KeyValuePair<HumanListItemControlModel, List<GeneratedWorkList>> act =
 					new KeyValuePair<HumanListItemControlModel, List<GeneratedWorkList>>(human, new List<GeneratedWorkList>());
 
 				int sum = (int)human.Sum;
-				int minCountWorks = (int)Math.Ceiling((double)sum / maxSum);
-				int maxCountWorks = (int)Math.Floor((double)sum / minSum);
+				int countWorks = GetRandomCountWorks(sum);
 
-				int countWorks = minCountWorks;
-				if (minCountWorks != maxCountWorks)
+				if (!TryGetActWithRandomWorks(countWorks, human.SelectedTemplates, act))
 				{
-					countWorks = random.Next(minCountWorks, maxCountWorks + 1);
+					continue;
 				}
 
-				foreach(FullDocumentTemplate documentTemplate in human.SelectedTemplates)
-				{
-					Dictionary<GeneratedWorkList, List<GeneratedWork>> enableWorks = generatedWorkLists.ToDictionary(key => key, value => value.GeneratedWorks[documentTemplate]);
-					int countEnableWorks = enableWorks.SelectMany(x => x.Value).Count();
+				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
+				await Task.Delay(1);
 
-					while (countEnableWorks > 0 && act.Value.SelectMany(x => x.GeneratedWorks.SelectMany(y => y.Value)).Count() < countWorks)
-					{
-						int randomWorkIndex = random.Next(0, countEnableWorks);
+				List<int> sums = GetRandomSums(sum, countWorks);
 
-						foreach (KeyValuePair<GeneratedWorkList, List<GeneratedWork>> workList in enableWorks)
-						{
-							if(randomWorkIndex < workList.Value.Count)
-							{
-								GeneratedWork randomWork = workList.Value[randomWorkIndex];
-								workList.Value.Remove(randomWork);
-								--countEnableWorks;
-
-								GeneratedWorkList generatedWorkList = act.Value.FirstOrDefault(x => x.Project == workList.Key.Project);
-								if(generatedWorkList == null)
-								{
-									generatedWorkList = new GeneratedWorkList { Project = workList.Key.Project };
-									act.Value.Add(generatedWorkList);
-								}
-								generatedWorkList.AddGeneratedWork(randomWork);
-								break;
-							}
-							randomWorkIndex -= workList.Value.Count;
-						}
-					}
-				}
-
-				List<int> sums = new List<int>();
-
-				int remainder = sum;
-				for (int i = 0; i < countWorks; ++i)
-				{
-					int randomSum = random.Next(minSum + 1, maxSum);
-					remainder -= randomSum;
-					sums.Add(randomSum);
-				}
-
-				while(remainder != 0)
-				{
-					int direction = remainder > 0 ? 1 : -1;
-					for (int i = 0; i < countWorks && remainder != 0; ++i)
-					{
-						int nextSum = sums[i] + direction;
-						if (remainder > 0 ? nextSum < maxSum : nextSum > minSum)
-						{
-							sums[i] += direction;
-							remainder -= direction;
-						}
-					}
-				}
+				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
+				await Task.Delay(1);
 
 				MixingSumAlgorithm.RemoveIdenticalNumbers(ref sums, minSum, maxSum);
+
+				List<int>.Enumerator sumsEnum = sums.GetEnumerator();
+				sumsEnum.MoveNext();
+				foreach (GeneratedWork generatedWork in act.Value.SelectMany(x => x.GeneratedWorks.SelectMany(y => y.Value)))
+				{
+					generatedWork.Sum = sumsEnum.Current;
+					sumsEnum.MoveNext();
+				}
+
+				acts.Add(act.Key, act.Value);
+
+				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue += progressPart);
+				await Task.Delay(1);
 			}
+		}
+
+		private int GetRandomCountWorks(int sum)
+		{
+			int minCountWorks = (int)Math.Ceiling((double)sum / maxSum);
+			int maxCountWorks = (int)Math.Floor((double)sum / minSum);
+
+			int countWorks = minCountWorks;
+			if (minCountWorks != maxCountWorks)
+			{
+				countWorks = random.Next(minCountWorks, maxCountWorks + 1);
+			}
+			return countWorks;
+		}
+
+		private bool TryGetActWithRandomWorks(int countWorks, IEnumerable<FullDocumentTemplate> enableTemplates, KeyValuePair<HumanListItemControlModel, List<GeneratedWorkList>> act)
+		{
+			int countAddedWorks = 0;
+
+			foreach (FullDocumentTemplate documentTemplate in enableTemplates)
+			{
+				Dictionary<GeneratedWorkList, List<GeneratedWork>> enableWorks = generatedWorkLists.ToDictionary(key => key, value => value.GeneratedWorks[documentTemplate]);
+				int countEnableWorks = enableWorks.SelectMany(x => x.Value).Count();
+
+				while (countEnableWorks > 0 && countAddedWorks < countWorks)
+				{
+					int randomWorkIndex = random.Next(0, countEnableWorks);
+
+					foreach (KeyValuePair<GeneratedWorkList, List<GeneratedWork>> workList in enableWorks)
+					{
+						if (randomWorkIndex < workList.Value.Count)
+						{
+							GeneratedWork randomWork = workList.Value[randomWorkIndex];
+							workList.Value.Remove(randomWork);
+							--countEnableWorks;
+
+							GeneratedWorkList generatedWorkList = act.Value.FirstOrDefault(x => x.Project == workList.Key.Project);
+							if (generatedWorkList == null)
+							{
+								generatedWorkList = new GeneratedWorkList { Project = workList.Key.Project };
+								act.Value.Add(generatedWorkList);
+							}
+							generatedWorkList.AddGeneratedWork(randomWork);
+							++countAddedWorks;
+							break;
+						}
+						randomWorkIndex -= workList.Value.Count;
+					}
+				}
+			}
+
+			return countAddedWorks == countWorks;
+		}
+
+		private List<int> GetRandomSums(int totalSum, int countWorks)
+		{
+			List<int> sums = new List<int>();
+
+			int remainder = totalSum;
+			for (int i = 0; i < countWorks; ++i)
+			{
+				int randomSum = random.Next(minSum + 1, maxSum);
+				remainder -= randomSum;
+				sums.Add(randomSum);
+			}
+
+			while (remainder != 0)
+			{
+				int direction = remainder > 0 ? 1 : -1;
+				for (int i = 0; i < countWorks && remainder != 0; ++i)
+				{
+					int nextSum = sums[i] + direction;
+					if (remainder > 0 ? nextSum <= maxSum : nextSum >= minSum)
+					{
+						sums[i] += direction;
+						remainder -= direction;
+					}
+				}
+			}
+
+			return sums;
 		}
 	}
 }
