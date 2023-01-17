@@ -212,6 +212,7 @@ namespace ActGenerator.ViewModel
 			model.SetProjects(projectNamesListControlViewModel.SelectedDbProjects);
 			model.SetHumen(humen);
 			model.SetDocumentList(documentListControlViewModel.GetDocumentList());
+			model.SetIsCollapseRegionsWorks(CollapseRegionsWorks);
 			_ = Task.Run(async() =>
 			{
 				while (!generationDialogViewModel.Dispatcher.Invoke(() => generationDialogViewModel.IsClosing) && !generationDialogViewModel.Dispatcher.Invoke(() => generationDialogViewModel.GenerationStarted))

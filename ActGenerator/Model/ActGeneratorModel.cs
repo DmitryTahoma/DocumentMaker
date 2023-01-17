@@ -32,6 +32,7 @@ namespace ActGenerator.Model
 		int minSum = default;
 		int maxSum = default;
 		string savingPath = null;
+		bool isCollapseRegionsWorks = default;
 
 		List<BackType> loadedBackTypes = new List<BackType>();
 		List<Back> loadedBacks = new List<Back>();
@@ -76,6 +77,11 @@ namespace ActGenerator.Model
 		public void SetSavingPath(string path)
 		{
 			savingPath = path;
+		}
+
+		public void SetIsCollapseRegionsWorks(bool isCollapseRegionsWorks)
+		{
+			this.isCollapseRegionsWorks = isCollapseRegionsWorks;
 		}
 
 		public async Task StartGeneration(GenerationDialogViewModel dialogContext)
@@ -358,11 +364,26 @@ namespace ActGenerator.Model
 					if (!generatedWork.BackUsed && generatedWork.Regions != null && generatedWork.Regions.Count > 0)
 					{
 						GeneratedWork backWork = generatedWork.Clone();
-						GeneratedWork regionsWork = generatedWork.Clone();
 						backWork.Regions.Clear();
-						regionsWork.BackUsed = true;
 						newGeneratedWorks.Add(backWork);
-						newGeneratedWorks.Add(regionsWork);
+
+						if(isCollapseRegionsWorks)
+						{
+							GeneratedWork regionsWork = generatedWork.Clone();
+							regionsWork.BackUsed = true;
+							newGeneratedWorks.Add(regionsWork);
+						}
+						else
+						{
+							foreach(int regNum in generatedWork.Regions)
+							{
+								GeneratedWork regionWork = generatedWork.Clone();
+								regionWork.BackUsed = true;
+								regionWork.Regions.Clear();
+								regionWork.Regions.Add(regNum);
+								newGeneratedWorks.Add(regionWork);
+							}
+						}
 					}
 					else
 					{
