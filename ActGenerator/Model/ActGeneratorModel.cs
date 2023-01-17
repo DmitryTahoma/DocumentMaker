@@ -33,6 +33,9 @@ namespace ActGenerator.Model
 		int maxSum = default;
 		string savingPath = null;
 
+		List<BackType> loadedBackTypes = new List<BackType>();
+		List<Back> loadedBacks = new List<Back>();
+
 		List<FullDocumentTemplate> documentTemplates = null;
 
 		List<GeneratedWorkList> generatedWorkLists = null;
@@ -109,6 +112,10 @@ namespace ActGenerator.Model
 		{
 			await ConnectDbAsync();
 
+			loadedBackTypes.Clear();
+			loadedBackTypes.AddRange(db.BackTypes.ToList());
+			loadedBacks.Clear();
+
 			double progressPart = totalProgressPart / projects.Count;
 			foreach (IDbObject dbObject in projects)
 			{
@@ -137,15 +144,14 @@ namespace ActGenerator.Model
 			double startProgress = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue);
 			double progressPart = totalProgressPart / db.Backs.Count(x => x.ProjectId == project.Id);
 
-			List<BackType> backTypes = db.BackTypes.ToList();
-
 			project.Backs = new List<Back>();
 			foreach (Back back in db.Backs.Where(x => x.ProjectId == project.Id).ToList())
 			{
 				if (IsBreakGeneration(dialogContext)) return;
 
 				project.Backs.Add(back);
-				back.BackType = backTypes.First(y => y.Id == back.BackTypeId);
+				loadedBacks.Add(back);
+				back.BackType = loadedBackTypes.First(y => y.Id == back.BackTypeId);
 				back.Regions = db.CountRegions.Where(y => y.BackId == back.Id).ToList();
 
 				await AddPogress(dialogContext, progressPart);
@@ -542,7 +548,6 @@ namespace ActGenerator.Model
 		{
 			double progressPart = totalProgressPart / acts.Count;
 
-			await ConnectDbAsync();
 			foreach (KeyValuePair<HumanListItemControlModel, List<GeneratedWorkList>> act in acts)
 			{
 				await SetProcessDescription(dialogContext, "Збереження акту \"" + act.Key.HumanData.Name + '"');
@@ -592,19 +597,18 @@ namespace ActGenerator.Model
 
 				await AddPogress(dialogContext, progressPart);
 			}
-			await DisconnectDbAsync();
 		}
 
 		private string GetEpisodeNumber(Back back)
 		{
 			while(back != null)
 			{
-				if (db.BackTypes.FirstOrDefault(x => x.Id == back.BackTypeId).Name == ProjectNodeType.Episode.ToString())
+				if (loadedBackTypes.First(x => x.Id == back.BackTypeId).Name == ProjectNodeType.Episode.ToString())
 					return back.Number.ToString();
 				else if (back.BaseBackId == null)
 					break;
 
-				back = db.Backs.FirstOrDefault(x => x.Id == back.BaseBackId);
+				back = loadedBacks.FirstOrDefault(x => x.Id == back.BaseBackId);
 			}
 
 			return null;
