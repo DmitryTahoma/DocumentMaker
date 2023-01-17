@@ -75,6 +75,7 @@ namespace ActGenerator.Model
 
 		public async Task StartGeneration(GenerationDialogViewModel dialogContext)
 		{
+			try
 			{
 				double progressPart = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressMaximum) / generatingParts.Count;
 
@@ -82,13 +83,18 @@ namespace ActGenerator.Model
 				{
 					await generatingPart(dialogContext, progressPart);
 
-					if(dialogContext.IsClosing)
+					if (dialogContext.IsClosing)
 					{
+						await DisconnectDbAsync();
 						return;
 					}
 				}
 
 				await SetProcessDescription(dialogContext, "Згенеровано!");
+			}
+			catch (Exception e)
+			{
+				dialogContext.Dispatcher.Invoke(() => System.Windows.MessageBox.Show(e.ToString(), "Генерація | Помилка", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error));
 			}
 		}
 
