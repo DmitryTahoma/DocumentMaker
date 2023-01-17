@@ -30,6 +30,7 @@ namespace ActGenerator.Model
 		List<DcmkFile> dcmkFiles = null;
 		int minSum = default;
 		int maxSum = default;
+		string savingPath = null;
 
 		List<FullDocumentTemplate> documentTemplates = null;
 
@@ -67,14 +68,13 @@ namespace ActGenerator.Model
 			this.maxSum = maxSum;
 		}
 
+		public void SetSavingPath(string path)
+		{
+			savingPath = path;
+		}
+
 		public async Task StartGeneration(GenerationDialogViewModel dialogContext)
 		{
-			while(!dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing) && !dialogContext.Dispatcher.Invoke(() => dialogContext.GenerationStarted))
-			{
-				await Task.Delay(1);
-			}
-
-			if(dialogContext.Dispatcher.Invoke(() => dialogContext.GenerationStarted))
 			{
 				double progressPart = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressMaximum) / generatingParts.Count;
 

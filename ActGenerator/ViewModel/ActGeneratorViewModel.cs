@@ -212,7 +212,20 @@ namespace ActGenerator.ViewModel
 			model.SetProjects(projectNamesListControlViewModel.SelectedDbProjects);
 			model.SetHumen(humen);
 			model.SetDocumentList(documentListControlViewModel.GetDocumentList());
-			_ = Task.Run(async() => { await model.StartGeneration(generationDialogViewModel); });
+			_ = Task.Run(async() =>
+			{
+				while (!generationDialogViewModel.Dispatcher.Invoke(() => generationDialogViewModel.IsClosing) && !generationDialogViewModel.Dispatcher.Invoke(() => generationDialogViewModel.GenerationStarted))
+				{
+					await Task.Delay(1);
+				}
+
+				if (generationDialogViewModel.Dispatcher.Invoke(() => generationDialogViewModel.GenerationStarted))
+				{
+					model.SetSavingPath(generationDialogViewModel.Dispatcher.Invoke(() => generationDialogViewModel.SelectedFolderPath));
+
+					await model.StartGeneration(generationDialogViewModel);
+				}
+			});
 			await dialogTask;
 			CloseOnClickAwayDialogHost = true;
 		}
