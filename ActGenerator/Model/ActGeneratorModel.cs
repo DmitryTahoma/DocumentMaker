@@ -590,6 +590,14 @@ namespace ActGenerator.Model
 							}
 						}
 
+						if (m.Type == Dml.Model.Back.BackType.Mg
+							|| m.Type == Dml.Model.Back.BackType.Dialog
+							|| m.Type == Dml.Model.Back.BackType.Hog || m.Type == Dml.Model.Back.BackType.HogRegions)
+						{
+							m.BackName = m.BackNumberText + ". " + m.BackName;
+							m.BackNumberText = GetBaseBackNumber(generatedWork.Back);
+						}
+
 						backs.Add(m);
 					}
 				}
@@ -612,6 +620,11 @@ namespace ActGenerator.Model
 			}
 
 			return null;
+		}
+
+		private string GetBaseBackNumber(Back back)
+		{
+			return back.BaseBackId == null ? null : loadedBacks.FirstOrDefault(x => x.Id == back.BaseBackId)?.Number.ToString();
 		}
 
 		private Dml.Model.Back.BackType GetDmlBackType(GeneratedWork generatedWork)
