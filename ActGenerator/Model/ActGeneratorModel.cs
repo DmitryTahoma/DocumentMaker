@@ -11,6 +11,7 @@ using ProjectsDb;
 using ProjectsDb.Context;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -44,6 +45,7 @@ namespace ActGenerator.Model
 			generatingParts.Add(RemovingUsedWorks);
 			generatingParts.Add(GeneratingAllRegionsWork);
 			generatingParts.Add(GeneratingActs);
+			generatingParts.Add(SavingActs);
 		}
 
 		public void SetProjects(List<IDbObject> projects)
@@ -533,6 +535,99 @@ namespace ActGenerator.Model
 						break;
 					}
 				}
+			}
+		}
+
+		private async Task SavingActs(GenerationDialogViewModel dialogContext, double totalProgressPart)
+		{
+			double progressPart = totalProgressPart / acts.Count;
+
+			await ConnectDbAsync();
+			foreach (KeyValuePair<HumanListItemControlModel, List<GeneratedWorkList>> act in acts)
+			{
+				await SetProcessDescription(dialogContext, "Збереження акту \"" + act.Key.HumanData.Name + '"');
+
+				if (IsBreakGeneration(dialogContext)) return;
+
+				DocumentMakerModel documentMakerModel = new DocumentMakerModel();
+				documentMakerModel.SelectedHuman = act.Key.HumanData.Name;
+				documentMakerModel.ActSum = ((int)act.Key.Sum).ToString();
+				documentMakerModel.TemplateType = act.Value.First().GeneratedWorks.Keys.First().Type;
+
+				List<FullBackDataModel> backs = new List<FullBackDataModel>();
+				foreach (GeneratedWorkList generatedWorkList in act.Value)
+				{
+					if (IsBreakGeneration(dialogContext)) return;
+
+					foreach (GeneratedWork generatedWork in generatedWorkList.GeneratedWorks.Values.SelectMany(x => x))
+					{
+						if (IsBreakGeneration(dialogContext)) return;
+
+						FullBackDataModel m = new FullBackDataModel
+						{
+							EpisodeNumberText = GetEpisodeNumber(generatedWork.Back),
+							BackNumberText = generatedWork.Back.Number.ToString(),
+							BackName = generatedWork.Back.Name,
+							GameName = generatedWorkList.Project.ToString(),
+							SpentTimeText = generatedWork.Sum.ToString(),
+							SumText = generatedWork.Sum.ToString(),
+							WorkObjectId = generatedWork.WorkObject.Id,
+							Type = GetDmlBackType(generatedWork),
+							IsRework = true,
+						};
+
+						if (m.Type == Dml.Model.Back.BackType.Regions || m.Type == Dml.Model.Back.BackType.HogRegions)
+						{
+							m.BackCountRegionsText = string.Empty;
+							foreach (int regNum in generatedWork.Regions)
+							{
+								m.BackCountRegionsText += regNum.ToString() + ",";
+							}
+						}
+
+						backs.Add(m);
+					}
+				}
+				documentMakerModel.ExportDcmk(Path.Combine(savingPath, documentMakerModel.SelectedHuman + DcmkFile.Extension), backs);
+
+				await AddPogress(dialogContext, progressPart);
+			}
+			await DisconnectDbAsync();
+		}
+
+		private string GetEpisodeNumber(Back back)
+		{
+			while(back != null)
+			{
+				if (db.BackTypes.FirstOrDefault(x => x.Id == back.BackTypeId).Name == ProjectNodeType.Episode.ToString())
+					return back.Number.ToString();
+				else if (back.BaseBackId == null)
+					break;
+
+				back = db.Backs.FirstOrDefault(x => x.Id == back.BaseBackId);
+			}
+
+			return null;
+		}
+
+		private Dml.Model.Back.BackType GetDmlBackType(GeneratedWork generatedWork)
+		{
+			ProjectNodeType projectNodeType = (ProjectNodeType)Enum.Parse(typeof(ProjectNodeType), generatedWork.Back.BackType.Name);
+			switch(projectNodeType)
+			{
+				case ProjectNodeType.Craft: return Dml.Model.Back.BackType.Craft;
+				case ProjectNodeType.Dialog: return Dml.Model.Back.BackType.Dialog;
+				case ProjectNodeType.Minigame: return Dml.Model.Back.BackType.Mg;
+			}
+
+			bool isRegions = generatedWork.Regions != null && generatedWork.Regions.Count > 0;
+			if (projectNodeType == ProjectNodeType.Back)
+			{
+				return isRegions ? Dml.Model.Back.BackType.Regions : Dml.Model.Back.BackType.Back;
+			}
+			else
+			{
+				return isRegions ? Dml.Model.Back.BackType.HogRegions : Dml.Model.Back.BackType.Hog;
 			}
 		}
 
