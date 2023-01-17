@@ -142,17 +142,17 @@ namespace ActGenerator.Model
 		private async Task LoadProject(Project project, GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
 			double startProgress = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue);
-			double progressPart = totalProgressPart / db.Backs.Count(x => x.ProjectId == project.Id);
+			double progressPart = totalProgressPart / db.Backs.Count(x => x.DeletionDate == null && x.ProjectId == project.Id);
 
 			project.Backs = new List<Back>();
-			foreach (Back back in db.Backs.Where(x => x.ProjectId == project.Id).ToList())
+			foreach (Back back in db.Backs.Where(x => x.DeletionDate == null && x.ProjectId == project.Id).ToList())
 			{
 				if (IsBreakGeneration(dialogContext)) return;
 
 				project.Backs.Add(back);
 				loadedBacks.Add(back);
 				back.BackType = loadedBackTypes.First(y => y.Id == back.BackTypeId);
-				back.Regions = db.CountRegions.Where(y => y.BackId == back.Id).ToList();
+				back.Regions = db.CountRegions.Where(y => y.DeletionDate == null && y.BackId == back.Id).ToList();
 
 				await AddPogress(dialogContext, progressPart);
 			}
