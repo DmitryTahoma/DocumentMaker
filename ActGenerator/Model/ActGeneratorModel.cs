@@ -34,6 +34,8 @@ namespace ActGenerator.Model
 		string savingPath = null;
 		bool isCollapseRegionsWorks = default;
 
+		bool needGenarateWorks = true;
+
 		List<BackType> loadedBackTypes = new List<BackType>();
 		List<Back> loadedBacks = new List<Back>();
 
@@ -54,17 +56,97 @@ namespace ActGenerator.Model
 
 		public void SetProjects(List<IDbObject> projects)
 		{
+			if(!needGenarateWorks)
+			{
+				if(this.projects == null || this.projects.Count != projects.Count)
+				{
+					needGenarateWorks = true;
+				}
+				else
+				{
+					IEnumerator<IDbObject> thisProjectsEnum = this.projects.GetEnumerator();
+					IEnumerator<IDbObject> projectsEnum = projects.GetEnumerator();
+
+					while(thisProjectsEnum.MoveNext() && projectsEnum.MoveNext())
+					{
+						if (thisProjectsEnum.Current.Id != projectsEnum.Current.Id || thisProjectsEnum.Current.GetType() != projectsEnum.Current.GetType())
+						{
+							needGenarateWorks = true;
+							break;
+						}
+					}
+				}
+			}
+
 			this.projects = projects;
 		}
 		
 		public void SetHumen(IEnumerable<HumanListItemControlModel> humen)
 		{
+			if(!needGenarateWorks)
+			{
+				if(this.humen == null || this.humen.Count() != humen.Count())
+				{
+					needGenarateWorks = true;
+				}
+				else
+				{
+					IEnumerator<HumanListItemControlModel> thisHumenEnum = this.humen.GetEnumerator();
+					IEnumerator<HumanListItemControlModel> humenEnum = humen.GetEnumerator();
+
+					while(!needGenarateWorks && thisHumenEnum.MoveNext() && humenEnum.MoveNext())
+					{
+						if(!thisHumenEnum.Current.HumanData.Equals(humenEnum.Current.HumanData) || thisHumenEnum.Current.SelectedTemplates.Count != humenEnum.Current.SelectedTemplates.Count)
+						{
+							needGenarateWorks = true;
+							break;
+						}
+						else
+						{
+							IEnumerator<FullDocumentTemplate> thisTemplatesEnum = thisHumenEnum.Current.SelectedTemplates.GetEnumerator();
+							IEnumerator<FullDocumentTemplate> templatesEnum = humenEnum.Current.SelectedTemplates.GetEnumerator();
+
+							while(thisTemplatesEnum.MoveNext() && templatesEnum.MoveNext())
+							{
+								if(thisTemplatesEnum.Current.Type != templatesEnum.Current.Type)
+								{
+									needGenarateWorks = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+
 			this.humen = humen;
 			documentTemplates = humen.SelectMany(x => x.SelectedTemplates).Distinct().ToList();
 		}
 
 		public void SetDocumentList(List<DcmkFile> dcmkFiles)
 		{
+			if (!needGenarateWorks)
+			{
+				if(this.dcmkFiles == null || this.dcmkFiles.Count != dcmkFiles.Count)
+				{
+					needGenarateWorks = true;
+				}
+				else
+				{
+					IEnumerator<DcmkFile> thisDcmkFilesEnum = this.dcmkFiles.GetEnumerator();
+					IEnumerator<DcmkFile> dcmkFilesEnum = dcmkFiles.GetEnumerator();
+
+					while(thisDcmkFilesEnum.MoveNext() && dcmkFilesEnum.MoveNext())
+					{
+						if(thisDcmkFilesEnum.Current.FullName != dcmkFilesEnum.Current.FullName)
+						{
+							needGenarateWorks = true;
+							break;
+						}
+					}
+				}
+			}
+
 			this.dcmkFiles = dcmkFiles;
 		}
 
@@ -81,6 +163,10 @@ namespace ActGenerator.Model
 
 		public void SetIsCollapseRegionsWorks(bool isCollapseRegionsWorks)
 		{
+			if(!needGenarateWorks && this.isCollapseRegionsWorks != isCollapseRegionsWorks)
+			{
+				needGenarateWorks = true;
+			}
 			this.isCollapseRegionsWorks = isCollapseRegionsWorks;
 		}
 
@@ -102,6 +188,7 @@ namespace ActGenerator.Model
 				}
 
 				await SetProcessDescription(dialogContext, "Згенеровано!");
+				needGenarateWorks = false;
 			}
 			catch (Exception e)
 			{
@@ -116,6 +203,8 @@ namespace ActGenerator.Model
 
 		private async Task LoadingProjects(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
+			if (await IsSkipGenerating(dialogContext, totalProgressPart)) return;
+
 			await ConnectDbAsync();
 
 			loadedBackTypes.Clear();
@@ -200,6 +289,8 @@ namespace ActGenerator.Model
 
 		private async Task GeneratingAllWorks(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
+			if (await IsSkipGenerating(dialogContext, totalProgressPart)) return;
+
 			generatedWorkLists = new List<GeneratedWorkList>();
 			double progressPart = totalProgressPart
 				/ projects.SelectMany(x => x is Project project ? project.Backs : ((AlternativeProjectName)x).Project.Backs).Count()
@@ -270,6 +361,8 @@ namespace ActGenerator.Model
 
 		private async Task RemovingUsedWorks(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
+			if (await IsSkipGenerating(dialogContext, totalProgressPart)) return;
+
 			await SetProcessDescription(dialogContext, "Видалення використаних робіт");
 			double startProgress = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue);
 			double progressPart = totalProgressPart
@@ -350,6 +443,8 @@ namespace ActGenerator.Model
 
 		private async Task GeneratingAllRegionsWork(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
+			if (await IsSkipGenerating(dialogContext, totalProgressPart)) return;
+
 			await SetProcessDescription(dialogContext, "Розгортання регіонів");
 			double progressPart = totalProgressPart / 2 / generatedWorkLists.SelectMany(x => x.GeneratedWorks.SelectMany(y => y.Value)).Count();
 
@@ -695,6 +790,15 @@ namespace ActGenerator.Model
 		private bool IsBreakGeneration(GenerationDialogViewModel dialogContext)
 		{
 			return dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing);
+		}
+
+		private async Task<bool> IsSkipGenerating(GenerationDialogViewModel dialogContext, double totalProgressPart)
+		{
+			if (!needGenarateWorks)
+			{
+				await AddPogress(dialogContext, totalProgressPart);
+			}
+			return !needGenarateWorks;
 		}
 	}
 }
