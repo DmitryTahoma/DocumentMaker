@@ -84,44 +84,30 @@ namespace ActGenerator.Model
 		
 		public void SetHumen(IEnumerable<HumanListItemControlModel> humen)
 		{
+			this.humen = humen;
+			List<FullDocumentTemplate> newDocumentTemplates = humen.SelectMany(x => x.SelectedTemplates).Distinct().ToList();
 			if(!needGenarateWorks)
 			{
-				if(this.humen == null || this.humen.Count() != humen.Count())
+				if(documentTemplates == null || documentTemplates.Count != newDocumentTemplates.Count)
 				{
 					needGenarateWorks = true;
 				}
 				else
 				{
-					IEnumerator<HumanListItemControlModel> thisHumenEnum = this.humen.GetEnumerator();
-					IEnumerator<HumanListItemControlModel> humenEnum = humen.GetEnumerator();
+					IEnumerator<FullDocumentTemplate> newTemplatesEnum = newDocumentTemplates.GetEnumerator();
+					IEnumerator<FullDocumentTemplate> templatesEnum = documentTemplates.GetEnumerator();
 
-					while(!needGenarateWorks && thisHumenEnum.MoveNext() && humenEnum.MoveNext())
+					while(newTemplatesEnum.MoveNext() && templatesEnum.MoveNext())
 					{
-						if(!thisHumenEnum.Current.HumanData.Equals(humenEnum.Current.HumanData) || thisHumenEnum.Current.SelectedTemplates.Count != humenEnum.Current.SelectedTemplates.Count)
+						if(newTemplatesEnum.Current.Type != templatesEnum.Current.Type)
 						{
 							needGenarateWorks = true;
 							break;
 						}
-						else
-						{
-							IEnumerator<FullDocumentTemplate> thisTemplatesEnum = thisHumenEnum.Current.SelectedTemplates.GetEnumerator();
-							IEnumerator<FullDocumentTemplate> templatesEnum = humenEnum.Current.SelectedTemplates.GetEnumerator();
-
-							while(thisTemplatesEnum.MoveNext() && templatesEnum.MoveNext())
-							{
-								if(thisTemplatesEnum.Current.Type != templatesEnum.Current.Type)
-								{
-									needGenarateWorks = true;
-									break;
-								}
-							}
-						}
 					}
 				}
 			}
-
-			this.humen = humen;
-			documentTemplates = humen.SelectMany(x => x.SelectedTemplates).Distinct().ToList();
+			documentTemplates = newDocumentTemplates;
 		}
 
 		public void SetDocumentList(List<DcmkFile> dcmkFiles)
