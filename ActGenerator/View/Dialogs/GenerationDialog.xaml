@@ -20,50 +20,67 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters:BooleanToVisibilityConverter
+                x:Key="InverseBooleanToVisibilityConverter"
+                FalseValue="Visible"
+                TrueValue="Collapsed" />
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <StackPanel Orientation="Vertical">
+    <Grid>
+        <StackPanel Orientation="Vertical" Visibility="{Binding GenerationStarted, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
 
-        <TextBlock Style="{StaticResource GenerationDialogTextBlock}" Text="Шлях для збереження" />
+            <TextBlock Style="{StaticResource GenerationDialogTextBlock}" Text="Шлях для збереження" />
 
-        <TextBlock
-            Style="{StaticResource GenerationDialogPathTextBlock}"
-            Text="{Binding SelectedFolderPath, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-            Visibility="{Binding FolderSelected, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-        <Button
-            Command="{Binding SelectFolder}"
-            Content="Обрати"
-            Style="{StaticResource GenerationDialogButton}" />
-
-        <Grid Margin="10" />
-
-        <TextBlock Style="{StaticResource GenerationDialogTextBlock}" Text="{Binding LabelText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-
-        <ProgressBar
-            Maximum="{Binding ProgressMaximum, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-            Style="{StaticResource GenerationDialogProgressBar}"
-            Value="{Binding ProgressValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+            <TextBlock
+                Style="{StaticResource GenerationDialogPathTextBlock}"
+                Text="{Binding SelectedFolderPath, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                Visibility="{Binding FolderSelected, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
             <Button
-                Command="{Binding GenerateActs}"
-                Content="Згенерувати акти"
+                Command="{Binding SelectFolder}"
+                Content="Обрати"
                 Style="{StaticResource GenerationDialogButton}" />
-            <Button
-                Grid.Column="1"
-                Command="{Binding Cancel}"
-                Content="Скасувати"
-                Style="{StaticResource GenerationDialogButton}" />
-        </Grid>
 
-    </StackPanel>
+            <Grid Margin="10" />
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Button
+                    Command="{Binding GenerateActs}"
+                    Content="Згенерувати акти"
+                    Style="{StaticResource GenerationDialogButton}" />
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding Cancel}"
+                    Content="Скасувати"
+                    Style="{StaticResource GenerationDialogButton}" />
+            </Grid>
+
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Visibility="{Binding GenerationStarted, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+            <TextBlock Style="{StaticResource GenerationDialogTextBlock}" Text="{Binding LabelText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <ProgressBar
+                Maximum="{Binding ProgressMaximum, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource GenerationDialogProgressBar}"
+                Value="{Binding ProgressValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Button Command="{Binding Cancel}" Style="{StaticResource GenerationDialogButton}">
+                <Grid>
+                    <TextBlock Text="Закрити" Visibility="{Binding GenerationSuccessed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <TextBlock Text="Скасувати" Visibility="{Binding GenerationSuccessed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                </Grid>
+            </Button>
+
+        </StackPanel>
+    </Grid>
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">

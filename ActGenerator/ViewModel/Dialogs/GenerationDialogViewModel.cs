@@ -64,6 +64,13 @@ namespace ActGenerator.ViewModel.Dialogs
 
 		public bool IsClosing { get; private set; }
 
+		public bool GenerationSuccessed
+		{
+			get { return (bool)GetValue(GenerationSuccessedProperty); }
+			set { SetValue(GenerationSuccessedProperty, value); }
+		}
+		public static readonly DependencyProperty GenerationSuccessedProperty = DependencyProperty.Register(nameof(GenerationSuccessed), typeof(bool), typeof(GenerationDialogViewModel));
+
 		#endregion
 
 		#region Commands
@@ -85,6 +92,7 @@ namespace ActGenerator.ViewModel.Dialogs
 			ProgressMaximum = 1000;
 			SelectedFolderPath = string.Empty;
 			FolderSelected = false;
+			GenerationSuccessed = false;
 		}
 
 		public Command SelectFolder { get; private set; }

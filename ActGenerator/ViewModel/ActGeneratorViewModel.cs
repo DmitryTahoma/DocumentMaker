@@ -226,6 +226,8 @@ namespace ActGenerator.ViewModel
 
 					await model.StartGeneration(generationDialogViewModel);
 				}
+
+				generationDialogViewModel.Dispatcher.Invoke(() => { if (!generationDialogViewModel.IsClosing) generationDialogViewModel.GenerationSuccessed = true; });
 			});
 			await dialogTask;
 			CloseOnClickAwayDialogHost = true;
