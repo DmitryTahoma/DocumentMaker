@@ -72,12 +72,28 @@
                 Style="{StaticResource GenerationDialogProgressBar}"
                 Value="{Binding ProgressValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <Button Command="{Binding Cancel}" Style="{StaticResource GenerationDialogButton}">
-                <Grid>
-                    <TextBlock Text="Закрити" Visibility="{Binding GenerationSuccessed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                    <TextBlock Text="Скасувати" Visibility="{Binding GenerationSuccessed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
-                </Grid>
-            </Button>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Button
+                    Command="{Binding AddToActList}"
+                    Content="Додати до списку актів"
+                    IsEnabled="{Binding CanAddGeneratedActs, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource GenerationDialogButton}" />
+
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding Cancel}"
+                    Style="{StaticResource GenerationDialogButton}">
+                    <Grid>
+                        <TextBlock Text="Закрити" Visibility="{Binding GenerationSuccessed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <TextBlock Text="Скасувати" Visibility="{Binding GenerationSuccessed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                    </Grid>
+                </Button>
+            </Grid>
 
         </StackPanel>
     </Grid>

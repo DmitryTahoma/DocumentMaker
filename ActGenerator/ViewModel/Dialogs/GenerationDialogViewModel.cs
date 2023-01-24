@@ -71,6 +71,13 @@ namespace ActGenerator.ViewModel.Dialogs
 		}
 		public static readonly DependencyProperty GenerationSuccessedProperty = DependencyProperty.Register(nameof(GenerationSuccessed), typeof(bool), typeof(GenerationDialogViewModel));
 
+		public bool CanAddGeneratedActs
+		{
+			get { return (bool)GetValue(CanAddGeneratedActsProperty); }
+			set { SetValue(CanAddGeneratedActsProperty, value); }
+		}
+		public static readonly DependencyProperty CanAddGeneratedActsProperty = DependencyProperty.Register(nameof(CanAddGeneratedActs), typeof(bool), typeof(GenerationDialogViewModel));
+
 		#endregion
 
 		#region Commands
@@ -82,6 +89,7 @@ namespace ActGenerator.ViewModel.Dialogs
 			GenerateActs = new Command(OnGenerateActsExecute, CanExecuteGenerateActs);
 			Cancel = new Command(OnCancelExecute, CanExecuteCancel);
 			DialogUnloaded = new Command(OnDialogUnloadedExecute);
+			AddToActList = new Command(OnAddToActListExecute);
 		}
 
 		public Command DialogLoaded { get; private set; }
@@ -93,6 +101,7 @@ namespace ActGenerator.ViewModel.Dialogs
 			SelectedFolderPath = string.Empty;
 			FolderSelected = false;
 			GenerationSuccessed = false;
+			CanAddGeneratedActs = false;
 		}
 
 		public Command SelectFolder { get; private set; }
@@ -116,6 +125,7 @@ namespace ActGenerator.ViewModel.Dialogs
 		{
 			DialogHost.Close(DialogHostId);
 			IsClosing = true;
+			CanAddGeneratedActs = false;
 		}
 
 		public Command DialogUnloaded { get; private set; }
@@ -123,6 +133,14 @@ namespace ActGenerator.ViewModel.Dialogs
 		{
 			GenerationStarted = false;
 			IsClosing = false;
+		}
+
+		public Command AddToActListCommand { get; set; }
+		public Command AddToActList { get; private set; }
+		private void OnAddToActListExecute()
+		{
+			CanAddGeneratedActs = false;
+			AddToActListCommand?.Execute();
 		}
 
 		#endregion

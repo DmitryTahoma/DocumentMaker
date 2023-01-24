@@ -37,6 +37,7 @@ namespace ActGenerator.ViewModel
 		public ActGeneratorViewModel()
 		{
 			generationDialogViewModel = (GenerationDialogViewModel)generationDialog.DataContext;
+			generationDialogViewModel.AddToActListCommand = new Command(AddGeneratedActsToList);
 
 			InitCommands();
 
@@ -227,7 +228,13 @@ namespace ActGenerator.ViewModel
 					await model.StartGeneration(generationDialogViewModel);
 				}
 
-				generationDialogViewModel.Dispatcher.Invoke(() => { if (!generationDialogViewModel.IsClosing) generationDialogViewModel.GenerationSuccessed = true; });
+				generationDialogViewModel.Dispatcher.Invoke(() =>
+				{
+					if (!generationDialogViewModel.IsClosing)
+						generationDialogViewModel.GenerationSuccessed = true;
+
+					generationDialogViewModel.CanAddGeneratedActs = model.GetGeneratedActNames().Count >= 0;
+				});
 			});
 			await dialogTask;
 			CloseOnClickAwayDialogHost = true;
@@ -315,6 +322,15 @@ namespace ActGenerator.ViewModel
 			snackbarTextBlock.Text = message;
 			snackbar.Width = snackbarTextBlock.Text.Length * 8;
 			snackbar.MessageQueue.Enqueue(snackbarTextBlock, null, null, null, false, true, TimeSpan.FromSeconds(durationSeconds));
+		}
+
+		private async void AddGeneratedActsToList()
+		{
+			foreach(string path in model.GetGeneratedActNames())
+			{
+				documentListControlViewModel.LoadAct(path);
+				await Task.Delay(1);
+			}
 		}
 
 		#endregion

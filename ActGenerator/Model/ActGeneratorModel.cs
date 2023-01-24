@@ -43,6 +43,7 @@ namespace ActGenerator.Model
 
 		List<GeneratedWorkList> generatedWorkLists = null;
 		Dictionary<HumanListItemControlModel, List<GeneratedWorkList>> acts = null;
+		List<string> generatedActNames = null;
 
 		public ActGeneratorModel()
 		{
@@ -664,6 +665,7 @@ namespace ActGenerator.Model
 		{
 			double progressPart = totalProgressPart / acts.Count;
 
+			generatedActNames = new List<string>();
 			foreach (KeyValuePair<HumanListItemControlModel, List<GeneratedWorkList>> act in acts)
 			{
 				await SetProcessDescription(dialogContext, "Збереження акту \"" + act.Key.HumanData.Name + '"');
@@ -717,7 +719,9 @@ namespace ActGenerator.Model
 						backs.Add(m);
 					}
 				}
-				documentMakerModel.ExportDcmk(Path.Combine(savingPath, documentMakerModel.SelectedHuman + DcmkFile.Extension), backs);
+				string path = Path.Combine(savingPath, documentMakerModel.SelectedHuman + DcmkFile.Extension);
+				documentMakerModel.ExportDcmk(path, backs);
+				generatedActNames.Add(path);
 
 				await AddPogress(dialogContext, progressPart);
 			}
@@ -799,6 +803,11 @@ namespace ActGenerator.Model
 				await AddPogress(dialogContext, totalProgressPart);
 			}
 			return !needGenarateWorks;
+		}
+
+		public List<string> GetGeneratedActNames()
+		{
+			return generatedActNames;
 		}
 	}
 }

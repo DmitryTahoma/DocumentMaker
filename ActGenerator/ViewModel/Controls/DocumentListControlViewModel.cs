@@ -46,21 +46,7 @@ namespace ActGenerator.ViewModel.Controls
 			{
 				foreach(string filename in openFileDialog.FileNames)
 				{
-					if(itemsCollection.Cast<DocumentListItemControl>().FirstOrDefault(x => x.FullName == filename) == null)
-					{
-						DocumentListItemControl documentListItemControl = new DocumentListItemControl
-						{
-							FullName = filename,
-							FileName = Path.GetFileName(filename),
-						};
-						documentListItemControl.RemoveCommand = new Command(() => RemoveAct.Execute(documentListItemControl));
-
-						DcmkFile context = new DcmkFile(filename);
-						context.Load();
-						documentListItemControl.DataContext = context;
-
-						itemsCollection.Add(documentListItemControl);
-					}
+					LoadAct(filename);
 					await Task.Delay(1);
 				}
 			}
@@ -82,6 +68,25 @@ namespace ActGenerator.ViewModel.Controls
 				.Cast<DocumentListItemControl>()
 				.Select(x => (DcmkFile)x.DataContext)
 				.ToList();
+		}
+
+		public void LoadAct(string path)
+		{
+			if (itemsCollection.Cast<DocumentListItemControl>().FirstOrDefault(x => x.FullName == path) == null)
+			{
+				DocumentListItemControl documentListItemControl = new DocumentListItemControl
+				{
+					FullName = path,
+					FileName = Path.GetFileName(path),
+				};
+				documentListItemControl.RemoveCommand = new Command(() => RemoveAct.Execute(documentListItemControl));
+
+				DcmkFile context = new DcmkFile(path);
+				context.Load();
+				documentListItemControl.DataContext = context;
+
+				itemsCollection.Add(documentListItemControl);
+			}
 		}
 
 		#endregion
