@@ -44,7 +44,7 @@ namespace ActGenerator.ViewModel.Dialogs
 			get { return (string)GetValue(SelectedFolderPathProperty); }
 			set { SetValue(SelectedFolderPathProperty, value); }
 		}
-		public static readonly DependencyProperty SelectedFolderPathProperty = DependencyProperty.Register(nameof(SelectedFolderPath), typeof(string), typeof(GenerationDialogViewModel));
+		public static readonly DependencyProperty SelectedFolderPathProperty = DependencyProperty.Register(nameof(SelectedFolderPath), typeof(string), typeof(GenerationDialogViewModel), new PropertyMetadata(string.Empty), CommandHelper.UpdateAllCanExecute);
 
 		public bool FolderSelected
 		{
