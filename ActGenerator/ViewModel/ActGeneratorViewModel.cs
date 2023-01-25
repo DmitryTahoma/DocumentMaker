@@ -34,6 +34,8 @@ namespace ActGenerator.ViewModel
 		HumenListControlViewModel humenListControlViewModel = null;
 		DocumentListControlViewModel documentListControlViewModel = null;
 
+		DateTimeItem savedSelectedDateTimeItem = null;
+
 		public ActGeneratorViewModel()
 		{
 			generationDialogViewModel = (GenerationDialogViewModel)generationDialog.DataContext;
@@ -269,6 +271,9 @@ namespace ActGenerator.ViewModel
 			if(this.documentListControlViewModel == null)
 			{
 				this.documentListControlViewModel = documentListControlViewModel;
+
+				documentListControlViewModel.SelectedDateTimeItem = documentListControlViewModel.DateTimeItems?.FirstOrDefault(x => x.DateTime == savedSelectedDateTimeItem?.DateTime)
+					?? documentListControlViewModel.DateTimeItems?.FirstOrDefault();
 			}
 		}
 
@@ -292,8 +297,7 @@ namespace ActGenerator.ViewModel
 			MinActDate = actGeneratorSession.MinActDate;
 			MaxActDate = actGeneratorSession.MaxActDate;
 			CollapseRegionsWorks = actGeneratorSession.CollapseRegionsWorks;
-			//SelectedDateTimeItem = DateTimeItems?.FirstOrDefault(x => x.DateTime == actGeneratorSession.SelectedDateTimeItem?.DateTime)
-			//	?? DateTimeItems?.FirstOrDefault();
+			savedSelectedDateTimeItem = actGeneratorSession.SelectedDateTimeItem;
 		}
 
 		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
@@ -320,6 +324,11 @@ namespace ActGenerator.ViewModel
 				documentListControlViewModel.LoadAct(path);
 				await Task.Delay(1);
 			}
+		}
+
+		public DateTimeItem GetSelectedDateTimeItem()
+		{
+			return documentListControlViewModel.SelectedDateTimeItem;
 		}
 
 		#endregion
