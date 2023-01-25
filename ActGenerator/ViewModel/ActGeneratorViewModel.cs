@@ -57,15 +57,6 @@ namespace ActGenerator.ViewModel
 		}
 		public static readonly DependencyProperty CloseOnClickAwayDialogHostProperty = DependencyProperty.Register(nameof(CloseOnClickAwayDialogHost), typeof(bool), typeof(ActGeneratorViewModel));
 
-		public ObservableRangeCollection<DateTimeItem> DateTimeItems { get; private set; } = new ObservableRangeCollection<DateTimeItem>()
-		{
-			new DateTimeItem{ Text = "тиждень", DateTime = new DateTime(1, 1, 8) },
-			new DateTimeItem{ Text = "місяць", DateTime = new DateTime(1, 2, 1) },
-			new DateTimeItem{ Text = "3 місяці", DateTime = new DateTime(1, 4, 1) },
-			new DateTimeItem{ Text = "пів року", DateTime = new DateTime(1, 7, 1) },
-			new DateTimeItem{ Text = "рік", DateTime = new DateTime(2, 1, 1) },
-		};
-
 		public string MinSumText
 		{
 			get { return (string)GetValue(MinSumTextProperty); }
@@ -79,20 +70,6 @@ namespace ActGenerator.ViewModel
 			set { SetValue(MaxSumTextProperty, value); }
 		}
 		public static readonly DependencyProperty MaxSumTextProperty = DependencyProperty.Register(nameof(MaxSumText), typeof(string), typeof(ActGeneratorViewModel));
-
-		public bool NotUseOldWorks
-		{
-			get { return (bool)GetValue(NotUseOldWorksProperty); }
-			set { SetValue(NotUseOldWorksProperty, value); }
-		}
-		public static readonly DependencyProperty NotUseOldWorksProperty = DependencyProperty.Register(nameof(NotUseOldWorks), typeof(bool), typeof(ActGeneratorViewModel));
-
-		public DateTimeItem SelectedDateTimeItem
-		{
-			get { return (DateTimeItem)GetValue(SelectedDateTimeItemProperty); }
-			set { SetValue(SelectedDateTimeItemProperty, value); }
-		}
-		public static readonly DependencyProperty SelectedDateTimeItemProperty = DependencyProperty.Register(nameof(SelectedDateTimeItem), typeof(DateTimeItem), typeof(ActGeneratorViewModel));
 
 		public ViewModelState State
 		{
@@ -314,10 +291,9 @@ namespace ActGenerator.ViewModel
 			MaxSumText = actGeneratorSession.MaxSumText;
 			MinActDate = actGeneratorSession.MinActDate;
 			MaxActDate = actGeneratorSession.MaxActDate;
-			NotUseOldWorks = actGeneratorSession.NotUseOldWorks;
 			CollapseRegionsWorks = actGeneratorSession.CollapseRegionsWorks;
-			SelectedDateTimeItem = DateTimeItems?.FirstOrDefault(x => x.DateTime == actGeneratorSession.SelectedDateTimeItem?.DateTime)
-				?? DateTimeItems?.FirstOrDefault();
+			//SelectedDateTimeItem = DateTimeItems?.FirstOrDefault(x => x.DateTime == actGeneratorSession.SelectedDateTimeItem?.DateTime)
+			//	?? DateTimeItems?.FirstOrDefault();
 		}
 
 		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)

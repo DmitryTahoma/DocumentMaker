@@ -24,7 +24,6 @@ namespace ActGenerator.Model
 		public string MaxSumText { get; set; } = "2500";
 		public DateTime? MinActDate { get; set; } = null;
 		public DateTime? MaxActDate { get; set; } = null;
-		public bool NotUseOldWorks { get; set; } = true;
 		public bool CollapseRegionsWorks { get; set; } = true;
 		public DateTimeItem SelectedDateTimeItem { get; set; } = null;
 		public CryptedConnectionString CryptedConnectionString { get; set; }
@@ -52,7 +51,6 @@ namespace ActGenerator.Model
 						MaxSumText = loadedObj.MaxSumText;
 						MinActDate = loadedObj.MinActDate;
 						MaxActDate = loadedObj.MaxActDate;
-						NotUseOldWorks = loadedObj.NotUseOldWorks;
 						CollapseRegionsWorks = loadedObj.CollapseRegionsWorks;
 						SelectedDateTimeItem = loadedObj.SelectedDateTimeItem;
 						CryptedConnectionString = loadedObj.CryptedConnectionString;
