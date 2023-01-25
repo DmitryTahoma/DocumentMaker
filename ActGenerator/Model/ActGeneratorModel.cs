@@ -55,6 +55,8 @@ namespace ActGenerator.Model
 			generatingParts.Add(SavingActs);
 		}
 
+		public bool WorksGenerated => !needGenarateWorks;
+
 		public void SetProjects(List<IDbObject> projects)
 		{
 			if(!needGenarateWorks)
@@ -552,7 +554,7 @@ namespace ActGenerator.Model
 			return countWorks;
 		}
 
-		private int GetMinCountWorks(int sum)
+		public int GetMinCountWorks(int sum)
 		{
 			return (int)Math.Ceiling((double)sum / maxSum);
 		}
@@ -657,7 +659,7 @@ namespace ActGenerator.Model
 			}
 		}
 
-		private int GetCountEnabledWorks(List<FullDocumentTemplate> documentTemplates)
+		public int GetCountEnabledWorks(List<FullDocumentTemplate> documentTemplates)
 		{
 			int res = 0;
 			documentTemplates

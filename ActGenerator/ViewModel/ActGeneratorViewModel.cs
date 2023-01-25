@@ -171,6 +171,10 @@ namespace ActGenerator.ViewModel
 		public Command<DependencyObject> GenerateActs { get; private set; }
 		private async void OnGenerateActsExecute(DependencyObject validateObj)
 		{
+			List<HumanListItemControlModel> humen = humenListControlViewModel.GetHumen().ToList();
+			int minSum = int.Parse(MinSumText), maxSum = int.Parse(MaxSumText);
+			model.SetSumLimits(minSum, maxSum);
+
 			if (ValidationHelper.GetFirstInvalid(validateObj, true) is UIElement invalid)
 			{
 				if (invalid is FrameworkElement frameworkElement) frameworkElement.BringIntoView();
@@ -187,14 +191,39 @@ namespace ActGenerator.ViewModel
 				await SendSnackbarMessage("Необрані працівники", 3);
 				return;
 			}
+			else if(model.WorksGenerated)
+			{
+				foreach(HumanListItemControlModel human in humen)
+				{
+					int countEnableWorks = model.GetCountEnabledWorks(human.SelectedTemplates);
+					int sum = (int)human.Sum;
+					int minCountWorks = model.GetMinCountWorks(sum);
+					if(countEnableWorks <= 0)
+					{
+						MessageBox.Show("На задану суму акту \"" + human.HumanData.Name + "\" недостатня кількість робіт.", "Змініть налаштування сум", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
+					}
+					else if (countEnableWorks < minCountWorks)
+					{
+						int targetWorkCost = sum / countEnableWorks + 100;
+						if(MessageBoxResult.No == MessageBox.Show("На задану суму акту \"" + human.HumanData.Name + "\" недостатня кількість робіт. Змінити макимум суми однієї роботи на " + targetWorkCost + " гривень?", "Змініть налаштування сум", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No))
+						{
+							return;
+						}
+						else
+						{
+							maxSum = targetWorkCost;
+							MaxSumText = maxSum.ToString();
+							model.SetSumLimits(minSum, maxSum);
+						}
+					}
+				}
+			}
 
 			CloseOnClickAwayDialogHost = false;
 			generationDialogViewModel.DialogHostId = DialogHostId;
 			Task dialogTask = DialogHost.Show(generationDialog, DialogHostId);
-			int minSum = int.Parse(MinSumText), maxSum = int.Parse(MaxSumText);
-			model.SetSumLimits(minSum, maxSum);
 			model.SetProjects(projectNamesListControlViewModel.SelectedDbProjects);
-			model.SetHumen(humenListControlViewModel.GetHumen().ToList());
+			model.SetHumen(humen);
 			model.SetDocumentList(documentListControlViewModel.GetDocumentList());
 			model.SetIsCollapseRegionsWorks(CollapseRegionsWorks);
 			_ = Task.Run(async() =>
@@ -216,7 +245,8 @@ namespace ActGenerator.ViewModel
 					if (!generationDialogViewModel.IsClosing)
 						generationDialogViewModel.GenerationSuccessed = true;
 
-					generationDialogViewModel.CanAddGeneratedActs = model.GetGeneratedActNames().Count >= 0;
+					List<string> names = model.GetGeneratedActNames();
+					generationDialogViewModel.CanAddGeneratedActs = names != null && names.Count >= 0;
 				});
 			});
 			await dialogTask;
