@@ -12,11 +12,6 @@
 
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Right">
-            <MenuItem Style="{StaticResource MaterialDesignBasedMenuItem}" ToolTip="Інформація">
-                <MenuItem.Header>
-                    <materialDesign:PackIcon Kind="InfoCircleOutline" Style="{StaticResource IconForMenuItem}" />
-                </MenuItem.Header>
-            </MenuItem>
             <MenuItem
                 Command="{Binding ElementName=CodeBehind, Path=RemoveCommand, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                 Style="{StaticResource MaterialDesignBasedMenuItem}"
