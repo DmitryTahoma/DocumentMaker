@@ -1,16 +1,20 @@
-﻿using ActGenerator.View.Controls;
+﻿using ActGenerator.Model;
+using ActGenerator.View.Controls;
+using Dml;
 using DocumentMakerModelLibrary.Files;
 using Mvvm.Commands;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 
 namespace ActGenerator.ViewModel.Controls
 {
-	public class DocumentListControlViewModel
+	public class DocumentListControlViewModel : DependencyObject
 	{
 		UIElementCollection itemsCollection = null;
 
@@ -20,6 +24,28 @@ namespace ActGenerator.ViewModel.Controls
 		{
 			InitCommands();
 		}
+
+		#region Properties
+
+		public ObservableRangeCollection<DateTimeItem> DateTimeItems { get; private set; } = new ObservableRangeCollection<DateTimeItem>()
+		{
+			new DateTimeItem{ Text = "———", DateTime = new DateTime(1, 1, 1) },
+			new DateTimeItem{ Text = "тиждня", DateTime = new DateTime(1, 1, 8) },
+			new DateTimeItem{ Text = "місяця", DateTime = new DateTime(1, 2, 1) },
+			new DateTimeItem{ Text = "3 місяців", DateTime = new DateTime(1, 4, 1) },
+			new DateTimeItem{ Text = "пів року", DateTime = new DateTime(1, 7, 1) },
+			new DateTimeItem{ Text = "року", DateTime = new DateTime(2, 1, 1) },
+			new DateTimeItem{ Text = "всього часу", DateTime = new DateTime(100, 1, 1) },
+		};
+
+		public DateTimeItem SelectedDateTimeItem
+		{
+			get { return (DateTimeItem)GetValue(SelectedDateTimeItemProperty); }
+			set { SetValue(SelectedDateTimeItemProperty, value); }
+		}
+		public static readonly DependencyProperty SelectedDateTimeItemProperty = DependencyProperty.Register(nameof(SelectedDateTimeItem), typeof(DateTimeItem), typeof(DocumentListControlViewModel));
+
+		#endregion
 
 		#region Commands
 

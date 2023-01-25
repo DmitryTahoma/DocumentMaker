@@ -16,16 +16,26 @@
         <vm:DocumentListControlViewModel />
     </UserControl.DataContext>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
+    <DockPanel LastChildFill="True">
+        <TextBlock
+            DockPanel.Dock="Top"
+            Style="{StaticResource LabelHeaderTextBlock}"
+            Text="Список актів" />
 
-        <TextBlock Style="{StaticResource LabelHeaderTextBlock}" Text="Список актів" />
+        <StackPanel
+            Margin="0,10,0,0"
+            DockPanel.Dock="Top"
+            Orientation="Horizontal">
+            <TextBlock Text="Ігнорувати акти створені впродовж" />
+            <ComboBox
+                DisplayMemberPath="Text"
+                ItemsSource="{Binding DateTimeItems, Mode=OneWay}"
+                SelectedIndex="0"
+                SelectedItem="{Binding SelectedDateTimeItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource DocumentListControlSelectDateLimitComboBox}" />
+        </StackPanel>
 
-        <Menu Grid.Row="1">
+        <Menu DockPanel.Dock="Top">
             <MenuItem Command="{Binding AddAct}" ToolTip="Додати">
                 <MenuItem.Header>
                     <materialDesign:PackIcon Kind="PlusCircleOutline" Style="{StaticResource IconForMenuItem}" />
@@ -33,10 +43,10 @@
             </MenuItem>
         </Menu>
 
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel x:Name="ItemsCollectionStackPanel" Orientation="Vertical" />
         </ScrollViewer>
-    </Grid>
+    </DockPanel>
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">

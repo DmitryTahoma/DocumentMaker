@@ -215,23 +215,6 @@
                     <materialDesign:Card Grid.Column="2" Style="{StaticResource TopLastCard}">
                         <StackPanel Orientation="Vertical">
 
-                            <CheckBox IsChecked="{Binding NotUseOldWorks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource PlacedCheckBox}">
-                                <StackPanel Orientation="Horizontal">
-
-                                    <TextBlock Text="не використовувати роботи, що вже були в актах" />
-
-                                    <ComboBox
-                                        DisplayMemberPath="Text"
-                                        ItemsSource="{Binding DateTimeItems, Mode=OneWay}"
-                                        SelectedIndex="0"
-                                        SelectedItem="{Binding SelectedDateTimeItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        Style="{StaticResource ComboBoxInCheckBox}" />
-
-                                    <TextBlock Text="тому або раніше" />
-
-                                </StackPanel>
-                            </CheckBox>
-
                             <CheckBox
                                 Content="об’єднувати регіони в одну роботу"
                                 IsChecked="{Binding CollapseRegionsWorks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
