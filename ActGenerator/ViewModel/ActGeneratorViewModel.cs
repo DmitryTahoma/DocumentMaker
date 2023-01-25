@@ -171,9 +171,6 @@ namespace ActGenerator.ViewModel
 		public Command<DependencyObject> GenerateActs { get; private set; }
 		private async void OnGenerateActsExecute(DependencyObject validateObj)
 		{
-			List<HumanListItemControlModel> humen;
-			int minSum, maxSum;
-
 			if (ValidationHelper.GetFirstInvalid(validateObj, true) is UIElement invalid)
 			{
 				if (invalid is FrameworkElement frameworkElement) frameworkElement.BringIntoView();
@@ -190,28 +187,14 @@ namespace ActGenerator.ViewModel
 				await SendSnackbarMessage("Необрані працівники", 3);
 				return;
 			}
-			else
-			{
-				humen = humenListControlViewModel.GetHumen().ToList();
-				minSum = int.Parse(MinSumText);
-				maxSum = int.Parse(MaxSumText);
-
-				model.SetSumLimits(minSum, maxSum);
-				foreach(HumanListItemControlModel human in humen)
-				{
-					if(!model.IsPosibleSum((int)human.Sum))
-					{
-						await SendSnackbarMessage("Неможливо згенерувати акт для працівника \"" + human.HumanData.Name + "\". Змініть налаштування сум або суму акту.", 7);
-						return;
-					}
-				}
-			}
 
 			CloseOnClickAwayDialogHost = false;
 			generationDialogViewModel.DialogHostId = DialogHostId;
 			Task dialogTask = DialogHost.Show(generationDialog, DialogHostId);
+			int minSum = int.Parse(MinSumText), maxSum = int.Parse(MaxSumText);
+			model.SetSumLimits(minSum, maxSum);
 			model.SetProjects(projectNamesListControlViewModel.SelectedDbProjects);
-			model.SetHumen(humen);
+			model.SetHumen(humenListControlViewModel.GetHumen().ToList());
 			model.SetDocumentList(documentListControlViewModel.GetDocumentList());
 			model.SetIsCollapseRegionsWorks(CollapseRegionsWorks);
 			_ = Task.Run(async() =>

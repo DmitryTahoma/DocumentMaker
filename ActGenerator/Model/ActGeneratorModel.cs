@@ -183,11 +183,6 @@ namespace ActGenerator.Model
 			}
 		}
 
-		public bool IsPosibleSum(int sum)
-		{
-			return sum >= minSum && Math.Ceiling((double)sum / maxSum) <= sum / minSum;
-		}
-
 		private async Task LoadingProjects(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
 			if (await IsSkipGenerating(dialogContext, totalProgressPart)) return;
@@ -503,9 +498,10 @@ namespace ActGenerator.Model
 					new KeyValuePair<HumanListItemControlModel, List<GeneratedWorkList>>(human, new List<GeneratedWorkList>());
 
 				int sum = (int)human.Sum;
-				int countWorks = GetRandomCountWorks(sum);
+				int countEnableWorks = GetCountEnabledWorks(human.SelectedTemplates);
+				int countWorks = GetRandomCountWorks(sum, countEnableWorks);
 
-				if (!TryGetActWithRandomWorks(dialogContext, countWorks, human.SelectedTemplates, act))
+				if (countWorks > countEnableWorks || !TryGetActWithRandomWorks(dialogContext, countWorks, human.SelectedTemplates, act))
 				{
 					if (IsBreakGeneration(dialogContext)) return;
 
@@ -542,17 +538,23 @@ namespace ActGenerator.Model
 			}
 		}
 
-		private int GetRandomCountWorks(int sum)
+		private int GetRandomCountWorks(int sum, int countEnableWorks)
 		{
-			int minCountWorks = (int)Math.Ceiling((double)sum / maxSum);
+			int minCountWorks = GetMinCountWorks(sum);
 			int maxCountWorks = (int)Math.Floor((double)sum / minSum);
+			if (maxCountWorks > countEnableWorks) maxCountWorks = countEnableWorks;
 
 			int countWorks = minCountWorks;
-			if (minCountWorks != maxCountWorks)
+			if (minCountWorks < maxCountWorks)
 			{
 				countWorks = random.Next(minCountWorks, maxCountWorks + 1);
 			}
 			return countWorks;
+		}
+
+		private int GetMinCountWorks(int sum)
+		{
+			return (int)Math.Ceiling((double)sum / maxSum);
 		}
 
 		private bool TryGetActWithRandomWorks(GenerationDialogViewModel dialogContext, int countWorks, IEnumerable<FullDocumentTemplate> enableTemplates, KeyValuePair<HumanListItemControlModel, List<GeneratedWorkList>> act)
@@ -562,7 +564,7 @@ namespace ActGenerator.Model
 			foreach (FullDocumentTemplate documentTemplate in enableTemplates)
 			{
 				if (IsBreakGeneration(dialogContext)) return false;
-
+				
 				Dictionary<GeneratedWorkList, List<GeneratedWork>> enableWorks = generatedWorkLists.ToDictionary(key => key, value => value.GeneratedWorks[documentTemplate]);
 				int countEnableWorks = enableWorks.SelectMany(x => x.Value).Count();
 
@@ -612,13 +614,21 @@ namespace ActGenerator.Model
 				sums.Add(randomSum);
 			}
 
+			int minSumLimit = minSum, maxSumLimit = maxSum;
+			int targetSum = totalSum / countWorks;
+			if (targetSum < minSum || targetSum > maxSum)
+			{
+				minSumLimit = 100;
+				maxSumLimit = int.MaxValue;
+			}
+
 			while (remainder != 0)
 			{
 				int direction = remainder > 0 ? 1 : -1;
 				for (int i = 0; i < countWorks && remainder != 0; ++i)
 				{
 					int nextSum = sums[i] + direction;
-					if (remainder > 0 ? nextSum <= maxSum : nextSum >= minSum)
+					if (remainder > 0 ? nextSum <= maxSumLimit : nextSum >= minSumLimit)
 					{
 						sums[i] += direction;
 						remainder -= direction;
@@ -645,6 +655,14 @@ namespace ActGenerator.Model
 					}
 				}
 			}
+		}
+
+		private int GetCountEnabledWorks(List<FullDocumentTemplate> documentTemplates)
+		{
+			int res = 0;
+			documentTemplates
+				.ForEach(documentTemplate => res += generatedWorkLists.SelectMany(x => x.GeneratedWorks[documentTemplate]).Count());
+			return res;
 		}
 
 		private async Task SavingActs(GenerationDialogViewModel dialogContext, double totalProgressPart)
