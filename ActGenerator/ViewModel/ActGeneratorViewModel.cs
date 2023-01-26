@@ -18,6 +18,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ActGenerator.ViewModel
 {
@@ -130,6 +131,7 @@ namespace ActGenerator.ViewModel
 			BindHumenListControl = new Command<HumenListControlViewModel>(OnBindHumenListControlExecute);
 			BindDocumentListControl = new Command<DocumentListControlViewModel>(OnBindDocumentListControlExecute);
 			BindSnackbar = new Command<Snackbar>(OnBindSnackbarExecute);
+			ClearKeyboardFocusOnEnter = new Command<KeyEventArgs>(OnClearKeyboardFocusOnEnterExecute);
 		}
 
 		public Command CloseOpenedDialog { get; private set; }
@@ -288,6 +290,15 @@ namespace ActGenerator.ViewModel
 			if(this.snackbar == null)
 			{
 				this.snackbar = snackbar;
+			}
+		}
+
+		public Command<KeyEventArgs> ClearKeyboardFocusOnEnter { get; private set; }
+		private void OnClearKeyboardFocusOnEnterExecute(KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter)
+			{
+				Keyboard.ClearFocus();
 			}
 		}
 

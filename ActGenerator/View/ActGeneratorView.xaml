@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:bindingExtensions="clr-namespace:Mvvm.BindingExtensions;assembly=Mvvm"
+    xmlns:cmd="clr-namespace:Mvvm.Commands;assembly=Mvvm"
     xmlns:controls="clr-namespace:ActGenerator.View.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
@@ -161,10 +162,12 @@
                                 materialDesign:HintAssist.Hint="Технічне завдання від:"
                                 SelectedDate="{Binding TechnicalTaskDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource FirstDatePicker}">
+
                                 <DatePicker.Resources>
                                     <bindingExtensions:BindingProxy x:Key="MinActDatePickerStringTargetProxy" Data="{Binding ElementName=MaxActDatePicker, Path=Text, Mode=TwoWay}" />
                                     <bindingExtensions:BindingProxy x:Key="MinActDatePickerStringSourceProxy" Data="{Binding ElementName=MaxActDatePicker, Path=Text}" />
                                 </DatePicker.Resources>
+
                                 <DatePicker.Text>
                                     <Binding
                                         Mode="TwoWay"
@@ -179,6 +182,13 @@
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </DatePicker.Text>
+
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="PreviewKeyDown">
+                                        <cmd:EventToCommand Command="{Binding ClearKeyboardFocusOnEnter}" PassEventArgsToCommand="True" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+
                             </DatePicker>
 
                             <DatePicker
@@ -189,10 +199,12 @@
                                 materialDesign:HintAssist.Hint="Акт від:"
                                 SelectedDate="{Binding ActDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource LastDatePicker}">
+
                                 <DatePicker.Resources>
                                     <bindingExtensions:BindingProxy x:Key="MaxActDatePickerStringTargetProxy" Data="{Binding ElementName=MinActDatePicker, Path=Text, Mode=TwoWay}" />
                                     <bindingExtensions:BindingProxy x:Key="MaxActDatePickerStringSourceProxy" Data="{Binding ElementName=MinActDatePicker, Path=Text}" />
                                 </DatePicker.Resources>
+
                                 <DatePicker.Text>
                                     <Binding
                                         Mode="TwoWay"
@@ -207,6 +219,13 @@
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </DatePicker.Text>
+
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="PreviewKeyDown">
+                                        <cmd:EventToCommand Command="{Binding ClearKeyboardFocusOnEnter}" PassEventArgsToCommand="True" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+
                             </DatePicker>
 
                         </Grid>
