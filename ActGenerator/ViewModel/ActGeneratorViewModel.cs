@@ -80,12 +80,12 @@ namespace ActGenerator.ViewModel
 		}
 		public static readonly DependencyProperty StateProperty = DependencyProperty.Register(nameof(State), typeof(ViewModelState), typeof(ActGeneratorViewModel), new PropertyMetadata(), CommandHelper.UpdateAllCanExecute);
 
-		public DateTime? MinActDate
+		public DateTime? TechnicalTaskDate
 		{
-			get { return (DateTime?)GetValue(MinActDateProperty); }
-			set { SetValue(MinActDateProperty, value); }
+			get { return (DateTime?)GetValue(TechnicalTaskDateProperty); }
+			set { SetValue(TechnicalTaskDateProperty, value); }
 		}
-		public static readonly DependencyProperty MinActDateProperty = DependencyProperty.Register(nameof(MinActDate), typeof(DateTime?), typeof(ActGeneratorViewModel));
+		public static readonly DependencyProperty TechnicalTaskDateProperty = DependencyProperty.Register(nameof(TechnicalTaskDate), typeof(DateTime?), typeof(ActGeneratorViewModel));
 
 		public string MinActDateString
 		{
@@ -94,12 +94,12 @@ namespace ActGenerator.ViewModel
 		}
 		public static readonly DependencyProperty MinActDateStringProperty = DependencyProperty.Register(nameof(MinActDateString), typeof(string), typeof(ActGeneratorViewModel));
 
-		public DateTime? MaxActDate
+		public DateTime? ActDate
 		{
-			get { return (DateTime?)GetValue(MaxActDateProperty); }
-			set { SetValue(MaxActDateProperty, value); }
+			get { return (DateTime?)GetValue(ActDateProperty); }
+			set { SetValue(ActDateProperty, value); }
 		}
-		public static readonly DependencyProperty MaxActDateProperty = DependencyProperty.Register(nameof(MaxActDate), typeof(DateTime?), typeof(ActGeneratorViewModel));
+		public static readonly DependencyProperty ActDateProperty = DependencyProperty.Register(nameof(ActDate), typeof(DateTime?), typeof(ActGeneratorViewModel));
 
 		public string MaxActDateString
 		{
@@ -299,8 +299,8 @@ namespace ActGenerator.ViewModel
 		{
 			MinSumText = actGeneratorSession.MinSumText;
 			MaxSumText = actGeneratorSession.MaxSumText;
-			MinActDate = actGeneratorSession.MinActDate;
-			MaxActDate = actGeneratorSession.MaxActDate;
+			TechnicalTaskDate = actGeneratorSession.TechnicalTaskDate;
+			ActDate = actGeneratorSession.ActDate;
 			CollapseRegionsWorks = actGeneratorSession.CollapseRegionsWorks;
 			savedSelectedDateTimeItem = actGeneratorSession.SelectedDateTimeItem;
 		}

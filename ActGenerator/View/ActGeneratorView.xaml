@@ -158,8 +158,8 @@
                                 x:Name="MinActDatePicker"
                                 Grid.Row="1"
                                 MinWidth="134"
-                                materialDesign:HintAssist.Hint="Мінімум"
-                                SelectedDate="{Binding MinActDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                materialDesign:HintAssist.Hint="Технічне завдання від:"
+                                SelectedDate="{Binding TechnicalTaskDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource FirstDatePicker}">
                                 <DatePicker.Resources>
                                     <bindingExtensions:BindingProxy x:Key="MinActDatePickerStringTargetProxy" Data="{Binding ElementName=MaxActDatePicker, Path=Text, Mode=TwoWay}" />
@@ -186,8 +186,8 @@
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 MinWidth="134"
-                                materialDesign:HintAssist.Hint="Максимум"
-                                SelectedDate="{Binding MaxActDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                materialDesign:HintAssist.Hint="Акт від:"
+                                SelectedDate="{Binding ActDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource LastDatePicker}">
                                 <DatePicker.Resources>
                                     <bindingExtensions:BindingProxy x:Key="MaxActDatePickerStringTargetProxy" Data="{Binding ElementName=MinActDatePicker, Path=Text, Mode=TwoWay}" />
