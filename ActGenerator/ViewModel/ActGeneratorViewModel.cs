@@ -150,9 +150,6 @@ namespace ActGenerator.ViewModel
 		public Command<DependencyObject> GenerateActs { get; private set; }
 		private async void OnGenerateActsExecute(DependencyObject validateObj)
 		{
-			List<HumanListItemControlModel> humen = humenListControlViewModel.GetHumen().ToList();
-			int minSum = int.Parse(MinSumText), maxSum = int.Parse(MaxSumText);
-			model.SetSumLimits(minSum, maxSum);
 
 			if (ValidationHelper.GetFirstInvalid(validateObj, true) is UIElement invalid)
 			{
@@ -170,7 +167,18 @@ namespace ActGenerator.ViewModel
 				await SendSnackbarMessage("Необрані працівники", 3);
 				return;
 			}
-			else if(model.WorksGenerated)
+
+			List<HumanListItemControlModel> humen = humenListControlViewModel.GetHumen().ToList();
+			int minSum = int.Parse(MinSumText), maxSum = int.Parse(MaxSumText);
+			model.SetSumLimits(minSum, maxSum);
+
+			model.SetProjects(projectNamesListControlViewModel.SelectedDbProjects);
+			model.SetHumen(humen);
+			model.SetIgnoringActDate(documentListControlViewModel.SelectedDateTimeItem.DateTime);
+			model.SetDocumentList(documentListControlViewModel.GetDocumentList());
+			model.SetIsCollapseRegionsWorks(CollapseRegionsWorks);
+
+			if (model.WorksGenerated)
 			{
 				foreach(HumanListItemControlModel human in humen)
 				{
@@ -202,11 +210,6 @@ namespace ActGenerator.ViewModel
 			CloseOnClickAwayDialogHost = false;
 			generationDialogViewModel.DialogHostId = DialogHostId;
 			Task dialogTask = DialogHost.Show(generationDialog, DialogHostId);
-			model.SetProjects(projectNamesListControlViewModel.SelectedDbProjects);
-			model.SetHumen(humen);
-			model.SetIgnoringActDate(documentListControlViewModel.SelectedDateTimeItem.DateTime);
-			model.SetDocumentList(documentListControlViewModel.GetDocumentList());
-			model.SetIsCollapseRegionsWorks(CollapseRegionsWorks);
 			_ = Task.Run(async() =>
 			{
 				while (!generationDialogViewModel.Dispatcher.Invoke(() => generationDialogViewModel.IsClosing) && !generationDialogViewModel.Dispatcher.Invoke(() => generationDialogViewModel.GenerationStarted))
