@@ -203,6 +203,7 @@ namespace ActGenerator.ViewModel
 			Task dialogTask = DialogHost.Show(generationDialog, DialogHostId);
 			model.SetProjects(projectNamesListControlViewModel.SelectedDbProjects);
 			model.SetHumen(humen);
+			model.SetIgnoringActDate(documentListControlViewModel.SelectedDateTimeItem.DateTime);
 			model.SetDocumentList(documentListControlViewModel.GetDocumentList());
 			model.SetIsCollapseRegionsWorks(CollapseRegionsWorks);
 			_ = Task.Run(async() =>

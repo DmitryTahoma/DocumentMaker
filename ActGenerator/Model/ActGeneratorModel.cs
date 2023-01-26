@@ -28,6 +28,8 @@ namespace ActGenerator.Model
 		// contain Project or AlternativeProjectName with reference to Project
 		List<IDbObject> projects = null;
 		IEnumerable<HumanListItemControlModel> humen = null;
+		DateTime ignoringActDate = new DateTime(1, 1, 1);
+		DateTime minActDateIgnoring = DateTime.Now;
 		List<DcmkFile> dcmkFiles = null;
 		int minSum = default;
 		int maxSum = default;
@@ -157,6 +159,19 @@ namespace ActGenerator.Model
 				needGenarateWorks = true;
 			}
 			this.isCollapseRegionsWorks = isCollapseRegionsWorks;
+		}
+
+		public void SetIgnoringActDate(DateTime ignoringActDate)
+		{
+			if(!needGenarateWorks && this.ignoringActDate != ignoringActDate)
+			{
+				needGenarateWorks = true;
+			}
+			this.ignoringActDate = ignoringActDate;
+			minActDateIgnoring = DateTime.Now
+				.AddDays(-(this.ignoringActDate.Day - 1))
+				.AddMonths(-(this.ignoringActDate.Month - 1))
+				.AddYears(-(this.ignoringActDate.Year - 1));
 		}
 
 		public async Task StartGeneration(GenerationDialogViewModel dialogContext)
@@ -355,7 +370,9 @@ namespace ActGenerator.Model
 
 			foreach(DcmkFile dcmkFile in dcmkFiles)
 			{
-				if (documentTemplates.FirstOrDefault(x => x.Type == dcmkFile.TemplateType) != null)
+				if (DateTime.TryParse(dcmkFile.ActDateText, out DateTime actDate)
+					&& actDate > minActDateIgnoring
+					&& documentTemplates.FirstOrDefault(x => x.Type == dcmkFile.TemplateType) != null)
 				{
 					foreach (FullBackDataModel back in dcmkFile.BackDataModels)
 					{
