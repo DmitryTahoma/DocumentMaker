@@ -150,7 +150,6 @@ namespace ActGenerator.ViewModel
 		public Command<DependencyObject> GenerateActs { get; private set; }
 		private async void OnGenerateActsExecute(DependencyObject validateObj)
 		{
-
 			if (ValidationHelper.GetFirstInvalid(validateObj, true) is UIElement invalid)
 			{
 				if (invalid is FrameworkElement frameworkElement) frameworkElement.BringIntoView();
@@ -177,6 +176,7 @@ namespace ActGenerator.ViewModel
 			model.SetIgnoringActDate(documentListControlViewModel.SelectedDateTimeItem.DateTime);
 			model.SetDocumentList(documentListControlViewModel.GetDocumentList());
 			model.SetIsCollapseRegionsWorks(CollapseRegionsWorks);
+			model.SetDates(TechnicalTaskDate.Value, ActDate.Value);
 
 			if (model.WorksGenerated)
 			{

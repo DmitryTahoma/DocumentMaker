@@ -22,6 +22,8 @@ namespace ActGenerator.Model
 	{
 		delegate Task GeneratingPart(GenerationDialogViewModel dialogContext, double totalProgressPart);
 
+		const string dateFormat = "dd.MM.yyyy";
+
 		List<GeneratingPart> generatingParts = new List<GeneratingPart>();
 		Random random = new Random();
 
@@ -35,6 +37,8 @@ namespace ActGenerator.Model
 		int maxSum = default;
 		string savingPath = null;
 		bool isCollapseRegionsWorks = default;
+		DateTime technicalTaskDate = DateTime.MinValue;
+		DateTime actDate = DateTime.MinValue;
 
 		bool needGenarateWorks = true;
 
@@ -172,6 +176,12 @@ namespace ActGenerator.Model
 				.AddDays(-(this.ignoringActDate.Day - 1))
 				.AddMonths(-(this.ignoringActDate.Month - 1))
 				.AddYears(-(this.ignoringActDate.Year - 1));
+		}
+
+		public void SetDates(DateTime technicalTaskDate, DateTime actDate)
+		{
+			this.technicalTaskDate = technicalTaskDate;
+			this.actDate = actDate;
 		}
 
 		public async Task StartGeneration(GenerationDialogViewModel dialogContext)
@@ -700,6 +710,8 @@ namespace ActGenerator.Model
 				documentMakerModel.SelectedHuman = act.Key.HumanData.Name;
 				documentMakerModel.ActSum = ((int)act.Key.Sum).ToString();
 				documentMakerModel.TemplateType = act.Value.First().GeneratedWorks.Keys.First().Type;
+				documentMakerModel.TechnicalTaskDateText = technicalTaskDate.ToString(dateFormat);
+				documentMakerModel.ActDateText = actDate.ToString(dateFormat);
 
 				List<FullBackDataModel> backs = new List<FullBackDataModel>();
 				foreach (GeneratedWorkList generatedWorkList in act.Value)
