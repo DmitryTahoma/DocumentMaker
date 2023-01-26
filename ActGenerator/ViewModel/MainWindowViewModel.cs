@@ -296,7 +296,7 @@ namespace ActGenerator.ViewModel
 			return actGeneratorViewModel != null
 				&& projectEditViewModel != null
 				&& projectRestoreViewModel != null
-				&& actGeneratorViewModel.State == ViewModelState.Loaded
+				&& actGeneratorViewModel.State == ViewModelState.Initialized
 				&& projectEditViewModel.State != ViewModelState.Initializing
 				&& projectEditViewModel.State != ViewModelState.Loading
 				&& !projectEditViewModel.IsLoadingBacks
