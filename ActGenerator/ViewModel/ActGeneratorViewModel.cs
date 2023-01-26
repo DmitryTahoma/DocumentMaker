@@ -180,6 +180,7 @@ namespace ActGenerator.ViewModel
 					if(countEnableWorks <= 0)
 					{
 						MessageBox.Show("На задану суму акту \"" + human.HumanData.Name + "\" недостатня кількість робіт.", "Змініть налаштування сум", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
+						return;
 					}
 					else if (countEnableWorks < minCountWorks)
 					{
