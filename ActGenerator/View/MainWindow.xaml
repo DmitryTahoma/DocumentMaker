@@ -14,6 +14,8 @@
     Title="Генератор актів"
     Width="900"
     Height="500"
+    MinWidth="1250"
+    MinHeight="400"
     FontSize="15"
     Left="-10000"
     Top="-10000"
