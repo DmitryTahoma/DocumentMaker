@@ -227,7 +227,7 @@ namespace ActGenerator.ViewModel
 						generationDialogViewModel.GenerationSuccessed = true;
 
 					List<string> names = model.GetGeneratedActNames();
-					generationDialogViewModel.CanAddGeneratedActs = names != null && names.Count >= 0;
+					generationDialogViewModel.CanAddGeneratedActs = names != null && names.Count > 0;
 				});
 			});
 			await dialogTask;
