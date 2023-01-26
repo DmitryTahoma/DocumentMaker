@@ -191,6 +191,7 @@ namespace ActGenerator.Model
 					}
 				}
 
+				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue = dialogContext.ProgressMaximum);
 				await SetProcessDescription(dialogContext, "Згенеровано!");
 				needGenarateWorks = false;
 			}
