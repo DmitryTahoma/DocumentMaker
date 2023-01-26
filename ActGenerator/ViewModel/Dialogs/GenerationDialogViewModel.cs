@@ -139,8 +139,10 @@ namespace ActGenerator.ViewModel.Dialogs
 		public Command AddToActList { get; private set; }
 		private void OnAddToActListExecute()
 		{
+			IsClosing = true;
 			CanAddGeneratedActs = false;
 			AddToActListCommand?.Execute();
+			DialogHost.Close(DialogHostId);
 		}
 
 		#endregion
