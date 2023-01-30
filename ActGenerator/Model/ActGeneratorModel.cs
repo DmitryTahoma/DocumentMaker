@@ -25,6 +25,7 @@ namespace ActGenerator.Model
 		const string dateFormat = "dd.MM.yyyy";
 
 		List<GeneratingPart> generatingParts = new List<GeneratingPart>();
+		ActGeneratorCache cache = new ActGeneratorCache();
 		Random random = new Random();
 
 		// contain Project or AlternativeProjectName with reference to Project
@@ -42,7 +43,6 @@ namespace ActGenerator.Model
 
 		bool needGenarateWorks = true;
 
-		List<BackType> loadedBackTypes = new List<BackType>();
 		List<Back> loadedBacks = new List<Back>();
 
 		List<FullDocumentTemplate> documentTemplates = null;
@@ -215,31 +215,66 @@ namespace ActGenerator.Model
 		{
 			if (await IsSkipGenerating(dialogContext, totalProgressPart)) return;
 
-			await ConnectDbAsync();
+			// list with projects loaded earlier
+			List<IDbObject> loadedProjects = new List<IDbObject>();
+			// list with not loaded projects
+			List<IDbObject> emptyProjects = new List<IDbObject>();
 
-			loadedBackTypes.Clear();
-			loadedBackTypes.AddRange(db.BackTypes.ToList());
-			loadedBacks.Clear();
-
-			double progressPart = totalProgressPart / projects.Count;
+			// determination of the loaded project or not
 			foreach (IDbObject dbObject in projects)
 			{
-				if (IsBreakGeneration(dialogContext)) break;
-				await SetProcessDescription(dialogContext, "Завантаження проєкту \"" + dbObject.ToString() + '"');
-
-				Project project = dbObject as Project ?? ((AlternativeProjectName)dbObject).Project;
-
-				Project prevLoadedProject = GetPrevProject(dbObject);
-				if (prevLoadedProject != null)
+				if (cache.TryGetProject(dbObject, out IDbObject project) || cache.TryDuplicateProject(dbObject, out project))
 				{
-					project.Backs = prevLoadedProject.Backs;
-					await AddPogress(dialogContext, progressPart);
+					loadedProjects.Add(project);
 				}
 				else
 				{
-					await LoadProject(project, dialogContext, progressPart);
+					emptyProjects.Add(dbObject);
 				}
 			}
+
+			if (IsBreakGeneration(dialogContext)) return;
+
+			if (emptyProjects.Count > 0)
+			{
+				await ConnectDbAsync();
+
+				if (cache.BackTypes == null)
+					cache.BackTypes = db.BackTypes.ToList();
+
+				double progressPart = totalProgressPart / emptyProjects.Count;
+				foreach (IDbObject dbObject in emptyProjects)
+				{
+					await SetProcessDescription(dialogContext, "Завантаження проєкту \"" + dbObject.ToString() + '"');
+
+					Project project = dbObject as Project ?? ((AlternativeProjectName)dbObject).Project;
+
+					Project prevLoadedProject = cache.GetProject(cachedProj => cachedProj.Id == project.Id);
+					if (prevLoadedProject != null)
+					{
+						project.Backs = prevLoadedProject.Backs;
+						await AddPogress(dialogContext, progressPart);
+					}
+					else
+					{
+						await LoadProject(project, dialogContext, progressPart);
+					}
+
+					if (IsBreakGeneration(dialogContext))
+					{
+						DisconnectDb();
+						return;
+					}
+
+					cache.SetProject(dbObject);
+				}
+			}
+			else
+			{
+				await AddPogress(dialogContext, totalProgressPart);
+			}
+
+			projects = loadedProjects.Union(emptyProjects).ToList();
 
 			await DisconnectDbAsync();
 		}
@@ -256,7 +291,7 @@ namespace ActGenerator.Model
 
 				project.Backs.Add(back);
 				loadedBacks.Add(back);
-				back.BackType = loadedBackTypes.First(y => y.Id == back.BackTypeId);
+				back.BackType = cache.BackTypes.First(y => y.Id == back.BackTypeId);
 				back.Regions = db.CountRegions.Where(y => y.DeletionDate == null && y.BackId == back.Id).ToList();
 
 				await AddPogress(dialogContext, progressPart);
@@ -320,9 +355,9 @@ namespace ActGenerator.Model
 				Project prevProject = GetPrevProject(dbObject);
 				if (prevProject != null)
 				{
-					foreach(GeneratedWorkList prevWorkList in generatedWorkLists)
+					foreach (GeneratedWorkList prevWorkList in generatedWorkLists)
 					{
-						if(prevProject.Id == (prevWorkList.Project is AlternativeProjectName alternativeProjectName ? alternativeProjectName.ProjectId : prevWorkList.Project.Id))
+						if (prevProject.Id == (prevWorkList.Project is AlternativeProjectName alternativeProjectName ? alternativeProjectName.ProjectId : prevWorkList.Project.Id))
 						{
 							generatedWorkList.CopyWorks(prevWorkList.GeneratedWorks);
 							double skippedProgress = progressPart * generatedWorkList.GeneratedWorks.Count;
@@ -767,7 +802,7 @@ namespace ActGenerator.Model
 		{
 			while(back != null)
 			{
-				if (loadedBackTypes.First(x => x.Id == back.BackTypeId).Name == ProjectNodeType.Episode.ToString())
+				if (cache.BackTypes.First(x => x.Id == back.BackTypeId).Name == ProjectNodeType.Episode.ToString())
 					return back.Number.ToString();
 				else if (back.BaseBackId == null)
 					break;

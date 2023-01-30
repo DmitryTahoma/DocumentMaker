@@ -127,6 +127,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Model\ActGeneratorCache.cs" />
     <Compile Include="Model\ActGeneratorModel.cs" />
     <Compile Include="Model\ActGeneratorSession.cs" />
     <Compile Include="Model\ActPartType.cs" />
