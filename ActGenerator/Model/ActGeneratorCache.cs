@@ -1,4 +1,5 @@
-﻿using ProjectsDb.Context;
+﻿using DocumentMakerModelLibrary;
+using ProjectsDb.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +56,7 @@ namespace ActGenerator.Model
 
 		public bool TryDuplicateProject(IDbObject dbObject, out IDbObject duplicatedProject)
 		{
-			Project project = dbObject as Project ?? ((AlternativeProjectName)dbObject).Project;
+			Project project = UnpackProject(dbObject);
 
 			Project findedProject = GetProject(x => x.Id == project.Id);
 			if(findedProject != null)
@@ -75,5 +76,72 @@ namespace ActGenerator.Model
 		}
 
 		#endregion
+
+		#region GeneratedWorkList Cache
+
+		List<GeneratedWorkList> generatedWorkLists = new List<GeneratedWorkList>();
+
+		public GeneratedWorkList GetGeneratedWorkList(IDbObject dbObject)
+		{
+			return generatedWorkLists.FirstOrDefault(x => x.Project == dbObject);
+		}
+
+		public bool TryGetGeneratedWorkList(IDbObject dbObject, out GeneratedWorkList generatedWorkList)
+		{
+			generatedWorkList = GetGeneratedWorkList(dbObject);
+			return generatedWorkList != null;
+		}
+
+		public void AddGeneratedWorkList(GeneratedWorkList generatedWorkList)
+		{
+			generatedWorkLists.Add(generatedWorkList);
+		}
+
+		public bool TryDuplicateGeneratedWorkList(IDbObject dbObject, out GeneratedWorkList generatedWorkList)
+		{
+			int projectId = GetProjectId(dbObject);
+
+			GeneratedWorkList findedGeneratedWorkList = generatedWorkLists.FirstOrDefault(x => GetProjectId(x.Project) == projectId);
+			if(findedGeneratedWorkList != null)
+			{
+				generatedWorkList = new GeneratedWorkList { Project = dbObject };
+				generatedWorkList.CopyWorks(findedGeneratedWorkList.GeneratedWorks);
+				AddGeneratedWorkList(generatedWorkList);
+				return true;
+			}
+			generatedWorkList = null;
+			return false;
+		}
+
+		public void UpdateGeneratedWorkList(GeneratedWorkList generatedWorkList)
+		{
+			IDbObject dbObject = generatedWorkList.Project;
+			int projectId = GetProjectId(dbObject);
+
+			GeneratedWorkList dublicatedWorkList = generatedWorkLists.FirstOrDefault(x => x.Project != dbObject && GetProjectId(x.Project) == projectId);
+			if (dublicatedWorkList != null)
+			{
+				KeyValuePair<FullDocumentTemplate, List<GeneratedWork>>[] works = generatedWorkList.GeneratedWorks
+					.Where(x => !dublicatedWorkList.GeneratedWorks.ContainsKey(x.Key))
+					.ToArray();
+
+				foreach (KeyValuePair<FullDocumentTemplate, List<GeneratedWork>> keyPairValue in works)
+				{
+					dublicatedWorkList.GeneratedWorks.Add(new KeyValuePair<FullDocumentTemplate, List<GeneratedWork>>(keyPairValue.Key, keyPairValue.Value));
+				}
+			}
+		}
+
+		#endregion
+
+		public int GetProjectId(IDbObject dbObject)
+		{
+			return dbObject is Project project ? project.Id : ((AlternativeProjectName)dbObject).ProjectId.Value;
+		}
+
+		public Project UnpackProject(IDbObject dbObject)
+		{
+			return dbObject as Project ?? ((AlternativeProjectName)dbObject).Project;
+		}
 	}
 }

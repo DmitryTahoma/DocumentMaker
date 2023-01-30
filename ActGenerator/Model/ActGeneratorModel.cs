@@ -247,7 +247,7 @@ namespace ActGenerator.Model
 				{
 					await SetProcessDescription(dialogContext, "Завантаження проєкту \"" + dbObject.ToString() + '"');
 
-					Project project = dbObject as Project ?? ((AlternativeProjectName)dbObject).Project;
+					Project project = cache.UnpackProject(dbObject);
 
 					Project prevLoadedProject = cache.GetProject(cachedProj => cachedProj.Id == project.Id);
 					if (prevLoadedProject != null)
@@ -314,7 +314,7 @@ namespace ActGenerator.Model
 
 		private Project GetPrevProject(IDbObject currentDbObject)
 		{
-			int? projectId = currentDbObject is Project project ? project.Id : ((AlternativeProjectName)currentDbObject).ProjectId;
+			int projectId = cache.GetProjectId(currentDbObject);
 
 			foreach (IDbObject loadedDbObject in projects)
 			{
@@ -322,7 +322,7 @@ namespace ActGenerator.Model
 				{
 					return null;
 				}
-				Project loadedProject = loadedDbObject as Project ?? ((AlternativeProjectName)loadedDbObject).Project;
+				Project loadedProject = cache.UnpackProject(loadedDbObject);
 
 				if (projectId == loadedProject.Id)
 				{
@@ -335,72 +335,79 @@ namespace ActGenerator.Model
 		private async Task GeneratingAllWorks(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
 			if (await IsSkipGenerating(dialogContext, totalProgressPart)) return;
-
 			generatedWorkLists = new List<GeneratedWorkList>();
-			double progressPart = totalProgressPart
-				/ projects.SelectMany(x => x is Project project ? project.Backs : ((AlternativeProjectName)x).Project.Backs).Count()
-				/ documentTemplates.SelectMany(y => y.ReworkWorkTypesList).Count();
 
-			foreach (IDbObject dbObject in projects)
+			foreach(IDbObject dbObject in projects)
 			{
-				Project project = dbObject as Project;
-				if (project == null) project = ((AlternativeProjectName)dbObject).Project;
-
-				await SetProcessDescription(dialogContext, "Генерація робіт проєкту \"" + dbObject.ToString() + '"');
-				GeneratedWorkList generatedWorkList = new GeneratedWorkList
+				if (cache.TryGetGeneratedWorkList(dbObject, out GeneratedWorkList generatedWorkList) || cache.TryDuplicateGeneratedWorkList(dbObject, out generatedWorkList))
 				{
-					Project = dbObject,
-				};
-
-				Project prevProject = GetPrevProject(dbObject);
-				if (prevProject != null)
-				{
-					foreach (GeneratedWorkList prevWorkList in generatedWorkLists)
-					{
-						if (prevProject.Id == (prevWorkList.Project is AlternativeProjectName alternativeProjectName ? alternativeProjectName.ProjectId : prevWorkList.Project.Id))
-						{
-							generatedWorkList.CopyWorks(prevWorkList.GeneratedWorks);
-							double skippedProgress = progressPart * generatedWorkList.GeneratedWorks.Count;
-							await AddPogress(dialogContext, skippedProgress);
-							break;
-						}
-					}
+					generatedWorkLists.Add(generatedWorkList);
 				}
 				else
 				{
-					foreach (Back back in project.Backs)
+					generatedWorkList = new GeneratedWorkList { Project = dbObject };
+					generatedWorkLists.Add(generatedWorkList);
+					cache.AddGeneratedWorkList(generatedWorkList);
+				}
+			}
+
+			double progressPart = totalProgressPart / generatedWorkLists.Count / documentTemplates.Count;
+
+			foreach (GeneratedWorkList generatedWorkList in generatedWorkLists)
+			{
+				Project project = cache.UnpackProject(generatedWorkList.Project);
+				await SetProcessDescription(dialogContext, "Генерація робіт проєкту \"" + generatedWorkList.Project.ToString() + '"');
+
+				bool workListUpdated = false;
+				foreach (FullDocumentTemplate documentTemplate in documentTemplates)
+				{
+					if (generatedWorkList.GeneratedWorks.ContainsKey(documentTemplate))
 					{
-						if (IsBreakGeneration(dialogContext)) break;
+						await AddPogress(dialogContext, progressPart);
+						continue;
+					}
+					workListUpdated = true;
 
-						foreach (FullDocumentTemplate documentTemplate in documentTemplates)
+					double progressPart2 = progressPart / documentTemplate.ReworkWorkTypesList.Count / project.Backs.Count;
+
+					foreach (WorkObject workObject in documentTemplate.ReworkWorkTypesList)
+					{
+						foreach (Back back in project.Backs)
 						{
-							foreach (WorkObject workObject in documentTemplate.ReworkWorkTypesList)
+							if (IsBreakGeneration(dialogContext))
 							{
-								GeneratedWork generatedWork = new GeneratedWork
-								{
-									WorkObject = workObject,
-									Back = back,
-									DocumentTemplate = documentTemplate,
-								};
-
-								CountRegions countRegions = back.Regions.FirstOrDefault();
-								if(countRegions != null)
-								{
-									generatedWork.Regions = new List<int>();
-									for (int i = 1; i <= countRegions.Count; ++i)
-									{
-										generatedWork.Regions.Add(i);
-									}
-								}
-
-								generatedWorkList.AddGeneratedWork(generatedWork);
-
-								await AddPogress(dialogContext, progressPart);
+								generatedWorkList.GeneratedWorks.Remove(documentTemplate);
+								return;
 							}
+
+							GeneratedWork generatedWork = new GeneratedWork
+							{
+								WorkObject = workObject,
+								Back = back,
+								DocumentTemplate = documentTemplate,
+							};
+
+							CountRegions countRegions = back.Regions.FirstOrDefault();
+							if (countRegions != null)
+							{
+								generatedWork.Regions = new List<int>();
+								for (int i = 1; i <= countRegions.Count; ++i)
+								{
+									generatedWork.Regions.Add(i);
+								}
+							}
+
+							generatedWorkList.AddGeneratedWork(generatedWork);
+
+							await AddPogress(dialogContext, progressPart2);
 						}
 					}
 				}
-				generatedWorkLists.Add(generatedWorkList);
+
+				if(workListUpdated)
+				{
+					cache.UpdateGeneratedWorkList(generatedWorkList);
+				}
 			}
 		}
 
