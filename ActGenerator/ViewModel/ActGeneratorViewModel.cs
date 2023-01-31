@@ -180,7 +180,7 @@ namespace ActGenerator.ViewModel
 			model.SetIsCollapseRegionsWorks(CollapseRegionsWorks);
 			model.SetDates(TechnicalTaskDate.Value, ActDate.Value);
 
-			if (model.WorksGenerated)
+			if (false)
 			{
 				foreach(HumanListItemControlModel human in humen)
 				{

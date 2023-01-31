@@ -12,11 +12,12 @@ namespace ActGenerator.Model
 		public FullDocumentTemplate DocumentTemplate { get; set; }
 		public List<int> Regions { get; set; }
 		public bool BackUsed { get; set; } = false;
+		public bool HaveRegions => Regions != null && Regions.Count > 0;
 		public int Sum { get; set; } = 0;
 
 		public bool ContainWork()
 		{
-			return !BackUsed || (Regions != null && Regions.Count > 0);
+			return !BackUsed || HaveRegions;
 		}
 
 		public GeneratedWork Clone()

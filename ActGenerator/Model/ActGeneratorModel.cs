@@ -41,8 +41,6 @@ namespace ActGenerator.Model
 		DateTime technicalTaskDate = DateTime.MinValue;
 		DateTime actDate = DateTime.MinValue;
 
-		bool needGenarateWorks = true;
-
 		List<Back> loadedBacks = new List<Back>();
 
 		List<FullDocumentTemplate> documentTemplates = null;
@@ -56,92 +54,23 @@ namespace ActGenerator.Model
 			generatingParts.Add(LoadingProjects);
 			generatingParts.Add(GeneratingAllWorks);
 			generatingParts.Add(RemovingUsedWorks);
-			generatingParts.Add(GeneratingAllRegionsWork);
 			generatingParts.Add(GeneratingActs);
 			generatingParts.Add(SavingActs);
 		}
 
-		public bool WorksGenerated => !needGenarateWorks;
-
 		public void SetProjects(List<IDbObject> projects)
 		{
-			if(!needGenarateWorks)
-			{
-				if(this.projects == null || this.projects.Count != projects.Count)
-				{
-					needGenarateWorks = true;
-				}
-				else
-				{
-					IEnumerator<IDbObject> thisProjectsEnum = this.projects.GetEnumerator();
-					IEnumerator<IDbObject> projectsEnum = projects.GetEnumerator();
-
-					while(thisProjectsEnum.MoveNext() && projectsEnum.MoveNext())
-					{
-						if (thisProjectsEnum.Current.Id != projectsEnum.Current.Id || thisProjectsEnum.Current.GetType() != projectsEnum.Current.GetType())
-						{
-							needGenarateWorks = true;
-							break;
-						}
-					}
-				}
-			}
-
 			this.projects = projects;
 		}
 		
 		public void SetHumen(IEnumerable<HumanListItemControlModel> humen)
 		{
 			this.humen = humen;
-			List<FullDocumentTemplate> newDocumentTemplates = humen.SelectMany(x => x.SelectedTemplates).Distinct().ToList();
-			if(!needGenarateWorks)
-			{
-				if(documentTemplates == null || documentTemplates.Count != newDocumentTemplates.Count)
-				{
-					needGenarateWorks = true;
-				}
-				else
-				{
-					IEnumerator<FullDocumentTemplate> newTemplatesEnum = newDocumentTemplates.GetEnumerator();
-					IEnumerator<FullDocumentTemplate> templatesEnum = documentTemplates.GetEnumerator();
-
-					while(newTemplatesEnum.MoveNext() && templatesEnum.MoveNext())
-					{
-						if(newTemplatesEnum.Current.Type != templatesEnum.Current.Type)
-						{
-							needGenarateWorks = true;
-							break;
-						}
-					}
-				}
-			}
-			documentTemplates = newDocumentTemplates;
+			documentTemplates = humen.SelectMany(x => x.SelectedTemplates).Distinct().ToList();
 		}
 
 		public void SetDocumentList(List<DcmkFile> dcmkFiles)
 		{
-			if (!needGenarateWorks)
-			{
-				if(this.dcmkFiles == null || this.dcmkFiles.Count != dcmkFiles.Count)
-				{
-					needGenarateWorks = true;
-				}
-				else
-				{
-					IEnumerator<DcmkFile> thisDcmkFilesEnum = this.dcmkFiles.GetEnumerator();
-					IEnumerator<DcmkFile> dcmkFilesEnum = dcmkFiles.GetEnumerator();
-
-					while(thisDcmkFilesEnum.MoveNext() && dcmkFilesEnum.MoveNext())
-					{
-						if(thisDcmkFilesEnum.Current.FullName != dcmkFilesEnum.Current.FullName)
-						{
-							needGenarateWorks = true;
-							break;
-						}
-					}
-				}
-			}
-
 			this.dcmkFiles = dcmkFiles;
 		}
 
@@ -158,19 +87,11 @@ namespace ActGenerator.Model
 
 		public void SetIsCollapseRegionsWorks(bool isCollapseRegionsWorks)
 		{
-			if(!needGenarateWorks && this.isCollapseRegionsWorks != isCollapseRegionsWorks)
-			{
-				needGenarateWorks = true;
-			}
 			this.isCollapseRegionsWorks = isCollapseRegionsWorks;
 		}
 
 		public void SetIgnoringActDate(DateTime ignoringActDate)
 		{
-			if(!needGenarateWorks && this.ignoringActDate != ignoringActDate)
-			{
-				needGenarateWorks = true;
-			}
 			this.ignoringActDate = ignoringActDate;
 			minActDateIgnoring = DateTime.Now
 				.AddDays(-(this.ignoringActDate.Day - 1))
@@ -203,7 +124,6 @@ namespace ActGenerator.Model
 
 				dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue = dialogContext.ProgressMaximum);
 				await SetProcessDescription(dialogContext, "Згенеровано!");
-				needGenarateWorks = false;
 			}
 			catch (Exception e)
 			{
@@ -213,8 +133,6 @@ namespace ActGenerator.Model
 
 		private async Task LoadingProjects(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
-			if (await IsSkipGenerating(dialogContext, totalProgressPart)) return;
-
 			// list with projects loaded earlier
 			List<IDbObject> loadedProjects = new List<IDbObject>();
 			// list with not loaded projects
@@ -334,7 +252,6 @@ namespace ActGenerator.Model
 
 		private async Task GeneratingAllWorks(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
-			if (await IsSkipGenerating(dialogContext, totalProgressPart)) return;
 			generatedWorkLists = new List<GeneratedWorkList>();
 
 			foreach(IDbObject dbObject in projects)
@@ -413,8 +330,6 @@ namespace ActGenerator.Model
 
 		private async Task RemovingUsedWorks(GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
-			if (await IsSkipGenerating(dialogContext, totalProgressPart)) return;
-
 			await SetProcessDescription(dialogContext, "Видалення використаних робіт");
 			double startProgress = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue);
 			double progressPart = totalProgressPart
@@ -493,67 +408,6 @@ namespace ActGenerator.Model
 					|| (backType == Dml.Model.Back.BackType.Mg && projectNodeType == ProjectNodeType.Minigame)
 					|| ((backType == Dml.Model.Back.BackType.Hog || backType == Dml.Model.Back.BackType.HogRegions) && projectNodeType == ProjectNodeType.Hog)
 					|| (backType == Dml.Model.Back.BackType.Craft && projectNodeType == ProjectNodeType.Craft));
-		}
-
-		private async Task GeneratingAllRegionsWork(GenerationDialogViewModel dialogContext, double totalProgressPart)
-		{
-			if (await IsSkipGenerating(dialogContext, totalProgressPart)) return;
-
-			await SetProcessDescription(dialogContext, "Розгортання регіонів");
-			double progressPart = totalProgressPart / 2 / generatedWorkLists.SelectMany(x => x.GeneratedWorks.SelectMany(y => y.Value)).Count();
-
-			foreach (GeneratedWorkList generatedWorkList in generatedWorkLists)
-			{
-				List<GeneratedWork> newGeneratedWorks = new List<GeneratedWork>();
-
-				foreach (GeneratedWork generatedWork in generatedWorkList.GeneratedWorks.SelectMany(x => x.Value))
-				{
-					if (IsBreakGeneration(dialogContext)) return;
-
-					if (!generatedWork.BackUsed && generatedWork.Regions != null && generatedWork.Regions.Count > 0)
-					{
-						GeneratedWork backWork = generatedWork.Clone();
-						backWork.Regions.Clear();
-						newGeneratedWorks.Add(backWork);
-
-						if(isCollapseRegionsWorks)
-						{
-							GeneratedWork regionsWork = generatedWork.Clone();
-							regionsWork.BackUsed = true;
-							newGeneratedWorks.Add(regionsWork);
-						}
-						else
-						{
-							foreach(int regNum in generatedWork.Regions)
-							{
-								GeneratedWork regionWork = generatedWork.Clone();
-								regionWork.BackUsed = true;
-								regionWork.Regions.Clear();
-								regionWork.Regions.Add(regNum);
-								newGeneratedWorks.Add(regionWork);
-							}
-						}
-					}
-					else
-					{
-						newGeneratedWorks.Add(generatedWork);
-					}
-
-					await AddPogress(dialogContext, progressPart);
-				}
-
-				double localProgressPart = totalProgressPart / 2 / generatedWorkLists.Count / newGeneratedWorks.Count;
-
-				generatedWorkList.ClearWorks();
-				foreach(GeneratedWork work in newGeneratedWorks)
-				{
-					if (IsBreakGeneration(dialogContext)) return;
-
-					generatedWorkList.AddGeneratedWork(work);
-
-					await AddPogress(dialogContext, localProgressPart);
-				}
-			}
 		}
 
 		private async Task GeneratingActs(GenerationDialogViewModel dialogContext, double totalProgressPart)
@@ -653,8 +507,41 @@ namespace ActGenerator.Model
 						if (randomWorkIndex < workList.Value.Count)
 						{
 							GeneratedWork randomWork = workList.Value[randomWorkIndex];
-							workList.Value.Remove(randomWork);
-							--countEnableWorks;
+
+							if(randomWork.HaveRegions && !randomWork.BackUsed)
+							{
+								GeneratedWork tempWork = randomWork.Clone();
+								int randNum = random.Next(0, randomWork.Regions.Count * 3);
+								GeneratedWork clonedRandomWork = randomWork.Clone();
+
+								if (randNum < randomWork.Regions.Count)
+								{
+									if (isCollapseRegionsWorks)
+									{
+										clonedRandomWork.Regions.Clear();
+									}
+									else
+									{
+										int randRegion = randomWork.Regions[randNum];
+										clonedRandomWork.Regions.RemoveAt(randNum);
+									}
+									tempWork.BackUsed = true;
+								}
+								else
+								{
+									clonedRandomWork.BackUsed = true;
+									tempWork.Regions.Clear();
+								}
+
+								workList.Value.Remove(randomWork);
+								workList.Value.Add(clonedRandomWork);
+								randomWork = tempWork;
+							}
+							else
+							{
+								workList.Value.Remove(randomWork);
+								--countEnableWorks;
+							}
 
 							GeneratedWorkList generatedWorkList = act.Value.FirstOrDefault(x => x.Project == workList.Key.Project);
 							if (generatedWorkList == null)
@@ -835,7 +722,7 @@ namespace ActGenerator.Model
 				case ProjectNodeType.Minigame: return Dml.Model.Back.BackType.Mg;
 			}
 
-			bool isRegions = generatedWork.Regions != null && generatedWork.Regions.Count > 0;
+			bool isRegions = generatedWork.HaveRegions;
 			if (projectNodeType == ProjectNodeType.Back)
 			{
 				return isRegions ? Dml.Model.Back.BackType.Regions : Dml.Model.Back.BackType.Back;
@@ -872,15 +759,6 @@ namespace ActGenerator.Model
 		private bool IsBreakGeneration(GenerationDialogViewModel dialogContext)
 		{
 			return dialogContext.Dispatcher.Invoke(() => dialogContext.IsClosing);
-		}
-
-		private async Task<bool> IsSkipGenerating(GenerationDialogViewModel dialogContext, double totalProgressPart)
-		{
-			if (!needGenarateWorks)
-			{
-				await AddPogress(dialogContext, totalProgressPart);
-			}
-			return !needGenarateWorks;
 		}
 
 		public List<string> GetGeneratedActNames()
