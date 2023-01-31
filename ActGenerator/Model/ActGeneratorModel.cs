@@ -765,5 +765,20 @@ namespace ActGenerator.Model
 		{
 			return generatedActNames;
 		}
+
+		public bool IsReadyToGeneration(HumanListItemControlModel human)
+		{
+			foreach(IDbObject project in projects)
+			{
+				foreach(FullDocumentTemplate documentTemplate in human.SelectedTemplates)
+				{
+					if (!cache.ContainsGeneratedWorkList(project, documentTemplate))
+					{
+						return false;
+					}
+				}
+			}
+			return true;
+		}
 	}
 }

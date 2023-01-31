@@ -132,6 +132,13 @@ namespace ActGenerator.Model
 			}
 		}
 
+		public bool ContainsGeneratedWorkList(IDbObject packedProject, FullDocumentTemplate documentTemplate)
+		{
+			Project project = UnpackProject(packedProject);
+			GeneratedWorkList generatedWorkList = generatedWorkLists.FirstOrDefault(x => project.Id == UnpackProject(x.Project).Id);
+			return generatedWorkList != null && generatedWorkList.GeneratedWorks.ContainsKey(documentTemplate);
+		}
+
 		#endregion
 
 		public int GetProjectId(IDbObject dbObject)

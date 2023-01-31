@@ -180,14 +180,14 @@ namespace ActGenerator.ViewModel
 			model.SetIsCollapseRegionsWorks(CollapseRegionsWorks);
 			model.SetDates(TechnicalTaskDate.Value, ActDate.Value);
 
-			if (false)
+			foreach (HumanListItemControlModel human in humen)
 			{
-				foreach(HumanListItemControlModel human in humen)
+				if (model.IsReadyToGeneration(human))
 				{
 					int countEnableWorks = model.GetCountEnabledWorks(human.SelectedTemplates);
 					int sum = (int)human.Sum;
 					int minCountWorks = model.GetMinCountWorks(sum);
-					if(countEnableWorks <= 0)
+					if (countEnableWorks <= 0)
 					{
 						MessageBox.Show("На задану суму акту \"" + human.HumanData.Name + "\" недостатня кількість робіт.", "Змініть налаштування сум", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
 						return;
@@ -195,7 +195,7 @@ namespace ActGenerator.ViewModel
 					else if (countEnableWorks < minCountWorks)
 					{
 						int targetWorkCost = sum / countEnableWorks + 100;
-						if(MessageBoxResult.No == MessageBox.Show("На задану суму акту \"" + human.HumanData.Name + "\" недостатня кількість робіт. Змінити макимум суми однієї роботи на " + targetWorkCost + " гривень?", "Змініть налаштування сум", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No))
+						if (MessageBoxResult.No == MessageBox.Show("На задану суму акту \"" + human.HumanData.Name + "\" недостатня кількість робіт. Змінити макимум суми однієї роботи на " + targetWorkCost + " гривень?", "Змініть налаштування сум", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No))
 						{
 							return;
 						}
