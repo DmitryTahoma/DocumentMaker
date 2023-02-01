@@ -212,17 +212,26 @@ namespace ActGenerator.Model
 		private async Task LoadProject(Project project, GenerationDialogViewModel dialogContext, double totalProgressPart)
 		{
 			double startProgress = dialogContext.Dispatcher.Invoke(() => dialogContext.ProgressValue);
-			double progressPart = totalProgressPart / db.Backs.Count(x => x.DeletionDate == null && x.ProjectId == project.Id);
+			double progressPart = totalProgressPart / db.Backs.Count(x => x.ProjectId == project.Id);
+
+			List<int> removedBacksIndexes = new List<int>();
 
 			project.Backs = new List<Back>();
-			foreach (Back back in db.Backs.Where(x => x.DeletionDate == null && x.ProjectId == project.Id).ToList())
+			foreach (Back back in db.Backs.Where(x => x.ProjectId == project.Id).ToList())
 			{
 				if (IsBreakGeneration(dialogContext)) return;
 
-				project.Backs.Add(back);
-				loadedBacks.Add(back);
-				back.BackType = cache.BackTypes.First(y => y.Id == back.BackTypeId);
-				back.Regions = db.CountRegions.Where(y => y.DeletionDate == null && y.BackId == back.Id).ToList();
+				if (back.DeletionDate != null || (back.BaseBackId.HasValue && removedBacksIndexes.Contains(back.BaseBackId.Value)))
+				{
+					removedBacksIndexes.Add(back.Id);
+				}
+				else
+				{
+					project.Backs.Add(back);
+					loadedBacks.Add(back);
+					back.BackType = cache.BackTypes.First(y => y.Id == back.BackTypeId);
+					back.Regions = db.CountRegions.Where(y => y.DeletionDate == null && y.BackId == back.Id).ToList();
+				}
 
 				await AddPogress(dialogContext, progressPart);
 			}
