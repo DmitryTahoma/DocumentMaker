@@ -209,6 +209,11 @@ namespace ActGenerator.ViewModel
 				}
 			}
 
+			if (!model.ContainsHumanDatas())
+			{
+				model.SetHumanDatas(humenListControlViewModel.GetAllHumanDatas());
+			}
+
 			CloseOnClickAwayDialogHost = false;
 			generationDialogViewModel.DialogHostId = DialogHostId;
 			Task dialogTask = DialogHost.Show(generationDialog, DialogHostId);

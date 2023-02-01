@@ -6,6 +6,7 @@ using DocumentMakerModelLibrary.Back;
 using DocumentMakerModelLibrary.Controls;
 using DocumentMakerModelLibrary.Files;
 using DocumentMakerModelLibrary.OfficeFiles;
+using DocumentMakerModelLibrary.OfficeFiles.Human;
 using ProjectEditorLib.Model;
 using ProjectsDb;
 using ProjectsDb.Context;
@@ -40,6 +41,7 @@ namespace ActGenerator.Model
 		bool isCollapseRegionsWorks = default;
 		DateTime technicalTaskDate = DateTime.MinValue;
 		DateTime actDate = DateTime.MinValue;
+		List<HumanData> humanDatas = null;
 
 		List<Back> loadedBacks = new List<Back>();
 
@@ -62,7 +64,7 @@ namespace ActGenerator.Model
 		{
 			this.projects = projects;
 		}
-		
+
 		public void SetHumen(IEnumerable<HumanListItemControlModel> humen)
 		{
 			this.humen = humen;
@@ -103,6 +105,16 @@ namespace ActGenerator.Model
 		{
 			this.technicalTaskDate = technicalTaskDate;
 			this.actDate = actDate;
+		}
+
+		public bool ContainsHumanDatas()
+		{
+			return humanDatas != null;
+		}
+
+		public void SetHumanDatas(List<HumanData> humanDatas)
+		{
+			this.humanDatas = humanDatas;
 		}
 
 		public async Task StartGeneration(GenerationDialogViewModel dialogContext)
@@ -684,7 +696,7 @@ namespace ActGenerator.Model
 						backs.Add(m);
 					}
 				}
-				string path = Path.Combine(savingPath, documentMakerModel.SelectedHuman + DcmkFile.Extension);
+				string path = Path.Combine(savingPath, CreateActFileName(act.Key.HumanData));
 				documentMakerModel.ExportDcmk(path, backs);
 				generatedActNames.Add(path);
 
@@ -731,6 +743,43 @@ namespace ActGenerator.Model
 			{
 				return isRegions ? Dml.Model.Back.BackType.HogRegions : Dml.Model.Back.BackType.Hog;
 			}
+		}
+
+		private string CreateActFileName(HumanData humanData)
+		{
+			string res = string.Empty;
+
+			string[] name = humanData.Name.Split(' ');
+			List<HumanData> repeatSurnameHumen = humanDatas.Where(x => x.Name != humanData.Name && x.Name.StartsWith(name[0])).ToList();
+
+			res += name[0] + ' ';
+
+			if(repeatSurnameHumen.Count > 0)
+			{
+				List<string[]> splittedNames = repeatSurnameHumen.Select(x => x.Name.Split(' ')).ToList();
+
+				for (int i = 1; i <= 2; ++i)
+				{
+					bool addedName = false;
+					foreach (string[] splittedName in splittedNames)
+					{
+						if (splittedName[i][0] == name[i][0])
+						{
+							res += name[i] + ' ';
+							addedName = true;
+							break;
+						}
+					}
+					if (!addedName)
+					{
+						res += name[i][0] + ". ";
+						break;
+					}
+				}
+			}
+
+			res += actDate.ToString(dateFormat) + ' ' + DateTime.Now.ToString("dd.MM.yy_HH-mm-ss.ffffff") + DcmkFile.Extension;
+			return res;
 		}
 
 		private void InvokeInDialogDispatcher(GenerationDialogViewModel dialogContext, Action action)

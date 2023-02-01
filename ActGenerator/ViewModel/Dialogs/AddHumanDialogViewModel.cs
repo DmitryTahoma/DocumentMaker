@@ -132,6 +132,11 @@ namespace ActGenerator.ViewModel.Dialogs
 			UpdateHumenCheckBoxIsChecked();
 		}
 
+		public List<HumanData> GetAllHumanDatas()
+		{
+			return items.Select(x => x.DataContext).ToList();
+		}
+
 		#endregion
 
 		class Item

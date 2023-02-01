@@ -211,6 +211,11 @@ namespace ActGenerator.ViewModel.Controls
 			return humenStackCollection.Count > 0;
 		}
 
+		public List<HumanData> GetAllHumanDatas()
+		{
+			return addHumanDialogViewModel.GetAllHumanDatas();
+		}
+
 		#endregion
 	}
 }
