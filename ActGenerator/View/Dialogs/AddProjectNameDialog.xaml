@@ -50,7 +50,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition SharedSizeGroup="AddProjectNameDialogProjectColumn" />
                     <ColumnDefinition SharedSizeGroup="AddProjectNameDialogAlternativeNameColumn" />
-                    <ColumnDefinition Width="15" />
+                    <ColumnDefinition Width="auto" MinWidth="{x:Static SystemParameters.VerticalScrollBarWidth}" />
                 </Grid.ColumnDefinitions>
                 <CheckBox
                     Command="{Binding ChangeIsCheckedAllProjects}"
@@ -68,6 +68,7 @@
         </materialDesign:Card>
 
         <ScrollViewer
+            x:Name="ProjectListScrollViewer"
             Grid.Row="1"
             Grid.ColumnSpan="2"
             Style="{StaticResource AddProjectNameScrollViewer}"
