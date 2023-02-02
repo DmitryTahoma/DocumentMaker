@@ -1,4 +1,5 @@
 ﻿using Mvvm.Commands;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -176,30 +177,32 @@ namespace ActGenerator.View.Controls
 
 		public static bool? UpdateGeneralCheckBoxState(IEnumerable checkBoxList)
 		{
-			IEnumerator<CheckBox> checkBoxListEnum = checkBoxList.Cast<CheckBox>().GetEnumerator();
+			return UpdateGeneralCheckBoxState(checkBoxList.Cast<CheckBox>().Where(x => x.Visibility == Visibility.Visible), checkBox => checkBox.IsChecked);
+		}
+
+		public static bool? UpdateGeneralCheckBoxState<T>(IEnumerable<T> enumerable, Func<T, bool?> propertySelector)
+		{
+			IEnumerator<T> e = enumerable.GetEnumerator();
 
 			bool findedFirst = false;
 			bool? isChecked = null;
 
-			while (checkBoxListEnum.MoveNext())
+			while(e.MoveNext())
 			{
-				if (checkBoxListEnum.Current.Visibility == Visibility.Visible)
-				{
-					findedFirst = true;
-					isChecked = checkBoxListEnum.Current.IsChecked;
-					break;
-				}
+				findedFirst = true;
+				isChecked = propertySelector(e.Current);
+				break;
 			}
 
-			if (!findedFirst)
+			if(!findedFirst)
 			{
 				return false;
 			}
 			else
 			{
-				while (checkBoxListEnum.MoveNext())
+				while(e.MoveNext())
 				{
-					if (checkBoxListEnum.Current.Visibility == Visibility.Visible && checkBoxListEnum.Current.IsChecked != isChecked)
+					if(propertySelector(e.Current) != isChecked)
 					{
 						return null;
 					}
