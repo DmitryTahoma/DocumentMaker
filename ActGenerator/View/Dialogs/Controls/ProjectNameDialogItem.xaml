@@ -2,6 +2,7 @@
     x:Class="ActGenerator.View.Dialogs.Controls.ProjectNameDialogItem"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -13,6 +14,10 @@
     <UserControl.DataContext>
         <vm:ProjectNameDialogItemViewModel />
     </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <converters:NullableToVisibilityConverter x:Key="MyNullableToVisibilityConverter" NullValue="Hidden" />
+    </UserControl.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -41,7 +46,8 @@
             Width="{Binding ElementName=ProjectCheckBox, Path=ActualWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
             Content="{Binding AlternativeProjectName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
             IsChecked="{Binding IsCheckedAlternativeProjectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-            Style="{StaticResource AddProjectNameListItemCheckBox}">
+            Style="{StaticResource AddProjectNameListItemCheckBox}"
+            Visibility="{Binding AlternativeProjectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource MyNullableToVisibilityConverter}}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Checked">
                     <i:InvokeCommandAction Command="{Binding AlternativeProjectNameCheckedChanged}" />
