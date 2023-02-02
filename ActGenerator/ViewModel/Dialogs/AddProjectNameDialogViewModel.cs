@@ -8,7 +8,6 @@ using Mvvm;
 using Mvvm.Commands;
 using ProjectEditorLib.ViewModel;
 using ProjectsDb.Context;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,10 +20,9 @@ namespace ActGenerator.ViewModel.Dialogs
 	{
 		AddProjectNameDialogModel model = new AddProjectNameDialogModel();
 
-		readonly Style itemStyle = Application.Current.FindResource("AddProjectNameListItemCheckBox") as Style;
-
-		UIElementCollection projectsCheckBoxCollection = null;
-		UIElementCollection projectNamesCheckBoxCollection = null;
+		UIElementCollection itemsCollection = null;
+		IEnumerable<ProjectNameDialogItem> castedItems = null;
+		IEnumerable<ProjectNameDialogItemViewModel> itemsViewModel = null;
 
 		bool needUpdateProjectsCheckBoxIsChecked = true;
 		bool needUpdateProjectNamesCheckBoxIsChecked = true;
@@ -70,7 +68,6 @@ namespace ActGenerator.ViewModel.Dialogs
 		private void InitCommands()
 		{
 			BindProjectsCheckBoxList = new Command<UIElementCollection>(OnBindProjectsCheckBoxListExecute);
-			//BindProjectNamesCheckBoxList = new Command<UIElementCollection>(OnBindProjectNamesCheckBoxListExecute);
 			ViewLoaded = new Command(OnViewLoadedExecute);
 			AddCommand = new Command(OnAddCommandExecute);
 			ChangeIsCheckedAllProjects = new Command(OnChangeIsCheckedAllProjectsExecute);
@@ -80,28 +77,23 @@ namespace ActGenerator.ViewModel.Dialogs
 		public Command<UIElementCollection> BindProjectsCheckBoxList { get; private set; }
 		private void OnBindProjectsCheckBoxListExecute(UIElementCollection projectsCheckBoxCollection)
 		{
-			if (this.projectsCheckBoxCollection == null)
+			if (itemsCollection == null)
 			{
-				this.projectsCheckBoxCollection = projectsCheckBoxCollection;
+				itemsCollection = projectsCheckBoxCollection;
+
+				castedItems = itemsCollection.Cast<ProjectNameDialogItem>();
+				itemsViewModel = castedItems.Select(x => (ProjectNameDialogItemViewModel)x.DataContext);
+				SelectedProjectsAndNames =
+					itemsViewModel
+					.Where(vm1 => vm1.IsCheckedProject)
+					.Select(vm2 => vm2.Project)
+					.Cast<IDbObject>()
+					.Union(itemsViewModel
+						.Where(vm3 => vm3.AlternativeProjectName != null && vm3.IsCheckedAlternativeProjectName)
+						.Select(vm4 => vm4.AlternativeProjectName)
+						.Cast<IDbObject>());
 			}
 		}
-
-		//public Command<UIElementCollection> BindProjectNamesCheckBoxList { get; private set; }
-		//private void OnBindProjectNamesCheckBoxListExecute(UIElementCollection projectNamesCheckBoxCollection)
-		//{
-		//	if (this.projectNamesCheckBoxCollection == null)
-		//	{
-		//		this.projectNamesCheckBoxCollection = projectNamesCheckBoxCollection;
-
-		//		//SelectedProjectsAndNames =
-		//		//	projectsCheckBoxCollection
-		//		//		.Cast<CheckBox>()
-		//		//		.Union(projectNamesCheckBoxCollection
-		//		//			.Cast<CheckBox>())
-		//		//		.Where(x => x.IsChecked.HasValue && x.IsChecked.Value)
-		//		//		.Select(y => (IDbObject)y.DataContext);
-		//	}
-		//}
 
 		public Command ViewLoaded { get; private set; }
 		private async void OnViewLoadedExecute()
@@ -110,8 +102,8 @@ namespace ActGenerator.ViewModel.Dialogs
 
 			ProjectsCheckBoxIsChecked = false;
 			ChangeIsCheckedAllProjects?.Execute();
-			//ProjectNamesCheckBoxIsChecked = false;
-			//ChangeIsCheckedAllProjectNames?.Execute();
+			ProjectNamesCheckBoxIsChecked = false;
+			ChangeIsCheckedAllProjectNames?.Execute();
 
 			if (!model.ConnectionStringSetted) return;
 
@@ -121,7 +113,7 @@ namespace ActGenerator.ViewModel.Dialogs
 			}
 			else if (State == ViewModelState.Loaded)
 			{
-				//await UpdateProjectsAsync();
+				await UpdateProjectsAsync();
 			}
 		}
 
@@ -137,9 +129,9 @@ namespace ActGenerator.ViewModel.Dialogs
 		private void OnChangeIsCheckedAllProjectsExecute()
 		{
 			needUpdateProjectsCheckBoxIsChecked = false;
-			foreach (CheckBox checkBox in projectsCheckBoxCollection)
+			foreach (ProjectNameDialogItemViewModel vm in itemsViewModel)
 			{
-				checkBox.IsChecked = ProjectsCheckBoxIsChecked;
+				vm.IsCheckedProject = ProjectsCheckBoxIsChecked.HasValue && ProjectsCheckBoxIsChecked.Value;
 			}
 			needUpdateProjectsCheckBoxIsChecked = true;
 		}
@@ -148,9 +140,9 @@ namespace ActGenerator.ViewModel.Dialogs
 		private void OnChangeIsCheckedAllProjectNamesExecute()
 		{
 			needUpdateProjectNamesCheckBoxIsChecked = false;
-			foreach (CheckBox checkBox in projectNamesCheckBoxCollection)
+			foreach (ProjectNameDialogItemViewModel vm in itemsViewModel)
 			{
-				checkBox.IsChecked = ProjectNamesCheckBoxIsChecked;
+				vm.IsCheckedAlternativeProjectName = ProjectNamesCheckBoxIsChecked.HasValue && ProjectNamesCheckBoxIsChecked.Value;
 			}
 			needUpdateProjectNamesCheckBoxIsChecked = true;
 		}
@@ -167,28 +159,10 @@ namespace ActGenerator.ViewModel.Dialogs
 			viewModel.Project = project;
 			viewModel.AlternativeProjectName = alternativeProjectName;
 
+			viewModel.ProjectCheckedChangedCommand = new Command(UpdateProjectsCheckBoxIsChecked);
+			viewModel.AlternativeProjectNameCheckedChangedCommand = new Command(UpdateProjectNamesCheckBoxIsChecked);
+
 			return projectNameDialogItem;
-
-			//CheckBox checkBox = new CheckBox
-			//{
-			//	DataContext = context,
-			//	Style = itemStyle,
-			//};
-
-			//if (context is Project project)
-			//{
-			//	checkBox.Content = project.Name;
-			//	checkBox.Checked += ProjectCheckBoxCheckedChange;
-			//	checkBox.Unchecked += ProjectCheckBoxCheckedChange;
-			//}
-			//else if (context is AlternativeProjectName projectName)
-			//{
-			//	checkBox.Content = projectName.Name;
-			//	checkBox.Checked += ProjectNameCheckBoxCheckedChange;
-			//	checkBox.Unchecked += ProjectNameCheckBoxCheckedChange;
-			//}
-
-			//return checkBox;
 		}
 
 		public void SetCryptedConnectionString(CryptedConnectionString cryptedConnectionString)
@@ -199,23 +173,13 @@ namespace ActGenerator.ViewModel.Dialogs
 		private void UpdateProjectsCheckBoxIsChecked()
 		{
 			if (!needUpdateProjectsCheckBoxIsChecked) return;
-			//ProjectsCheckBoxIsChecked = CheckBoxList.UpdateGeneralCheckBoxState(projectsCheckBoxCollection);
+			ProjectsCheckBoxIsChecked = CheckBoxList.UpdateGeneralCheckBoxState(itemsViewModel, vm => vm.IsCheckedProject);
 		}
 
 		private void UpdateProjectNamesCheckBoxIsChecked()
 		{
 			if (!needUpdateProjectNamesCheckBoxIsChecked) return;
-			//ProjectNamesCheckBoxIsChecked = CheckBoxList.UpdateGeneralCheckBoxState(projectNamesCheckBoxCollection);
-		}
-
-		private void ProjectCheckBoxCheckedChange(object sender, RoutedEventArgs e)
-		{
-			UpdateProjectsCheckBoxIsChecked();
-		}
-
-		private void ProjectNameCheckBoxCheckedChange(object sender, RoutedEventArgs e)
-		{
-			UpdateProjectNamesCheckBoxIsChecked();
+			ProjectNamesCheckBoxIsChecked = CheckBoxList.UpdateGeneralCheckBoxState(itemsViewModel, vm => vm.IsCheckedAlternativeProjectName);
 		}
 
 		private async Task LoadProjectsAsync()
@@ -226,7 +190,6 @@ namespace ActGenerator.ViewModel.Dialogs
 			List<AlternativeProjectName> alternativeProjectNames = await model.LoadAlternativeProjectNamesAsync();
 			await model.DisconnectDbAsync();
 			await model.SortCollectionAsync(projects);
-			await model.SortCollectionAsync(alternativeProjectNames);
 			State = ViewModelState.Loaded;
 			await FillProjectsAsync(projects, alternativeProjectNames);
 		}
@@ -239,7 +202,7 @@ namespace ActGenerator.ViewModel.Dialogs
 				{
 					Dispatcher.Invoke(() =>
 					{
-						projectsCheckBoxCollection.Add(CreateProjectItem(project, alternativeProjectNames.FirstOrDefault(x => x.ProjectId == project.Id)));
+						itemsCollection.Add(CreateProjectItem(project, alternativeProjectNames.FirstOrDefault(x => x.ProjectId == project.Id)));
 						UpdateProjectsCheckBoxIsChecked();
 						UpdateProjectNamesCheckBoxIsChecked();
 					});
@@ -256,52 +219,40 @@ namespace ActGenerator.ViewModel.Dialogs
 			List<AlternativeProjectName> alternativeProjectNames = await model.LoadAlternativeProjectNamesAsync();
 			await model.DisconnectDbAsync();
 			await model.SortCollectionAsync(projects);
-			await model.SortCollectionAsync(alternativeProjectNames);
-
-			Task updatingProjects = GetUpdateCheckBoxCollectionTask(projectsCheckBoxCollection, projects);
-			Task updatingAlternativeNames = GetUpdateCheckBoxCollectionTask(projectNamesCheckBoxCollection, alternativeProjectNames);
-			_ = model.SortCollectionAsync(projects).ContinueWith(t => updatingProjects.Start());
-			_ = model.SortCollectionAsync(alternativeProjectNames).ContinueWith(t => updatingAlternativeNames.Start());
-			await updatingProjects;
-			await updatingAlternativeNames;
+			await UpdateProjectsItemsAsync(projects, alternativeProjectNames);
 
 			UpdateProjectsCheckBoxIsChecked();
 			UpdateProjectNamesCheckBoxIsChecked();
 			State = ViewModelState.Loaded;
 		}
 
-		private Task GetUpdateCheckBoxCollectionTask<T>(UIElementCollection checkBoxCollection, List<T> objects) where T : IDbObject, new()
+		private async Task UpdateProjectsItemsAsync(List<Project> projects, List<AlternativeProjectName> alternativeProjectNames)
 		{
-			return new Task(() =>
+			await Task.Run(async () =>
 			{
-				//int localCount = Dispatcher.Invoke(() => checkBoxCollection.Count);
-				//while (localCount > objects.Count)
-				//{
-				//	Dispatcher.Invoke(() => checkBoxCollection.RemoveAt(0));
-				//	--localCount;
-				//}
+				int localCount = Dispatcher.Invoke(() => itemsCollection.Count);
+				while (localCount > projects.Count)
+				{
+					Dispatcher.Invoke(() => itemsCollection.RemoveAt(0));
+					--localCount;
+					await Task.Delay(1);
+				}
 
-				//T fakeObject = new T();
-				//while (localCount < objects.Count)
-				//{
-				//	Dispatcher.Invoke(() => checkBoxCollection.Add(CreateProjectCheckBox(fakeObject)));
-				//	++localCount;
-				//}
+				while (localCount < projects.Count)
+				{
+					Dispatcher.Invoke(() => itemsCollection.Add(CreateProjectItem(null, null)));
+					++localCount;
+					await Task.Delay(1);
+				}
 
-				//IEnumerator<T> projectsEnum = objects.GetEnumerator();
-				//IEnumerator<CheckBox> checkBoxCollectionEnum = Dispatcher.Invoke(() => checkBoxCollection.Cast<CheckBox>().GetEnumerator());
-				//while (projectsEnum.MoveNext() && Dispatcher.Invoke(() => checkBoxCollectionEnum.MoveNext()))
-				//{
-				//	Dispatcher.Invoke(() => checkBoxCollectionEnum.Current.DataContext = projectsEnum.Current);
-				//	if(projectsEnum.Current is Project project)
-				//	{
-				//		Dispatcher.Invoke(() => checkBoxCollectionEnum.Current.Content = project.Name);
-				//	}
-				//	else if(projectsEnum.Current is AlternativeProjectName alternativeProjectName)
-				//	{
-				//		Dispatcher.Invoke(() => checkBoxCollectionEnum.Current.Content = alternativeProjectName.Name);
-				//	}
-				//}
+				IEnumerator<Project> projectsEnum = projects.GetEnumerator();
+				IEnumerator<ProjectNameDialogItemViewModel> vmEnum = itemsViewModel.GetEnumerator();
+				while (projectsEnum.MoveNext() && Dispatcher.Invoke(() => vmEnum.MoveNext()))
+				{
+					Dispatcher.Invoke(() => vmEnum.Current.Project = projectsEnum.Current);
+					Dispatcher.Invoke(() => vmEnum.Current.AlternativeProjectName = alternativeProjectNames.FirstOrDefault(x => x.ProjectId == projectsEnum.Current.Id));
+					await Task.Delay(1);
+				}
 			});
 		}
 

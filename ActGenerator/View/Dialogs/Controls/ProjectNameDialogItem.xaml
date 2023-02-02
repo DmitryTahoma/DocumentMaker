@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:ActGenerator.ViewModel.Dialogs.Controls"
     d:DesignHeight="450"
@@ -23,12 +24,34 @@
             x:Name="ProjectCheckBox"
             MinWidth="200"
             Content="{Binding Project, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-            Style="{StaticResource AddProjectNameListItemCheckBox}" />
+            IsChecked="{Binding IsCheckedProject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Style="{StaticResource AddProjectNameListItemCheckBox}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Checked">
+                    <i:InvokeCommandAction Command="{Binding ProjectCheckedChanged}" />
+                </i:EventTrigger>
+                <i:EventTrigger EventName="Unchecked">
+                    <i:InvokeCommandAction Command="{Binding ProjectCheckedChanged}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </CheckBox>
 
         <CheckBox
             Grid.Column="1"
             Width="{Binding ElementName=ProjectCheckBox, Path=ActualWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
             Content="{Binding AlternativeProjectName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-            Style="{StaticResource AddProjectNameListItemCheckBox}" />
+            IsChecked="{Binding IsCheckedAlternativeProjectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Style="{StaticResource AddProjectNameListItemCheckBox}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Checked">
+                    <i:InvokeCommandAction Command="{Binding AlternativeProjectNameCheckedChanged}" />
+                </i:EventTrigger>
+                <i:EventTrigger EventName="Unchecked">
+                    <i:InvokeCommandAction Command="{Binding AlternativeProjectNameCheckedChanged}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </CheckBox>
+
     </Grid>
+
 </UserControl>
