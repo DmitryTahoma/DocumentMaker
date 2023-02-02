@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 
 namespace ActGenerator.ViewModel
 {
@@ -115,6 +116,13 @@ namespace ActGenerator.ViewModel
 			set { SetValue(CollapseRegionsWorksProperty, value); }
 		}
 		public static readonly DependencyProperty CollapseRegionsWorksProperty = DependencyProperty.Register(nameof(CollapseRegionsWorks), typeof(bool), typeof(ActGeneratorViewModel));
+
+		public XmlLanguage Language
+		{
+			get { return (XmlLanguage)GetValue(LanguageProperty); }
+			set { SetValue(LanguageProperty, value); }
+		}
+		public static readonly DependencyProperty LanguageProperty = DependencyProperty.Register(nameof(Language), typeof(XmlLanguage), typeof(ActGeneratorViewModel), new PropertyMetadata(XmlLanguage.GetLanguage("uk")));
 
 		#endregion
 

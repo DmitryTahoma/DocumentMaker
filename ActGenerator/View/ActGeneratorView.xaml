@@ -160,6 +160,7 @@
                                 Grid.Row="1"
                                 MinWidth="134"
                                 materialDesign:HintAssist.Hint="Технічне завдання від:"
+                                Language="{Binding Language, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedDate="{Binding TechnicalTaskDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource FirstDatePicker}">
 
@@ -197,6 +198,7 @@
                                 Grid.Column="1"
                                 MinWidth="134"
                                 materialDesign:HintAssist.Hint="Акт від:"
+                                Language="{Binding Language, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedDate="{Binding ActDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource LastDatePicker}">
 
