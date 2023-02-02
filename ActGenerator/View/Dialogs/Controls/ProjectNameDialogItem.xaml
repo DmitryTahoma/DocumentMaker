@@ -19,8 +19,16 @@
             <ColumnDefinition SharedSizeGroup="AddProjectNameDialogAlternativeNameColumn" />
         </Grid.ColumnDefinitions>
 
-        <CheckBox Content="{Binding Project, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+        <CheckBox
+            x:Name="ProjectCheckBox"
+            MinWidth="200"
+            Content="{Binding Project, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+            Style="{StaticResource AddProjectNameListItemCheckBox}" />
 
-        <CheckBox Grid.Column="1" Content="{Binding AlternativeProjectName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+        <CheckBox
+            Grid.Column="1"
+            Width="{Binding ElementName=ProjectCheckBox, Path=ActualWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+            Content="{Binding AlternativeProjectName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+            Style="{StaticResource AddProjectNameListItemCheckBox}" />
     </Grid>
 </UserControl>

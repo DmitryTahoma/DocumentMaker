@@ -48,8 +48,9 @@
             Visibility="{Binding State, Mode=OneWay, Converter={StaticResource InvertedViewModelStateToVisibilityConverter}}">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
+                    <ColumnDefinition SharedSizeGroup="AddProjectNameDialogProjectColumn" />
+                    <ColumnDefinition SharedSizeGroup="AddProjectNameDialogAlternativeNameColumn" />
+                    <ColumnDefinition Width="15" />
                 </Grid.ColumnDefinitions>
                 <CheckBox
                     Command="{Binding ChangeIsCheckedAllProjects}"
@@ -62,25 +63,16 @@
                     Command="{Binding ChangeIsCheckedAllProjectNames}"
                     Content="Альтернативні назви"
                     IsChecked="{Binding ProjectNamesCheckBoxIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource AddProjectNameRightHeaderItemCheckBox}" />
+                    Style="{StaticResource AddProjectNameHeaderItemCheckBox}" />
             </Grid>
         </materialDesign:Card>
 
         <ScrollViewer
-            x:Name="ProjectsScrollViewer"
             Grid.Row="1"
+            Grid.ColumnSpan="2"
             Style="{StaticResource AddProjectNameScrollViewer}"
             Visibility="{Binding State, Mode=OneWay, Converter={StaticResource InvertedViewModelStateToVisibilityConverter}}">
             <StackPanel x:Name="ProjectsListStackPanel" Orientation="Vertical" />
-        </ScrollViewer>
-
-        <ScrollViewer
-            Grid.Row="1"
-            Grid.Column="1"
-            Width="{Binding ElementName=ProjectsScrollViewer, Path=ActualWidth}"
-            Style="{StaticResource AddProjectNameScrollViewer}"
-            Visibility="{Binding State, Mode=OneWay, Converter={StaticResource InvertedViewModelStateToVisibilityConverter}}">
-            <StackPanel x:Name="ProjectNamesListStackPanel" Orientation="Vertical" />
         </ScrollViewer>
 
         <themeControls:WaitingControl
@@ -116,7 +108,6 @@
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding BindProjectsCheckBoxList}" CommandParameter="{Binding ElementName=ProjectsListStackPanel, Path=Children}" />
-            <i:InvokeCommandAction Command="{Binding BindProjectNamesCheckBoxList}" CommandParameter="{Binding ElementName=ProjectNamesListStackPanel, Path=Children}" />
             <i:InvokeCommandAction Command="{Binding ViewLoaded}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>

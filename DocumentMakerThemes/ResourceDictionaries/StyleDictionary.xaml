@@ -347,13 +347,6 @@
                 <Setter Property="Margin" Value="2.5,0,0,0" />
             </Style>
 
-            <Style
-                x:Key="AddProjectNameRightHeaderItemCheckBox"
-                BasedOn="{StaticResource AddProjectNameHeaderItemCheckBox}"
-                TargetType="CheckBox">
-                <Setter Property="Margin" Value="7.5,0,0,0" />
-            </Style>
-
             <Style x:Key="AddProjectNameTopCard" TargetType="materialDesign:Card">
                 <Setter Property="Padding" Value="5" />
                 <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth1" />
