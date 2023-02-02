@@ -383,6 +383,8 @@ namespace ActGenerator.Model
 											&& ((generatedWork.Back.BackType.Name == ProjectNodeType.Back.ToString()
 													&& back.BackNumberText == generatedWork.Back.Number.ToString()
 													&& back.BackName == generatedWork.Back.Name)
+												|| (generatedWork.Back.BackType.Name == ProjectNodeType.Craft.ToString()
+													&& back.BackName == generatedWork.Back.Name)
 												|| (back.BackName == generatedWork.Back.Number.ToString() + ". " + generatedWork.Back.Name)))
 										{
 											GeneratedWork changedGeneratedWork = generatedWork.Clone();
