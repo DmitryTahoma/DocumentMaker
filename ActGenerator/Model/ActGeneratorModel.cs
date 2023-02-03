@@ -347,6 +347,8 @@ namespace ActGenerator.Model
 					cache.UpdateGeneratedWorkList(generatedWorkList);
 				}
 			}
+
+			generatedWorkLists = generatedWorkLists.Select(x => x.Clone()).ToList();
 		}
 
 		private async Task RemovingUsedWorks(GenerationDialogViewModel dialogContext, double totalProgressPart)
@@ -375,7 +377,7 @@ namespace ActGenerator.Model
 
 								if (back.GameName == workList.Project.ToString())
 								{
-									foreach(GeneratedWork generatedWork in workList.GeneratedWorks.SelectMany(x => x.Value))
+									foreach(GeneratedWork generatedWork in workList.GeneratedWorks.Where(y => y.Key.Type == dcmkFile.TemplateType).SelectMany(x => x.Value))
 									{
 										if (back.WorkObjectId == generatedWork.WorkObject.Id
 											&& IsEqualTypes(back.Type, generatedWork.Back.BackType)
@@ -438,6 +440,8 @@ namespace ActGenerator.Model
 			const int parts = 3;
 			double progressPart = totalProgressPart / humen.Count() / parts;
 
+			List<GeneratedWorkList> generatedWorkListsSnapshot = generatedWorkLists.Select(x => x.Clone()).ToList();
+
 			acts = new Dictionary<HumanListItemControlModel, List<GeneratedWorkList>>();
 			foreach (HumanListItemControlModel human in humen)
 			{
@@ -485,6 +489,8 @@ namespace ActGenerator.Model
 
 				await AddPogress(dialogContext, progressPart);
 			}
+
+			generatedWorkLists = generatedWorkListsSnapshot;
 		}
 
 		private int GetRandomCountWorks(int sum, int countEnableWorks)

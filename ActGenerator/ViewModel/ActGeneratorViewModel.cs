@@ -36,6 +36,8 @@ namespace ActGenerator.ViewModel
 		HumenListControlViewModel humenListControlViewModel = null;
 		DocumentListControlViewModel documentListControlViewModel = null;
 
+		bool documentListChanged = false;
+
 		DateTimeItem savedSelectedDateTimeItem = null;
 
 		public ActGeneratorViewModel()
@@ -188,30 +190,33 @@ namespace ActGenerator.ViewModel
 			model.SetIsCollapseRegionsWorks(CollapseRegionsWorks);
 			model.SetDates(TechnicalTaskDate.Value, ActDate.Value);
 
-			foreach (HumanListItemControlModel human in humen)
+			if (!documentListChanged)
 			{
-				if (model.IsReadyToGeneration(human))
+				foreach (HumanListItemControlModel human in humen)
 				{
-					int countEnableWorks = model.GetCountEnabledWorks(human.SelectedTemplates);
-					int sum = (int)human.Sum;
-					int minCountWorks = model.GetMinCountWorks(sum);
-					if (countEnableWorks <= 0)
+					if (model.IsReadyToGeneration(human))
 					{
-						MessageBox.Show("На задану суму акту \"" + human.HumanData.Name + "\" недостатня кількість робіт.", "Змініть налаштування сум", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
-						return;
-					}
-					else if (countEnableWorks < minCountWorks)
-					{
-						int targetWorkCost = sum / countEnableWorks + 100;
-						if (MessageBoxResult.No == MessageBox.Show("На задану суму акту \"" + human.HumanData.Name + "\" недостатня кількість робіт. Змінити макимум суми однієї роботи на " + targetWorkCost + " гривень?", "Змініть налаштування сум", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No))
+						int countEnableWorks = model.GetCountEnabledWorks(human.SelectedTemplates);
+						int sum = (int)human.Sum;
+						int minCountWorks = model.GetMinCountWorks(sum);
+						if (countEnableWorks <= 0)
 						{
+							MessageBox.Show("На задану суму акту \"" + human.HumanData.Name + "\" недостатня кількість робіт.", "Змініть налаштування сум", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
 							return;
 						}
-						else
+						else if (countEnableWorks < minCountWorks)
 						{
-							maxSum = targetWorkCost;
-							MaxSumText = maxSum.ToString();
-							model.SetSumLimits(minSum, maxSum);
+							int targetWorkCost = sum / countEnableWorks + 100;
+							if (MessageBoxResult.No == MessageBox.Show("На задану суму акту \"" + human.HumanData.Name + "\" недостатня кількість робіт. Змінити макимум суми однієї роботи на " + targetWorkCost + " гривень?", "Змініть налаштування сум", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No))
+							{
+								return;
+							}
+							else
+							{
+								maxSum = targetWorkCost;
+								MaxSumText = maxSum.ToString();
+								model.SetSumLimits(minSum, maxSum);
+							}
 						}
 					}
 				}
@@ -242,7 +247,10 @@ namespace ActGenerator.ViewModel
 				generationDialogViewModel.Dispatcher.Invoke(() =>
 				{
 					if (!generationDialogViewModel.IsClosing)
+					{
 						generationDialogViewModel.GenerationSuccessed = true;
+						documentListChanged = false;
+					}
 
 					List<string> names = model.GetGeneratedActNames();
 					generationDialogViewModel.CanAddGeneratedActs = names != null && names.Count > 0;
@@ -294,6 +302,7 @@ namespace ActGenerator.ViewModel
 
 				documentListControlViewModel.SelectedDateTimeItem = documentListControlViewModel.DateTimeItems?.FirstOrDefault(x => x.DateTime == savedSelectedDateTimeItem?.DateTime)
 					?? documentListControlViewModel.DateTimeItems?.FirstOrDefault();
+				documentListControlViewModel.CollectionChangedCommand = new Command(() => { documentListChanged = true; });
 			}
 		}
 

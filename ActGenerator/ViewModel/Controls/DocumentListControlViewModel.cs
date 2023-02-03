@@ -75,6 +75,7 @@ namespace ActGenerator.ViewModel.Controls
 					LoadAct(filename);
 					await Task.Delay(1);
 				}
+				CollectionChangedCommand?.Execute();
 			}
 		}
 
@@ -82,7 +83,10 @@ namespace ActGenerator.ViewModel.Controls
 		private void OnRemoveActExecute(DocumentListItemControl documentListItemControl)
 		{
 			itemsCollection.Remove(documentListItemControl);
+			CollectionChangedCommand?.Execute();
 		}
+
+		public Command CollectionChangedCommand { get; set; }
 
 		#endregion
 

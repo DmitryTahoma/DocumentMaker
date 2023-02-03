@@ -49,9 +49,16 @@ namespace ActGenerator.Model
 			generatedWorks = new Dictionary<FullDocumentTemplate, List<GeneratedWork>>(worksSource);
 		}
 
-		public void ClearWorks()
+		public GeneratedWorkList Clone()
 		{
-			generatedWorks.Clear();
+			return new GeneratedWorkList
+			{
+				Project = Project,
+				generatedWorks = new Dictionary<FullDocumentTemplate, List<GeneratedWork>>
+					(generatedWorks
+						.Select(x => new KeyValuePair<FullDocumentTemplate, List<GeneratedWork>>(x.Key, new List<GeneratedWork>(x.Value)))
+						.ToDictionary(key => key.Key, value => value.Value)),
+			};
 		}
 	}
 }
