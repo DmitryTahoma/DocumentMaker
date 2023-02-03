@@ -50,6 +50,10 @@ namespace Mvvm
 				selector.GetBindingExpression(Selector.SelectedItemProperty)?.UpdateSource();
 				selector.GetBindingExpression(ItemsControl.ItemsSourceProperty)?.UpdateSource();
 			}
+			else if(obj is DatePicker datePicker)
+			{
+				datePicker.GetBindingExpression(DatePicker.TextProperty)?.UpdateSource();
+			}
 		}
 	}
 }
