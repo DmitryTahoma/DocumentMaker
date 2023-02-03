@@ -22,8 +22,8 @@ namespace ActGenerator.Model
 
 		public string MinSumText { get; set; } = "1200";
 		public string MaxSumText { get; set; } = "2500";
-		public DateTime? TechnicalTaskDate { get; set; } = null;
-		public DateTime? ActDate { get; set; } = null;
+		public DateTime? TechnicalTaskDate { get; set; } = new DateTime(2023, 1, 1);
+		public DateTime? ActDate { get; set; } = new DateTime(2023, 2, 1);
 		public bool CollapseRegionsWorks { get; set; } = true;
 		public DateTimeItem SelectedDateTimeItem { get; set; } = null;
 		public CryptedConnectionString CryptedConnectionString { get; set; }
