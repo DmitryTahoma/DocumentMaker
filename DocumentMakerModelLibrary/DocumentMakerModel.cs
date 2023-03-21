@@ -26,6 +26,7 @@ namespace DocumentMakerModelLibrary
 	{
 		private readonly OfficeExporter exporter;
 		private readonly ObservableCollection<FullDocumentTemplate> documentTemplates;
+		private readonly ObservableCollection<string> contractFilesList;
 		private readonly ObservableRangeCollection<HumanData> humanFullNameList;
 		private readonly ObservableRangeCollection<DmxFile> openedFilesList;
 		private readonly List<GameObject> gameNameList;
@@ -51,6 +52,7 @@ namespace DocumentMakerModelLibrary
 				new FullDocumentTemplate("Перекладач", DocumentTemplateType.Translator),
 				new FullDocumentTemplate("Підтримка", DocumentTemplateType.Support),
 			};
+			contractFilesList = new ObservableCollection<string>();
 			humanFullNameList = new ObservableRangeCollection<HumanData>();
 			openedFilesList = new ObservableRangeCollection<DmxFile>();
 			gameNameList = new List<GameObject>();
@@ -116,6 +118,7 @@ namespace DocumentMakerModelLibrary
 		public string ActSaldo { get; set; }
 		public bool NeedUpdateSum { get; set; }
 		public IList<FullDocumentTemplate> DocumentTemplatesList => documentTemplates;
+		public IList<string> ContractFilesList => contractFilesList;
 		public IList<HumanData> HumanFullNameList => humanFullNameList;
 		public bool HasNoMovedFiles => exporter.HasNoMovedFiles;
 		public IList<GameObject> GameNameList => gameNameList;

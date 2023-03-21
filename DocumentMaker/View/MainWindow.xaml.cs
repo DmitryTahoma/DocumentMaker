@@ -134,6 +134,8 @@ namespace DocumentMaker
 
 		public IList<FullDocumentTemplate> DocumentTemplatesList => controller.DocumentTemplatesList;
 
+		public IList<string> ContractFilesList => controller.ContractFilesList;
+
 		public string TechnicalTaskDateText
 		{
 			get => (string)GetValue(TechnicalTaskDateTextProperty);

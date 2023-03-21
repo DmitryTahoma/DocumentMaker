@@ -80,6 +80,7 @@ namespace DocumentMaker.Controller
 		public bool NeedUpdateSum { get => model.NeedUpdateSum; set => model.NeedUpdateSum = value; }
 		public List<FullBackDataController> BackDataControllers { get; set; }
 		public IList<FullDocumentTemplate> DocumentTemplatesList => model.DocumentTemplatesList;
+		public IList<string> ContractFilesList => model.ContractFilesList;
 		public IList<HumanData> HumanFullNameList => model.HumanFullNameList;
 		public bool HasNoMovedFiles => model.HasNoMovedFiles;
 		public IList<WorkObject> CurrentWorkTypesList => DocumentTemplatesList.FirstOrDefault(x => x.Type == TemplateType)?.WorkTypesList;
