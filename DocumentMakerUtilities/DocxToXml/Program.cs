@@ -50,8 +50,9 @@ namespace DocxToXml
 							}
 						}
 					}
+
+					MessageBox.Show("Done!", "DocxToXml", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
-				MessageBox.Show("Done!", "DocxToXml", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 			catch (Exception e)
 			{
