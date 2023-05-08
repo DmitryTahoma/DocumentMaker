@@ -738,7 +738,27 @@ namespace ActGenerator.Model
 
 		private string GetBaseBackNumber(Back back)
 		{
-			return back.BaseBackId == null ? null : loadedBacks.FirstOrDefault(x => x.Id == back.BaseBackId)?.Number.ToString();
+			string number = string.Empty;
+			if (back.BaseBackId == null)
+				return null;
+			else
+			{
+				Back baseBack = loadedBacks.FirstOrDefault(x => x.Id == back.BaseBackId);
+
+				if (baseBack != null)
+				{
+					float numberBack = baseBack.Number;
+
+					if (baseBack.BackType.Name == nameof(ProjectNodeType.Craft) && numberBack < 1)
+					{
+						numberBack += 1;
+					}
+
+					number = numberBack.ToString();
+				}
+			}
+
+			return number;
 		}
 
 		private Dml.Model.Back.BackType GetDmlBackType(GeneratedWork generatedWork)
