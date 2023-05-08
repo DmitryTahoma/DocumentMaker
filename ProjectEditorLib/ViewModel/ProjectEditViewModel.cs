@@ -141,6 +141,7 @@ namespace ProjectEditorLib.ViewModel
 			ChangeNodeOptionsView = new Command<TreeViewItem>(OnChangeNodeOptionsViewExecute);
 			BindOptionsView = new Command<UIElementCollection>(OnBindOptionsViewExecute);
 			CollapseAllTree = new Command(OnCollapseAllTreeExecute);
+			ExpandAllTree = new Command(OnExpandAllTreeExecute);
 			Save = new Command(OnSaveExecute, CanExecuteSave);
 			BindSnackbar = new Command<Snackbar>(OnBindSnackbarExecute);
 			SendSnackbar = new Command<FrameworkElement>(OnSendSnackbarExecute);
@@ -217,6 +218,12 @@ namespace ProjectEditorLib.ViewModel
 			{
 				CollapseTreeItems(TreeItems);
 			}
+		}
+
+		public Command ExpandAllTree { get; private set; }
+		private void OnExpandAllTreeExecute()
+		{
+			ExpandTreeItems(TreeItems);
 		}
 
 		public Command Save { get; private set; }
@@ -414,10 +421,19 @@ namespace ProjectEditorLib.ViewModel
 
 		private void CollapseTreeItems(IEnumerable treeItems)
 		{
-			foreach(TreeViewItem item in treeItems)
+			foreach (TreeViewItem item in treeItems)
 			{
 				item.IsExpanded = false;
 				CollapseTreeItems(item.Items);
+			}
+		}
+
+		private void ExpandTreeItems(IEnumerable treeItems)
+		{
+			foreach (TreeViewItem item in treeItems)
+			{
+				item.IsExpanded = true;
+				ExpandTreeItems(item.Items);
 			}
 		}
 

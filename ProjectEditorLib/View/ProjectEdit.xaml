@@ -80,6 +80,15 @@
                                 Height="18"
                                 Kind="CollapseAllOutline" />
                         </Button>
+                        <Button
+                            Command="{Binding ExpandAllTree}"
+                            Style="{StaticResource ToolBarButton}"
+                            ToolTip="Розгорнути все">
+                            <materialDesign:PackIcon
+                                Width="18"
+                                Height="18"
+                                Kind="ExpandAllOutline" />
+                        </Button>
                     </ToolBar>
                 </ToolBarTray>
 
