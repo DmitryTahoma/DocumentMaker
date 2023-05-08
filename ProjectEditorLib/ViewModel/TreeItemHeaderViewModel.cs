@@ -96,7 +96,7 @@ namespace ProjectEditorLib.ViewModel
 				case ProjectNodeType.Project:
 					itemsSource.Add(new MenuItem { Header = "Додати епізод", Command = CreateAddCommand(ProjectNodeType.Episode), DataContext = NodeContextMenuItemType.Adding });
 					itemsSource.Add(new MenuItem { Header = "Додати бек", Command = CreateAddCommand(ProjectNodeType.Back), DataContext = NodeContextMenuItemType.Adding });
-					itemsSource.Add(new MenuItem { Header = "Додати", Command = CreateAddCommand(ProjectNodeType.Craft), DataContext = NodeContextMenuItemType.Adding });
+					itemsSource.Add(new MenuItem { Header = "Додати крафт", Command = CreateAddCommand(ProjectNodeType.Craft), DataContext = NodeContextMenuItemType.Adding });
 					break;
 				case ProjectNodeType.Episode:
 					itemsSource.Add(new MenuItem { Header = "Додати бек", Command = CreateAddCommand(ProjectNodeType.Back), DataContext = NodeContextMenuItemType.Adding });
