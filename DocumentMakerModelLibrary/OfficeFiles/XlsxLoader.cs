@@ -49,7 +49,9 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 							{
 								text = c.CellValue?.Text;
 							}
-							humanData.SetData(curColId, text);
+							
+							//humanData.SetData(curColId, text);
+							humanData.SetData(c.CellReference.InnerText[0], text);
 							++curColId;
 						}
 
