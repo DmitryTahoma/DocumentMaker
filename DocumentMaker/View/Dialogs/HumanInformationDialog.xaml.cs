@@ -72,7 +72,6 @@ namespace DocumentMaker.View.Dialogs
 			get => (string)GetValue(HumanIdTextProperty);
 			set => SetValue(HumanIdTextProperty, value);
 		}
-
 		public string AddressText
 		{
 			get => (string)GetValue(AddressTextProperty);

@@ -85,6 +85,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controller\Controls\FullBackDataController.cs" />
+    <Compile Include="View\Dialogs\ChangeContractFilesDialog.xaml.cs">
+      <DependentUpon>ChangeContractFilesDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Dialogs\ChangeDatesDialog.xaml.cs">
       <DependentUpon>ChangeDatesDialog.xaml</DependentUpon>
     </Compile>
@@ -103,9 +106,16 @@
     <Compile Include="View\Dialogs\CorrectSupportDialog.xaml.cs">
       <DependentUpon>CorrectSupportDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Dialogs\GamePriceDialog.xaml.cs">
+      <DependentUpon>GamePriceDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Dialogs\HumanInformationDialog.xaml.cs">
       <DependentUpon>HumanInformationDialog.xaml</DependentUpon>
     </Compile>
+    <Page Include="View\Dialogs\ChangeContractFilesDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Dialogs\ChangeDatesDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -127,6 +137,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Dialogs\CorrectSupportDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Dialogs\GamePriceDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

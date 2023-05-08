@@ -1,4 +1,5 @@
 ﻿using Dml.Controller.Validation;
+using Dml.Model.Template;
 using System.Collections.Generic;
 
 namespace DocumentMakerModelLibrary.OfficeFiles.Human
@@ -6,6 +7,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles.Human
 	public class HumanData
 	{
 		public string Name { get; set; }
+		public DocumentType DocType { get; set; } = DocumentType.Empty;
 		public string HumanIdText { get; set; }
 		public string BankName { get; set; }
 		public string PaymentAccountText { get; set; }
@@ -14,9 +16,12 @@ namespace DocumentMakerModelLibrary.OfficeFiles.Human
 		public string ContractReworkNumberText { get; set; }
 		public string ContractReworkDateText { get; set; }
 		public string AddressText { get; set; }
+		public string ContractFile { get; set; }
 		public string CityName { get; set; }
+		public string RegionName { get; set; }
 		public string MfoText { get; set; }
 		public string DefaultTemplate { get; set; }
+		public string AccountNumberText { get; set; }
 
 		public void SetData(char type, string value)
 		{
@@ -27,17 +32,31 @@ namespace DocumentMakerModelLibrary.OfficeFiles.Human
 				switch (type)
 				{
 					case 'A': Name = value; break;
-					case 'B': HumanIdText = value; break;
-					case 'C': BankName = value; break;
-					case 'D': PaymentAccountText = value; break;
-					case 'E': ContractNumberText = value; break;
-					case 'F': ContractDateText = value; break;
-					case 'G': ContractReworkNumberText = value; break;
-					case 'H': ContractReworkDateText = value; break;
-					case 'I': CityName = value; break;
-					case 'J': AddressText = value; break;
-					case 'K': MfoText = value; break;
-					case 'L': DefaultTemplate = value; break;
+					case 'B':
+					{
+						switch(value)
+						{
+							case "ГИГ": DocType = DocumentType.GIG; break;
+							case "ФОП": DocType = DocumentType.FOP; break;
+							case "ФОПФ": DocType = DocumentType.FOPF; break;
+							case "Штат": DocType = DocumentType.Staff; break;
+							default: DocType = DocumentType.GIG; break;
+						};
+						break;
+					}
+					case 'C': HumanIdText = value; break;
+					case 'D': BankName = value; break;
+					case 'E': PaymentAccountText = value; break;
+					case 'F': ContractNumberText = value; break;
+					case 'G': ContractDateText = value; break;
+					case 'H': ContractReworkNumberText = value; break;
+					case 'I': ContractReworkDateText = value; break;
+					case 'J': RegionName = value; break;
+					case 'K': CityName = value; break;
+					case 'L': AddressText = value; break;
+					case 'M': MfoText = value; break;
+					case 'N': DefaultTemplate = value; break;
+					case 'O': AccountNumberText = value; break;
 				}
 			}
 		}

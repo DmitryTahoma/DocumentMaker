@@ -9,21 +9,33 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 	{
 		private const string yearStr = "року";
 
-		public DocumentGeneralData(DocumentMakerModel model, bool isExportRework, uint actSum)
+		public DocumentGeneralData(DocumentMakerModel model, bool isExportRework, uint actSum, int countWorks)
 		{
+			CountWorks = countWorks.ToString();
 			ActDate = model.ActDateText;
 			HumanFullName = model.SelectedHuman;
 			HumanID = model.HumanIdText;
 			HumanAddress = model.AddressText;
-			HumanPA = model.PaymentAccountText;
 			HumanBank = model.BankName;
-			HumanMFO = "МФО " + model.MfoText;
+
+			if (!string.IsNullOrEmpty(model.PaymentAccountText))
+			{
+				HumanPA = "р/р" + model.PaymentAccountText;
+				HumanPA2 = model.PaymentAccountText;
+			}
+
+			if (!string.IsNullOrEmpty(model.MfoText))
+			{
+				HumanMFO = "МФО " + model.MfoText;
+				HumanMFO2 = model.MfoText;
+			}
+
 			if (!isExportRework)
 			{
 				DogovorNum = model.ContractNumberText;
 				DogovorFullDate = model.ContractDateText;
 				NameOfWorkText = "розробки";
-				if(model.TemplateType != DocumentTemplateType.Soundman)
+				if (model.TemplateType != DocumentTemplateType.Soundman)
 					FirstPartText = " розробки ігрових прикладних програм Замовника";
 			}
 			else
@@ -36,7 +48,8 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			}
 			ActSum = actSum.ToString();
 			CityName = model.CityName;
-			ActSumText = NumberToWords.Str(actSum);
+			RegionName = model.RegionName;
+			ActSumText = NumberToWords.Str(actSum)?.TrimEnd();
 
 			if (!(model.TemplateType == DocumentTemplateType.Support || model.TemplateType == DocumentTemplateType.Translator || model.TemplateType == DocumentTemplateType.Tester || model.TemplateType == DocumentTemplateType.Soundman))
 				FirstPartText2 = "Замовник надав віддалений доступ до ігрових комп’ютерних програм, а ";
@@ -46,7 +59,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 
 			SecondPartText = (model.TemplateType == DocumentTemplateType.Support || model.TemplateType == DocumentTemplateType.Translator) ?
 				"Виконавцем були виконані наступні роботи (надані такі послуги):" :
-				"Договір виконано відповідно до технічного завдання №[TTDateY]/[TTDateM]/[TTDateD]/[TTNum2d] від [TTFullDate] (Додаток №1 до Договору №[DogovorNum] від [DogovorFullDate]) в наступних обсягах:";
+				"Договір виконано відповідно до технічного завдання №[TTDateY]/[TTDateM]/[TTDateD]/[TTNum2d] від [TTFullDate] (Додаток №1 до [DogovorType2] від [DogovorFullDate]) в наступних обсягах:";
 
 			ThirdPartText = (model.TemplateType == DocumentTemplateType.Support || model.TemplateType == DocumentTemplateType.Translator) ?
 				"По виконанню зазначених вище обсягів робіт Сторони претензій не мають." :
@@ -74,6 +87,67 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			ActDate2 = DateTime.Parse(ActDate).ToString("yyyy.MM.dd");
 			ActSumTextPart1 = ActSumText.Substring(0, ActSumText.LastIndexOf(' ')).ToLower();
 			ActSumTextPart2 = GetActSumTextPart2();
+
+			if (model.DocType == DocumentType.FOP || model.DocType == DocumentType.FOPF)
+			{
+				HumanNameFOP = "ФОП " + HumanName;
+				HumanNameFOP2 = "Фізична особа - підприємець " + HumanFullName;
+			}
+			else
+			{
+				HumanNameFOP = HumanName;
+				HumanNameFOP2 = "Фізична особа " + HumanFullName;
+			}
+
+			if (model.DocType == DocumentType.FOP || model.DocType == DocumentType.FOPF || model.DocType == DocumentType.GIG)
+			{
+				DogovorType = "Договору №" + DogovorNum;
+				DogovorType2 = "Договору №" + DogovorNum;
+			}
+			else
+			{
+				DogovorType = "Трудового договору";
+				DogovorType2 = "Договору";
+			}
+
+
+			string[] dateMonth = ActDate.Split('.');
+			if (dateMonth.Length == 3)
+			{
+				if (model.AccountNumberText != null)
+				{
+					string year = dateMonth[2][2].ToString() + dateMonth[2][3].ToString();
+					AccountNumberText = model.AccountNumberText;
+					AccountNumberText = AccountNumberText.Replace("#y", dateMonth[2]);
+					AccountNumberText = AccountNumberText.Replace("#m", dateMonth[1]);
+					AccountNumberText = AccountNumberText.Replace("#d", dateMonth[0]);
+					AccountNumberText = AccountNumberText.Replace("#sy", year);
+				}
+			}
+			else
+				AccountNumberText += "Невірний номер";
+
+
+			if (model.DocType == DocumentType.FOPF)
+			{
+				CustomerText = "ФОП Фролов О. В.";
+				CustomerText2 = "Фізична особа-підприємець Фролов Олександр Вікторович";
+				CustomerText3 = "Фролов О. В.";
+				Director = "";
+				DirectorID = "ІН 2978003352";
+				DirectorAddress = "пр-зд. Білоруський, буд. 14, кв. 22";
+				DirectorPA = "р/рUA323052990000026006050298289";
+			}
+			else
+			{
+				CustomerText = "ТОВ \"ФАЙВ - БН СТУДІЯ\"";
+				CustomerText2 = "Товариство з обмеженою відповідальністю «ФАЙВ-БН СТУДІЯ», в особі директора Фролова Олександра Вікторовича";
+				CustomerText3 = "Фролов О. В.";
+				Director = "Директор ";
+				DirectorID = "ЄДРПОУ 38187315";
+				DirectorAddress = "вул. Менделєєва, буд 46, прим.9";
+				DirectorPA = "р/рUA953052990000026008050250430";
+			}
 		}
 
 		public string NameOfWorkText { get; }
@@ -89,8 +163,11 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		public string ThirdPartText { get; }
 
 		public string DogovorNum { get; }
+		public string DogovorType { get; }
+		public string DogovorType2 { get; }
 
 		public string DogovorFullDate { get; }
+		public string DogovorFullDate2 { get; }
 
 		public string TTFullDate { get; }
 
@@ -105,6 +182,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		public string ActDate { get; }
 
 		public string CityName { get; }
+		public string RegionName { get; }
 
 		public string HumanName { get; }
 
@@ -113,10 +191,12 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		public string HumanAddress { get; }
 
 		public string HumanPA { get; }
+		public string HumanPA2 { get; }
 
 		public string HumanBank { get; }
 
 		public string HumanMFO { get; }
+		public string HumanMFO2 { get; }
 
 		public string ActFullDate { get; }
 
@@ -125,6 +205,8 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		public string TTDateStr2 { get; }
 
 		public string HumanSecondName { get; }
+		public string HumanNameFOP { get; }
+		public string HumanNameFOP2 { get; }
 
 		public string ActDate2 { get; }
 
@@ -137,6 +219,16 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		public string ActSumTextPart1 { get; }
 
 		public string ActSumTextPart2 { get; }
+		public string CountWorks { get; }
+		public string AccountNumberText { get; } = string.Empty;
+		public string CustomerText { get; } = string.Empty;
+		public string CustomerText2 { get; }
+		public string CustomerText3 { get; }
+		public string Director { get; }
+		public string DirectorID { get; }
+		public string DirectorAddress { get; }
+		public string DirectorPA { get; }
+
 
 		private string Get2dNumber(string str)
 		{

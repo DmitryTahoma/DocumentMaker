@@ -92,10 +92,12 @@ namespace DocumentMakerModelLibrary
 
 		public IList<DmxFile> OpenedFilesList => openedFilesList;
 		public DocumentTemplateType TemplateType { get; set; } = DocumentTemplateType.Empty;
+		public DocumentType DocType { get; set; } = DocumentType.Empty;
 		public string TechnicalTaskDateText { get; set; }
 		public string ActDateText { get; set; }
 		public string TechnicalTaskNumText { get; set; } = "1";
 		public string SelectedHuman { get; set; }
+		public string SelectedContractFile { get; set; }
 		public string HumanIdText { get; set; }
 		public string AddressText { get; set; }
 		public string PaymentAccountText { get; set; }
@@ -106,6 +108,8 @@ namespace DocumentMakerModelLibrary
 		public string ContractReworkNumberText { get; set; }
 		public string ContractReworkDateText { get; set; }
 		public string CityName { get; set; }
+		public string RegionName { get; set; }
+		public string AccountNumberText { get; set; }
 		public string ActSum
 		{
 			get => actSum;
@@ -160,6 +164,18 @@ namespace DocumentMakerModelLibrary
 				loader.SetLoadedProperties(this);
 				loader.SetLoadedListProperties(backModels);
 				loader.SetLoadedDmxFiles(openedFilesList);
+			}
+		}
+
+		public void LoadContract(string path)
+		{
+			if (Directory.Exists(path))
+			{
+				string fileMask = "*.xlsx";
+				foreach (string fileName in Directory.GetFiles(path, fileMask))
+				{
+					contractFilesList.Add(fileName.Substring(fileName.LastIndexOf('\\') + 1));
+				}
 			}
 		}
 
@@ -226,6 +242,7 @@ namespace DocumentMakerModelLibrary
 			{
 				bool isExportRework = i == 1;
 				uint actSum = 0;
+
 				foreach (FullBackDataModel backModel in backModels)
 				{
 					if (backModel.IsRework == isExportRework && uint.TryParse(backModel.SumText, out uint sum))
@@ -234,13 +251,17 @@ namespace DocumentMakerModelLibrary
 					}
 				}
 
-				DocumentGeneralData generalData = new DocumentGeneralData(this, isExportRework, actSum);
+				DocumentGeneralData generalData = new DocumentGeneralData(this, isExportRework, actSum, backModels.Count());
 				DocumentTableData tableData = new DocumentTableData(backModels, TemplateType, isExportRework);
 				if (tableData.Count() <= 0) continue;
 				int j = -1;
 				foreach (ResourceInfo resource in DocumentResourceManager.GetItems(isExportRework))
 				{
 					++j;
+
+					if (j == 2)
+						continue;
+
 					if (j == 0 && (TemplateType == DocumentTemplateType.Support || TemplateType == DocumentTemplateType.Translator))
 						continue;
 
@@ -248,9 +269,9 @@ namespace DocumentMakerModelLibrary
 
 					if (resource.Type == ResourceType.Docx)
 					{
-						string nearFullname = exporter.ExportWordTemplate(resource.ProjectName, isExportRework);
+						string nearFullname = exporter.ExportWordTemplate(resource.ProjectName, isExportRework, 0);
 						exporter.FillWordGeneralData(generalData);
-						exporter.FillWordTableData(tableData);
+						exporter.FillWordTableData(tableData, 0);
 						exporter.SaveWordContent(nearFullname);
 						exporter.SaveTemplate(generalData, path, nearFullname, resource.TemplateName);
 					}
@@ -259,6 +280,44 @@ namespace DocumentMakerModelLibrary
 						exporter.ExportExcelTemplate(resource.ProjectName);
 						exporter.FillExcelTableData(resource.ProjectName, tableData);
 						exporter.SaveTemplate(generalData, path, "", resource.TemplateName);
+					}
+				}
+			}
+
+			if (DocType == DocumentType.FOP || DocType == DocumentType.FOPF)
+			{ 
+				uint actSum = 0;
+				foreach (FullBackDataModel backModel in backModels)
+				{
+					if (uint.TryParse(backModel.SumText, out uint sum))
+					{
+						actSum += sum;
+					}
+				}
+
+				DocumentGeneralData generalData = new DocumentGeneralData(this, false, actSum, backModels.Count());
+				DocumentTableData tableData = new DocumentTableData(backModels, this);
+
+				if (tableData.Count() > 0)
+				{
+					int j = -1;
+					foreach (ResourceInfo resource in DocumentResourceManager.GetItems(false))
+					{
+						++j;
+
+						if (j != 2)
+							continue;
+
+						exporter.Clear();
+
+						if (resource.Type == ResourceType.Docx)
+						{
+							string nearFullname = exporter.ExportWordTemplate(resource.ProjectName, false, 2);
+							exporter.FillWordGeneralData(generalData);
+							exporter.FillWordTableData(tableData, 2);
+							exporter.SaveWordContent(nearFullname);
+							exporter.SaveTemplate(generalData, path, nearFullname, resource.TemplateName);
+						}
 					}
 				}
 			}
@@ -626,6 +685,14 @@ namespace DocumentMakerModelLibrary
 			foreach (DmxFile file in openedFilesList)
 			{
 				file.ActDateText = actDateText;
+			}
+		}
+
+		public void ChangeContractFileAtAllFiles(string nameFile)
+		{
+			foreach (DmxFile file in openedFilesList)
+			{
+				file.SelectedContractFile = nameFile;
 			}
 		}
 	}

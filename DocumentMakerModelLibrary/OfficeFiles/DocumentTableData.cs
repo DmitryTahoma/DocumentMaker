@@ -22,6 +22,29 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			}
 		}
 
+		public DocumentTableData(IEnumerable<FullBackDataModel> backModels, DocumentMakerModel docModel)
+		{
+			rows = new List<DocumentTableRowData>();
+			uint id = 1;
+			foreach (FullBackDataModel model in backModels)
+			{
+				if (!model.IsRework)
+				{
+					rows.Add(new DocumentTableRowData(model, docModel, id));
+					id++;
+				}
+			}
+
+			foreach (FullBackDataModel model in backModels)
+			{
+				if (model.IsRework)
+				{
+					rows.Add(new DocumentTableRowData(model, docModel, id));
+					id++;
+				}
+			}
+		}
+
 		public IEnumerator<DocumentTableRowData> GetEnumerator()
 		{
 			return rows.GetEnumerator();

@@ -39,14 +39,14 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			TemplateLoaded = false;
 		}
 
-		public string ExportWordTemplate(string name, bool isExportRework)
+		public string ExportWordTemplate(string name, bool isExportRework, int indexTable)
 		{
 			if (!TemplateLoaded)
 			{
 				ExportTemplate(name, isExportRework, out string nearFullname);
 
 				xml.LoadXml(GetXmlFromWordFile(nearFullname));
-				if (FindRowPart())
+				if (FindRowPart(indexTable))
 				{
 					TemplateLoaded = true;
 					return nearFullname;
@@ -69,7 +69,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			xml.InnerXml = str;
 		}
 
-		public void FillWordTableData(DocumentTableData data)
+		public void FillWordTableData(DocumentTableData data, int indexTable)
 		{
 			if (!TemplateLoaded) throw new Exception("Template file didn't loaded!");
 
@@ -81,7 +81,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 				xmlRows.Add(xmlTemplate);
 			}
 
-			AddXmlRows(xmlRows);
+			AddXmlRows(xmlRows, indexTable);
 		}
 
 		public void FillPropertiesData(object data, ref string xmlStr)
@@ -222,12 +222,13 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			}
 		}
 
-		private bool FindRowPart()
+		private bool FindRowPart(int indexTable)
 		{
 			XmlNodeList tables = xml.DocumentElement.GetElementsByTagName(OfficeStrings.WordTableTagName);
 			if (tables.Count <= 0) return false;
+			if (tables.Count <= indexTable) return false;
 
-			XmlElement table = (XmlElement)tables[0];
+			XmlElement table = (XmlElement)tables[indexTable];
 			XmlNodeList rows = table.GetElementsByTagName(OfficeStrings.WordTableRowTagName);
 			if (rows.Count <= 0) return false;
 
@@ -238,14 +239,18 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			return true;
 		}
 
-		private void AddXmlRows(IEnumerable<string> xmlRows)
+		private void AddXmlRows(IEnumerable<string> xmlRows, int indexTable)
 		{
 			XmlNodeList tables = xml.DocumentElement.GetElementsByTagName(OfficeStrings.WordTableTagName);
-			XmlElement table = (XmlElement)tables[0];
 
-			foreach (string row in xmlRows)
+			if (tables.Count > indexTable)
 			{
-				table.InnerXml += row;
+				XmlElement table = (XmlElement)tables[indexTable];
+
+				foreach (string row in xmlRows)
+				{
+					table.InnerXml += row;
+				}
 			}
 		}
 

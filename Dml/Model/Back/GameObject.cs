@@ -6,10 +6,12 @@ namespace Dml.Model.Back
 	public class GameObject
 	{
 		private List<string> episodes;
+		private List<string> altName;
 
 		public GameObject()
 		{
 			episodes = null;
+			altName = new List<string>();
 		}
 
 		public string Name { get; set; }
@@ -17,6 +19,7 @@ namespace Dml.Model.Back
 		public bool HaveEpisodes { get => episodes != null && episodes.Count > 0; }
 
 		public IList<string> Episodes { get => episodes; }
+		public IList<string> AltName { get => altName; }
 
 		public void SetEpisodes(uint count)
 		{
@@ -25,6 +28,14 @@ namespace Dml.Model.Back
 
 			for (uint i = 1; i <= count; ++i)
 				episodes.Add(i.ToString());
+		}
+
+		public void AddAltName(string name)
+		{
+			if (altName == null) altName = new List<string>();
+
+			if(!string.IsNullOrEmpty(name) && !altName.Contains(name))
+				altName.Add(name);
 		}
 
 		public override string ToString()

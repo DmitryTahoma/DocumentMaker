@@ -24,6 +24,7 @@ namespace DocumentMakerModelLibrary.Files
 		public string TechnicalTaskNumText { get; set; } = "1";
 		public string ActSum { get; set; }
 		public bool NeedUpdateSum { get; set; }
+		public string SelectedContractFile { get; set; }
 
 		#endregion
 
@@ -115,6 +116,11 @@ namespace DocumentMakerModelLibrary.Files
 		public void ChangeExtension()
 		{
 			FullName = Path.ChangeExtension(FullName, DcmkFile.Extension);
+		}
+
+		public void ChangePath(string path)
+		{
+			FullName = path;
 		}
 	}
 }

@@ -94,6 +94,11 @@
                         Icon="{materialDesign:PackIcon Kind=ContentSaveAllOutline}" />
                     <Separator />
                     <MenuItem
+                        Click="CombineDcmkBtnClick"
+                        Header="Об'єднати файли по людині"
+                        Icon="{materialDesign:PackIcon Kind=VectorCombine}" />
+                    <Separator />
+                    <MenuItem
                         Click="ExportBtnClick"
                         Header="Експорт"
                         Icon="{materialDesign:PackIcon Kind=FileWordOutline}" />
@@ -101,6 +106,10 @@
                         Click="ExportAllBtnClick"
                         Header="Експорт всіх актів"
                         Icon="{materialDesign:PackIcon Kind=FileMultipleOutline}" />
+                    <MenuItem
+                        Click="ExportGameSum"
+                        Header="Експорт сум iгор"
+                        Icon="{materialDesign:PackIcon Kind=FileExcelOutline}" />
                 </MenuItem>
                 <MenuItem Header="Редагування" Icon="{materialDesign:PackIcon Kind=FileDocumentEditOutline}">
                     <MenuItem
@@ -118,13 +127,33 @@
                     <Separator />
                     <MenuItem
                         Click="ChangeAllDates"
-                        Header="Змінити дату у всіх файлах"
+                        Header="Змінити дату у відкритих файлах"
                         Icon="{materialDesign:PackIcon Kind=CalendarMonth}" />
+                    <MenuItem
+                        Click="ChangeAllContractFiles"
+                        Header="Змінити файли договору у відкритих файлах"
+                        Icon="{materialDesign:PackIcon Kind=FileDocumentOutline}" />
                 </MenuItem>
-                <MenuItem
-                    Click="InfoBtnClick"
-                    Header="Інформація"
-                    Icon="{materialDesign:PackIcon Kind=InformationCircleOutline}" />
+                <MenuItem Header="Посилання" Icon="{materialDesign:PackIcon Kind=LinkVariant}">
+                    <MenuItem
+                        Click="ShowInstruction"
+                        Header="Інструкція"
+                        Icon="{materialDesign:PackIcon Kind=LinkVariant}" />
+                    <MenuItem
+                        Click="ShowBackNames"
+                        Header="Назви фонів"
+                        Icon="{materialDesign:PackIcon Kind=LinkVariant}" />
+                </MenuItem>
+                <MenuItem Header="Інформація" Icon="{materialDesign:PackIcon Kind=InformationCircleOutline}">
+                    <MenuItem
+                        Click="InfoBtnClick"
+                        Header="О Людинi"
+                        Icon="{materialDesign:PackIcon Kind=Human}" />
+                    <MenuItem
+                        Click="CalculateGamePrice"
+                        Header="Ціна ігор поточного файлу"
+                        Icon="{materialDesign:PackIcon Kind=CashMultiple}" />
+                </MenuItem>
             </Menu>
 
             <ToolBarTray Grid.Row="1" IsLocked="True">
@@ -235,6 +264,7 @@
                     Margin="0,10,10,10"
                     materialDesign:HintAssist.Hint="Файл з договорами"
                     ItemsSource="{Binding ElementName=WindowContext, Path=ContractFilesList, UpdateSourceTrigger=PropertyChanged}"
+                    SelectionChanged="ChangedContractFiles"
                     Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                 <TextBox
                     x:Name="TechnicalTaskNumTextInput"

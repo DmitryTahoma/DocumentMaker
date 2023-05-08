@@ -14,4 +14,21 @@
 		Translator,
 		Support,
 	}
+
+	public enum DocumentType
+	{
+		Empty = -1,
+		FOP,
+		FOPF,
+		GIG,
+		Staff,
+	}
+
+	public enum WorkType
+	{
+		Empty = -1,
+		Development,
+		Rework,
+		All,
+	}
 }

@@ -19,7 +19,7 @@ namespace DocumentMaker.Controller
 	public class MainWindowController
 	{
 		private const string saveFile = "session.xml";
-		private const string humansFile = "HumanData.xlsx";
+		private const string contractFolder = "Contract";
 		private const string developmentTypesFile = "DevelopmentTypes.xlsx";
 		private const string supportTypesFile = "SupportTypes.xlsx";
 		private const string gameNamesFile = "projectnames.xml";
@@ -61,10 +61,12 @@ namespace DocumentMaker.Controller
 
 		public IList<DmxFile> OpenedFilesList => model.OpenedFilesList;
 		public DocumentTemplateType TemplateType { get => model.TemplateType; set => model.TemplateType = value; }
+		public DocumentType DocType { get => model.DocType; set => model.DocType = value; }
 		public string TechnicalTaskDateText { get => model.TechnicalTaskDateText; set => model.TechnicalTaskDateText = value; }
 		public string ActDateText { get => model.ActDateText; set => model.ActDateText = value; }
 		public string TechnicalTaskNumText { get => model.TechnicalTaskNumText; set => model.TechnicalTaskNumText = value; }
 		public string SelectedHuman { get => model.SelectedHuman; set => model.SelectedHuman = value; }
+		public string SelectedContractFile { get => model.SelectedContractFile; set => model.SelectedContractFile = value; }
 		public string HumanIdText { get => model.HumanIdText; set => model.HumanIdText = value; }
 		public string AddressText { get => model.AddressText; set => model.AddressText = value; }
 		public string PaymentAccountText { get => model.PaymentAccountText; set => model.PaymentAccountText = value; }
@@ -75,6 +77,8 @@ namespace DocumentMaker.Controller
 		public string ContractReworkNumberText { get => model.ContractReworkNumberText; set => model.ContractReworkNumberText = value; }
 		public string ContractReworkDateText { get => model.ContractReworkDateText; set => model.ContractReworkDateText = value; }
 		public string CityName { get => model.CityName; set => model.CityName = value; }
+		public string RegionName { get => model.RegionName; set => model.RegionName = value; }
+		public string AccountNumberText { get => model.AccountNumberText; set => model.AccountNumberText = value; }
 		public string ActSum { get => model.ActSum; set => model.ActSum = value; }
 		public string ActSaldo { get => model.ActSaldo; set => model.ActSaldo = value; }
 		public bool NeedUpdateSum { get => model.NeedUpdateSum; set => model.NeedUpdateSum = value; }
@@ -102,22 +106,32 @@ namespace DocumentMaker.Controller
 		public void Load()
 		{
 			string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			string pathContractFolder = Path.Combine(path, contractFolder);
 			string saveFullpath = Path.Combine(path, saveFile);
-			string humansFullpath = Path.Combine(path, humansFile);
 			string developmentTypesFullpath = Path.Combine(path, developmentTypesFile);
 			string supportTypesFullpath = Path.Combine(path, supportTypesFile);
 			string gameNamesFullpath = Path.Combine(path, gameNamesFile);
 
 			model.Load(saveFullpath, out List<FullBackDataModel> backModels);
+			model.LoadContract(pathContractFolder);
+
 			foreach (FullBackDataModel model in backModels)
 			{
 				BackDataControllers.Add(new FullBackDataController(model));
 			}
 
-			if (!model.TryLoadHumans(humansFullpath)) notLoadedFiles.Add(humansFullpath);
 			if (!model.TryLoadDevelopmentWorkTypes(developmentTypesFullpath)) notLoadedFiles.Add(developmentTypesFullpath);
 			if (!model.TryLoadReworkWorkTypes(supportTypesFullpath)) notLoadedFiles.Add(supportTypesFullpath);
 			if (!model.TryLoadGameNames(gameNamesFullpath)) notLoadedFiles.Add(gameNamesFullpath);
+		}
+
+		public void LoadHumans(string fileName)
+		{
+			string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			string pathContractFolder = Path.Combine(path, contractFolder);
+			string humansFullpath = Path.Combine(pathContractFolder, fileName);
+
+			if (!model.TryLoadHumans(humansFullpath)) notLoadedFiles.Add(humansFullpath);
 		}
 
 		public void Export(string path)
@@ -162,15 +176,15 @@ namespace DocumentMaker.Controller
 						errorText = "Строка \"ІН\" не може бути пустою.";
 					else if (!validator.IsFree(AddressText))
 						errorText = "Строка \"Адреса проживання\" не може бути пустою.";
-					else if (!validator.IsFree(PaymentAccountText))
+					else if (!validator.IsFree(PaymentAccountText) && (model.DocType == DocumentType.FOP || DocType == DocumentType.FOPF))
 						errorText = "Строка \"р/р\" не може бути пустою.";
-					else if (!validator.IsFree(BankName))
+					else if (!validator.IsFree(BankName) && (model.DocType == DocumentType.FOP || DocType == DocumentType.FOPF))
 						errorText = "Строка \"Банк\" не може бути пустою.";
-					else if (!validator.IsFree(MfoText))
+					else if (!validator.IsFree(MfoText) && (model.DocType == DocumentType.FOP || DocType == DocumentType.FOPF))
 						errorText = "Строка \"МФО\" не може бути пустою.";
-					else if ((!validator.IsFree(ContractNumberText) || !validator.IsFree(ContractDateText)) && BackDataControllers.FirstOrDefault((x) => !x.IsOtherType && !x.IsRework) != null)
+					else if ((model.DocType == DocumentType.FOP || DocType == DocumentType.FOPF || model.DocType == DocumentType.GIG) && (!validator.IsFree(ContractNumberText) || !validator.IsFree(ContractDateText)) && BackDataControllers.FirstOrDefault((x) => !x.IsOtherType && !x.IsRework) != null)
 						errorText = "У обраної людини (" + SelectedHuman + ") немає номеру та/або дати договору розробки. Таблиця з розробкою повинна бути пустою.";
-					else if ((!validator.IsFree(ContractReworkNumberText) || !validator.IsFree(ContractReworkDateText)) && BackDataControllers.FirstOrDefault((x) => !x.IsOtherType && x.IsRework) != null)
+					else if ((model.DocType == DocumentType.FOP || DocType == DocumentType.FOPF || model.DocType == DocumentType.GIG) && (!validator.IsFree(ContractReworkNumberText) || !validator.IsFree(ContractReworkDateText)) && BackDataControllers.FirstOrDefault((x) => !x.IsOtherType && x.IsRework) != null)
 						errorText = "У обраної людини (" + SelectedHuman + ") немає номеру та/або дати договору підтримки. Таблиця з підтримкою повинна бути пустою.";
 					else
 						isValidGeneralData = true;
@@ -242,7 +256,9 @@ namespace DocumentMaker.Controller
 		public void SetHuman(HumanData humanData)
 		{
 			SelectedHuman = humanData.Name;
+			SelectedContractFile = humanData.ContractFile;
 			HumanIdText = humanData.HumanIdText;
+			DocType = humanData.DocType;
 			BankName = humanData.BankName;
 			PaymentAccountText = humanData.PaymentAccountText;
 			ContractNumberText = humanData.ContractNumberText;
@@ -252,6 +268,8 @@ namespace DocumentMaker.Controller
 			AddressText = humanData.AddressText;
 			MfoText = humanData.MfoText;
 			CityName = humanData.CityName;
+			AccountNumberText = humanData.AccountNumberText;
+			RegionName = humanData.RegionName;
 		}
 
 		public void OpenFiles(string[] files, out string skippedFiles)
@@ -280,6 +298,7 @@ namespace DocumentMaker.Controller
 
 			TemplateType = file.TemplateType;
 			SelectedHuman = file.SelectedHuman;
+			SelectedContractFile = file.SelectedContractFile;
 			TechnicalTaskDateText = file.TechnicalTaskDateText;
 			ActDateText = file.ActDateText;
 			TechnicalTaskNumText = file.TechnicalTaskNumText;
@@ -374,6 +393,7 @@ namespace DocumentMaker.Controller
 			ActDateText = ActDateText?.Trim();
 			TechnicalTaskNumText = TechnicalTaskNumText?.Trim();
 			SelectedHuman = SelectedHuman?.Trim();
+			SelectedContractFile = SelectedContractFile?.Trim();
 			HumanIdText = HumanIdText?.Trim();
 			AddressText = AddressText?.Trim();
 			PaymentAccountText = PaymentAccountText?.Trim();
@@ -384,6 +404,8 @@ namespace DocumentMaker.Controller
 			ContractReworkNumberText = ContractReworkNumberText?.Trim();
 			ContractReworkDateText = ContractReworkDateText?.Trim();
 			CityName = CityName?.Trim();
+			AccountNumberText = AccountNumberText?.Trim();
+			RegionName = RegionName?.Trim();
 			ActSum = ActSum?.Trim();
 
 			foreach (FullBackDataController backData in BackDataControllers)
@@ -505,6 +527,19 @@ namespace DocumentMaker.Controller
 			else
 			{
 				model.ChangeActDateAtAllFiles(actDateText);
+				return true;
+			}
+		}
+
+		public bool ChangeContractFileAtAllFiles(string nameFile)
+		{
+			if (!validator.IsFree(nameFile))
+			{
+				return false;
+			}
+			else
+			{
+				model.ChangeContractFileAtAllFiles(nameFile);
 				return true;
 			}
 		}

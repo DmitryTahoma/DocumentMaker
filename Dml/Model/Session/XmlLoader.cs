@@ -75,17 +75,34 @@ namespace Dml.Model.Session
 			XmlNodeList nodeList = root.GetElementsByTagName(XmlConfNames.ProjectNameNodeName);
 			foreach (XmlElement elem in nodeList)
 			{
+				string nameGame = "";
 				uint countEpisodes = 0;
 				if (elem.HasAttribute(XmlConfNames.CountEpisodesAttributeName) && uint.TryParse(elem.GetAttribute(XmlConfNames.CountEpisodesAttributeName), out uint c))
 				{
 					countEpisodes = c;
 				}
 
+				if (elem.HasAttribute(XmlConfNames.ProjectNameAttributeName))
+				{
+					nameGame = elem.GetAttribute(XmlConfNames.ProjectNameAttributeName);
+				}
+
 				GameObject gameObj = new GameObject
 				{
-					Name = StringValidator.Trim(elem.InnerText)
+					Name = StringValidator.Trim(nameGame)
 				};
+
 				gameObj.SetEpisodes(countEpisodes);
+
+				XmlNodeList altNameNodeList = elem.GetElementsByTagName(XmlConfNames.AltNameNodeName);
+
+				foreach (XmlElement altNameElem in altNameNodeList)
+				{
+					if (elem.HasAttribute(XmlConfNames.AltNameAttributeName))
+					{
+						gameObj.AddAltName(altNameElem.GetAttribute(XmlConfNames.AltNameAttributeName));
+					}
+				}
 
 				tempGameNames.Add(gameObj);
 			}

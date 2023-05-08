@@ -21,6 +21,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Markup;
 using MessageBox = System.Windows.Forms.MessageBox;
+using DocumentMakerModelLibrary.OfficeFiles;
 
 #if INCLUDED_UPDATER_API
 using UpdaterAPI;
@@ -47,7 +48,7 @@ namespace DocumentMaker
 		public static readonly DependencyProperty ButtonOpenContentVisibilityProperty;
 		public static readonly DependencyProperty CanRedoProperty;
 		public static readonly DependencyProperty CanUndoProperty;
-
+		
 		static MainWindow()
 		{
 			TechnicalTaskDateTextProperty = DependencyProperty.Register("TechnicalTaskDateText", typeof(string), typeof(MainWindowController));
@@ -68,6 +69,7 @@ namespace DocumentMaker
 		private readonly FolderBrowserDialog folderBrowserDialog;
 		private readonly OpenFileDialog openFileDialog;
 		private readonly SaveFileDialog saveFileDialog;
+		private readonly SaveFileDialog saveFileSumDialog;
 		private readonly InputingValidator inputingValidator;
 
 		private bool cancelOpenedFilesSelectionChanged;
@@ -91,6 +93,13 @@ namespace DocumentMaker
 				DefaultExt = DcmkFile.Extension,
 				Filter = "Файл повного акту (*" + DcmkFile.Extension + ")|*" + DcmkFile.Extension
 			};
+
+			saveFileSumDialog = new SaveFileDialog
+			{
+				DefaultExt = ".xlsx",
+				Filter = "Файл (*.xlsx)|"
+			};
+
 			inputingValidator = new InputingValidator();
 
 			ContentVisibility = Visibility.Hidden;
@@ -313,6 +322,22 @@ namespace DocumentMaker
 			}
 		}
 
+		private void ChangedContractFiles(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+		{
+			if (controller != null && sender is System.Windows.Controls.ComboBox comboBox
+				&& comboBox.SelectedItem != null && !string.IsNullOrEmpty(comboBox.SelectedItem.ToString()))
+			{
+				controller.LoadHumans(comboBox.SelectedItem.ToString());
+				controller.SelectedContractFile = comboBox.SelectedItem.ToString();
+
+				if (OpenedFilesComboBox != null
+					&& OpenedFilesComboBox.SelectedItem is DmxFile selectedFile)
+				{
+					selectedFile.SelectedContractFile = comboBox.SelectedItem.ToString();
+				}
+			}
+		}
+
 		private void ChangedHuman(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
 			if (controller != null
@@ -485,6 +510,34 @@ namespace DocumentMaker
 			}
 		}
 
+		private void ExportGameSum(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				if (!(OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded))
+				{
+					MessageBox.Show("Спочатку необхідно відкрити файл.",
+									"DocumentMaker | Експорт сум iгор",
+									MessageBoxButtons.OK,
+									MessageBoxIcon.Information);
+					return;
+				}
+
+				saveFileSumDialog.FileName = "Сума iгор " + controller.ActDateText + ".xlsx";
+				
+				if (saveFileSumDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				{
+					string path = saveFileSumDialog.FileName;
+					XlsxCreateGamePrice createXlsx = new XlsxCreateGamePrice();
+					createXlsx.Create(path, OpenedFilesList, controller.GameNameList);
+				}
+			}
+			catch (Exception exc)
+			{
+				MessageBox.Show("Виникла непередбачена помилка під час експорту! Надішліть, будь ласка, скріншот помилки розробнику.\n" + exc.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
 		private void OpenFileClick(object sender, RoutedEventArgs e)
 		{
 			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -552,6 +605,16 @@ namespace DocumentMaker
 								"DocumentMaker | Закриття файлу",
 								MessageBoxButtons.OK,
 								MessageBoxIcon.Information);
+		}
+
+		private void ShowInstruction(object sender, RoutedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("https://docs.google.com/document/d/1zyoLFhsY6qsM4e9WHDbU-I-P7sIQVZ5czkKlLs9ef40/edit?usp=sharing");
+		}
+
+		private void ShowBackNames(object sender, RoutedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("https://docs.google.com/spreadsheets/d/1GnTgfIKsk2a0qClfSE7wy2WGLpXWxuuTscPyuCt8Bi0/edit#gid=1313072428");
 		}
 
 		private async void InfoBtnClick(object sender, RoutedEventArgs e)
@@ -924,7 +987,11 @@ namespace DocumentMaker
 
 					if (res == System.Windows.Forms.DialogResult.Yes)
 					{
-						saveFileDialog.FileName = controller.GetDcmkFileName();
+						if (string.IsNullOrEmpty(selectedFile.Name))
+							saveFileDialog.FileName = controller.GetDcmkFileName();
+						else
+							saveFileDialog.FileName = selectedFile.Name;
+
 						res = saveFileDialog.ShowDialog();
 						if (res == System.Windows.Forms.DialogResult.OK)
 						{
@@ -1016,7 +1083,11 @@ namespace DocumentMaker
 		{
 			if (OpenedFilesComboBox.SelectedItem is DmxFile selectedFile && selectedFile.Loaded)
 			{
-				saveFileDialog.FileName = controller.GetDcmkFileName();
+				if (string.IsNullOrEmpty(selectedFile.Name))
+					saveFileDialog.FileName = controller.GetDcmkFileName();
+				else
+					saveFileDialog.FileName = selectedFile.Name;
+
 				if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 				{
 					controller.ExportDcmk(saveFileDialog.FileName);
@@ -1039,16 +1110,61 @@ namespace DocumentMaker
 			if (OpenedFilesList.Count > 0)
 			{
 				string savedFiles = string.Empty;
+				bool IsManySaveFiles = OpenedFilesList.Count > 1;
+				bool IsSaveFile = !IsManySaveFiles;
+				string filesSavePath = "";
 
-				foreach (DmxFile file in OpenedFilesList)
+				if (IsManySaveFiles)
 				{
-					SetSelectedFile(file.FullName);
-					saveFileDialog.FileName = controller.GetDcmkFileName();
-					if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+					DialogResult dialog = MessageBox.Show("Зберегти всі файли відразу?",
+										"DocumentMaker | Збереження файлiв",
+										MessageBoxButtons.YesNoCancel,
+										MessageBoxIcon.Question);
+					if (dialog == System.Windows.Forms.DialogResult.Yes)
 					{
-						controller.ExportDcmk(saveFileDialog.FileName);
+						if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+						{
+							IsManySaveFiles = true;
+							IsSaveFile = true;
+							filesSavePath = folderBrowserDialog.SelectedPath + "\\";
+						}
+						else IsSaveFile = false;
+					}
+					else if (dialog == System.Windows.Forms.DialogResult.No)
+					{
+						IsManySaveFiles = false;
+						IsSaveFile = true;
+					}
+					else if (dialog == System.Windows.Forms.DialogResult.Cancel)
+						IsManySaveFiles = false;
+				}
 
-						savedFiles += "\n" + saveFileDialog.FileName;
+				if (IsSaveFile)
+				{
+					foreach (DmxFile file in OpenedFilesList)
+					{
+						SetSelectedFile(file.FullName);
+
+						string fileName = file.Name;
+						if (string.IsNullOrEmpty(file.Name))
+							fileName = controller.GetDcmkFileName();
+
+						if (!IsManySaveFiles || string.IsNullOrEmpty(filesSavePath))
+						{
+							saveFileDialog.FileName = fileName;
+
+							if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+							{
+								controller.ExportDcmk(saveFileDialog.FileName);
+								savedFiles += "\n" + saveFileDialog.FileName;
+							}
+						}
+						else
+						{
+							fileName = filesSavePath + fileName;
+							controller.ExportDcmk(fileName);
+							savedFiles += "\n" + fileName;
+						}
 					}
 				}
 
@@ -1122,6 +1238,122 @@ namespace DocumentMaker
 						controller.ActDateText = selectedFile.ActDateText;
 						SetDataFromController();
 					}
+				}
+			}
+		}
+
+		private async void ChangeAllContractFiles(object sender, RoutedEventArgs e)
+		{
+			ChangeContractFilesDialog dialog = new ChangeContractFilesDialog(ContractFilesComboBox);
+
+			await DialogHost.Show(dialog);
+			if (dialog.IsChanging)
+			{
+				bool changed = controller.ChangeContractFileAtAllFiles(dialog.ContractFilesComboBox.Text);
+				if (changed)
+				{
+					DmxFile selectedFile = controller.GetSelectedFile();
+					if (selectedFile != null)
+					{
+						controller.SelectedContractFile = selectedFile.SelectedContractFile;
+
+						if (ContractFilesComboBox.Items.Contains(controller.SelectedContractFile))
+							ContractFilesComboBox.SelectedItem = controller.SelectedContractFile;
+						else
+							ContractFilesComboBox.SelectedItem = null;
+					}
+				}
+			}
+		}
+
+		private async void CalculateGamePrice(object sender, RoutedEventArgs e)
+		{
+			DmxFile selectedFile = controller.GetSelectedFile();
+			if (selectedFile != null)
+			{
+				GamePriceDialog dialog = new GamePriceDialog(selectedFile.BackDataModels, controller.GameNameList);
+
+				await DialogHost.Show(dialog);
+			}
+		}
+
+		private void CombineDcmkBtnClick(object sender, RoutedEventArgs e)
+		{
+			if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				string savedFiles = string.Empty;
+				string filesSavePath;
+
+				filesSavePath = folderBrowserDialog.SelectedPath + "\\";
+
+				List<string> NameUser = new List<string>();
+				List<DmxFile> UserDmx = new List<DmxFile>();
+
+				foreach (DmxFile file in OpenedFilesList)
+				{
+					if (!NameUser.Contains(file.SelectedHuman))
+						NameUser.Add(file.SelectedHuman);
+				}
+
+				NameUser.Sort(new Dml.NaturalStringComparer());
+
+				foreach (string name in NameUser)
+				{
+					DmxFile fileDmx = null;
+					DateTime maxDateAct = new DateTime();
+					DateTime maxDateTeh = new DateTime();
+					int actSum = 0;
+					foreach (DmxFile file in OpenedFilesList)
+					{
+						if (name == file.SelectedHuman)
+						{
+							if (fileDmx == null)
+								fileDmx = new DmxFile(Path.Combine(filesSavePath, file.SelectedHuman + DcmkFile.Extension));
+
+							fileDmx.TemplateType = file.TemplateType;
+							fileDmx.SelectedHuman = file.SelectedHuman;
+							fileDmx.SelectedContractFile = file.SelectedContractFile;
+							actSum += int.Parse(file.ActSum);
+							DateTime tempDateAct = DateTime.Parse(file.ActDateText);
+							if (maxDateAct.Date < tempDateAct.Date)
+								maxDateAct = tempDateAct;
+
+							DateTime tempDateTeh = DateTime.Parse(file.TechnicalTaskDateText);
+							if (maxDateTeh.Date < tempDateTeh.Date)
+								maxDateTeh = tempDateTeh;
+
+							if (fileDmx.BackDataModels == null)
+								fileDmx.SetLoadedBackData(file.BackDataModels);
+							else
+								fileDmx.AddRangeBackModel(file.BackDataModels);
+						}
+					}
+
+					if (fileDmx != null)
+					{
+						fileDmx.ActSum = actSum.ToString();
+						fileDmx.ActDateText = maxDateAct.ToString("dd.MM.yyyy");
+						fileDmx.TechnicalTaskDateText = maxDateTeh.ToString("dd.MM.yyyy");
+						fileDmx.ChangePath(Path.Combine(filesSavePath, fileDmx.SelectedHuman + " " + fileDmx.ActDateText + " " + fileDmx.ActSum + DcmkFile.Extension));
+						UserDmx.Add(fileDmx);
+					}
+				}
+
+				foreach (DmxFile file in UserDmx)
+				{
+					OpenedFilesList.Add(file);
+					SetSelectedFile(file.FullName);
+					controller.ExportDcmk(file.FullName);
+					controller.CloseFile(file);
+					savedFiles += "\n" + file.FullName;
+				}
+
+				if (savedFiles != string.Empty)
+				{
+					MessageBox.Show("Файли збережені:" + savedFiles,
+						"DocumentMaker | Export dcmk",
+						MessageBoxButtons.OK,
+						MessageBoxIcon.Information);
 				}
 			}
 		}
@@ -1243,6 +1475,12 @@ namespace DocumentMaker
 			bool actionsStackingEnable = controller.IsActionsStackingEnabled;
 			controller.DisableActionsStacking();
 			DocumentTemplateComboBox.SelectedIndex = (int)controller.TemplateType;
+
+			if (ContractFilesComboBox.Items.Contains(controller.SelectedContractFile))
+				ContractFilesComboBox.SelectedItem = controller.SelectedContractFile;
+			else
+				ContractFilesComboBox.SelectedIndex = 0;
+
 			TechnicalTaskDatePicker.Text = controller.TechnicalTaskDateText;
 			ActDatePicker.Text = controller.ActDateText;
 			TechnicalTaskNumTextInput.Text = controller.TechnicalTaskNumText;
@@ -1256,6 +1494,7 @@ namespace DocumentMaker
 			bool actionsStackingEnable = controller.IsActionsStackingEnabled;
 			controller.DisableActionsStacking();
 			controller.TechnicalTaskDateText = TechnicalTaskDateText;
+			controller.SelectedContractFile = ContractFilesComboBox.SelectedItem?.ToString();
 			controller.ActDateText = ActDateText;
 			controller.TechnicalTaskNumText = TechnicalTaskNumText;
 			controller.ActSum = ActSum;
@@ -1486,7 +1725,6 @@ namespace DocumentMaker
 		{
 			List<string> files = new List<string>()
 			{
-				"HumanData.xlsx",
 				"projectnames.xml",
 				"DevelopmentTypes.xlsx",
 				"SupportTypes.xlsx",
