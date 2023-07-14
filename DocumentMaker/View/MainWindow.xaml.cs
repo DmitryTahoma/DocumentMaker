@@ -990,7 +990,7 @@ namespace DocumentMaker
 						if (string.IsNullOrEmpty(selectedFile.Name))
 							saveFileDialog.FileName = controller.GetDcmkFileName();
 						else
-							saveFileDialog.FileName = selectedFile.Name;
+							saveFileDialog.FileName = controller.GetSelectedFile().Name;
 
 						res = saveFileDialog.ShowDialog();
 						if (res == System.Windows.Forms.DialogResult.OK)
@@ -1086,7 +1086,7 @@ namespace DocumentMaker
 				if (string.IsNullOrEmpty(selectedFile.Name))
 					saveFileDialog.FileName = controller.GetDcmkFileName();
 				else
-					saveFileDialog.FileName = selectedFile.Name;
+					saveFileDialog.FileName = controller.GetSelectedFile().Name;
 
 				if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 				{
