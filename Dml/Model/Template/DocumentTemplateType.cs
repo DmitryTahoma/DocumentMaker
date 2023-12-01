@@ -31,4 +31,12 @@
 		Rework,
 		All,
 	}
+
+	public enum FillSheetType
+	{
+		Empty = -1,
+		Table,
+		List,
+		ListFrol,
+	}
 }

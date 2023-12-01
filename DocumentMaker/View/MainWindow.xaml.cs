@@ -510,7 +510,7 @@ namespace DocumentMaker
 			}
 		}
 
-		private void ExportGameSum(object sender, RoutedEventArgs e)
+		private async void ExportGameSum(object sender, RoutedEventArgs e)
 		{
 			try
 			{
@@ -523,13 +523,12 @@ namespace DocumentMaker
 					return;
 				}
 
-				saveFileSumDialog.FileName = "Сума iгор " + controller.ActDateText + ".xlsx";
-				
-				if (saveFileSumDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+
+				if (selectedFile != null)
 				{
-					string path = saveFileSumDialog.FileName;
-					XlsxCreateGamePrice createXlsx = new XlsxCreateGamePrice();
-					createXlsx.Create(path, OpenedFilesList, controller.GameNameList);
+					CreateGamePriceDialog dialog = new CreateGamePriceDialog(OpenedFilesList, controller.GameNameList, controller.ActDateText);
+
+					await DialogHost.Show(dialog);
 				}
 			}
 			catch (Exception exc)

@@ -106,6 +106,9 @@
     <Compile Include="View\Dialogs\CorrectSupportDialog.xaml.cs">
       <DependentUpon>CorrectSupportDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Dialogs\CreateGamePriceDialog.xaml.cs">
+      <DependentUpon>CreateGamePriceDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Dialogs\GamePriceDialog.xaml.cs">
       <DependentUpon>GamePriceDialog.xaml</DependentUpon>
     </Compile>
@@ -139,6 +142,10 @@
     <Page Include="View\Dialogs\CorrectSupportDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Dialogs\CreateGamePriceDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Dialogs\GamePriceDialog.xaml">
       <SubType>Designer</SubType>
