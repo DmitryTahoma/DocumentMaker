@@ -66,6 +66,7 @@
     <Compile Include="OfficeFiles\DocumentGeneralData.cs" />
     <Compile Include="OfficeFiles\DocumentTableData.cs" />
     <Compile Include="OfficeFiles\DocumentTableRowData.cs" />
+    <Compile Include="OfficeFiles\ExcelExporter.cs" />
     <Compile Include="OfficeFiles\Human\HumanData.cs" />
     <Compile Include="OfficeFiles\OfficeExporter.cs" />
     <Compile Include="OfficeFiles\OfficeStrings.cs" />

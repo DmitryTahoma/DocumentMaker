@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Packaging;
+﻿using Dml.Model.Template;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentMaker.Resources;
@@ -99,14 +100,14 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		public void FillInnerPropertiesData(object data)
 		{
 			PropertyInfo[] properties = data.GetType().GetProperties();
-			foreach(PropertyInfo property in properties)
+			foreach (PropertyInfo property in properties)
 			{
 				MethodInfo setMethod = property.GetSetMethod();
 				if (setMethod != null)
 				{
-					foreach(PropertyInfo innerProperty in properties)
+					foreach (PropertyInfo innerProperty in properties)
 					{
-						if(innerProperty != property)
+						if (innerProperty != property)
 						{
 							string replaceStr = '[' + innerProperty.Name + ']';
 							string value = (string)innerProperty.GetValue(data);
@@ -336,6 +337,14 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		{
 			if (nodes.Count > 0)
 				return (XmlElement)nodes[0];
+
+			return null;
+		}
+
+		public static XmlElement GetLastXmlElement(XmlNodeList nodes)
+		{
+			if (nodes.Count > 0)
+				return (XmlElement)nodes[nodes.Count - 1];
 
 			return null;
 		}

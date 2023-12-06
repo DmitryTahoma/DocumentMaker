@@ -89,7 +89,7 @@ namespace DocumentMaker.View.Dialogs
 
 					string path = saveFileSumDialog.FileName;
 					XlsxCreateGamePrice createXlsx = new XlsxCreateGamePrice();
-					createXlsx.Create(path, openedFilesList, gameNameList, dFillSheet);
+					createXlsx.CreateXlsxXml(path, openedFilesList, gameNameList, dFillSheet);
 				}
 			}
 			catch (System.Exception exc)

@@ -9,10 +9,10 @@ using DocumentMakerModelLibrary.Files;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using MessageBox = System.Windows.Forms.MessageBox;
-using Excel = Microsoft.Office.Interop.Excel;
+using System.Xml;
+using System.Linq;
 
 namespace DocumentMakerModelLibrary.OfficeFiles
 {
@@ -25,151 +25,153 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 
 		int rowHumanCurr = 1;
 		int rowHumanMax = 2;
+
 		int colHuman = 1;
+		int colDate = 1;
+		int colSumma = 1;
+		int colGame = 1;
 
 		int rowValueMax = 1;
 
 		int iDevelopmentSum = 0;
 		int iReworkSum = 0;
 		int iAllSum = 0;
+		List<string> NameUser;
+		XmlDocument xml;
 
-		public void Create(string path, IList<DmxFile> openedFilesList, IList<GameObject> gameObjects, Dictionary<string, int> dFillSheet)
+		public XlsxCreateGamePrice()
 		{
-			CreateXlsx(path, dFillSheet);
+			NameUser = new List<string>();
+			xml = new XmlDocument();
+		}
+
+		public void CreateXlsxXml(string path, IList<DmxFile> openedFilesList, IList<GameObject> gameObjects, Dictionary<string, int> dFillSheet)
+		{
+			CreateFileXlsx(path, dFillSheet);
 
 			if (!File.Exists(path))
 				return;
 
-			Excel.Workbooks workbooks = null;
-			Excel.Workbook workbook = null;
-			Excel.Application excelApp = null;
-			Excel.Worksheet workSheet = null;
-
 			try
 			{
-				string[] arr_EN = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
-
-				List<string> alphabetExcel = new List<string>(arr_EN);
-
-				for (int i = 0; i < arr_EN.Length; i++)
+				foreach (DmxFile file in openedFilesList)
 				{
-					for (int j = 0; j < arr_EN.Length; j++)
+					if (!NameUser.Contains(file.SelectedHuman))
+						NameUser.Add(file.SelectedHuman);
+				}
+
+				NameUser.Sort(new NaturalStringComparer());
+				var sw = new System.Diagnostics.Stopwatch();
+				sw.Start();
+				using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(path, true))
+				{
+					WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
+					List <Sheet> sheets = new List<Sheet>(workbookPart.Workbook.Descendants<Sheet>());
+					Sheet sheet = null;
+					WorkType typeWork = WorkType.Empty;
+					foreach (KeyValuePair<string, int> name in dFillSheet)
 					{
-						alphabetExcel.Add(arr_EN[i] + arr_EN[j]);
+						if (name.Value != -1)
+						{
+							FillSheetType typeSheet = (FillSheetType)name.Value;
+
+							if (name.Key == "Розробка")
+								typeWork = WorkType.Development;
+							else if (name.Key == "Пiдтримка")
+								typeWork = WorkType.Rework;
+							else if (name.Key == "Разом")
+								typeWork = WorkType.All;
+
+							foreach (var item in sheets)
+							{
+								if (string.Compare(item.Name, name.Key, StringComparison.InvariantCultureIgnoreCase) == 0)
+								{
+									sheet = item;
+									break;
+								}
+							}
+
+							if (sheet != null)
+							{
+								WorksheetPart worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
+								SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
+								Columns columns = null;
+								SharedStringTable sharedStringTable = null;
+								if (workbookPart.SharedStringTablePart != null)
+								{
+									SharedStringTablePart sharedStringTablePart = workbookPart.GetPartsOfType<SharedStringTablePart>().First();
+									sharedStringTable = sharedStringTablePart.SharedStringTable;
+								}
+
+								foreach(var item in worksheetPart.Worksheet.Elements())
+								{
+									if(item is Columns)
+									{
+										columns = item as Columns;
+										break;
+									}
+								}
+								//if(worksheetPart.Worksheet.Elements<Columns>() != null)
+								//{
+								//	columns = worksheetPart.Worksheet.Elements<Columns>().First();
+								//}
+
+								ExcelExporter.SetData(sheetData, sharedStringTable, columns);
+
+								if (typeSheet == FillSheetType.Table)
+									FillSheetExcelTable(openedFilesList, gameObjects, typeWork);
+								else if (typeSheet == FillSheetType.List)
+									FillSheetExcelList(openedFilesList, gameObjects, typeWork);
+								else if (typeSheet == FillSheetType.Line)
+									FillSheetExcelLine(openedFilesList, gameObjects, typeWork);
+
+								sheet = null;
+							}
+						}
 					}
+
+					spreadsheetDocument.Save();
+					spreadsheetDocument.Close();
+					
 				}
-
-				excelApp = new Excel.Application();
-				workbooks = excelApp.Workbooks;
-				workbook = workbooks.Open(path);
-
-				int index = 1;
-				foreach (KeyValuePair<string, int> name in dFillSheet)
-				{
-					if (name.Value != -1)
-					{
-						FillSheetType typeSheet = (FillSheetType)name.Value;
-						WorkType typeWork = WorkType.Empty;
-
-						if (name.Key == "Розробка")
-							typeWork = WorkType.Development;
-						else if (name.Key == "Пiдтримка")
-							typeWork = WorkType.Rework;
-						else if (name.Key == "Разом")
-							typeWork = WorkType.All;
-
-						if (typeSheet == FillSheetType.Table)
-							FillSheet(ref workSheet, excelApp, openedFilesList, gameObjects, alphabetExcel, index, typeWork);
-						else if (typeSheet == FillSheetType.List)
-							FillSheet2(ref workSheet, excelApp, openedFilesList, gameObjects, alphabetExcel, index, typeWork);
-						else if (typeSheet == FillSheetType.ListFrol)
-							FillSheet3(ref workSheet, excelApp, openedFilesList, gameObjects, alphabetExcel, index, typeWork);
-
-						index++;
-					}
-				}
-
-				if (workSheet != null)
-					Marshal.ReleaseComObject(workSheet);
-
-				excelApp.UserControl = true;
-				foreach (Excel.Workbook book in excelApp.Workbooks)
-				{
-					book.Save();
-					book.Close();
-				}
-
-				if (workbook != null)
-					Marshal.ReleaseComObject(workbook);
-
-				workbooks.Close();
-
-				if (workbooks != null)
-					Marshal.ReleaseComObject(workbooks);
-
-				excelApp.Quit();
-
-				if (excelApp != null)
-					Marshal.ReleaseComObject(excelApp);
-
-				MessageBox.Show("Файл збережен.",
+				sw.Stop();
+				MessageBox.Show("Файл збережено. " + sw.Elapsed.ToString(),
 										"DocumentMaker | Export",
 										MessageBoxButtons.OK,
 										MessageBoxIcon.Information);
 			}
+
 			catch (Exception exc)
 			{
 				MessageBox.Show("Виникла непередбачена помилка під час експорту! Надішліть, будь ласка, скріншот помилки розробнику.\n" + exc.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 			finally
 			{
-				if (workSheet != null)
-					Marshal.ReleaseComObject(workSheet);
-				if (workbook != null)
-					Marshal.ReleaseComObject(workbook);
-				if (workbooks != null)
-					Marshal.ReleaseComObject(workbooks);
-				if (excelApp != null)
-					Marshal.ReleaseComObject(excelApp);
-
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
 				GC.Collect();
 			}
 		}
 
-		private void FillSheet(ref Excel.Worksheet workSheet, Excel.Application excelApp, IList<DmxFile> openedFilesList, IList<GameObject> gameObjects, List<string> alphabetExcel, int _indexSheet, WorkType _workType)
+		private void FillSheetExcelTable(IList<DmxFile> openedFilesList, IList<GameObject> gameObjects, WorkType _workType)
 		{
-			rowGame = 1;
-			colGameMax = 4;
-			colGameCurr = 4;
+			rowGame = 0;
+			colGameMax = 3;
+			colGameCurr = 3;
 
-			rowHumanCurr = 1;
-			rowHumanMax = 2;
-			colHuman = 1;
+			rowHumanCurr = 0;
+			rowHumanMax = 1;
 
-			rowValueMax = 1;
+			rowValueMax = 0;
 
-			workSheet = (Excel.Worksheet)excelApp.Sheets[_indexSheet];
+			colDate = 1;
+			colHuman = 0;
+			colGame = 0;
+			colSumma = 1;
 
-			((Excel.Range)workSheet.Columns[2]).Font.Name = "Calibri";
-			((Excel.Range)workSheet.Columns[2]).Font.Size = 12;
-			((Excel.Range)workSheet.Columns[2]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-			((Excel.Range)workSheet.Columns[2]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-
-			workSheet.Cells[rowGame, 1] = "ПIБ";
-			workSheet.Cells[rowGame, 2] = "Дата акту";
-			workSheet.Cells[rowGame, 3] = "Не визначено";
-
-			List<string> NameUser = new List<string>();
-
-			foreach (DmxFile file in openedFilesList)
-			{
-				if (!NameUser.Contains(file.SelectedHuman))
-					NameUser.Add(file.SelectedHuman);
-			}
-
-			NameUser.Sort(new NaturalStringComparer());
+			ExcelExporter.SetCellValue(rowGame, colHuman, "ПIБ");
+			ExcelExporter.SetCellValue(rowGame, colDate, "Дата акту");
+			ExcelExporter.SetCellValue(rowGame, 2, "Не визначено");
 
 			foreach (string name in NameUser)
 			{
@@ -182,10 +184,10 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 						string cellValue = "";
 						string cellActValue = "";
 
-						for (int i = 2; i <= openedFilesList.Count + 1; i++)
+						for (int i = 1; i <= openedFilesList.Count; i++)
 						{
-							cellValue = ((Excel.Range)workSheet.Cells[i, colHuman]).Value;
-							cellActValue = ((Excel.Range)workSheet.Cells[i, colHuman + 1]).Value;
+							cellValue = ExcelExporter.GetValue(i, colHuman);
+							cellActValue = ExcelExporter.GetValue(i, colDate);
 							rowHumanCurr = i;
 							if (cellValue == file.SelectedHuman)
 							{
@@ -197,109 +199,79 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 								else
 								{
 									cellValue = "";
-									cellActValue = "";
 								}
 							}
 							else
 							{
 								cellValue = "";
-								cellActValue = "";
 							}
 						}
 
 						if (string.IsNullOrEmpty(cellValue))
 						{
-							workSheet.Cells[rowHumanMax, colHuman] = file.SelectedHuman;
-							workSheet.Cells[rowHumanMax, colHuman + 1] = file.ActDateText;
+							ExcelExporter.SetCellValue(rowHumanMax, colHuman, file.SelectedHuman);
+							ExcelExporter.SetCellValue(rowHumanMax, colDate, file.ActDateText);
 							rowHumanCurr = rowHumanMax;
 							rowHumanMax++;
 						}
 
-						FindGame(ref workSheet, rowHumanCurr, games);
+						FindGameExcelTable(rowHumanCurr, games);
 					}
 				}
 			}
 
-			for (int i = rowGame + 1; i < rowHumanMax; i++)
+			for (int i = 0; i < colGameMax + 1; i++)
 			{
-				for (int j = colHuman + 1; j < colGameMax; j++)
-				{
-					((Excel.Range)workSheet.Cells[i, j]).Borders.Weight = Excel.XlBorderWeight.xlThin;
-					((Excel.Range)workSheet.Cells[i, j]).Font.Name = "Calibri";
-					((Excel.Range)workSheet.Cells[i, j]).Font.Size = 12;
-					((Excel.Range)workSheet.Cells[i, j]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-					((Excel.Range)workSheet.Cells[i, j]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-				}
+				ExcelExporter.GetCell(rowGame, i).StyleIndex = 11;
+				ExcelExporter.GetCell(rowHumanMax, i).StyleIndex = 6;
 			}
 
 			for (int i = 1; i < colGameMax + 1; i++)
 			{
-				((Excel.Range)workSheet.Cells[rowGame, i]).WrapText = true;
-				((Excel.Range)workSheet.Cells[rowGame, i]).Font.Bold = true;
-				((Excel.Range)workSheet.Cells[rowGame, i]).Borders.Weight = Excel.XlBorderWeight.xlMedium;
-				((Excel.Range)workSheet.Cells[rowGame, i]).Font.Name = "Calibri";
-				((Excel.Range)workSheet.Cells[rowGame, i]).Font.Size = 12;
-				((Excel.Range)workSheet.Cells[rowGame, i]).ColumnWidth = 18.5f;
-				((Excel.Range)workSheet.Cells[rowGame, i]).HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
-				((Excel.Range)workSheet.Cells[rowGame, i]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
+				ExcelExporter.SetColumnWidth(i, 19);
 			}
 
-			workSheet.Cells[rowHumanMax, colHuman] = "Всього грн.";
-			((Excel.Range)workSheet.Cells[rowHumanMax, colHuman]).Borders.Weight = Excel.XlBorderWeight.xlMedium;
-			((Excel.Range)workSheet.Cells[rowHumanMax, colHuman]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-			((Excel.Range)workSheet.Cells[rowHumanMax, colHuman]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-			((Excel.Range)workSheet.Cells[rowHumanMax, colHuman]).Font.Size = 12;
-			((Excel.Range)workSheet.Cells[rowHumanMax, colHuman]).Font.Bold = true;
-
-			workSheet.Cells[rowGame, colGameMax] = "Сума грн.";
+			for (int i = 1; i < rowHumanMax; i++)
+			{
+				ExcelExporter.GetCell(i, colHuman).StyleIndex = 12;
+				string formula = "=SUM(" + ExcelExporter.GetCellName(i, 2) + ":" + ExcelExporter.GetCellName(i, colGameMax - 1) + ")";
+				ExcelExporter.SetCellValue(i, colGameMax, formula, true);
+			}
 
 			for (int i = rowGame + 1; i < rowHumanMax; i++)
 			{
-				string formula = "=SUM(" + alphabetExcel[2] + "" + i + ":" + alphabetExcel[colGameMax - 2] + "" + i + ")";
-				((Excel.Range)workSheet.Cells[i, colGameMax]).Borders.Weight = Excel.XlBorderWeight.xlThin;
-				((Excel.Range)workSheet.Cells[i, colGameMax]).Font.Name = "Calibri";
-				((Excel.Range)workSheet.Cells[i, colGameMax]).Font.Size = 12;
-				((Excel.Range)workSheet.Cells[i, colGameMax]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-				((Excel.Range)workSheet.Cells[i, colGameMax]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-				((Excel.Range)workSheet.Cells[i, colGameMax]).Formula = formula;
+				for (int j = colHuman + 1; j < colGameMax + 1; j++)
+				{
+					ExcelExporter.GetCell(i, j).StyleIndex = 4;
+				}
 			}
+
+			ExcelExporter.SetCellValue(rowHumanMax, colHuman, "Всього грн.");
+			ExcelExporter.SetCellValue(rowGame, colGameMax, "Сума грн.");
+			ExcelExporter.GetCell(rowHumanMax, colHuman).StyleIndex = 5;
 
 			for (int i = 2; i < colGameMax + 1; i++)
 			{
-				string formula = "=SUM(" + alphabetExcel[i - 1] + "" + (rowGame + 1) + ":" + alphabetExcel[i - 1] + "" + (rowHumanMax - 1) + ")";
-				((Excel.Range)workSheet.Cells[rowHumanMax, i]).Borders.Weight = Excel.XlBorderWeight.xlMedium;
-				((Excel.Range)workSheet.Cells[rowHumanMax, i]).Font.Name = "Calibri";
-				((Excel.Range)workSheet.Cells[rowHumanMax, i]).Font.Size = 12;
-				((Excel.Range)workSheet.Cells[rowHumanMax, i]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-				((Excel.Range)workSheet.Cells[rowHumanMax, i]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-
-				if (i > 2)
-					((Excel.Range)workSheet.Cells[rowHumanMax, i]).Formula = formula;
+				string formula = "=SUM(" + ExcelExporter.GetCellName(1, i) + ":" + ExcelExporter.GetCellName(rowHumanMax - 1, i) + ")";
+				ExcelExporter.SetCellValue(rowHumanMax, i, formula, true);
 			}
 
 			if (colGameMax > 0)
 			{
 				if (WorkType.Development == _workType && iDevelopmentSum == 0)
-					iDevelopmentSum = Convert.ToInt32(((Excel.Range)workSheet.Cells[rowHumanMax, colGameMax]).Value);
+					int.TryParse(ExcelExporter.GetValue(rowHumanMax, colGameMax), out iDevelopmentSum);
 				else if (WorkType.Rework == _workType && iReworkSum == 0)
-					iReworkSum = Convert.ToInt32(((Excel.Range)workSheet.Cells[rowHumanMax, colGameMax]).Value);
+					int.TryParse(ExcelExporter.GetValue(rowHumanMax, colGameMax), out iReworkSum);
 			}
 
-			for (int i = 2; i < rowHumanMax; i++)
+			for (int i = 1; i < rowHumanMax; i++)
 			{
-				((Excel.Range)workSheet.Cells[i, colHuman]).Borders.Weight = Excel.XlBorderWeight.xlMedium;
-				((Excel.Range)workSheet.Cells[i, colHuman]).Font.Name = "Calibri";
-				((Excel.Range)workSheet.Cells[i, colHuman]).Font.Size = 12;
-				((Excel.Range)workSheet.Cells[i, colHuman]).HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
-				((Excel.Range)workSheet.Cells[i, colHuman]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-
 				if (WorkType.Development == _workType)
 				{
-					string cellValue = ((Excel.Range)workSheet.Cells[i, colHuman]).Value;
-					string cellActValue = ((Excel.Range)workSheet.Cells[i, colHuman + 1]).Value;
-					int cellSummValue = Convert.ToInt32(((Excel.Range)workSheet.Cells[i, colGameMax]).Value);
-					if (cellSummValue <= 0)
-						((Excel.Range)workSheet.Cells[i, 1]).Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Yellow);
+					string cellValue = ExcelExporter.GetValue(i, colHuman);
+					string cellActValue = ExcelExporter.GetValue(i, colDate);
+					if (int.TryParse(ExcelExporter.GetValue(i, colGameMax), out int cellSummValue) && cellSummValue <= 0)
+						ExcelExporter.GetCell(i, colHuman).StyleIndex = 13;
 					else
 					{
 						foreach (DmxFile file in openedFilesList)
@@ -311,7 +283,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 									Dictionary<string, int> games = new Dictionary<string, int>();
 									CalculateGamePrice.GamePrice(ref games, file.BackDataModels, gameObjects, WorkType.Rework);
 									if (games.Count > 0)
-										((Excel.Range)workSheet.Cells[i, 1]).Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Yellow);
+										ExcelExporter.GetCell(i, colHuman).StyleIndex = 13;
 
 									break;
 								}
@@ -324,53 +296,32 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			CalculateSumma(openedFilesList, gameObjects);
 			for (int i = 1; i < 4; i++)
 			{
-				((Excel.Range)workSheet.Cells[rowHumanMax + i, 1]).Borders.Weight = Excel.XlBorderWeight.xlMedium;
-				((Excel.Range)workSheet.Cells[rowHumanMax + i, 1]).Font.Name = "Calibri";
-				((Excel.Range)workSheet.Cells[rowHumanMax + i, 1]).Font.Size = 12;
-				((Excel.Range)workSheet.Cells[rowHumanMax + i, 1]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-				((Excel.Range)workSheet.Cells[rowHumanMax + i, 1]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-				((Excel.Range)workSheet.Cells[rowHumanMax + i, 1]).Font.Bold = true;
-
-
-				((Excel.Range)workSheet.Cells[rowHumanMax + i, 2]).Borders.Weight = Excel.XlBorderWeight.xlMedium;
-				((Excel.Range)workSheet.Cells[rowHumanMax + i, 2]).Font.Name = "Calibri";
-				((Excel.Range)workSheet.Cells[rowHumanMax + i, 2]).Font.Size = 12;
-				((Excel.Range)workSheet.Cells[rowHumanMax + i, 2]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-				((Excel.Range)workSheet.Cells[rowHumanMax + i, 2]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-				((Excel.Range)workSheet.Cells[rowHumanMax + i, 2]).NumberFormat = "0";
+				ExcelExporter.GetCell(rowHumanMax + i, colHuman).StyleIndex = 5;
+				ExcelExporter.GetCell(rowHumanMax + i, colHuman + 1).StyleIndex = 6;
 			}
 
-			workSheet.Cells[rowHumanMax + 1, 1] = "Розробка грн.";
-			workSheet.Cells[rowHumanMax + 1, 2] = iDevelopmentSum.ToString();
+			ExcelExporter.SetCellValue(rowHumanMax + 1, 0, "Розробка грн.");
+			ExcelExporter.SetCellValue(rowHumanMax + 1, 1, iDevelopmentSum.ToString());
+			ExcelExporter.SetCellValue(rowHumanMax + 2, 0, "Пiдтримка грн.");
+			ExcelExporter.SetCellValue(rowHumanMax + 2, 1, iReworkSum.ToString());
+			ExcelExporter.SetCellValue(rowHumanMax + 3, 0, "Всього грн.");
+			string formulaSum = "=SUM(" + ExcelExporter.GetCellName(rowHumanMax + 1, 1) + ":" + ExcelExporter.GetCellName(rowHumanMax + 2, 1) + ")";
+			ExcelExporter.SetCellValue(rowHumanMax + 3, 1, formulaSum, true);
 
-			workSheet.Cells[rowHumanMax + 2, 1] = "Пiдтримка грн.";
-			workSheet.Cells[rowHumanMax + 2, 2] = iReworkSum.ToString();
-
-			string formulaSum = "=SUM(" + alphabetExcel[1] + "" + (rowHumanMax + 1) + ":" + alphabetExcel[1] + "" + (rowHumanMax + 2) + ")";
-			workSheet.Cells[rowHumanMax + 3, 1] = "Всього грн.";
-			((Excel.Range)workSheet.Cells[rowHumanMax + 3, 2]).Formula = formulaSum;
-
-			((Excel.Range)workSheet.Columns[1]).AutoFit();
+			ExcelExporter.AutoFitCell(colHuman);
 		}
 
-		private void FillSheet2(ref Excel.Worksheet workSheet, Excel.Application excelApp, IList<DmxFile> openedFilesList, IList<GameObject> gameObjects, List<string> alphabetExcel, int _indexSheet, WorkType _workType)
+		private void FillSheetExcelList(IList<DmxFile> openedFilesList, IList<GameObject> gameObjects, WorkType _workType)
 		{
-			rowGame = 2;
-			rowGameCurr = 2;
-			rowHumanCurr = 1;
-			rowValueMax = 1;
+			rowGame = 1;
+			rowGameCurr = 1;
+			rowHumanCurr = 0;
+			rowValueMax = 0;
 
-			workSheet = (Excel.Worksheet)excelApp.Sheets[_indexSheet];
-
-			List<string> NameUser = new List<string>();
-
-			foreach (DmxFile file in openedFilesList)
-			{
-				if (!NameUser.Contains(file.SelectedHuman))
-					NameUser.Add(file.SelectedHuman);
-			}
-
-			NameUser.Sort(new NaturalStringComparer());
+			colDate = 2;
+			colHuman = 0;
+			colGame = 0;
+			colSumma = 1;
 
 			foreach (string name in NameUser)
 			{
@@ -384,10 +335,10 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 						{
 							string cellValue = "";
 							string cellActValue = "";
-							for (int i = 1; i <= rowValueMax + 1; i++)
+							for (int i = 0; i <= rowValueMax + 1; i++)
 							{
-								cellValue = ((Excel.Range)workSheet.Cells[i, 1]).Value;
-								cellActValue = ((Excel.Range)workSheet.Cells[i, 3]).Value;
+								cellValue = ExcelExporter.GetValue(i, colHuman);
+								cellActValue = ExcelExporter.GetValue(i, colDate);
 								if (cellValue == file.SelectedHuman)
 								{
 									if (cellActValue == file.ActDateText)
@@ -411,37 +362,22 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 
 							if (string.IsNullOrEmpty(cellValue))
 							{
-								workSheet.Cells[rowHumanCurr, 1] = file.SelectedHuman;
-								workSheet.Cells[rowHumanCurr, 3] = file.ActDateText;
+								ExcelExporter.SetCellValue(rowHumanCurr, colHuman, file.SelectedHuman);
+								ExcelExporter.SetCellValue(rowHumanCurr, colDate, file.ActDateText);
 							}
 
 							rowGameCurr = rowHumanCurr + 1;
-							FindGame2(ref workSheet, rowGameCurr, games);
+							FindGameExcelList(rowGameCurr, games);
 							rowValueMax = rowGameCurr;
 							if (string.IsNullOrEmpty(cellValue))
 							{
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 1]).Borders.Weight = Excel.XlBorderWeight.xlMedium;
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 1]).Font.Name = "Calibri";
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 1]).Font.Bold = true;
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 1]).Font.Size = 12;
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 1]).HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 1]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 3]).Font.Name = "Calibri";
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 3]).Font.Size = 12;
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 3]).Borders.Weight = Excel.XlBorderWeight.xlThin;
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 3]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 3]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 2]).Font.Name = "Calibri";
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 2]).Borders.Weight = Excel.XlBorderWeight.xlThin;
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 2]).Font.Size = 12;
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 2]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-								((Excel.Range)workSheet.Cells[rowHumanCurr, 2]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
+								ExcelExporter.GetCell(rowHumanCurr, colHuman).StyleIndex = 9;
+								ExcelExporter.GetCell(rowHumanCurr, colDate).StyleIndex = 4;
+								ExcelExporter.GetCell(rowHumanCurr, colSumma).StyleIndex = 4;
 							}
 
-							string formula = "=SUM(" + alphabetExcel[1] + "" + (rowHumanCurr + 1) + ":" + alphabetExcel[1] + "" + (rowGameCurr - 1) + ")";
-							((Excel.Range)workSheet.Cells[rowHumanCurr, 2]).Formula = formula;
+							string formula = "=SUM(" + ExcelExporter.GetCellName(rowHumanCurr + 1, colSumma) + ":" + ExcelExporter.GetCellName(rowGameCurr - 1, colSumma) + ")";
+							ExcelExporter.SetCellValue(rowHumanCurr, colSumma, formula, true);
 							rowHumanCurr = rowValueMax + 1;
 						}
 					}
@@ -450,9 +386,9 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 
 			if (WorkType.Development == _workType)
 			{
-				for (int i = 1; i <= rowValueMax + 1; i++)
+				for (int i = 0; i <= rowValueMax; i++)
 				{
-					string cellValue = ((Excel.Range)workSheet.Cells[i, 1]).Value;
+					string cellValue = ExcelExporter.GetValue(i, colHuman);
 
 					if (!string.IsNullOrEmpty(cellValue))
 					{
@@ -461,13 +397,13 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 						{
 							if (cellValue == file.SelectedHuman)
 							{
-								cellActValue = ((Excel.Range)workSheet.Cells[i, 3]).Value;
+								cellActValue = ExcelExporter.GetValue(i, colDate);
 								if (cellActValue == file.ActDateText)
 								{
 									Dictionary<string, int> games = new Dictionary<string, int>();
 									CalculateGamePrice.GamePrice(ref games, file.BackDataModels, gameObjects, WorkType.Rework);
 									if (games.Count > 0)
-										((Excel.Range)workSheet.Cells[i, 1]).Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Yellow);
+										ExcelExporter.GetCell(i, colHuman).StyleIndex = 10;
 
 									break;
 								}
@@ -481,60 +417,34 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			CalculateSumma(openedFilesList, gameObjects);
 			for (int i = 1; i < 4; i++)
 			{
-				((Excel.Range)workSheet.Cells[rowValueMax + i, 1]).Borders.Weight = Excel.XlBorderWeight.xlMedium;
-				((Excel.Range)workSheet.Cells[rowValueMax + i, 1]).Font.Name = "Calibri";
-				((Excel.Range)workSheet.Cells[rowValueMax + i, 1]).Font.Size = 12;
-				((Excel.Range)workSheet.Cells[rowValueMax + i, 1]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-				((Excel.Range)workSheet.Cells[rowValueMax + i, 1]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-				((Excel.Range)workSheet.Cells[rowValueMax + i, 1]).Font.Bold = true;
-
-
-				((Excel.Range)workSheet.Cells[rowValueMax + i, 2]).Borders.Weight = Excel.XlBorderWeight.xlMedium;
-				((Excel.Range)workSheet.Cells[rowValueMax + i, 2]).Font.Name = "Calibri";
-				((Excel.Range)workSheet.Cells[rowValueMax + i, 2]).Font.Size = 12;
-				((Excel.Range)workSheet.Cells[rowValueMax + i, 2]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-				((Excel.Range)workSheet.Cells[rowValueMax + i, 2]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-				((Excel.Range)workSheet.Cells[rowValueMax + i, 2]).NumberFormat = "0";
+				ExcelExporter.GetCell(rowValueMax + i, colHuman).StyleIndex = 5;
+				ExcelExporter.GetCell(rowValueMax + i, colSumma).StyleIndex = 6;
 			}
 
-			workSheet.Cells[rowValueMax + 1, 1] = "Розробка грн.";
-			workSheet.Cells[rowValueMax + 1, 2] = iDevelopmentSum.ToString();
+			ExcelExporter.SetCellValue(rowValueMax + 1, 0, "Розробка грн.");
+			ExcelExporter.SetCellValue(rowValueMax + 1, 1, iDevelopmentSum.ToString());
+			ExcelExporter.SetCellValue(rowValueMax + 2, 0, "Пiдтримка грн.");
+			ExcelExporter.SetCellValue(rowValueMax + 2, 1, iReworkSum.ToString());
+			ExcelExporter.SetCellValue(rowValueMax + 3, 0, "Всього грн.");
+			string formulaSum = "=SUM(" + ExcelExporter.GetCellName(rowValueMax + 1, colSumma) + ":" + ExcelExporter.GetCellName(rowValueMax + 2, colSumma) + ")";
+			ExcelExporter.SetCellValue(rowValueMax + 3, 1, formulaSum, true);
 
-			workSheet.Cells[rowValueMax + 2, 1] = "Пiдтримка грн.";
-			workSheet.Cells[rowValueMax + 2, 2] = iReworkSum.ToString();
-
-			string formulaSum = "=SUM(" + alphabetExcel[1] + "" + (rowValueMax + 1) + ":" + alphabetExcel[1] + "" + (rowValueMax + 2) + ")";
-			workSheet.Cells[rowValueMax + 3, 1] = "Всього грн.";
-			((Excel.Range)workSheet.Cells[rowValueMax + 3, 2]).Formula = formulaSum;
-
-			((Excel.Range)workSheet.Columns[1]).AutoFit();
-			((Excel.Range)workSheet.Columns[2]).AutoFit();
-			((Excel.Range)workSheet.Columns[3]).AutoFit();
+			ExcelExporter.AutoFitCell(colDate);
+			ExcelExporter.AutoFitCell(colHuman);
+			ExcelExporter.AutoFitCell(colGame);
 		}
 
-		private void FillSheet3(ref Excel.Worksheet workSheet, Excel.Application excelApp, IList<DmxFile> openedFilesList, IList<GameObject> gameObjects, List<string> alphabetExcel, int _indexSheet, WorkType _workType)
+		private void FillSheetExcelLine(IList<DmxFile> openedFilesList, IList<GameObject> gameObjects, WorkType _workType)
 		{
-			rowGame = 1;
-			rowGameCurr = 1;
-			rowHumanCurr = 1;
-			rowValueMax = 1;
+			rowGame = 0;
+			rowGameCurr = 0;
+			rowHumanCurr = 0;
+			rowValueMax = 0;
 
-			int _colDate = 1;
-			int _colName = 2;
-			int _colGame = 3;
-			int _colSumma = 4;
-
-			workSheet = (Excel.Worksheet)excelApp.Sheets[_indexSheet];
-
-			List<string> NameUser = new List<string>();
-
-			foreach (DmxFile file in openedFilesList)
-			{
-				if (!NameUser.Contains(file.SelectedHuman))
-					NameUser.Add(file.SelectedHuman);
-			}
-
-			NameUser.Sort(new NaturalStringComparer());
+			colDate = 0;
+			colHuman = 1;
+			colGame = 2;
+			colSumma = 3;
 
 			foreach (string name in NameUser)
 			{
@@ -552,58 +462,44 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 
 							foreach (var game in games)
 							{
-								bool _bGameFind = false;
-								for (int i = 1; i <= rowValueMax; i++)
+								if (game.Value > 0)
 								{
-									cellValue = ((Excel.Range)workSheet.Cells[i, _colName]).Value;
-									cellActValue = ((Excel.Range)workSheet.Cells[i, _colDate]).Value;
-									cellGameValue = ((Excel.Range)workSheet.Cells[i, _colGame]).Value;
-									if (cellValue == file.SelectedHuman)
+									bool _bGameFind = false;
+									for (int i = 0; i <= rowValueMax; i++)
 									{
-										if (cellActValue == file.ActDateText)
+										cellValue = ExcelExporter.GetValue(i, colHuman);
+										cellActValue = ExcelExporter.GetValue(i, colDate);
+										cellGameValue = ExcelExporter.GetValue(i, colGame);
+										if (cellValue == file.SelectedHuman)
 										{
-											if (cellGameValue == game.Key)
+											if (cellActValue == file.ActDateText)
 											{
-												int _iSummCell = Convert.ToInt32(((Excel.Range)workSheet.Cells[i, _colSumma]).Value) + game.Value;
-												workSheet.Cells[i, _colSumma] = _iSummCell.ToString();
-												_bGameFind = true;
-												break;
+												if (cellGameValue == game.Key)
+												{
+													int _iSummGame = game.Value;
+													if (int.TryParse(ExcelExporter.GetValue(i, colSumma), out int _iSummCell))
+														_iSummGame += _iSummCell;
+
+													ExcelExporter.SetCellValue(i, colSumma, _iSummGame.ToString());
+													_bGameFind = true;
+													break;
+												}
 											}
 										}
 									}
-								}
 
-								if (!_bGameFind && game.Value > 0)
-								{
-									workSheet.Cells[rowValueMax, _colName] = file.SelectedHuman;
-									workSheet.Cells[rowValueMax, _colDate] = file.ActDateText;
-									workSheet.Cells[rowValueMax, _colGame] = game.Key.ToString();
-									workSheet.Cells[rowValueMax, _colSumma] = game.Value.ToString();
-
-									((Excel.Range)workSheet.Cells[rowValueMax, _colDate]).Font.Name = "Calibri";
-									((Excel.Range)workSheet.Cells[rowValueMax, _colDate]).Font.Size = 12;
-									((Excel.Range)workSheet.Cells[rowValueMax, _colDate]).Borders.Weight = Excel.XlBorderWeight.xlThin;
-									((Excel.Range)workSheet.Cells[rowValueMax, _colDate]).HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
-									((Excel.Range)workSheet.Cells[rowValueMax, _colDate]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-
-									((Excel.Range)workSheet.Cells[rowValueMax, _colName]).Font.Name = "Calibri";
-									((Excel.Range)workSheet.Cells[rowValueMax, _colName]).Font.Size = 12;
-									((Excel.Range)workSheet.Cells[rowValueMax, _colName]).Borders.Weight = Excel.XlBorderWeight.xlThin;
-									((Excel.Range)workSheet.Cells[rowValueMax, _colName]).HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
-									((Excel.Range)workSheet.Cells[rowValueMax, _colName]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-
-									((Excel.Range)workSheet.Cells[rowValueMax, _colGame]).Font.Name = "Calibri";
-									((Excel.Range)workSheet.Cells[rowValueMax, _colGame]).Font.Size = 12;
-									((Excel.Range)workSheet.Cells[rowValueMax, _colGame]).Borders.Weight = Excel.XlBorderWeight.xlThin;
-									((Excel.Range)workSheet.Cells[rowValueMax, _colGame]).HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
-									((Excel.Range)workSheet.Cells[rowValueMax, _colGame]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-
-									((Excel.Range)workSheet.Cells[rowValueMax, _colSumma]).Font.Name = "Calibri";
-									((Excel.Range)workSheet.Cells[rowValueMax, _colSumma]).Font.Size = 12;
-									((Excel.Range)workSheet.Cells[rowValueMax, _colSumma]).Borders.Weight = Excel.XlBorderWeight.xlThin;
-									((Excel.Range)workSheet.Cells[rowValueMax, _colSumma]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-									((Excel.Range)workSheet.Cells[rowValueMax, _colSumma]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-									rowValueMax++;
+									if (!_bGameFind)
+									{
+										ExcelExporter.SetCellValue(rowValueMax, colHuman, file.SelectedHuman);
+										ExcelExporter.SetCellValue(rowValueMax, colDate, file.ActDateText);
+										ExcelExporter.SetCellValue(rowValueMax, colGame, game.Key);
+										ExcelExporter.SetCellValue(rowValueMax, colSumma, game.Value.ToString());
+										ExcelExporter.GetCell(rowValueMax, colDate).StyleIndex = 3;
+										ExcelExporter.GetCell(rowValueMax, colHuman).StyleIndex = 3;
+										ExcelExporter.GetCell(rowValueMax, colGame).StyleIndex = 3;
+										ExcelExporter.GetCell(rowValueMax, colSumma).StyleIndex = 4;
+										rowValueMax++;
+									}
 								}
 							}
 						}
@@ -611,50 +507,33 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 				}
 			}
 
-			((Excel.Range)workSheet.Columns[_colDate]).NumberFormat = "dd.mm.yyyy";
-			((Excel.Range)workSheet.Columns[_colSumma]).NumberFormat = "0";
-
 			CalculateSumma(openedFilesList, gameObjects);
-			for (int i = 1; i < 4; i++)
+			for (int i = 0; i < 3; i++)
 			{
-				((Excel.Range)workSheet.Cells[i, _colSumma + 2]).Borders.Weight = Excel.XlBorderWeight.xlMedium;
-				((Excel.Range)workSheet.Cells[i, _colSumma + 2]).Font.Name = "Calibri";
-				((Excel.Range)workSheet.Cells[i, _colSumma + 2]).Font.Size = 12;
-				((Excel.Range)workSheet.Cells[i, _colSumma + 2]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-				((Excel.Range)workSheet.Cells[i, _colSumma + 2]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-				((Excel.Range)workSheet.Cells[i, _colSumma + 2]).Font.Bold = true;
-
-
-				((Excel.Range)workSheet.Cells[i, _colSumma + 3]).Borders.Weight = Excel.XlBorderWeight.xlMedium;
-				((Excel.Range)workSheet.Cells[i, _colSumma + 3]).Font.Name = "Calibri";
-				((Excel.Range)workSheet.Cells[i, _colSumma + 3]).Font.Size = 12;
-				((Excel.Range)workSheet.Cells[i, _colSumma + 3]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-				((Excel.Range)workSheet.Cells[i, _colSumma + 3]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-				((Excel.Range)workSheet.Cells[i, _colSumma + 3]).NumberFormat = "0";
+				ExcelExporter.GetCell(i, colSumma + 2).StyleIndex = 5;
+				ExcelExporter.GetCell(i, colSumma + 3).StyleIndex = 6;
 			}
 
-			workSheet.Cells[1, _colSumma + 2] = "Розробка грн.";
-			workSheet.Cells[1, _colSumma + 3] = iDevelopmentSum.ToString();
+			ExcelExporter.SetCellValue(0, colSumma + 2, "Розробка грн.");
+			ExcelExporter.SetCellValue(0, colSumma + 3, iDevelopmentSum.ToString());
+			ExcelExporter.SetCellValue(1, colSumma + 2, "Пiдтримка грн.");
+			ExcelExporter.SetCellValue(1, colSumma + 3, iReworkSum.ToString());
+			ExcelExporter.SetCellValue(2, colSumma + 2, "Всього грн.");
+			string formulaSum = "=SUM(" + ExcelExporter.GetCellName(0, colSumma + 3) + ":" + ExcelExporter.GetCellName(1, colSumma + 3) + ")";
+			ExcelExporter.SetCellValue(2, colSumma + 3, formulaSum, true);
 
-			workSheet.Cells[2, _colSumma + 2] = "Пiдтримка грн.";
-			workSheet.Cells[2, _colSumma + 3] = iReworkSum.ToString();
-
-			string formulaSum = "=SUM(" + alphabetExcel[_colSumma + 2] + "1:" + alphabetExcel[_colSumma + 2] + "2)";
-			workSheet.Cells[3, _colSumma + 2] = "Всього грн.";
-			((Excel.Range)workSheet.Cells[3, _colSumma + 3]).Formula = formulaSum;
-
-			((Excel.Range)workSheet.Columns[_colDate]).AutoFit();
-			((Excel.Range)workSheet.Columns[_colName]).AutoFit();
-			((Excel.Range)workSheet.Columns[_colGame]).AutoFit();
-			((Excel.Range)workSheet.Columns[_colSumma]).AutoFit();
-			((Excel.Range)workSheet.Columns[_colSumma + 2]).AutoFit();
-			((Excel.Range)workSheet.Columns[_colSumma + 3]).AutoFit();
+			ExcelExporter.AutoFitCell(colDate);
+			ExcelExporter.AutoFitCell(colHuman);
+			ExcelExporter.AutoFitCell(colGame);
+			ExcelExporter.AutoFitCell(colSumma);
+			ExcelExporter.AutoFitCell(colSumma + 2);
+			ExcelExporter.AutoFitCell(colSumma + 3);
 
 			if (WorkType.Development == _workType)
 			{
-				for (int i = 1; i <= rowValueMax; i++)
+				for (int i = 0; i < rowValueMax; i++)
 				{
-					string cellValue = ((Excel.Range)workSheet.Cells[i, _colName]).Value;
+					string cellValue = ExcelExporter.GetValue(i, colHuman);
 
 					if (!string.IsNullOrEmpty(cellValue))
 					{
@@ -663,13 +542,13 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 						{
 							if (cellValue == file.SelectedHuman)
 							{
-								cellActValue = ((Excel.Range)workSheet.Cells[i, _colDate]).Value;
+								cellActValue = ExcelExporter.GetValue(i, colDate);
 								if (cellActValue == file.ActDateText)
 								{
 									Dictionary<string, int> games = new Dictionary<string, int>();
 									CalculateGamePrice.GamePrice(ref games, file.BackDataModels, gameObjects, WorkType.Rework);
 									if (games.Count > 0)
-										((Excel.Range)workSheet.Cells[i, _colName]).Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Yellow);
+										ExcelExporter.GetCell(i, colHuman).StyleIndex = 2;
 
 									break;
 								}
@@ -681,50 +560,42 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			}
 		}
 
-		private void FindGame(ref Excel.Worksheet workSheet, int _rowHumanCurr, Dictionary<string, int> games)
+		private void FindGameExcelTable(int _rowHumanCurr, Dictionary<string, int> games)
 		{
 			foreach (var game in games)
 			{
-				for (int i = 2; i <= colGameMax; i++)
+				for (int i = 1; i <= colGameMax; i++)
 				{
-					string cellValue = ((Excel.Range)workSheet.Cells[rowGame, i]).Value;
+					string cellValue = ExcelExporter.GetValue(rowGame, i);
 					colGameCurr = i;
 					if (string.IsNullOrEmpty(cellValue))
 					{
-						workSheet.Cells[rowGame, i] = game.Key;
-						((Excel.Range)workSheet.Cells[rowGame, i]).Borders.Weight = Excel.XlBorderWeight.xlMedium;
+						ExcelExporter.SetCellValue(rowGame, i, game.Key);
+						ExcelExporter.SetCellValue(_rowHumanCurr, colGameCurr, game.Value.ToString());
 						colGameMax++;
-						workSheet.Cells[_rowHumanCurr, colGameCurr] = game.Value.ToString();
-						((Excel.Range)workSheet.Cells[_rowHumanCurr, colGameCurr]).Font.Name = "Calibri";
-						((Excel.Range)workSheet.Cells[_rowHumanCurr, colGameCurr]).Font.Size = 12;
-						((Excel.Range)workSheet.Cells[_rowHumanCurr, colGameCurr]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-						((Excel.Range)workSheet.Cells[_rowHumanCurr, colGameCurr]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
 
 						break;
 					}
 					else if (cellValue == game.Key)
 					{
-						int _iSummCell = Convert.ToInt32(((Excel.Range)workSheet.Cells[_rowHumanCurr, colGameCurr]).Value) + game.Value;
-						workSheet.Cells[_rowHumanCurr, colGameCurr] = _iSummCell.ToString();
-
-						((Excel.Range)workSheet.Cells[_rowHumanCurr, colGameCurr]).Font.Name = "Calibri";
-						((Excel.Range)workSheet.Cells[_rowHumanCurr, colGameCurr]).Font.Size = 12;
-						((Excel.Range)workSheet.Cells[_rowHumanCurr, colGameCurr]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-						((Excel.Range)workSheet.Cells[_rowHumanCurr, colGameCurr]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
+						int _iSummGame = game.Value;
+						if (int.TryParse(ExcelExporter.GetValue(_rowHumanCurr, colGameCurr), out int _iSummCell))
+							_iSummGame += _iSummCell;
+						ExcelExporter.SetCellValue(_rowHumanCurr, colGameCurr, _iSummGame.ToString());
 						break;
 					}
 				}
 			}
 		}
 
-		private void FindGame2(ref Excel.Worksheet workSheet, int _rowGameCurr, Dictionary<string, int> games)
+		private void FindGameExcelList(int _rowGameCurr, Dictionary<string, int> games)
 		{
 			int _rowStartGameCurr = _rowGameCurr;
 			string cellValue;
 
 			for (int i = _rowGameCurr; i <= 100; i++)
 			{
-				cellValue = ((Excel.Range)workSheet.Cells[i, 1]).Value;
+				cellValue = ExcelExporter.GetValue(i, colGame);
 				rowGameCurr = i;
 				if (string.IsNullOrEmpty(cellValue))
 				{
@@ -738,11 +609,14 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 				bool _bGameFind = false;
 				for (int i = _rowStartGameCurr; i <= _rowGameCurr - 1; i++)
 				{
-					cellValue = ((Excel.Range)workSheet.Cells[i, 1]).Value;
+					cellValue = ExcelExporter.GetValue(i, colGame);
 					if (cellValue == game.Key)
 					{
-						int _iSummCell = Convert.ToInt32(((Excel.Range)workSheet.Cells[i, 2]).Value) + game.Value;
-						workSheet.Cells[i, 2] = _iSummCell.ToString();
+						int _iSummGame = game.Value;
+						if (int.TryParse(ExcelExporter.GetValue(i, colSumma), out int _iSummCell))
+							_iSummGame += _iSummCell;
+						ExcelExporter.SetCellValue(i, colSumma, _iSummGame.ToString());
+
 						_bGameFind = true;
 						break;
 					}
@@ -750,54 +624,364 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 
 				if (!_bGameFind)
 				{
-					workSheet.Cells[rowGameCurr, 1] = game.Key;
-					workSheet.Cells[rowGameCurr, 2] = game.Value.ToString();
-
-					((Excel.Range)workSheet.Cells[rowGameCurr, 1]).Font.Name = "Calibri";
-					((Excel.Range)workSheet.Cells[rowGameCurr, 1]).Borders.Weight = Excel.XlBorderWeight.xlThin;
-					((Excel.Range)workSheet.Cells[rowGameCurr, 1]).Font.Size = 12;
-					((Excel.Range)workSheet.Cells[rowGameCurr, 1]).HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
-					((Excel.Range)workSheet.Cells[rowGameCurr, 1]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-
-					((Excel.Range)workSheet.Cells[rowGameCurr, 2]).Font.Name = "Calibri";
-					((Excel.Range)workSheet.Cells[rowGameCurr, 2]).Borders.Weight = Excel.XlBorderWeight.xlThin;
-					((Excel.Range)workSheet.Cells[rowGameCurr, 2]).Font.Size = 12;
-					((Excel.Range)workSheet.Cells[rowGameCurr, 2]).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-					((Excel.Range)workSheet.Cells[rowGameCurr, 2]).VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
+					ExcelExporter.SetCellValue(rowGameCurr, colGame, game.Key);
+					ExcelExporter.SetCellValue(rowGameCurr, colSumma, game.Value.ToString());
+					ExcelExporter.GetCell(rowGameCurr, colGame).StyleIndex = 8;
+					ExcelExporter.GetCell(rowGameCurr, colSumma).StyleIndex = 4;
 					rowGameCurr++;
 				}
 			}
 		}
 
-		private void CreateXlsx(string path, Dictionary<string, int> dFillSheet)
+		private void CreateFileXlsx(string path, Dictionary<string, int> dFillSheet)
 		{
 			//if (!File.Exists(path))
 			{
 				SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Create(path, SpreadsheetDocumentType.Workbook);
 				WorkbookPart workbookpart = spreadsheetDocument.AddWorkbookPart();
 				workbookpart.Workbook = new Workbook();
-				WorksheetPart worksheetPart = workbookpart.AddNewPart<WorksheetPart>();
-				worksheetPart.Worksheet = new Worksheet(new SheetData());
+
+				WorkbookStylesPart stylesPart = workbookpart.AddNewPart<WorkbookStylesPart>();
+				stylesPart.Stylesheet = CreateStyleSheet();
+				stylesPart.Stylesheet.Save();
+
 				Sheets sheets = spreadsheetDocument.WorkbookPart.Workbook.AppendChild(new Sheets());
+
 				uint index = 1;
 				foreach (KeyValuePair<string, int> name in dFillSheet)
 				{
 					if (name.Value != -1)
 					{
-						Sheet sheet = new Sheet()
+						WorksheetPart worksheetPart = workbookpart.AddNewPart<WorksheetPart>();
+						worksheetPart.Worksheet = new Worksheet();
+						SheetData sheetData = new SheetData();
+	
+						Columns columns = new Columns();
+						double maxWidth = 7;
+						for (int i = 0; i < 702; i++)
 						{
-							Id = spreadsheetDocument.WorkbookPart.
-						GetIdOfPart(worksheetPart),
+							Column col = new Column() { BestFit = true, Min = (uint)(i + 1), Max = (uint)(i + 1), CustomWidth = true, Width = maxWidth };
+							columns.Append(col);
+						}
+						worksheetPart.Worksheet.Append(columns);
+						worksheetPart.Worksheet.Append(sheetData);
+						sheets.Append(new Sheet()
+						{
+							Id = spreadsheetDocument.WorkbookPart.GetIdOfPart(worksheetPart),
 							SheetId = index,
 							Name = name.Key
-						};
-						sheets.Append(sheet);
+						});
 						index++;
 					}
 				}
 				workbookpart.Workbook.Save();
 				spreadsheetDocument.Close();
 			}
+		}
+
+		private ForegroundColor TranslateForeground(System.Drawing.Color fillColor)
+		{
+			return new ForegroundColor()
+			{
+				Rgb = new HexBinaryValue()
+				{
+					Value =
+							  System.Drawing.ColorTranslator.ToHtml(
+							  System.Drawing.Color.FromArgb(
+								  fillColor.A,
+								  fillColor.R,
+								  fillColor.G,
+								  fillColor.B)).Replace("#", "")
+				}
+			};
+		}
+
+		private Stylesheet CreateStyleSheet()
+		{
+			Stylesheet stylesheet = new Stylesheet();
+			#region Number format
+			var numberingFormats = new NumberingFormats();
+			numberingFormats.Append(new NumberingFormat
+			{
+				NumberFormatId = 0,
+				FormatCode = StringValue.FromString("")
+			});
+			numberingFormats.Count = UInt32Value.FromUInt32((uint)numberingFormats.ChildElements.Count);
+			#endregion
+
+			#region Fonts
+			var fonts = new Fonts();
+			fonts.Append(new Font()  // Font index 0 - default
+			{
+				FontName = new FontName { Val = StringValue.FromString("Calibri") },
+				FontSize = new FontSize { Val = DoubleValue.FromDouble(12) }
+			});
+			fonts.Append(new Font()  // Font index 1
+			{
+				FontName = new FontName { Val = StringValue.FromString("Calibri") },
+				FontSize = new FontSize { Val = DoubleValue.FromDouble(12) },
+				Bold = new Bold()
+			});
+			fonts.Count = UInt32Value.FromUInt32((uint)fonts.ChildElements.Count);
+			#endregion
+
+			#region Fills
+			var fills = new Fills();
+			fills.Append(new Fill() // Fill index 0
+			{
+				PatternFill = new PatternFill { PatternType = PatternValues.None }
+			});
+			fills.Append(new Fill() // Fill index 1
+			{
+				PatternFill = new PatternFill { PatternType = PatternValues.Gray125 }
+			});
+			fills.Append(new Fill() // Fill index 2
+			{
+				PatternFill = new PatternFill
+				{
+					PatternType = PatternValues.Solid,
+					ForegroundColor = TranslateForeground(System.Drawing.Color.Yellow),
+					BackgroundColor = new BackgroundColor { Rgb = TranslateForeground(System.Drawing.Color.Yellow).Rgb }
+				}
+			});
+			fills.Count = UInt32Value.FromUInt32((uint)fills.ChildElements.Count);
+			#endregion
+
+			#region Borders
+			var borders = new Borders();
+			borders.Append(new Border   // Border index 0: no border
+			{
+				LeftBorder = new LeftBorder(),
+				RightBorder = new RightBorder(),
+				TopBorder = new TopBorder(),
+				BottomBorder = new BottomBorder(),
+				DiagonalBorder = new DiagonalBorder()
+			});
+			borders.Append(new Border    //Boarder Index 1: All
+			{
+				LeftBorder = new LeftBorder { Style = BorderStyleValues.Thin },
+				RightBorder = new RightBorder { Style = BorderStyleValues.Thin },
+				TopBorder = new TopBorder { Style = BorderStyleValues.Thin },
+				BottomBorder = new BottomBorder { Style = BorderStyleValues.Thin },
+				DiagonalBorder = new DiagonalBorder()
+			});
+			borders.Append(new Border    //Boarder Index 2: All
+			{
+				LeftBorder = new LeftBorder { Style = BorderStyleValues.Medium },
+				RightBorder = new RightBorder { Style = BorderStyleValues.Medium },
+				TopBorder = new TopBorder { Style = BorderStyleValues.Medium },
+				BottomBorder = new BottomBorder { Style = BorderStyleValues.Medium },
+				DiagonalBorder = new DiagonalBorder()
+			});
+			borders.Count = UInt32Value.FromUInt32((uint)borders.ChildElements.Count);
+			#endregion
+
+			#region Cell Style Format
+			var cellStyleFormats = new CellStyleFormats();
+			cellStyleFormats.Append(new CellFormat  // Cell style format index 0: no format
+			{
+				NumberFormatId = 0,
+				FontId = 0,
+				FillId = 0,
+				BorderId = 0,
+				FormatId = 0
+			});
+			cellStyleFormats.Append(new CellFormat  // Cell style format index 1: no format
+			{
+				NumberFormatId = 0,
+				FontId = 0,
+				FillId = 0,
+				BorderId = 0,
+				FormatId = 0,
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Center, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellStyleFormats.Append(new CellFormat  // Cell style format index 2: no format
+			{
+				NumberFormatId = 0,
+				FontId = 0,
+				FillId = 0,
+				BorderId = 0,
+				FormatId = 0,
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Left, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellStyleFormats.Append(new CellFormat  // Cell style format index 2: no format
+			{
+				NumberFormatId = 0,
+				FontId = 0,
+				FillId = 0,
+				BorderId = 0,
+				FormatId = 0,
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Right, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellStyleFormats.Count = UInt32Value.FromUInt32((uint)cellStyleFormats.ChildElements.Count);
+			#endregion
+
+			#region Cell format
+			var cellFormats = new CellFormats();
+			cellFormats.Append(new CellFormat());    // Cell format index 0
+			cellFormats.Append(new CellFormat   // Cell format index 1: Cell header
+			{
+				NumberFormatId = 0,
+				FontId = 0,
+				FillId = 2,//Color
+				BorderId = 1,
+				FormatId = 0,
+
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Right, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellFormats.Append(new CellFormat   // Cell format index 2: Cell header
+			{
+				NumberFormatId = 0,
+				FontId = 0,
+				FillId = 2,//Color
+				BorderId = 1,
+				FormatId = 0,
+
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Left, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellFormats.Append(new CellFormat   // Cell format index 3: Cell header
+			{
+				NumberFormatId = 0,
+				FontId = 0,
+				FillId = 0,
+				BorderId = 1,
+				FormatId = 0,
+
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Left, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellFormats.Append(new CellFormat   // Cell format index 4: Cell header
+			{
+				NumberFormatId = 0,
+				FontId = 0,
+				FillId = 0,
+				BorderId = 1,
+				FormatId = 0,
+
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Right, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellFormats.Append(new CellFormat   // Cell format index 5: Cell header
+			{
+				NumberFormatId = 0,
+				FontId = 1,
+				FillId = 0,
+				BorderId = 2,
+				FormatId = 0,
+
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Right, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellFormats.Append(new CellFormat   // Cell format index 6: Cell header
+			{
+				NumberFormatId = 0,
+				FontId = 0,
+				FillId = 0,
+				BorderId = 2,
+				FormatId = 0,
+
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Right, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellFormats.Append(new CellFormat   // Cell format index 7: Cell header
+			{
+				NumberFormatId = 0,
+				FontId = 0,
+				FillId = 0,
+				BorderId = 2,
+				FormatId = 0,
+
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Left, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellFormats.Append(new CellFormat   // Cell format index 8: Cell header
+			{
+				NumberFormatId = 0,
+				FontId = 0,
+				FillId = 0,
+				BorderId = 1,
+				FormatId = 0,
+
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Center, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellFormats.Append(new CellFormat   // Cell format index 9: Cell header
+			{
+				NumberFormatId = 0,
+				FontId = 1,
+				FillId = 0,
+				BorderId = 2,
+				FormatId = 0,
+
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Left, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellFormats.Append(new CellFormat   // Cell format index 10: Cell header
+			{
+				NumberFormatId = 0,
+				FontId = 1,
+				FillId = 2,
+				BorderId = 2,
+				FormatId = 0,
+
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Left, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellFormats.Append(new CellFormat   // Cell format index 11: Cell header
+			{
+				NumberFormatId = 0,
+				FontId = 1,
+				FillId = 0,
+				BorderId = 2,
+				FormatId = 0,
+
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Center, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellFormats.Append(new CellFormat   // Cell format index 12: Cell header
+			{
+				NumberFormatId = 0,
+				FontId = 0,
+				FillId = 0,
+				BorderId = 2,
+				FormatId = 0,
+
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Left, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellFormats.Append(new CellFormat   // Cell format index 13: Cell header
+			{
+				NumberFormatId = 0,
+				FontId = 0,
+				FillId = 2,//Color
+				BorderId = 2,
+				FormatId = 0,
+
+				Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Left, Vertical = VerticalAlignmentValues.Center }
+			});
+			cellFormats.Count = UInt32Value.FromUInt32((uint)cellFormats.ChildElements.Count);
+			#endregion
+
+			stylesheet.Append(numberingFormats);
+			stylesheet.Append(fonts);
+			stylesheet.Append(fills);
+			stylesheet.Append(borders);
+			stylesheet.Append(cellStyleFormats);
+			stylesheet.Append(cellFormats);
+
+			#region Cell styles
+			var css = new CellStyles();
+			css.Append(new CellStyle
+			{
+				Name = StringValue.FromString("Normal"),
+				FormatId = 0,
+				BuiltinId = 0
+			});
+			css.Count = UInt32Value.FromUInt32((uint)css.ChildElements.Count);
+			stylesheet.Append(css);
+			#endregion
+
+			var dfs = new DifferentialFormats { Count = 0 };
+			stylesheet.Append(dfs);
+			var tss = new TableStyles
+			{
+				Count = 0,
+				DefaultTableStyle = StringValue.FromString("TableStyleMedium9"),
+				DefaultPivotStyle = StringValue.FromString("PivotStyleLight16")
+			};
+			stylesheet.Append(tss);
+
+			return stylesheet;
 		}
 
 		private void CalculateSumma(IList<DmxFile> openedFilesList, IList<GameObject> gameObjects)
@@ -841,5 +1025,6 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 				iReworkSum += game.Value;
 			}
 		}
+
 	}
 }
