@@ -34,10 +34,6 @@
     <Reference Include="DocumentFormat.OpenXml, Version=2.15.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\packages\DocumentFormat.OpenXml.2.15.0\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1001\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -66,6 +62,7 @@
     <Compile Include="OfficeFiles\DocumentGeneralData.cs" />
     <Compile Include="OfficeFiles\DocumentTableData.cs" />
     <Compile Include="OfficeFiles\DocumentTableRowData.cs" />
+    <Compile Include="OfficeFiles\ExcelExporter.cs" />
     <Compile Include="OfficeFiles\Human\HumanData.cs" />
     <Compile Include="OfficeFiles\OfficeExporter.cs" />
     <Compile Include="OfficeFiles\OfficeStrings.cs" />

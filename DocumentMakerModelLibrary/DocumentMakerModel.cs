@@ -25,6 +25,7 @@ namespace DocumentMakerModelLibrary
 	public class DocumentMakerModel
 	{
 		private readonly OfficeExporter exporter;
+		private readonly ExcelExporter excelExporter;
 		private readonly ObservableCollection<FullDocumentTemplate> documentTemplates;
 		private readonly ObservableCollection<string> contractFilesList;
 		private readonly ObservableRangeCollection<HumanData> humanFullNameList;
@@ -39,6 +40,7 @@ namespace DocumentMakerModelLibrary
 		public DocumentMakerModel()
 		{
 			exporter = new OfficeExporter();
+			excelExporter = new ExcelExporter();
 			documentTemplates = new ObservableCollection<FullDocumentTemplate>
 			{
 				new FullDocumentTemplate("Скриптувальник", DocumentTemplateType.Scripter),

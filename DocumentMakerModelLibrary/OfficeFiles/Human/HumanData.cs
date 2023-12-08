@@ -23,7 +23,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles.Human
 		public string DefaultTemplate { get; set; }
 		public string AccountNumberText { get; set; }
 
-		public void SetData(char type, string value)
+		public void SetData(string type, string value)
 		{
 			if (value != null)
 			{
@@ -31,8 +31,8 @@ namespace DocumentMakerModelLibrary.OfficeFiles.Human
 
 				switch (type)
 				{
-					case 'A': Name = value; break;
-					case 'B':
+					case "A": Name = value; break;
+					case "B":
 					{
 						switch(value)
 						{
@@ -44,19 +44,19 @@ namespace DocumentMakerModelLibrary.OfficeFiles.Human
 						};
 						break;
 					}
-					case 'C': HumanIdText = value; break;
-					case 'D': BankName = value; break;
-					case 'E': PaymentAccountText = value; break;
-					case 'F': ContractNumberText = value; break;
-					case 'G': ContractDateText = value; break;
-					case 'H': ContractReworkNumberText = value; break;
-					case 'I': ContractReworkDateText = value; break;
-					case 'J': RegionName = value; break;
-					case 'K': CityName = value; break;
-					case 'L': AddressText = value; break;
-					case 'M': MfoText = value; break;
-					case 'N': DefaultTemplate = value; break;
-					case 'O': AccountNumberText = value; break;
+					case "C": HumanIdText = value; break;
+					case "D": BankName = value; break;
+					case "E": PaymentAccountText = value; break;
+					case "F": ContractNumberText = value; break;
+					case "G": ContractDateText = value; break;
+					case "H": ContractReworkNumberText = value; break;
+					case "I": ContractReworkDateText = value; break;
+					case "J": RegionName = value; break;
+					case "K": CityName = value; break;
+					case "L": AddressText = value; break;
+					case "M": MfoText = value; break;
+					case "N": DefaultTemplate = value; break;
+					case "O": AccountNumberText = value; break;
 				}
 			}
 		}

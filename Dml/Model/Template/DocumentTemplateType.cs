@@ -37,6 +37,6 @@
 		Empty = -1,
 		Table,
 		List,
-		ListFrol,
+		Line,
 	}
 }

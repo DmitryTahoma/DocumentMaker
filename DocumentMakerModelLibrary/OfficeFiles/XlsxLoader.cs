@@ -1,11 +1,9 @@
 ﻿using Dml;
 using Dml.Model.Template;
-using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentMakerModelLibrary.Back;
 using DocumentMakerModelLibrary.OfficeFiles.Human;
 using System.IO;
-using System.Linq;
 
 namespace DocumentMakerModelLibrary.OfficeFiles
 {
@@ -17,52 +15,29 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 
 			humansData.Clear();
 
-			const char startColId = 'A';
 			const int startRowId = 2;
+			ExcelExporter.OpenXlsx(path, false);
 
-			using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(path, false))
+			if (ExcelExporter.LoadSheet("Лист1"))
 			{
-				WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
-
-				SharedStringTablePart sharedStringTablePart = workbookPart.GetPartsOfType<SharedStringTablePart>().First();
-				SharedStringTable sharedStringTable = sharedStringTablePart.SharedStringTable;
-
-				WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
-				SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
-
-				int curRowId = 1;
-				foreach (Row r in sheetData.Elements<Row>())
+				foreach (Row r in ExcelExporter.GetRows())
 				{
-					if (curRowId >= startRowId)
+					if (r.RowIndex >= startRowId)
 					{
 						HumanData humanData = new HumanData();
 
-						char curColId = startColId;
 						foreach (Cell c in r.Elements<Cell>())
 						{
-							string text;
-							if (c.DataType != null && c.DataType == CellValues.SharedString && int.TryParse(c.CellValue.Text, out int strId))
-							{
-								text = sharedStringTable.ChildElements[strId]?.InnerText;
-							}
-							else
-							{
-								text = c.CellValue?.Text;
-							}
-							
-							//humanData.SetData(curColId, text);
-							humanData.SetData(c.CellReference.InnerText[0], text);
-							++curColId;
+							string text = ExcelExporter.GetValue(c);
+							humanData.SetData(ExcelExporter.GetCellLetter(c.CellReference.ToString()), text);
 						}
 
 						humansData.Add(humanData);
 					}
-
-					++curRowId;
 				}
-
-				spreadsheetDocument.Close();
 			}
+
+			ExcelExporter.CloseFile();
 		}
 
 		public void LoadWorkTypes(string path, DocumentTemplateType templateType, ObservableRangeCollection<WorkObject> workObjects)
@@ -71,49 +46,27 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 
 			workObjects.Clear();
 
-			const char startColId = 'A';
 			const int startRowId = 2;
 
-			using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(path, false))
+			ExcelExporter.OpenXlsx(path, false);
+
+			if (ExcelExporter.LoadSheet("Лист1"))
 			{
-				WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
-
-				SharedStringTablePart sharedStringTablePart = workbookPart.GetPartsOfType<SharedStringTablePart>().First();
-				SharedStringTable sharedStringTable = sharedStringTablePart.SharedStringTable;
-
-				WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
-				SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
-
-				int curRowId = 1;
 				uint id = 0;
-				char col = (char)(startColId + (int)templateType);
-				foreach (Row r in sheetData.Elements<Row>())
+				foreach (Row r in ExcelExporter.GetRows())
 				{
-					if (curRowId >= startRowId)
+					if (r.RowIndex >= startRowId)
 					{
-						Cell c = r.Elements<Cell>().FirstOrDefault(x => x.CellReference.Value == col + curRowId.ToString());
-						if (c != null)
+						string text = ExcelExporter.GetValue(r, (int)templateType);
+						if (!string.IsNullOrEmpty(text))
 						{
-							string text;
-							if (c.DataType != null && c.DataType == CellValues.SharedString && int.TryParse(c.CellValue.Text, out int strId))
-							{
-								text = sharedStringTable.ChildElements[strId]?.InnerText;
-							}
-							else
-							{
-								text = c.CellValue?.Text;
-							}
-							if (text != null)
-							{
-								workObjects.Add(new WorkObject { Id = id++, Name = text });
-							}
+							workObjects.Add(new WorkObject { Id = id++, Name = text });
 						}
 					}
-					++curRowId;
 				}
-
-				spreadsheetDocument.Close();
 			}
+
+			ExcelExporter.CloseFile();
 		}
 	}
 }
