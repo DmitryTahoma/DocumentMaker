@@ -21,13 +21,8 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Markup;
 using MessageBox = System.Windows.Forms.MessageBox;
-using DocumentMakerModelLibrary.OfficeFiles;
-
-#if INCLUDED_UPDATER_API
 using UpdaterAPI;
-using UpdaterAPI.Resources;
-using System.Threading.Tasks;
-#endif
+using UpdaterAPI.View;
 
 namespace DocumentMaker
 {
@@ -69,11 +64,10 @@ namespace DocumentMaker
 		private readonly FolderBrowserDialog folderBrowserDialog;
 		private readonly OpenFileDialog openFileDialog;
 		private readonly SaveFileDialog saveFileDialog;
-		private readonly SaveFileDialog saveFileSumDialog;
 		private readonly InputingValidator inputingValidator;
 
 		private bool cancelOpenedFilesSelectionChanged;
-
+		private Updater updater = new Updater();
 		public MainWindow(string[] args)
 		{
 			controller = new MainWindowController(args);
@@ -94,12 +88,6 @@ namespace DocumentMaker
 				Filter = "Файл повного акту (*" + DcmkFile.Extension + ")|*" + DcmkFile.Extension
 			};
 
-			saveFileSumDialog = new SaveFileDialog
-			{
-				DefaultExt = ".xlsx",
-				Filter = "Файл (*.xlsx)|"
-			};
-
 			inputingValidator = new InputingValidator();
 
 			ContentVisibility = Visibility.Hidden;
@@ -107,10 +95,8 @@ namespace DocumentMaker
 
 			InitializeComponent();
 			InitializeComponentFromCode();
-
-#if INCLUDED_UPDATER_API
-			AssemblyLoader.LoadWinScp();
-#endif
+			updater.LoadLocalVersions();
+			Title = $"Five-BN DocumentMaker {updater.GetCurrentVersion()}";
 		}
 
 		private void InitializeComponentFromCode()
@@ -260,12 +246,7 @@ namespace DocumentMaker
 
 			controller.Save();
 		}
-
-#if INCLUDED_UPDATER_API
 		private async void WindowLoaded(object sender, RoutedEventArgs e)
-#else
-		private void WindowLoaded(object sender, RoutedEventArgs e)
-#endif
 		{
 			CheckFiles();
 			WindowState = controller.WindowState;
@@ -282,23 +263,50 @@ namespace DocumentMaker
 				}
 				controller.ChangeOpenedFilesExtension();
 				UpdateActSum();
-
-#if INCLUDED_UPDATER_API
-				await Task.Run(() =>
-				{
-					try
-					{
-						bool _ = false;
-						UpdateInformer informer = new UpdateInformer();
-						informer.Notify(ref _, isHidden: true);
-					}
-					catch (Exception exc)
-					{
-						UpdateLog.WriteLine("DocumentMaker: Невозможно подключиться к шаре!\n" + exc.ToString(), "red");
-					}
-				});
-#endif
 			}
+
+			ChangeLog changeLog = null;
+			if (Environment.GetCommandLineArgs().Length > 2 && Environment.GetCommandLineArgs()[1] == "/afterUpdate")
+			{
+				string prevVersion = Environment.GetCommandLineArgs()[2];
+				changeLog = new ChangeLog();
+				changeLog.Initialize($"Обновление {updater.GetCurrentVersion()} успешно установлено!\nПриятной работы!", updater.GetChangeLog(prevVersion), MessageBoxButtons.OK);
+				changeLog.ShowDialog();
+			}
+
+			await updater.RemoveOldVersionsAsync();
+
+			bool haveUpdateLocal = false;
+			if (await updater.TryConnectAsync())
+			{
+				if (await updater.HaveUpdateApiAsync())
+				{
+					await updater.DownloadApiUpdatesAsync();
+					await updater.UpdateUpdaterAsync();
+				}
+
+				await updater.LoadRemoteVersionsAsync();
+				if (await updater.HaveUpdateRemoteAsync())
+				{
+					await updater.DownloadUpdatesAsync();
+				}
+
+				if (await updater.HaveUpdateLocalAsync())
+				{
+					haveUpdateLocal = true;
+					changeLog = new ChangeLog();
+					changeLog.Initialize($"Доступно обновление {await updater.GetLastAvailableVersionAsync()}! Обновиться?",
+						await updater.GetChangeLogAsync(updater.GetCurrentVersion().ToString()),
+						MessageBoxButtons.YesNo);
+				}
+				updater.Dispose();
+			}
+
+			if (haveUpdateLocal && changeLog.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+			{
+				await updater.UpdateAsync(updater.GetLastAvailableVersion());
+			}
+
 			controller.EnableActionsStacking();
 			controller.SubscribeActionPushed((action) => { UpdateUndoRedoState(); });
 			ResetHaveUnsavedChanges();
@@ -1274,6 +1282,15 @@ namespace DocumentMaker
 
 				await DialogHost.Show(dialog);
 			}
+		}
+
+		private void AboutUpdate(object sender, RoutedEventArgs e)
+		{
+			ChangeLog changeLog = new ChangeLog();
+			Version version = updater.GetCurrentVersion();
+			Dictionary<Version, string> versionInfo = new Dictionary<Version, string> { { version, updater.GetCurrentVersionText() } };
+			changeLog.Initialize($"О версии программы {version}", versionInfo, MessageBoxButtons.OK);
+			changeLog.ShowDialog();
 		}
 
 		private void CombineDcmkBtnClick(object sender, RoutedEventArgs e)

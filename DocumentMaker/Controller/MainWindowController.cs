@@ -36,7 +36,20 @@ namespace DocumentMaker.Controller
 			model = new DocumentMakerModel();
 			BackDataControllers = new List<FullBackDataController>();
 
-			openFilesLater = args;
+			FileInfo file;
+			List<string> FileArgs = new List<string>();
+			foreach (string name in args)
+			{
+				file = new FileInfo(name);
+				if (file.Extension == Dml.Model.Files.BaseDmxFile.Extension
+					|| file.Extension == DcmkFile.Extension)
+				{
+					FileArgs.Add(name);
+					break;
+				}
+			}
+
+			openFilesLater = FileArgs.ToArray();
 			notLoadedFiles = new List<string>();
 		}
 

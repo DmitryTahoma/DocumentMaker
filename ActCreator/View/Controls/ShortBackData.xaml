@@ -48,7 +48,6 @@
                 Grid.Column="0"
                 Style="{StaticResource BackDataTextBlock}"
                 Text="{Binding ElementName=ShortBackDataContext, Path=BackDataId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
             <ComboBox
                 x:Name="BackTypeComboBox"
                 Grid.Column="1"
@@ -61,17 +60,25 @@
 
             <Grid x:Name="GridWithGeneralData" Grid.Column="2">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*" />
                     <ColumnDefinition Width="65" />
                     <ColumnDefinition MaxWidth="90" />
                     <ColumnDefinition Width="1.5*" />
                     <ColumnDefinition MaxWidth="90" />
-                    <ColumnDefinition Width="1.5*" />
                     <ColumnDefinition MaxWidth="90" />
                     <ColumnDefinition x:Name="IsSketchColumn" MaxWidth="90" />
                 </Grid.ColumnDefinitions>
-
+                <ComboBox
+                    x:Name="GameNameComboBox"
+                    Grid.Column="0"
+                    Margin="1.5"
+                    Padding="8.5"
+                    ItemsSource="{Binding ElementName=ShortBackDataContext, Path=GameNameList, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                    Text="{Binding ElementName=ShortBackDataContext, Path=GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <ComboBox
                     x:Name="EpisodeNumberComboBox"
+                    Grid.Column="1"
                     Margin="1.5"
                     Padding="8.5"
                     ItemsSource="{Binding ElementName=ShortBackDataContext, Path=EpisodeNumberList, UpdateSourceTrigger=PropertyChanged}"
@@ -80,7 +87,7 @@
                     Text="{Binding ElementName=ShortBackDataContext, Path=EpisodeNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="BackNumberTextInput"
-                    Grid.Column="1"
+                    Grid.Column="2"
                     Margin="1.5"
                     Padding="7"
                     IsEnabled="{Binding ElementName=ShortBackDataContext, Path=HasBackNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -89,29 +96,21 @@
                     Text="{Binding ElementName=ShortBackDataContext, Path=BackNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="BackNameInput"
-                    Grid.Column="2"
+                    Grid.Column="3"
                     Margin="1.5"
                     Padding="7"
+                    IsEnabled="{Binding ElementName=ShortBackDataContext, Path=HasBackName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
                     Text="{Binding ElementName=ShortBackDataContext, Path=BackName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="CountRegionsTextInput"
-                    Grid.Column="3"
+                    Grid.Column="4"
                     Margin="1.5"
                     Padding="7"
                     IsEnabled="{Binding ElementName=ShortBackDataContext, Path=IsRegions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     PreviewTextInput="RegionsValidatingPreviewTextInput"
                     Style="{StaticResource AutoVisibilityFromEnabled_MaterialDesignOutlinedTextBox}"
                     Text="{Binding ElementName=ShortBackDataContext, Path=CountRegionsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                <ComboBox
-                    x:Name="GameNameComboBox"
-                    Grid.Column="4"
-                    Margin="1.5"
-                    Padding="8.5"
-                    ItemsSource="{Binding ElementName=ShortBackDataContext, Path=GameNameList, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                    Text="{Binding ElementName=ShortBackDataContext, Path=GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                 <CheckBox
                     x:Name="IsReworkCheckBox"

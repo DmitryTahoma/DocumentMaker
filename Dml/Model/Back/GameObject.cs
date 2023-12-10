@@ -28,6 +28,9 @@ namespace Dml.Model.Back
 
 			for (uint i = 1; i <= count; ++i)
 				episodes.Add(i.ToString());
+
+			if(episodes.Count != 0)
+				episodes.Add("Всі");
 		}
 
 		public void AddAltName(string name)

@@ -29,8 +29,16 @@ namespace ActCreator.Controller
 			validator = new StringValidator();
 			BackDataControllers = new List<ShortBackDataController>();
 
-			if (args != null && args.Length > 0)
-				openLaterFilename = args[0];
+			FileInfo file;
+			foreach(string name in args)
+			{
+				file = new FileInfo(name);
+				if(file.Extension == BaseDmxFile.Extension)
+				{
+					openLaterFilename = name;
+					break;
+				}
+			}
 		}
 
 		#region Window settings

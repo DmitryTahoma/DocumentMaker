@@ -62,8 +62,13 @@ namespace DocumentMakerModelLibrary.Controls
 					(
 						Type != BackType.Other &&
 						EpisodeNumberText == obj.EpisodeNumberText &&
-						BackName == obj.BackName &&
-						GameName == obj.GameName &&
+(
+							Type == BackType.Predmets
+							|| Type == BackType.Morf
+							|| Type == BackType.Collection
+							|| BackName == obj.BackName
+						)
+						&& GameName == obj.GameName &&
 						IsRework == obj.IsRework &&
 						(
 							documentTemplate != DocumentTemplateType.Painter ||
@@ -77,8 +82,13 @@ namespace DocumentMakerModelLibrary.Controls
 							BackCountRegionsText == obj.BackCountRegionsText
 						) &&
 						(
-							Type == BackType.Craft ||
-							BackNumberText == obj.BackNumberText
+							Type == BackType.Craft 
+							|| Type == BackType.Predmets
+							|| Type == BackType.Morf
+							|| Type == BackType.Collection
+							|| Type == BackType.Character
+							|| Type == BackType.Interface
+							|| BackNumberText == obj.BackNumberText
 						)
 					) ||
 					(
@@ -96,8 +106,13 @@ namespace DocumentMakerModelLibrary.Controls
 					(
 						Type != BackType.Other &&
 						EpisodeNumberText == obj.EpisodeNumberText &&
-						BackName == obj.BackName &&
-						GameName == obj.GameName &&
+						(
+							Type == BackType.Predmets
+							|| Type == BackType.Morf
+							|| Type == BackType.Collection
+							|| BackName == obj.BackName
+						)
+						&& GameName == obj.GameName &&
 						(
 							documentTemplate != DocumentTemplateType.Painter ||
 							IsSketch == obj.IsSketch
@@ -110,8 +125,13 @@ namespace DocumentMakerModelLibrary.Controls
 							BackCountRegionsText == obj.BackCountRegionsText
 						) &&
 						(
-							Type == BackType.Craft ||
-							BackNumberText == obj.BackNumberText
+							Type == BackType.Craft 
+							|| Type == BackType.Predmets 
+							|| Type == BackType.Morf
+							|| Type == BackType.Collection
+							|| Type == BackType.Character
+							|| Type == BackType.Interface
+							|| BackNumberText == obj.BackNumberText
 						)
 					) ||
 					(

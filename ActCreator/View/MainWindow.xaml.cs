@@ -11,12 +11,8 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using MessageBox = System.Windows.Forms.MessageBox;
-
-#if INCLUDED_UPDATER_API
 using UpdaterAPI;
-using UpdaterAPI.Resources;
-using System.Threading.Tasks;
-#endif
+using UpdaterAPI.View;
 
 namespace ActCreator
 {
@@ -41,6 +37,7 @@ namespace ActCreator
 		private readonly MainWindowController controller;
 		private readonly SaveFileDialog saveFileDialog;
 		private readonly OpenFileDialog openFileDialog;
+		private Updater updater = new Updater();
 
 		public MainWindow(string[] args)
 		{
@@ -79,9 +76,7 @@ namespace ActCreator
 				Filter = "Файл акту (*" + Dml.Model.Files.BaseDmxFile.Extension + ")|*" + Dml.Model.Files.BaseDmxFile.Extension
 			};
 
-#if INCLUDED_UPDATER_API
-			AssemblyLoader.LoadWinScp();
-#endif
+			updater.LoadLocalVersions();
 		}
 
 		public IList<DocumentTemplate> DocumentTemplatesList => controller.DocumentTemplatesList;
@@ -146,11 +141,7 @@ namespace ActCreator
 			controller.Save();
 		}
 
-#if INCLUDED_UPDATER_API
 		private async void WindowLoaded(object sender, RoutedEventArgs e)
-#else
-		private void WindowLoaded(object sender, RoutedEventArgs e)
-#endif
 		{
 			WindowState = controller.WindowState;
 			if (controller != null)
@@ -165,23 +156,50 @@ namespace ActCreator
 				ResetHaveUnsavedChanges();
 				UpdateTitle();
 				UpdateFileContentVisibility();
-
-#if INCLUDED_UPDATER_API
-				await Task.Run(() =>
-				{
-					try
-					{
-						bool _ = false;
-						UpdateInformer informer = new UpdateInformer();
-						informer.Notify(ref _, isHidden: true);
-					}
-					catch (System.Exception exc)
-					{
-						UpdateLog.WriteLine("ActCreator: Невозможно подключиться к шаре!\n" + exc.ToString(), "red");
-					}
-				});
-#endif
 			}
+
+			ChangeLog changeLog = null;
+			if (System.Environment.GetCommandLineArgs().Length > 2 && System.Environment.GetCommandLineArgs()[1] == "/afterUpdate")
+			{
+				string prevVersion = System.Environment.GetCommandLineArgs()[2];
+				changeLog = new ChangeLog();
+				changeLog.Initialize($"Обновление {updater.GetCurrentVersion()} успешно установлено!\nПриятной работы!", updater.GetChangeLog(prevVersion), MessageBoxButtons.OK);
+				changeLog.ShowDialog();
+			}
+
+			await updater.RemoveOldVersionsAsync();
+
+			bool haveUpdateLocal = false;
+			if (await updater.TryConnectAsync())
+			{
+				if (await updater.HaveUpdateApiAsync())
+				{
+					await updater.DownloadApiUpdatesAsync();
+					await updater.UpdateUpdaterAsync();
+				}
+
+				await updater.LoadRemoteVersionsAsync();
+				if (await updater.HaveUpdateRemoteAsync())
+				{
+					await updater.DownloadUpdatesAsync();
+				}
+
+				if (await updater.HaveUpdateLocalAsync())
+				{
+					haveUpdateLocal = true;
+					changeLog = new ChangeLog();
+					changeLog.Initialize($"Доступно обновление {await updater.GetLastAvailableVersionAsync()}! Обновиться?",
+						await updater.GetChangeLogAsync(updater.GetCurrentVersion().ToString()),
+						MessageBoxButtons.YesNo);
+				}
+				updater.Dispose();
+			}
+
+			if (haveUpdateLocal && changeLog.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+			{
+				await updater.UpdateAsync(updater.GetLastAvailableVersion());
+			}
+
 			ResetHaveUnsavedChanges();
 		}
 
@@ -320,6 +338,15 @@ namespace ActCreator
 			Process.Start("https://docs.google.com/spreadsheets/d/1GnTgfIKsk2a0qClfSE7wy2WGLpXWxuuTscPyuCt8Bi0/edit#gid=1313072428");
 		}
 
+		private void AboutUpdate(object sender, RoutedEventArgs e)
+		{
+			ChangeLog changeLog = new ChangeLog();
+			System.Version version = updater.GetCurrentVersion();
+			Dictionary<System.Version, string> versionInfo = new Dictionary<System.Version, string> { { version, updater.GetCurrentVersionText() } };
+			changeLog.Initialize($"О версии программы {version}", versionInfo, MessageBoxButtons.OK);
+			changeLog.ShowDialog();
+		}
+
 		private void UpdateViewBackData()
 		{
 			foreach (UIElement control in BacksData.Children)
@@ -414,7 +441,7 @@ namespace ActCreator
 					fileStr += '*';
 				fileStr += controller.OpenedFile + " | ";
 			}
-			Title = fileStr + "ActCreator";
+			Title = fileStr + "Five-BN ActCreator " + updater.GetCurrentVersion();
 		}
 
 		private void UpdateFileContentVisibility()

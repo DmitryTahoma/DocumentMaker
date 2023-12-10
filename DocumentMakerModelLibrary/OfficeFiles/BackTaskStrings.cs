@@ -12,7 +12,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 	{
 		public static string Generate(BackType backType, DocumentTemplateType templateType, string workText, string episodeNumberStr, string backNumberStr, string backName, string backRegsStr, string gameName, bool isRework, bool isSketch, bool haveEpisodes)
 		{
-			string str = GetBaseString(backType, templateType, workText, isSketch, haveEpisodes);
+			string str = GetBaseString(backType, templateType, workText, isSketch, haveEpisodes, episodeNumberStr);
 
 			str = str.Replace("[BackNumber]", backNumberStr)
 				.Replace("[BackName]", backName)
@@ -23,7 +23,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			return str;
 		}
 
-		private static string GetBaseString(BackType backType, DocumentTemplateType templateType, string workText, bool isSketch, bool haveEpisodes)
+		private static string GetBaseString(BackType backType, DocumentTemplateType templateType, string workText, bool isSketch, bool haveEpisodes, string episodeNumber)
 		{
 			StringBuilder stringBuilder = new StringBuilder(workText + (templateType == DocumentTemplateType.Painter && isSketch ? " ескізу " : " "));
 			if (stringBuilder.Length > 0)
@@ -33,7 +33,13 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 
 			if (stringBuilder.Length > 0)
 			{
-				if (haveEpisodes) stringBuilder.Append("Епізод №[EpisodeNumber] ");
+				switch (backType)
+				{
+					case BackType.Predmets: stringBuilder.Append("Предметів "); break;
+					default: break;
+				}
+
+				if (haveEpisodes && episodeNumber != "Всі") stringBuilder.Append("Епізоду №[EpisodeNumber] ");
 
 				switch (backType)
 				{
@@ -44,13 +50,26 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 					case BackType.Hog: stringBuilder.Append("Беку ХОГ №[BackNumber]"); break;
 					case BackType.HogRegions: stringBuilder.Append("Регіону №[RegionsText] Беку ХОГ №[BackNumber]"); break;
 					case BackType.Craft: stringBuilder.Append("Регіону крафтингу предмету"); break;
+					case BackType.Predmets: break;
+					case BackType.Morf: stringBuilder.Append("Морфів"); break;
+					case BackType.Collection: stringBuilder.Append("Коллекцій"); break;
+					case BackType.Character: stringBuilder.Append("Персонажу"); break;
+					case BackType.Interface: stringBuilder.Append("Вікна інтерфейсу"); break;
 					default: stringBuilder.Clear(); break;
 				}
 			}
 
 			if (stringBuilder.Length > 0)
 			{
-				stringBuilder.Append(" ([BackName]) комп’ютерної гри “[GameName]”.");
+				switch (backType)
+				{
+					case BackType.Morf:
+					case BackType.Collection:
+					case BackType.Predmets: stringBuilder.Append(" комп’ютерної гри “[GameName]”."); break;
+					case BackType.Character: stringBuilder.Append(" ([BackName]) для Беків Діалогів комп’ютерної гри “[GameName]”."); break;
+					default: stringBuilder.Append(" ([BackName]) комп’ютерної гри “[GameName]”."); break;
+				}
+				
 			}
 
 			return stringBuilder.ToString();

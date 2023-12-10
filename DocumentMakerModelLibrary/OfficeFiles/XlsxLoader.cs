@@ -26,7 +26,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 					{
 						HumanData humanData = new HumanData();
 
-						foreach (Cell c in r.Elements<Cell>())
+						foreach (Cell c in ExcelExporter.GetCells(r))
 						{
 							string text = ExcelExporter.GetValue(c);
 							humanData.SetData(ExcelExporter.GetCellLetter(c.CellReference.ToString()), text);

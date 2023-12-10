@@ -52,11 +52,26 @@ namespace Dml.Controller
 			{
 				GameObject selectedGame = GameNameList.FirstOrDefault(x => x.Name == GameName);
 
-				if (Type != BackType.Craft && !validator.IsFree(BackNumberText))
+				if (Type != BackType.Craft
+					&& Type != BackType.Predmets
+					&& Type != BackType.Morf
+					&& Type != BackType.Collection
+					&& Type != BackType.Character
+					&& Type != BackType.Interface
+					&& !validator.IsFree(BackNumberText))
 					errorText += "Строка \"Номер беку\" не може бути пустою.";
-				else if (Type != BackType.Craft && !validator.IsUFloat(BackNumberText))
+				else if (Type != BackType.Craft
+					&& Type != BackType.Predmets
+					&& Type != BackType.Morf
+					&& Type != BackType.Collection
+					&& Type != BackType.Character
+					&& Type != BackType.Interface
+					&& !validator.IsUFloat(BackNumberText))
 					errorText += "Невірно заповнений номер беку.\nПриклад: 15, 9.1, 15.6";
-				else if (!validator.IsFree(BackName))
+				else if (Type != BackType.Predmets
+					&& Type != BackType.Morf
+					&& Type != BackType.Collection
+					&& !validator.IsFree(BackName))
 					errorText += "Строка \"Ім’я беку\" не може бути пустою.";
 				else if ((Type == BackType.Regions || Type == BackType.HogRegions) && !validator.IsFree(BackCountRegionsText))
 					errorText += "Кількість регіонів не може бути пустою.\nПриклад: 11";
@@ -70,6 +85,18 @@ namespace Dml.Controller
 					errorText += "Оберіть коректний епізод.";
 				else if (selectedGame != null && !selectedGame.HaveEpisodes && !string.IsNullOrEmpty(EpisodeNumberText))
 					errorText += "У вибраній грі \"" + selectedGame.Name + "\" немає епізодів.";
+				else if (selectedGame != null && selectedGame.HaveEpisodes && selectedGame.HaveEpisode(EpisodeNumberText) && EpisodeNumberText == "Всі")
+				{
+					if(Type != BackType.Predmets 
+						&& Type != BackType.Morf 
+						&& Type != BackType.Collection 
+						&& Type != BackType.Character
+						&& Type != BackType.Interface)
+						errorText += "Для обраного типу роботи не можна вказувати епізоди \"Всі\" ";
+					else
+						return true;
+				}	
+					
 				else
 					return true;
 			}

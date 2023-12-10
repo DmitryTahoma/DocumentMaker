@@ -10,5 +10,10 @@
 		HogRegions = 5,
 		Craft = 6,
 		Other = 7,
+		Predmets = 8,
+		Morf = 9,
+		Collection = 10,
+		Character = 11,
+		Interface = 12,
 	}
 }

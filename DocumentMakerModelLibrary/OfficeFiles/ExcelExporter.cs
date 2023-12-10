@@ -65,7 +65,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		public static int RowLength()
 		{
 			uint iLength = 0;
-			foreach (Row itemRow in sheetData.Elements<Row>())
+			foreach (Row itemRow in GetRows())
 				iLength = itemRow.RowIndex;
 
 			return (int)iLength;
@@ -75,16 +75,25 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		{
 			int iLength = 0;
 			int rowIndexTemp = rowIndex + 1;
-			foreach (Row itemRow in sheetData.Elements<Row>())
+			foreach (Row itemRow in GetRows())
 			{
 				if (itemRow.RowIndex == rowIndexTemp)
 				{
-					foreach (Cell itemCell in itemRow.Elements<Cell>())
-					{
-						iLength = GetCellId(itemCell.CellReference);
-					}
+					iLength = CellLength(itemRow);
 					break;
 				}
+			}
+
+			return iLength;
+		}
+
+		public static int CellLength(Row row)
+		{
+			int iLength = 0;
+
+			foreach (Cell itemCell in GetCells(row))
+			{
+				iLength = GetCellId(itemCell.CellReference);
 			}
 
 			return iLength;
@@ -121,7 +130,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			int indexLastCell = -1;
 			int indexAdd = 0;
 			int i = 0;
-			foreach (Cell itemCell in row.Elements<Cell>())
+			foreach (Cell itemCell in GetCells(row))
 			{
 				if (itemCell.CellReference == cellName)
 				{
@@ -161,7 +170,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			int rowIndexTemp = rowIndex + 1;
 			int indexAdd = 0;
 			int i = 0;
-			foreach (Row itemRow in sheetData.Elements<Row>())
+			foreach (Row itemRow in GetRows())
 			{
 				if (itemRow.RowIndex == rowIndexTemp)
 				{
@@ -253,7 +262,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		public static Cell GetCell(int rowIndex, int cellIndex)
 		{
 			int rowIndexTemp = rowIndex + 1;
-			foreach (Row itemRow in sheetData.Elements<Row>())
+			foreach (Row itemRow in GetRows())
 			{
 				if (itemRow.RowIndex == rowIndexTemp)
 					return GetCell(itemRow, GetCellName(rowIndex, cellIndex));
@@ -263,7 +272,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 
 		public static Cell GetCell(Row row, int cellIndex)
 		{
-			foreach (Cell itemCell in row.Elements<Cell>())
+			foreach (Cell itemCell in GetCells(row))
 			{
 				if (itemCell.CellReference == GetCellName((int)(uint)row.RowIndex - 1, cellIndex))
 				{
@@ -278,7 +287,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			if (row == null)
 				return null;
 
-			foreach (Cell itemCell in row.Elements<Cell>())
+			foreach (Cell itemCell in GetCells(row))
 			{
 				if (itemCell.CellReference == cellName)
 				{
@@ -292,7 +301,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		private static Row GetRow(int rowIndex)
 		{
 			int rowIndexTemp = rowIndex + 1;
-			foreach (Row itemRow in sheetData.Elements<Row>())
+			foreach (Row itemRow in GetRows())
 			{
 				if (itemRow.RowIndex == rowIndexTemp)
 					return itemRow;
@@ -341,10 +350,12 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		public static IEnumerable<Cell> GetCells(int rowIndex)
 		{
 			Row row = GetRow(rowIndex);
-			if (row != null)
-				return row.Elements<Cell>();
-			else
-				return null;
+			return GetCells(row);
+		}
+
+		public static IEnumerable<Cell> GetCells(Row row)
+		{
+			return row.Elements<Cell>();
 		}
 
 		public static void SetStyle(int rowIndex, int cellIndex, int styleIndex)
@@ -380,7 +391,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		{
 			int maxColWidth = 0;
 			int rowIndex = 0;
-			foreach (Row row in sheetData.Elements<Row>())
+			foreach (Row row in GetRows())
 			{
 				Cell cell = GetCell(row, GetCellName((int)(uint)row.RowIndex - 1, cellIndex));
 				string cellValue = GetValue(cell);

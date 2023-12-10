@@ -40,6 +40,11 @@ namespace Dml.Model.Template
 					new BackDataType { Name = "Хог", Type = BackType.Hog },
 					new BackDataType { Name = "Хог регіони", Type = BackType.HogRegions },
 					new BackDataType { Name = "Крафт", Type = BackType.Craft },
+					new BackDataType { Name = "Предмети", Type = BackType.Predmets },
+					new BackDataType { Name = "Морф", Type = BackType.Morf },
+					new BackDataType { Name = "Коллекція", Type = BackType.Collection },
+					new BackDataType { Name = "Персонаж", Type = BackType.Character },
+					new BackDataType { Name = "Iнтерфейс", Type = BackType.Interface },
 				});
 			}
 			tempList.Add(new BackDataType { Name = "Інше", Type = BackType.Other });

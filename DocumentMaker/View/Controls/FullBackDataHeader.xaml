@@ -46,42 +46,41 @@
             <Grid Grid.Column="2" Visibility="{Binding IsOnlyOtherType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="ColWithWorkTypeComboBox" Width="1.5*" />
+                    <ColumnDefinition Width="1.5*" />
                     <ColumnDefinition Width="65" />
                     <ColumnDefinition MaxWidth="90" />
                     <ColumnDefinition Width="1.5*" />
                     <ColumnDefinition MaxWidth="90" />
-                    <ColumnDefinition Width="1.5*" />
                     <ColumnDefinition x:Name="IsSketchColumn" MaxWidth="90" />
                 </Grid.ColumnDefinitions>
 
                 <TextBlock
                     x:Name="WorkTypeLabel"
+                    Grid.Column="0"
                     Style="{StaticResource BackDataTitle}"
                     Text="Тип робіт" />
-
                 <TextBlock
                     Grid.Column="1"
                     Style="{StaticResource BackDataTitle}"
-                    Text="Епізод" />
+                    Text="Назва гри" />
                 <TextBlock
                     Grid.Column="2"
+                    Style="{StaticResource BackDataTitle}"
+                    Text="Епізод" />
+                <TextBlock
+                    Grid.Column="3"
                     Style="{StaticResource BackDataTitle}"
                     Text="Номер беку" />
 
                 <TextBlock
-                    Grid.Column="3"
-                    Style="{StaticResource BackDataTitle}"
-                    Text="Ім'я беку" />
-
-                <TextBlock
                     Grid.Column="4"
                     Style="{StaticResource BackDataTitle}"
-                    Text="Кіл. рег." />
+                    Text="Ім'я" />
 
                 <TextBlock
                     Grid.Column="5"
                     Style="{StaticResource BackDataTitle}"
-                    Text="Назва гри" />
+                    Text="Кіл. рег." />
 
                 <TextBlock
                     x:Name="IsSketchTextBlock"

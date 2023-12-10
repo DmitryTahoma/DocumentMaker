@@ -12,160 +12,169 @@
     Title="ActCreator"
     MinWidth="700"
     MinHeight="300"
-    AllowDrop="True"
     Closing="WindowClosing"
     DragEnter="WindowDragEnter"
     FontSize="15"
     KeyDown="UnfocusOnEnter"
     Loaded="WindowLoaded"
-    PreviewDragOver="WindowDragEnter"
-    PreviewDrop="WindowPreviewDrop"
     PreviewKeyDown="WindowKeyDown"
     mc:Ignorable="d">
-
-    <materialDesign:DialogHost CloseOnClickAway="True">
-        <materialDesign:DialogHost.DialogContent>
-            <StackPanel>
-                <!--  HERE GOES YOUR CONTENT  -->
-                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                    <Button
-                        Margin="0,8,8,0"
-                        Command="materialDesign:DialogHost.CloseDialogCommand"
-                        IsDefault="True"
-                        Style="{StaticResource MaterialDesignFlatButton}">
-                        <Button.CommandParameter>
-                            <system:Boolean>True</system:Boolean>
-                        </Button.CommandParameter>
-                        ACCEPT
-                    </Button>
-                    <Button
-                        Margin="0,8,8,0"
-                        Command="materialDesign:DialogHost.CloseDialogCommand"
-                        IsCancel="True"
-                        Style="{StaticResource MaterialDesignFlatButton}">
-                        <Button.CommandParameter>
-                            <system:Boolean>False</system:Boolean>
-                        </Button.CommandParameter>
-                        CANCEL
-                    </Button>
+    <Grid
+        Height="Auto"
+        HorizontalAlignment="Stretch"
+        AllowDrop="True"
+        Background="Transparent"
+        DockPanel.Dock="Top"
+        PreviewDragOver="WindowDragEnter"
+        PreviewDrop="WindowPreviewDrop">
+        <materialDesign:DialogHost CloseOnClickAway="True">
+            <materialDesign:DialogHost.DialogContent>
+                <StackPanel>
+                    <!--  HERE GOES YOUR CONTENT  -->
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                        <Button
+                            Margin="0,8,8,0"
+                            Command="materialDesign:DialogHost.CloseDialogCommand"
+                            IsDefault="True"
+                            Style="{StaticResource MaterialDesignFlatButton}">
+                            <Button.CommandParameter>
+                                <system:Boolean>True</system:Boolean>
+                            </Button.CommandParameter>
+                            ACCEPT
+                        </Button>
+                        <Button
+                            Margin="0,8,8,0"
+                            Command="materialDesign:DialogHost.CloseDialogCommand"
+                            IsCancel="True"
+                            Style="{StaticResource MaterialDesignFlatButton}">
+                            <Button.CommandParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </Button.CommandParameter>
+                            CANCEL
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
-        </materialDesign:DialogHost.DialogContent>
-        <!--  START OF YOUR CONTEXT  -->
+            </materialDesign:DialogHost.DialogContent>
+            <!--  START OF YOUR CONTEXT  -->
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-
-            <Menu>
-                <MenuItem Header="Файл" Icon="{materialDesign:PackIcon Kind=FileOutline}">
-                    <MenuItem
-                        Click="OpenFileClick"
-                        Header="Відкрити"
-                        Icon="{materialDesign:PackIcon Kind=FileOutline}"
-                        InputGestureText="Ctrl+O" />
-                    <MenuItem
-                        Click="CloseFileClick"
-                        Header="Закрити"
-                        Icon="{materialDesign:PackIcon Kind=CloseBoxOutline}"
-                        InputGestureText="Ctrl+W" />
-                    <Separator />
-                    <MenuItem
-                        Click="SaveBtnClick"
-                        Header="Зберегти"
-                        Icon="{materialDesign:PackIcon Kind=ContentSaveOutline}"
-                        InputGestureText="Ctrl+S" />
-                    <MenuItem
-                        Click="SaveAsBtnClick"
-                        Header="Зберегти як"
-                        Icon="{materialDesign:PackIcon Kind=ContentSaveEditOutline}"
-                        InputGestureText="Ctrl+Alt+S" />
-                </MenuItem>
-                <MenuItem Header="Редагування" Icon="{materialDesign:PackIcon Kind=FileDocumentEditOutline}">
-                    <MenuItem
-                        Click="RemoveAllClick"
-                        Header="Видалити всі пункти"
-                        Icon="{materialDesign:PackIcon Kind=SortVariantRemove}"
-                        InputGestureText="Alt+Delete" />
-                </MenuItem>
-                <MenuItem Header="Посилання" Icon="{materialDesign:PackIcon Kind=LinkVariant}">
-                    <MenuItem
-                        Click="ShowInstruction"
-                        Header="Інструкція"
-                        Icon="{materialDesign:PackIcon Kind=LinkVariant}" />
-                    <MenuItem
-                        Click="ShowBackNames"
-                        Header="Назви фонів"
-                        Icon="{materialDesign:PackIcon Kind=LinkVariant}" />
-                </MenuItem>
-            </Menu>
-
-            <Button
-                Grid.Row="1"
-                Height="{Binding ElementName=FileContentGrid, Path=Height}"
-                Click="CreateFileClick"
-                Content="Створити акт"
-                FontSize="25"
-                Style="{StaticResource MaterialDesignOutlinedDarkButton}"
-                Visibility="{Binding ElementName=WindowContext, Path=CreateFileButtonVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-            <Grid
-                x:Name="FileContentGrid"
-                Grid.Row="1"
-                Visibility="{Binding ElementName=WindowContext, Path=FileContentVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="Bottom">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
+                <Menu>
+                    <MenuItem Header="Файл" Icon="{materialDesign:PackIcon Kind=FileOutline}">
+                        <MenuItem
+                            Click="OpenFileClick"
+                            Header="Відкрити"
+                            Icon="{materialDesign:PackIcon Kind=FileOutline}"
+                            InputGestureText="Ctrl+O" />
+                        <MenuItem
+                            Click="CloseFileClick"
+                            Header="Закрити"
+                            Icon="{materialDesign:PackIcon Kind=CloseBoxOutline}"
+                            InputGestureText="Ctrl+W" />
+                        <Separator />
+                        <MenuItem
+                            Click="SaveBtnClick"
+                            Header="Зберегти"
+                            Icon="{materialDesign:PackIcon Kind=ContentSaveOutline}"
+                            InputGestureText="Ctrl+S" />
+                        <MenuItem
+                            Click="SaveAsBtnClick"
+                            Header="Зберегти як"
+                            Icon="{materialDesign:PackIcon Kind=ContentSaveEditOutline}"
+                            InputGestureText="Ctrl+Alt+S" />
+                    </MenuItem>
+                    <MenuItem Header="Редагування" Icon="{materialDesign:PackIcon Kind=FileDocumentEditOutline}">
+                        <MenuItem
+                            Click="RemoveAllClick"
+                            Header="Видалити всі пункти"
+                            Icon="{materialDesign:PackIcon Kind=SortVariantRemove}"
+                            InputGestureText="Alt+Delete" />
+                    </MenuItem>
+                    <MenuItem Header="Посилання" Icon="{materialDesign:PackIcon Kind=LinkVariant}">
+                        <MenuItem
+                            Click="ShowInstruction"
+                            Header="Інструкція"
+                            Icon="{materialDesign:PackIcon Kind=LinkVariant}" />
+                        <MenuItem
+                            Click="ShowBackNames"
+                            Header="Назви фонів"
+                            Icon="{materialDesign:PackIcon Kind=LinkVariant}" />
+                    </MenuItem>
+                    <MenuItem
+                        Click="AboutUpdate"
+                        Header="Про оновлення"
+                        Icon="{materialDesign:PackIcon Kind=Update}" />
+                </Menu>
 
-                        <ComboBox
-                            x:Name="DocumentTemplateComboBox"
-                            Margin="10,10,5,10"
-                            materialDesign:HintAssist.Hint="Оберіть тип шаблону"
-                            ItemsSource="{Binding ElementName=WindowContext, Path=DocumentTemplatesList, UpdateSourceTrigger=PropertyChanged}"
-                            SelectionChanged="ChangedDocumentTemplate"
-                            Style="{StaticResource MaterialDesignOutlinedComboBox}" />
-
-                        <ComboBox
-                            Name="HumanFullNameComboBox"
-                            Grid.Column="1"
-                            Margin="5,10,10,10"
-                            materialDesign:HintAssist.Hint="Призвіще ім'я побатькові"
-                            ItemsSource="{Binding ElementName=WindowContext, Path=HumanFullNameList, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                            Text="{Binding ElementName=WindowContext, Path=SelectedHuman, UpdateSourceTrigger=PropertyChanged}" />
-                    </Grid>
-                </materialDesign:Card>
-
-                <ScrollViewer
+                <Button
                     Grid.Row="1"
-                    VerticalScrollBarVisibility="Auto"
-                    Visibility="{Binding ElementName=WindowContext, Path=DataTableVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                    <StackPanel Orientation="Vertical">
+                    Height="{Binding ElementName=FileContentGrid, Path=Height}"
+                    Click="CreateFileClick"
+                    Content="Створити акт"
+                    FontSize="25"
+                    Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                    Visibility="{Binding ElementName=WindowContext, Path=CreateFileButtonVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                        <uc:ShortBackDataHeader
-                            x:Name="DataHeader"
-                            Margin="0,0,0,2"
-                            Padding="0,10,0,0" />
-                        <StackPanel x:Name="BacksData" Orientation="Vertical" />
-                        <uc:ShortBackDataFooter x:Name="DataFooter" Data="{Binding ElementName=BacksData}" />
+                <Grid
+                    x:Name="FileContentGrid"
+                    Grid.Row="1"
+                    Visibility="{Binding ElementName=WindowContext, Path=FileContentVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
 
-                    </StackPanel>
-                </ScrollViewer>
+                    <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="Bottom">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <ComboBox
+                                x:Name="DocumentTemplateComboBox"
+                                Margin="10,10,5,10"
+                                materialDesign:HintAssist.Hint="Оберіть тип шаблону"
+                                ItemsSource="{Binding ElementName=WindowContext, Path=DocumentTemplatesList, UpdateSourceTrigger=PropertyChanged}"
+                                SelectionChanged="ChangedDocumentTemplate"
+                                Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+
+                            <ComboBox
+                                Name="HumanFullNameComboBox"
+                                Grid.Column="1"
+                                Margin="5,10,10,10"
+                                materialDesign:HintAssist.Hint="Призвіще ім'я побатькові"
+                                ItemsSource="{Binding ElementName=WindowContext, Path=HumanFullNameList, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                Text="{Binding ElementName=WindowContext, Path=SelectedHuman, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                    </materialDesign:Card>
+
+                    <ScrollViewer
+                        Grid.Row="1"
+                        VerticalScrollBarVisibility="Auto"
+                        Visibility="{Binding ElementName=WindowContext, Path=DataTableVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <StackPanel Orientation="Vertical">
+
+                            <uc:ShortBackDataHeader
+                                x:Name="DataHeader"
+                                Margin="0,0,0,2"
+                                Padding="0,10,0,0" />
+                            <StackPanel x:Name="BacksData" Orientation="Vertical" />
+                            <uc:ShortBackDataFooter x:Name="DataFooter" Data="{Binding ElementName=BacksData}" />
+
+                        </StackPanel>
+                    </ScrollViewer>
+
+                </Grid>
 
             </Grid>
 
-        </Grid>
-
-        <!--  END OF YOUR CONTEXT  -->
-    </materialDesign:DialogHost>
+            <!--  END OF YOUR CONTEXT  -->
+        </materialDesign:DialogHost>
+    </Grid>
 </Window>

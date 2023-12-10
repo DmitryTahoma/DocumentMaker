@@ -24,6 +24,7 @@ namespace DocumentMaker.View.Controls
 		public static readonly DependencyProperty IsCheckedProperty;
 		public static readonly DependencyProperty IsRegionsProperty;
 		public static readonly DependencyProperty HasBackNumberProperty;
+		public static readonly DependencyProperty HasBackNameProperty;
 		public static readonly DependencyProperty BackDataIdProperty;
 		public static readonly DependencyProperty EpisodeNumberTextProperty;
 		public static readonly DependencyProperty BackNumberTextProperty;
@@ -41,6 +42,7 @@ namespace DocumentMaker.View.Controls
 			IsCheckedProperty = DependencyProperty.Register("IsChecked", typeof(bool?), typeof(FullBackData));
 			IsRegionsProperty = DependencyProperty.Register("IsRegions", typeof(bool), typeof(FullBackData));
 			HasBackNumberProperty = DependencyProperty.Register("HasBackNumber", typeof(bool), typeof(FullBackData));
+			HasBackNameProperty = DependencyProperty.Register("HasBackName", typeof(bool), typeof(FullBackData));
 			BackDataIdProperty = DependencyProperty.Register("BackDataId", typeof(uint), typeof(FullBackDataController));
 			EpisodeNumberTextProperty = DependencyProperty.Register("EpisodeNumberText", typeof(string), typeof(FullBackDataController));
 			BackNumberTextProperty = DependencyProperty.Register("BackNumberText", typeof(string), typeof(FullBackDataController));
@@ -169,6 +171,12 @@ namespace DocumentMaker.View.Controls
 		{
 			get => (bool)GetValue(HasBackNumberProperty);
 			set => SetValue(HasBackNumberProperty, value);
+		}
+
+		public bool HasBackName
+		{
+			get => (bool)GetValue(HasBackNameProperty);
+			set => SetValue(HasBackNameProperty, value);
 		}
 
 		public bool IsRework
@@ -375,10 +383,23 @@ namespace DocumentMaker.View.Controls
 				CountRegionsTextInput.Text = controller.BackCountRegionsText;
 			}
 
-			HasBackNumber = controller.Type != BackType.Craft;
+			HasBackNumber = controller.Type != BackType.Craft 
+				&& controller.Type != BackType.Predmets 
+				&& controller.Type != BackType.Morf
+				&& controller.Type != BackType.Collection
+				&& controller.Type != BackType.Character
+				&& controller.Type != BackType.Interface;
 			if (!HasBackNumber && BackNumberTextInput != null)
 			{
 				BackNumberTextInput.Text = controller.BackNumberText;
+			}
+
+			HasBackName = controller.Type != BackType.Predmets
+				&& controller.Type != BackType.Morf
+				&& controller.Type != BackType.Collection;
+			if (!HasBackName && BackNameInput != null)
+			{
+				BackNameInput.Text = controller.BackName;
 			}
 
 			if (OtherTextInput != null)
