@@ -52,6 +52,7 @@ Source: "..\ActCreator\bin\x64\Release\UpdaterAPI.dll"; DestDir: "{app}"; Flags:
 Source: "..\ActCreator\bin\x64\Release\UpdaterAPI.dll.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\ActCreator\bin\x64\Release\WinSCP.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\ActCreator\bin\x64\Release\WinSCPnet.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActCreator\bin\x64\Release\updatetext.txt"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
