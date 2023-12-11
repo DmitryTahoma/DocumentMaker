@@ -25,7 +25,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 
 		private static string GetBaseString(BackType backType, DocumentTemplateType templateType, string workText, bool isSketch, bool haveEpisodes, string episodeNumber)
 		{
-			StringBuilder stringBuilder = new StringBuilder(workText + (templateType == DocumentTemplateType.Painter && isSketch ? " ескізу " : " "));
+			StringBuilder stringBuilder = new StringBuilder(workText + (templateType == DocumentTemplateType.Painter && isSketch ? " ескізу" : ""));
 			if (stringBuilder.Length > 0)
 			{
 				stringBuilder[0] = char.ToUpper(stringBuilder[0]);
@@ -35,26 +35,33 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			{
 				switch (backType)
 				{
-					case BackType.Predmets: stringBuilder.Append("Предметів "); break;
+					case BackType.Predmets: stringBuilder.Append(" Предметів на панель"); break;
+					case BackType.Morf: stringBuilder.Append(" Морфів"); break;
+					case BackType.Collection: stringBuilder.Append(" Коллекцій"); break;
+					case BackType.Marketing: stringBuilder.Append(" Маркетингового типу для платформи ([BackName])"); break;
 					default: break;
 				}
 
-				if (haveEpisodes && episodeNumber != "Всі") stringBuilder.Append("Епізоду №[EpisodeNumber] ");
+				if (haveEpisodes && episodeNumber != "Всі") stringBuilder.Append(" Епізоду №[EpisodeNumber]");
 
 				switch (backType)
 				{
-					case BackType.Back: stringBuilder.Append("Беку №[BackNumber]"); break;
-					case BackType.Regions: stringBuilder.Append("Регіону №[RegionsText] Беку №[BackNumber]"); break;
-					case BackType.Dialog: stringBuilder.Append("Беку Діалог №[BackNumber]"); break;
-					case BackType.Mg: stringBuilder.Append("Беку Мініігра №[BackNumber]"); break;
-					case BackType.Hog: stringBuilder.Append("Беку ХОГ №[BackNumber]"); break;
-					case BackType.HogRegions: stringBuilder.Append("Регіону №[RegionsText] Беку ХОГ №[BackNumber]"); break;
-					case BackType.Craft: stringBuilder.Append("Регіону крафтингу предмету"); break;
+					case BackType.Back: stringBuilder.Append(" Беку №[BackNumber]"); break;
+					case BackType.Regions: stringBuilder.Append(" Регіону №[RegionsText] Беку №[BackNumber]"); break;
+					case BackType.Dialog: stringBuilder.Append(" Беку Діалог №[BackNumber]"); break;
+					case BackType.Mg: stringBuilder.Append(" Беку Мініігра №[BackNumber]"); break;
+					case BackType.Hog: stringBuilder.Append(" Беку ХОГ №[BackNumber]"); break;
+					case BackType.HogRegions: stringBuilder.Append(" Регіону №[RegionsText] Беку ХОГ №[BackNumber]"); break;
+					case BackType.Craft: stringBuilder.Append(" Регіону крафтингу предмету"); break;
 					case BackType.Predmets: break;
-					case BackType.Morf: stringBuilder.Append("Морфів"); break;
-					case BackType.Collection: stringBuilder.Append("Коллекцій"); break;
-					case BackType.Character: stringBuilder.Append("Персонажу"); break;
-					case BackType.Interface: stringBuilder.Append("Вікна інтерфейсу"); break;
+					case BackType.Predmet: stringBuilder.Append(" Предмету"); break;
+					case BackType.Morf: break;
+					case BackType.Collection: break;
+					case BackType.Character: stringBuilder.Append(" Персонажу"); break;
+					case BackType.Interface: stringBuilder.Append(" Вікна інтерфейсу"); break;
+					case BackType.Marketing: break;
+					case BackType.VideoCadr: stringBuilder.Append(" Кадрів відеоролика"); break;
+					case BackType.VideoObject: stringBuilder.Append(" Кадрів iстоти"); break;
 					default: stringBuilder.Clear(); break;
 				}
 			}
@@ -65,6 +72,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 				{
 					case BackType.Morf:
 					case BackType.Collection:
+					case BackType.Marketing:
 					case BackType.Predmets: stringBuilder.Append(" комп’ютерної гри “[GameName]”."); break;
 					case BackType.Character: stringBuilder.Append(" ([BackName]) для Беків Діалогів комп’ютерної гри “[GameName]”."); break;
 					default: stringBuilder.Append(" ([BackName]) комп’ютерної гри “[GameName]”."); break;

@@ -84,10 +84,14 @@ namespace DocumentMakerModelLibrary.Controls
 						(
 							Type == BackType.Craft 
 							|| Type == BackType.Predmets
+							|| Type == BackType.Predmet
 							|| Type == BackType.Morf
 							|| Type == BackType.Collection
 							|| Type == BackType.Character
 							|| Type == BackType.Interface
+							|| Type == BackType.Marketing
+							|| Type == BackType.VideoCadr
+							|| Type == BackType.VideoObject
 							|| BackNumberText == obj.BackNumberText
 						)
 					) ||
@@ -126,11 +130,15 @@ namespace DocumentMakerModelLibrary.Controls
 						) &&
 						(
 							Type == BackType.Craft 
-							|| Type == BackType.Predmets 
+							|| Type == BackType.Predmets
+							|| Type == BackType.Predmet
 							|| Type == BackType.Morf
 							|| Type == BackType.Collection
 							|| Type == BackType.Character
 							|| Type == BackType.Interface
+							|| Type == BackType.Marketing
+							|| Type == BackType.VideoCadr
+							|| Type == BackType.VideoObject
 							|| BackNumberText == obj.BackNumberText
 						)
 					) ||
