@@ -339,10 +339,14 @@ namespace ActCreator.View.Controls
 
 			HasBackNumber = controller.Type != BackType.Craft
 				&& controller.Type != BackType.Predmets
+				&& controller.Type != BackType.Predmet
 				&& controller.Type != BackType.Morf
 				&& controller.Type != BackType.Collection
 				&& controller.Type != BackType.Character
-				&& controller.Type != BackType.Interface;
+				&& controller.Type != BackType.Interface
+				&& controller.Type != BackType.Marketing
+				&& controller.Type != BackType.VideoCadr
+				&& controller.Type != BackType.VideoObject;
 
 			if (!HasBackNumber && BackNumberTextInput != null)
 			{

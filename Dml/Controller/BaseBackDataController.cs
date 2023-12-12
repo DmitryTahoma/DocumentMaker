@@ -54,18 +54,26 @@ namespace Dml.Controller
 
 				if (Type != BackType.Craft
 					&& Type != BackType.Predmets
+					&& Type != BackType.Predmet
 					&& Type != BackType.Morf
 					&& Type != BackType.Collection
 					&& Type != BackType.Character
 					&& Type != BackType.Interface
+					&& Type != BackType.Marketing
+					&& Type != BackType.VideoCadr
+					&& Type != BackType.VideoObject
 					&& !validator.IsFree(BackNumberText))
 					errorText += "Строка \"Номер беку\" не може бути пустою.";
 				else if (Type != BackType.Craft
 					&& Type != BackType.Predmets
+					&& Type != BackType.Predmet
 					&& Type != BackType.Morf
 					&& Type != BackType.Collection
 					&& Type != BackType.Character
 					&& Type != BackType.Interface
+					&& Type != BackType.Marketing
+					&& Type != BackType.VideoCadr
+					&& Type != BackType.VideoObject
 					&& !validator.IsUFloat(BackNumberText))
 					errorText += "Невірно заповнений номер беку.\nПриклад: 15, 9.1, 15.6";
 				else if (Type != BackType.Predmets
@@ -88,10 +96,12 @@ namespace Dml.Controller
 				else if (selectedGame != null && selectedGame.HaveEpisodes && selectedGame.HaveEpisode(EpisodeNumberText) && EpisodeNumberText == "Всі")
 				{
 					if(Type != BackType.Predmets 
-						&& Type != BackType.Morf 
+						&& Type != BackType.Predmet
+						&& Type != BackType.Morf
 						&& Type != BackType.Collection 
 						&& Type != BackType.Character
-						&& Type != BackType.Interface)
+						&& Type != BackType.Interface
+						&& Type != BackType.Marketing)
 						errorText += "Для обраного типу роботи не можна вказувати епізоди \"Всі\" ";
 					else
 						return true;

@@ -15,5 +15,9 @@
 		Collection = 10,
 		Character = 11,
 		Interface = 12,
+		Marketing = 13,
+		VideoCadr = 14,
+		VideoObject = 15,
+		Predmet = 16,
 	}
 }

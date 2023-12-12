@@ -55,6 +55,7 @@ Source: "..\DocumentMaker\bin\x64\Release\UpdaterAPI.dll"; DestDir: "{app}"; Fla
 Source: "..\DocumentMaker\bin\x64\Release\UpdaterAPI.dll.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\WinSCP.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\WinSCPnet.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DocumentMaker\bin\x64\Release\updatetext.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\Contract\*"; DestDir: "{app}\Contract\"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
