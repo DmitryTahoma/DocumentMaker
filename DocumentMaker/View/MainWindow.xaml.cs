@@ -248,68 +248,78 @@ namespace DocumentMaker
 		}
 		private async void WindowLoaded(object sender, RoutedEventArgs e)
 		{
-			CheckFiles();
-			WindowState = controller.WindowState;
-			if (controller != null)
+			try
 			{
-				SetDataFromController();
-				string[] files = controller.GetOpenLaterFiles();
-				OpenFiles(files);
-				ResetHaveUnsavedChanges();
-				LoadFiles();
-				if (files != null && files.Length > 0)
+				CheckFiles();
+				WindowState = controller.WindowState;
+				if (controller != null)
 				{
-					SetSelectedFile(files.Last());
-				}
-				controller.ChangeOpenedFilesExtension();
-				UpdateActSum();
-			}
-
-			ChangeLog changeLog = null;
-			if (Environment.GetCommandLineArgs().Length > 2 && Environment.GetCommandLineArgs()[1] == "/afterUpdate")
-			{
-				string prevVersion = Environment.GetCommandLineArgs()[2];
-				changeLog = new ChangeLog();
-				changeLog.Initialize($"Обновление {updater.GetCurrentVersion()} успешно установлено!\nПриятной работы!", updater.GetChangeLog(prevVersion), MessageBoxButtons.OK);
-				changeLog.ShowDialog();
-			}
-
-			await updater.RemoveOldVersionsAsync();
-
-			bool haveUpdateLocal = false;
-			if (await updater.TryConnectAsync())
-			{
-				if (await updater.HaveUpdateApiAsync())
-				{
-					await updater.DownloadApiUpdatesAsync();
-					await updater.UpdateUpdaterAsync();
+					SetDataFromController();
+					string[] files = controller.GetOpenLaterFiles();
+					OpenFiles(files);
+					ResetHaveUnsavedChanges();
+					LoadFiles();
+					if (files != null && files.Length > 0)
+					{
+						SetSelectedFile(files.Last());
+					}
+					controller.ChangeOpenedFilesExtension();
+					UpdateActSum();
 				}
 
-				await updater.LoadRemoteVersionsAsync();
-				if (await updater.HaveUpdateRemoteAsync())
+				ChangeLog changeLog = null;
+				if (Environment.GetCommandLineArgs().Length > 2 && Environment.GetCommandLineArgs()[1] == "/afterUpdate")
 				{
-					await updater.DownloadUpdatesAsync();
-				}
-
-				if (await updater.HaveUpdateLocalAsync())
-				{
-					haveUpdateLocal = true;
+					string prevVersion = Environment.GetCommandLineArgs()[2];
 					changeLog = new ChangeLog();
-					changeLog.Initialize($"Доступно обновление {await updater.GetLastAvailableVersionAsync()}! Обновиться?",
-						await updater.GetChangeLogAsync(updater.GetCurrentVersion().ToString()),
-						MessageBoxButtons.YesNo);
+					changeLog.Initialize($"Обновление {updater.GetCurrentVersion()} успешно установлено!\nПриятной работы!", updater.GetChangeLog(prevVersion), MessageBoxButtons.OK);
+					changeLog.ShowDialog();
 				}
-				updater.Dispose();
-			}
 
-			if (haveUpdateLocal && changeLog.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+				bool haveUpdateLocal = false;
+				await System.Threading.Tasks.Task.Run(async () =>
+				{
+					await updater.RemoveOldVersionsAsync();
+
+					if (updater.TryConnect())
+					{
+						if (await updater.HaveUpdateApiAsync())
+						{
+							await updater.DownloadApiUpdatesAsync();
+							await updater.UpdateUpdaterAsync();
+						}
+
+						await updater.LoadRemoteVersionsAsync();
+						if (await updater.HaveUpdateRemoteAsync())
+						{
+							await updater.DownloadUpdatesAsync();
+						}
+
+						if (await updater.HaveUpdateLocalAsync())
+						{
+							haveUpdateLocal = true;
+							changeLog = new ChangeLog();
+							changeLog.Initialize($"Доступно обновление {await updater.GetLastAvailableVersionAsync()}! Обновиться?",
+								await updater.GetChangeLogAsync(updater.GetCurrentVersion().ToString()),
+								MessageBoxButtons.YesNo);
+						}
+						updater.Dispose();
+					}
+
+					if (haveUpdateLocal && changeLog.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+					{
+						await updater.UpdateAsync(updater.GetLastAvailableVersion());
+					}
+				});
+
+				controller.EnableActionsStacking();
+				controller.SubscribeActionPushed((action) => { UpdateUndoRedoState(); });
+				ResetHaveUnsavedChanges();
+			}
+			catch (Exception ex)
 			{
-				await updater.UpdateAsync(updater.GetLastAvailableVersion());
+				MessageBox.Show(ex.ToString());
 			}
-
-			controller.EnableActionsStacking();
-			controller.SubscribeActionPushed((action) => { UpdateUndoRedoState(); });
-			ResetHaveUnsavedChanges();
 		}
 
 		private void ChangedDocumentTemplate(object sender, System.Windows.Controls.SelectionChangedEventArgs e)

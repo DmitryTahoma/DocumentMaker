@@ -143,64 +143,75 @@ namespace ActCreator
 
 		private async void WindowLoaded(object sender, RoutedEventArgs e)
 		{
-			WindowState = controller.WindowState;
-			if (controller != null)
+			try
 			{
-				if (controller.HaveOpenLaterFiles)
+
+				WindowState = controller.WindowState;
+				if (controller != null)
 				{
-					OpenFile(controller.GetOpenLaterFile());
-				}
-				controller.IsLoadingLastSession = true;
-				SetDataFromController();
-				controller.IsLoadingLastSession = false;
-				ResetHaveUnsavedChanges();
-				UpdateTitle();
-				UpdateFileContentVisibility();
-			}
-
-			ChangeLog changeLog = null;
-			if (System.Environment.GetCommandLineArgs().Length > 2 && System.Environment.GetCommandLineArgs()[1] == "/afterUpdate")
-			{
-				string prevVersion = System.Environment.GetCommandLineArgs()[2];
-				changeLog = new ChangeLog();
-				changeLog.Initialize($"Обновление {updater.GetCurrentVersion()} успешно установлено!\nПриятной работы!", updater.GetChangeLog(prevVersion), MessageBoxButtons.OK);
-				changeLog.ShowDialog();
-			}
-
-			await updater.RemoveOldVersionsAsync();
-
-			bool haveUpdateLocal = false;
-			if (await updater.TryConnectAsync())
-			{
-				if (await updater.HaveUpdateApiAsync())
-				{
-					await updater.DownloadApiUpdatesAsync();
-					await updater.UpdateUpdaterAsync();
+					if (controller.HaveOpenLaterFiles)
+					{
+						OpenFile(controller.GetOpenLaterFile());
+					}
+					controller.IsLoadingLastSession = true;
+					SetDataFromController();
+					controller.IsLoadingLastSession = false;
+					ResetHaveUnsavedChanges();
+					UpdateTitle();
+					UpdateFileContentVisibility();
 				}
 
-				await updater.LoadRemoteVersionsAsync();
-				if (await updater.HaveUpdateRemoteAsync())
+				ChangeLog changeLog = null;
+				if (System.Environment.GetCommandLineArgs().Length > 2 && System.Environment.GetCommandLineArgs()[1] == "/afterUpdate")
 				{
-					await updater.DownloadUpdatesAsync();
-				}
-
-				if (await updater.HaveUpdateLocalAsync())
-				{
-					haveUpdateLocal = true;
+					string prevVersion = System.Environment.GetCommandLineArgs()[2];
 					changeLog = new ChangeLog();
-					changeLog.Initialize($"Доступно обновление {await updater.GetLastAvailableVersionAsync()}! Обновиться?",
-						await updater.GetChangeLogAsync(updater.GetCurrentVersion().ToString()),
-						MessageBoxButtons.YesNo);
+					changeLog.Initialize($"Обновление {updater.GetCurrentVersion()} успешно установлено!\nПриятной работы!", updater.GetChangeLog(prevVersion), MessageBoxButtons.OK);
+					changeLog.ShowDialog();
 				}
-				updater.Dispose();
-			}
 
-			if (haveUpdateLocal && changeLog.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+				await System.Threading.Tasks.Task.Run(async () =>
+				{
+					await updater.RemoveOldVersionsAsync();
+
+					bool haveUpdateLocal = false;
+					if (updater.TryConnect())
+					{
+						if (await updater.HaveUpdateApiAsync())
+						{
+							await updater.DownloadApiUpdatesAsync();
+							await updater.UpdateUpdaterAsync();
+						}
+
+						await updater.LoadRemoteVersionsAsync();
+						if (await updater.HaveUpdateRemoteAsync())
+						{
+							await updater.DownloadUpdatesAsync();
+						}
+
+						if (await updater.HaveUpdateLocalAsync())
+						{
+							haveUpdateLocal = true;
+							changeLog = new ChangeLog();
+							changeLog.Initialize($"Доступно обновление {await updater.GetLastAvailableVersionAsync()}! Обновиться?",
+								await updater.GetChangeLogAsync(updater.GetCurrentVersion().ToString()),
+								MessageBoxButtons.YesNo);
+						}
+						updater.Dispose();
+					}
+
+					if (haveUpdateLocal && changeLog.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+					{
+						await updater.UpdateAsync(updater.GetLastAvailableVersion());
+					}
+				});
+
+				ResetHaveUnsavedChanges();
+			}
+			catch (System.Exception ex)
 			{
-				await updater.UpdateAsync(updater.GetLastAvailableVersion());
+				MessageBox.Show(ex.ToString());
 			}
-
-			ResetHaveUnsavedChanges();
 		}
 
 		private void ChangedDocumentTemplate(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
