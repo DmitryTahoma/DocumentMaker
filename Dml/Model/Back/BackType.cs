@@ -19,5 +19,6 @@
 		VideoCadr = 14,
 		VideoObject = 15,
 		Predmet = 16,
+		VideoPredmet = 17,
 	}
 }

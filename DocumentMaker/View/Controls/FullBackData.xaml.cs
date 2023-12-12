@@ -383,7 +383,7 @@ namespace DocumentMaker.View.Controls
 				CountRegionsTextInput.Text = controller.BackCountRegionsText;
 			}
 
-			HasBackNumber = controller.Type != BackType.Craft 
+			HasBackNumber = controller.Type != BackType.Craft
 				&& controller.Type != BackType.Predmets
 				&& controller.Type != BackType.Predmet
 				&& controller.Type != BackType.Morf
@@ -392,7 +392,8 @@ namespace DocumentMaker.View.Controls
 				&& controller.Type != BackType.Interface
 				&& controller.Type != BackType.Marketing
 				&& controller.Type != BackType.VideoCadr
-				&& controller.Type != BackType.VideoObject;
+				&& controller.Type != BackType.VideoObject
+				&& controller.Type != BackType.VideoPredmet;
 
 			if (!HasBackNumber && BackNumberTextInput != null)
 			{

@@ -346,7 +346,8 @@ namespace ActCreator.View.Controls
 				&& controller.Type != BackType.Interface
 				&& controller.Type != BackType.Marketing
 				&& controller.Type != BackType.VideoCadr
-				&& controller.Type != BackType.VideoObject;
+				&& controller.Type != BackType.VideoObject
+				&& controller.Type != BackType.VideoPredmet;
 
 			if (!HasBackNumber && BackNumberTextInput != null)
 			{

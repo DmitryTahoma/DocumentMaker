@@ -62,6 +62,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 					case BackType.Marketing: break;
 					case BackType.VideoCadr: stringBuilder.Append(" Кадрів відеоролика"); break;
 					case BackType.VideoObject: stringBuilder.Append(" Кадрів iстоти"); break;
+					case BackType.VideoPredmet: stringBuilder.Append(" Кадрів предмету"); break;
 					default: stringBuilder.Clear(); break;
 				}
 			}

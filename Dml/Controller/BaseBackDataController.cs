@@ -62,6 +62,7 @@ namespace Dml.Controller
 					&& Type != BackType.Marketing
 					&& Type != BackType.VideoCadr
 					&& Type != BackType.VideoObject
+					&& Type != BackType.VideoPredmet
 					&& !validator.IsFree(BackNumberText))
 					errorText += "Строка \"Номер беку\" не може бути пустою.";
 				else if (Type != BackType.Craft
@@ -74,6 +75,7 @@ namespace Dml.Controller
 					&& Type != BackType.Marketing
 					&& Type != BackType.VideoCadr
 					&& Type != BackType.VideoObject
+					&& Type != BackType.VideoPredmet
 					&& !validator.IsUFloat(BackNumberText))
 					errorText += "Невірно заповнений номер беку.\nПриклад: 15, 9.1, 15.6";
 				else if (Type != BackType.Predmets

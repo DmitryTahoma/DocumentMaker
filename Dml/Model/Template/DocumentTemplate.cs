@@ -76,6 +76,7 @@ namespace Dml.Model.Template
 						new BackDataType { Name = "Маркетинг", Type = BackType.Marketing },
 						new BackDataType { Name = "Відеоролик кадр", Type = BackType.VideoCadr },
 						new BackDataType { Name = "Відео істоти", Type = BackType.VideoObject },
+						new BackDataType { Name = "Відео предмет", Type = BackType.VideoPredmet },
 					});
 					break;
 				case DocumentTemplateType.Modeller:
@@ -96,6 +97,7 @@ namespace Dml.Model.Template
 						new BackDataType { Name = "Iнтерфейс", Type = BackType.Interface },
 						new BackDataType { Name = "Відеоролик кадр", Type = BackType.VideoCadr },
 						new BackDataType { Name = "Відео істоти", Type = BackType.VideoObject },
+						new BackDataType { Name = "Відео предмет", Type = BackType.VideoPredmet },
 					});
 					break;
 			}

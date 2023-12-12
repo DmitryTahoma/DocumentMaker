@@ -92,6 +92,7 @@ namespace DocumentMakerModelLibrary.Controls
 							|| Type == BackType.Marketing
 							|| Type == BackType.VideoCadr
 							|| Type == BackType.VideoObject
+							|| Type == BackType.VideoPredmet
 							|| BackNumberText == obj.BackNumberText
 						)
 					) ||
@@ -139,6 +140,7 @@ namespace DocumentMakerModelLibrary.Controls
 							|| Type == BackType.Marketing
 							|| Type == BackType.VideoCadr
 							|| Type == BackType.VideoObject
+							|| Type == BackType.VideoPredmet
 							|| BackNumberText == obj.BackNumberText
 						)
 					) ||
