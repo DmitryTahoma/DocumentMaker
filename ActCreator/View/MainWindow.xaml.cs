@@ -13,6 +13,8 @@ using System.Windows.Input;
 using MessageBox = System.Windows.Forms.MessageBox;
 using UpdaterAPI;
 using UpdaterAPI.View;
+using System;
+using System.Threading.Tasks;
 
 namespace ActCreator
 {
@@ -145,7 +147,6 @@ namespace ActCreator
 		{
 			try
 			{
-
 				WindowState = controller.WindowState;
 				if (controller != null)
 				{
@@ -161,54 +162,99 @@ namespace ActCreator
 					UpdateFileContentVisibility();
 				}
 
-				ChangeLog changeLog = null;
-				if (System.Environment.GetCommandLineArgs().Length > 2 && System.Environment.GetCommandLineArgs()[1] == "/afterUpdate")
+				try
 				{
-					string prevVersion = System.Environment.GetCommandLineArgs()[2];
-					changeLog = new ChangeLog();
-					changeLog.Initialize($"Обновление {updater.GetCurrentVersion()} успешно установлено!\nПриятной работы!", updater.GetChangeLog(prevVersion), MessageBoxButtons.OK);
-					changeLog.ShowDialog();
+					if (Environment.GetCommandLineArgs().Length > 2 && Environment.GetCommandLineArgs()[1] == "/afterUpdate")
+					{
+						Version prevVersion = Version.Parse(Environment.GetCommandLineArgs()[2]);
+						ChangeLog changeLog = new ChangeLog();
+						changeLog.Initialize($"Обновление {updater.GetCurrentVersion()} успешно установлено! Приятной работы!", updater.GetChangeLog(prevVersion), MessageBoxButtons.OK);
+						changeLog.ShowDialog();
+					}
+				}
+				catch (Exception exception)
+				{
+					UpdateLog.WriteLine(exception.ToString(), "red");
 				}
 
-				await System.Threading.Tasks.Task.Run(async () =>
+				try
 				{
-					await updater.RemoveOldVersionsAsync();
-
-					bool haveUpdateLocal = false;
-					if (updater.TryConnect())
+					const string updateLogStringColor = "#30bf1d";
+					Version lastAvailableVersion = null;
+					IReadOnlyDictionary<Version, string> changeLogDictionary = null;
+					await Task.Run(() =>
 					{
-						if (await updater.HaveUpdateApiAsync())
-						{
-							await updater.DownloadApiUpdatesAsync();
-							await updater.UpdateUpdaterAsync();
-						}
+						UpdateLog.WriteLine("Удаление старых версий...", updateLogStringColor);
+						updater.RemoveOldVersions();
 
-						await updater.LoadRemoteVersionsAsync();
-						if (await updater.HaveUpdateRemoteAsync())
+						UpdateLog.WriteLine("Подключение...", updateLogStringColor);
+						if (updater.TryConnect())
 						{
-							await updater.DownloadUpdatesAsync();
-						}
+							UpdateLog.WriteLine("Подключено", updateLogStringColor);
 
-						if (await updater.HaveUpdateLocalAsync())
+							UpdateLog.WriteLine("Проверка есть ли обновление API...", updateLogStringColor);
+							if (updater.HaveUpdateApi())
+							{
+								UpdateLog.WriteLine("Скачивание обновления API...", updateLogStringColor);
+								updater.DownloadApiUpdates();
+								UpdateLog.WriteLine("Обновление API скачано", updateLogStringColor);
+								updater.UpdateUpdater();
+								UpdateLog.WriteLine("Updater.exe обновлен", updateLogStringColor);
+							}
+
+							UpdateLog.WriteLine("Загрузка доступных версий на сервере...", updateLogStringColor);
+							updater.LoadRemoteVersions();
+							UpdateLog.WriteLine("Проверка есть ли новые версии для сервере...", updateLogStringColor);
+							if (updater.HaveUpdateRemote())
+							{
+								UpdateLog.WriteLine("Скачивание обновления...", updateLogStringColor);
+								updater.DownloadUpdates();
+								UpdateLog.WriteLine("Обновление скачано", updateLogStringColor);
+							}
+
+							UpdateLog.WriteLine("Проверка есть ли скачанное обновление...", updateLogStringColor);
+							if (updater.HaveUpdateLocal())
+							{
+								UpdateLog.WriteLine("Найдено обновление для установки", updateLogStringColor);
+								UpdateLog.WriteLine("Определение версии для установки...", updateLogStringColor);
+								lastAvailableVersion = updater.GetLastAvailableVersion();
+								UpdateLog.WriteLine("Формирование словаря с изменениями...", updateLogStringColor);
+								changeLogDictionary = updater.GetChangeLog(updater.GetCurrentVersion());
+							}
+
+							UpdateLog.WriteLine("Отключение...", updateLogStringColor);
+							updater.Disconnect();
+							UpdateLog.WriteLine("Отключено", updateLogStringColor);
+						}
+						else
 						{
-							haveUpdateLocal = true;
-							changeLog = new ChangeLog();
-							changeLog.Initialize($"Доступно обновление {await updater.GetLastAvailableVersionAsync()}! Обновиться?",
-								await updater.GetChangeLogAsync(updater.GetCurrentVersion().ToString()),
-								MessageBoxButtons.YesNo);
+							UpdateLog.WriteLine("Не удалось подключиться", updateLogStringColor);
 						}
-						updater.Dispose();
-					}
+					});
 
-					if (haveUpdateLocal && changeLog.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+					if (lastAvailableVersion != null)
 					{
-						await updater.UpdateAsync(updater.GetLastAvailableVersion());
+						UpdateLog.WriteLine("Создание формы ChangeLog...", updateLogStringColor);
+						ChangeLog changeLogForm = new ChangeLog();
+						UpdateLog.WriteLine("Инициализация формы ChangeLog...", updateLogStringColor);
+						changeLogForm.Initialize($"Доступно обновление {lastAvailableVersion}! Обновиться?", changeLogDictionary, MessageBoxButtons.YesNo);
+
+						UpdateLog.WriteLine("Отображение формы ChangeLog...", updateLogStringColor);
+						if (changeLogForm.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+						{
+							UpdateLog.WriteLine("Запуск Updater.exe...", updateLogStringColor);
+							updater.Update(lastAvailableVersion);
+						}
 					}
-				});
+				}
+				catch (Exception exception)
+				{
+					UpdateLog.WriteLine(exception.ToString(), "red");
+				}
 
 				ResetHaveUnsavedChanges();
 			}
-			catch (System.Exception ex)
+			catch (Exception ex)
 			{
 				MessageBox.Show(ex.ToString());
 			}
