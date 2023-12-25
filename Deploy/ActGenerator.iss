@@ -29,7 +29,7 @@ SetupIconFile=Icons\{#MyAppName}Setup.ico
 Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
 [Files]
 Source: "..\ActGenerator\bin\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
