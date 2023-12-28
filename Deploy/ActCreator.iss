@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "ActCreator"
-#define MyAppVersion "1.1.0.0"
+#define MyAppVersion "1.1.0.1"
 #define MyAppId "0001"
 #define MyAppPublisher "Five-BN"
 #define MyAppURL "https://five-bn.com/"
@@ -34,7 +34,6 @@ WizardStyle=modern
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
-Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 
 [Tasks]

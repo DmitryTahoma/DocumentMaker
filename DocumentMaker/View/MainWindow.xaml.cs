@@ -73,8 +73,7 @@ namespace DocumentMaker
 		{
 			controller = new MainWindowController(args);
 			controller.Load();
-			SetWindowSettingsFromController();
-
+			
 			folderBrowserDialog = new FolderBrowserDialog();
 			openFileDialog = new OpenFileDialog
 			{
@@ -239,10 +238,20 @@ namespace DocumentMaker
 		private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			SetDataToController();
-			controller.WindowTop = Top;
-			controller.WindowLeft = Left;
-			controller.WindowHeight = Height;
-			controller.WindowWidth = Width;
+			if (WindowState != WindowState.Normal)
+			{
+				controller.WindowTop = RestoreBounds.Y;
+				controller.WindowLeft = RestoreBounds.X;
+				controller.WindowHeight = RestoreBounds.Height;
+				controller.WindowWidth = RestoreBounds.Width;
+			}
+			else
+			{
+				controller.WindowTop = Top;
+				controller.WindowLeft = Left;
+				controller.WindowHeight = Height;
+				controller.WindowWidth = Width;
+			}
 			controller.WindowState = WindowState == WindowState.Minimized ? WindowState.Normal : WindowState;
 
 			controller.Save();
@@ -252,7 +261,8 @@ namespace DocumentMaker
 			try
 			{
 				CheckFiles();
-				WindowState = controller.WindowState;
+				SetWindowSettingsFromController();
+				
 				if (controller != null)
 				{
 					SetDataFromController();
@@ -1704,6 +1714,7 @@ namespace DocumentMaker
 			Height = controller.WindowHeight;
 			Width = controller.WindowWidth;
 			WindowValidator.MoveToValidPosition(this);
+			WindowState = controller.WindowState;
 		}
 
 		private void UpdateActSum()

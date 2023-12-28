@@ -91,23 +91,12 @@ namespace ActGenerator.ViewModel
 				return;
 			}
 
+			window.Top = model.WindowTop;
+			window.Left = model.WindowLeft;
 			window.Height = model.WindowHeight;
 			window.Width = model.WindowWidth;
-
-			if(model.WindowTop == -1 || model.WindowLeft == -1)
-			{
-				WindowValidator.MoveToPrimaryScreenCenterPosition(window);
-			}
-			else
-			{
-				window.Top = model.WindowTop;
-				window.Left = model.WindowLeft;
-			}
 			WindowValidator.MoveToValidPosition(window);
-
 			window.WindowState = model.WindowState;
-			window.Height = model.WindowHeight;
-			window.Width = model.WindowWidth;
 
 			actGeneratorViewModel.LoadFromSession(model);
 
@@ -119,10 +108,21 @@ namespace ActGenerator.ViewModel
 		{
 			if (!model.ApplicationLoaded) return;
 
-			model.WindowTop = window.Top;
-			model.WindowLeft = window.Left;
-			model.WindowHeight = window.Height;
-			model.WindowWidth = window.Width;
+			if (window.WindowState != WindowState.Normal)
+			{
+				model.WindowTop = window.RestoreBounds.Y;
+				model.WindowLeft = window.RestoreBounds.X;
+				model.WindowHeight = window.RestoreBounds.Height;
+				model.WindowWidth = window.RestoreBounds.Width;
+			}
+			else
+			{
+				model.WindowTop = window.Top;
+				model.WindowLeft = window.Left;
+				model.WindowHeight = window.Height;
+				model.WindowWidth = window.Width;
+			}
+
 			model.WindowState = window.WindowState == WindowState.Minimized ? WindowState.Normal : window.WindowState;
 
 			model.MinSumText = actGeneratorViewModel.MinSumText;

@@ -45,7 +45,6 @@ namespace ActCreator
 		{
 			controller = new MainWindowController(args);
 			controller.Load();
-			SetWindowSettingsFromController();
 
 			openFileDialog = new OpenFileDialog { Filter = "Файли акту (*" + BaseDmxFile.Extension + ")|*" + BaseDmxFile.Extension };
 
@@ -134,10 +133,21 @@ namespace ActCreator
 				return;
 			}
 
-			controller.WindowTop = Top;
-			controller.WindowLeft = Left;
-			controller.WindowHeight = Height;
-			controller.WindowWidth = Width;
+			if(WindowState != WindowState.Normal)
+			{
+				controller.WindowTop = RestoreBounds.Y;
+				controller.WindowLeft = RestoreBounds.X;
+				controller.WindowHeight = RestoreBounds.Height;
+				controller.WindowWidth = RestoreBounds.Width;
+			}
+			else
+			{
+				controller.WindowTop = Top;
+				controller.WindowLeft = Left;
+				controller.WindowHeight = Height;
+				controller.WindowWidth = Width;
+			}
+
 			controller.WindowState = WindowState == WindowState.Minimized ? WindowState.Normal : WindowState;
 
 			controller.Save();
@@ -147,7 +157,7 @@ namespace ActCreator
 		{
 			try
 			{
-				WindowState = controller.WindowState;
+				SetWindowSettingsFromController();
 				if (controller != null)
 				{
 					if (controller.HaveOpenLaterFiles)
@@ -426,6 +436,7 @@ namespace ActCreator
 			Height = controller.WindowHeight;
 			Width = controller.WindowWidth;
 			WindowValidator.MoveToValidPosition(this);
+			WindowState = controller.WindowState;
 		}
 
 		private void SetDataFromController()
