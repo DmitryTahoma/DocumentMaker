@@ -687,7 +687,7 @@ namespace DocumentMaker
 
 		private void ShowBackNames(object sender, RoutedEventArgs e)
 		{
-			System.Diagnostics.Process.Start("https://docs.google.com/spreadsheets/d/1GnTgfIKsk2a0qClfSE7wy2WGLpXWxuuTscPyuCt8Bi0/edit#gid=1313072428");
+			System.Diagnostics.Process.Start("https://docs.google.com/spreadsheets/d/1DkCd50ZGVRITZXW0g0yjM2vgH0XpvLCgPEWKmOZl0mU/edit#gid=367254280");
 		}
 
 		private async void InfoBtnClick(object sender, RoutedEventArgs e)

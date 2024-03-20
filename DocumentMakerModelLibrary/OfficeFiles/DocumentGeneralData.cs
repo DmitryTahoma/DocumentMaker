@@ -80,23 +80,24 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			TTDateM = Get2dNumber(DateTime.Parse(model.TechnicalTaskDateText).Month);
 			TTDateD = Get2dNumber(DateTime.Parse(model.TechnicalTaskDateText).Day);
 			TTNum2d = Get2dNumber(model.TechnicalTaskNumText);
-			HumanName = GetHumanName();
+			HumanName = GetHumanName(model.SelectedHuman);
+			HumanName2 = GetHumanName2(model.SelectedHuman);
 			ActFullDate = DateToFormatCultureString(DateTime.Parse(ActDate));
 			TTDateStr2 = DateTime.Parse(model.TechnicalTaskDateText).ToString("yyyy.MM.dd");
-			HumanSecondName = HumanFullName.Split(' ')[0];
+			HumanSecondName = model.SelectedHuman.Split(' ')[0];
 			ActDate2 = DateTime.Parse(ActDate).ToString("yyyy.MM.dd");
 			ActSumTextPart1 = ActSumText.Substring(0, ActSumText.LastIndexOf(' ')).ToLower();
 			ActSumTextPart2 = GetActSumTextPart2();
 
 			if (model.DocType == DocumentType.FOP || model.DocType == DocumentType.FOPF)
 			{
-				HumanNameFOP = "ФОП " + HumanName;
-				HumanNameFOP2 = "Фізична особа - підприємець " + HumanFullName;
+				HumanNameFOP = "ФОП " + HumanName2;
+				HumanNameFOP2 = "Фізична особа - підприємець " + GetHumanFullName(model.SelectedHuman);
 			}
 			else
 			{
 				HumanNameFOP = HumanName;
-				HumanNameFOP2 = "Фізична особа " + HumanFullName;
+				HumanNameFOP2 = "Фізична особа " + GetHumanFullName(model.SelectedHuman);
 			}
 
 			if (model.DocType == DocumentType.FOP || model.DocType == DocumentType.FOPF || model.DocType == DocumentType.GIG)
@@ -131,8 +132,8 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			if (model.DocType == DocumentType.FOPF)
 			{
 				CustomerText = "ФОП Фролов О. В.";
-				CustomerText2 = "Фізична особа-підприємець Фролов Олександр Вікторович";
-				CustomerText3 = "Фролов О. В.";
+				CustomerText2 = "Фізична особа-підприємець Олександр Вікторович Фролов";
+				CustomerText3 = "О. В. Фролов";
 				Director = "";
 				DirectorID = "ІН 2978003352";
 				DirectorAddress = "пр-зд. Білоруський, буд. 14, кв. 22";
@@ -141,8 +142,8 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			else
 			{
 				CustomerText = "ТОВ \"ФАЙВ - БН СТУДІЯ\"";
-				CustomerText2 = "Товариство з обмеженою відповідальністю «ФАЙВ-БН СТУДІЯ», в особі директора Фролова Олександра Вікторовича";
-				CustomerText3 = "Фролов О. В.";
+				CustomerText2 = "Товариство з обмеженою відповідальністю «ФАЙВ-БН СТУДІЯ», в особі директора Олександра Вікторовича Фролова";
+				CustomerText3 = "О. В. Фролов";
 				Director = "Директор ";
 				DirectorID = "ЄДРПОУ 38187315";
 				DirectorAddress = "вул. Менделєєва, буд 46, прим.9";
@@ -185,6 +186,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		public string RegionName { get; }
 
 		public string HumanName { get; }
+		public string HumanName2 { get; }
 
 		public string HumanID { get; }
 
@@ -253,10 +255,22 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			return Get2dNumber(date.Day) + ' ' + month + ' ' + date.Year.ToString() + ' ' + yearStr;
 		}
 
-		private string GetHumanName()
+		private string GetHumanName(string name)
 		{
-			string[] parts = HumanFullName.Split(' ');
+			string[] parts = name.Split(' ');
+			return char.ToUpper(parts[1][0]) + ". " + char.ToUpper(parts[2][0]) + ". " + parts[0];
+		}
+
+		private string GetHumanName2(string name)
+		{
+			string[] parts = name.Split(' ');
 			return parts[0] + ' ' + char.ToUpper(parts[1][0]) + ". " + char.ToUpper(parts[2][0]) + '.';
+		}
+
+		private string GetHumanFullName(string name)
+		{
+			string[] parts = name.Split(' ');
+			return parts[1] + " " + parts[2] + " " + parts[0];
 		}
 
 		private string GetActSumTextPart2()
