@@ -44,7 +44,7 @@ namespace DocumentMaker
 		public static readonly DependencyProperty ButtonOpenContentVisibilityProperty;
 		public static readonly DependencyProperty CanRedoProperty;
 		public static readonly DependencyProperty CanUndoProperty;
-		
+
 		static MainWindow()
 		{
 			TechnicalTaskDateTextProperty = DependencyProperty.Register("TechnicalTaskDateText", typeof(string), typeof(MainWindowController));
@@ -69,11 +69,13 @@ namespace DocumentMaker
 
 		private bool cancelOpenedFilesSelectionChanged;
 		private Updater updater = new Updater();
+		private readonly long telegramGroupId = -1002032139384;
+
 		public MainWindow(string[] args)
 		{
 			controller = new MainWindowController(args);
 			controller.Load();
-			
+
 			folderBrowserDialog = new FolderBrowserDialog();
 			openFileDialog = new OpenFileDialog
 			{
@@ -97,6 +99,11 @@ namespace DocumentMaker
 			InitializeComponentFromCode();
 			updater.LoadLocalVersions();
 			Title = $"Five-BN DocumentMaker {updater.GetCurrentVersion()}";
+
+			System.Windows.Application.Current.DispatcherUnhandledException += (s, e1) =>
+			{
+				SendExceptionTG(e1.Exception);
+			};
 		}
 
 		private void InitializeComponentFromCode()
@@ -262,7 +269,7 @@ namespace DocumentMaker
 			{
 				CheckFiles();
 				SetWindowSettingsFromController();
-				
+
 				if (controller != null)
 				{
 					SetDataFromController();
@@ -293,7 +300,7 @@ namespace DocumentMaker
 				{
 					Version prevVersion = Version.Parse(Environment.GetCommandLineArgs()[2]);
 					ChangeLog changeLog = new ChangeLog();
-					changeLog.Initialize($"Обновление {updater.GetCurrentVersion()} успешно установлено! Приятной работы!",updater.GetChangeLog(prevVersion), MessageBoxButtons.OK);
+					changeLog.Initialize($"Обновление {updater.GetCurrentVersion()} успешно установлено! Приятной работы!", updater.GetChangeLog(prevVersion), MessageBoxButtons.OK);
 					changeLog.ShowDialog();
 				}
 			}
@@ -362,7 +369,7 @@ namespace DocumentMaker
 					UpdateLog.WriteLine("Создание формы ChangeLog...", updateLogStringColor);
 					ChangeLog changeLogForm = new ChangeLog();
 					UpdateLog.WriteLine("Инициализация формы ChangeLog...", updateLogStringColor);
-					changeLogForm.Initialize($"Доступно обновление {lastAvailableVersion}! Обновиться?", changeLogDictionary,MessageBoxButtons.YesNo);
+					changeLogForm.Initialize($"Доступно обновление {lastAvailableVersion}! Обновиться?", changeLogDictionary, MessageBoxButtons.YesNo);
 
 					UpdateLog.WriteLine("Отображение формы ChangeLog...", updateLogStringColor);
 					if (changeLogForm.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
@@ -1361,82 +1368,89 @@ namespace DocumentMaker
 
 		private void CombineDcmkBtnClick(object sender, RoutedEventArgs e)
 		{
-			if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			try
 			{
-				string savedFiles = string.Empty;
-				string filesSavePath;
-
-				filesSavePath = folderBrowserDialog.SelectedPath + "\\";
-
-				List<string> NameUser = new List<string>();
-				List<DmxFile> UserDmx = new List<DmxFile>();
-
-				foreach (DmxFile file in OpenedFilesList)
+				if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 				{
-					if (!NameUser.Contains(file.SelectedHuman))
-						NameUser.Add(file.SelectedHuman);
-				}
+					string savedFiles = string.Empty;
+					string filesSavePath;
 
-				NameUser.Sort(new Dml.NaturalStringComparer());
+					filesSavePath = folderBrowserDialog.SelectedPath + "\\";
 
-				foreach (string name in NameUser)
-				{
-					DmxFile fileDmx = null;
-					DateTime maxDateAct = new DateTime();
-					DateTime maxDateTeh = new DateTime();
-					int actSum = 0;
+					List<string> NameUser = new List<string>();
+					List<DmxFile> UserDmx = new List<DmxFile>();
+
 					foreach (DmxFile file in OpenedFilesList)
 					{
-						if (name == file.SelectedHuman)
+						if (!NameUser.Contains(file.SelectedHuman))
+							NameUser.Add(file.SelectedHuman);
+					}
+
+					NameUser.Sort(new Dml.NaturalStringComparer());
+
+					foreach (string name in NameUser)
+					{
+						DmxFile fileDmx = null;
+						DateTime maxDateAct = new DateTime();
+						DateTime maxDateTeh = new DateTime();
+						int actSum = 0;
+						foreach (DmxFile file in OpenedFilesList)
 						{
-							if (fileDmx == null)
-								fileDmx = new DmxFile(Path.Combine(filesSavePath, file.SelectedHuman + DcmkFile.Extension));
+							if (name == file.SelectedHuman)
+							{
+								if (fileDmx == null)
+									fileDmx = new DmxFile(Path.Combine(filesSavePath, file.SelectedHuman + DcmkFile.Extension));
 
-							fileDmx.TemplateType = file.TemplateType;
-							fileDmx.SelectedHuman = file.SelectedHuman;
-							fileDmx.SelectedContractFile = file.SelectedContractFile;
-							actSum += int.Parse(file.ActSum);
-							DateTime tempDateAct = DateTime.Parse(file.ActDateText);
-							if (maxDateAct.Date < tempDateAct.Date)
-								maxDateAct = tempDateAct;
+								fileDmx.TemplateType = file.TemplateType;
+								fileDmx.SelectedHuman = file.SelectedHuman;
+								fileDmx.SelectedContractFile = file.SelectedContractFile;
+								actSum += int.Parse(file.ActSum);
+								DateTime tempDateAct = DateTime.Parse(file.ActDateText);
+								if (maxDateAct.Date < tempDateAct.Date)
+									maxDateAct = tempDateAct;
 
-							DateTime tempDateTeh = DateTime.Parse(file.TechnicalTaskDateText);
-							if (maxDateTeh.Date < tempDateTeh.Date)
-								maxDateTeh = tempDateTeh;
+								DateTime tempDateTeh = DateTime.Parse(file.TechnicalTaskDateText);
+								if (maxDateTeh.Date < tempDateTeh.Date)
+									maxDateTeh = tempDateTeh;
 
-							if (fileDmx.BackDataModels == null)
-								fileDmx.SetLoadedBackData(file.BackDataModels);
-							else
-								fileDmx.AddRangeBackModel(file.BackDataModels);
+								if (fileDmx.BackDataModels == null)
+									fileDmx.SetLoadedBackData(file.BackDataModels);
+								else
+									fileDmx.AddRangeBackModel(file.BackDataModels);
+							}
+						}
+
+						if (fileDmx != null)
+						{
+							fileDmx.ActSum = actSum.ToString();
+							fileDmx.ActDateText = maxDateAct.ToString("dd.MM.yyyy");
+							fileDmx.TechnicalTaskDateText = maxDateTeh.ToString("dd.MM.yyyy");
+							fileDmx.ChangePath(Path.Combine(filesSavePath, fileDmx.SelectedHuman + " " + fileDmx.ActDateText + " " + fileDmx.ActSum + DcmkFile.Extension));
+							UserDmx.Add(fileDmx);
 						}
 					}
 
-					if (fileDmx != null)
+					foreach (DmxFile file in UserDmx)
 					{
-						fileDmx.ActSum = actSum.ToString();
-						fileDmx.ActDateText = maxDateAct.ToString("dd.MM.yyyy");
-						fileDmx.TechnicalTaskDateText = maxDateTeh.ToString("dd.MM.yyyy");
-						fileDmx.ChangePath(Path.Combine(filesSavePath, fileDmx.SelectedHuman + " " + fileDmx.ActDateText + " " + fileDmx.ActSum + DcmkFile.Extension));
-						UserDmx.Add(fileDmx);
+						OpenedFilesList.Add(file);
+						SetSelectedFile(file.FullName);
+						controller.ExportDcmk(file.FullName);
+						controller.CloseFile(file);
+						savedFiles += "\n" + file.FullName;
+					}
+
+					if (savedFiles != string.Empty)
+					{
+						MessageBox.Show("Файли збережені:" + savedFiles,
+							"DocumentMaker | Export dcmk",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Information);
 					}
 				}
-
-				foreach (DmxFile file in UserDmx)
-				{
-					OpenedFilesList.Add(file);
-					SetSelectedFile(file.FullName);
-					controller.ExportDcmk(file.FullName);
-					controller.CloseFile(file);
-					savedFiles += "\n" + file.FullName;
-				}
-
-				if (savedFiles != string.Empty)
-				{
-					MessageBox.Show("Файли збережені:" + savedFiles,
-						"DocumentMaker | Export dcmk",
-						MessageBoxButtons.OK,
-						MessageBoxIcon.Information);
-				}
+			}
+			catch(Exception exc)
+			{
+				SendExceptionTG(exc);
 			}
 		}
 
@@ -2050,6 +2064,12 @@ namespace DocumentMaker
 				DisableUpdatingSum();
 			}
 			UpdateSaldo();
+		}
+
+		private void SendExceptionTG(Exception exc)
+		{
+			SendException.ExceptionDialog dialog = new SendException.ExceptionDialog(exc, telegramGroupId, updater.GetCurrentVersion());
+			dialog.ShowDialog();
 		}
 
 		#endregion

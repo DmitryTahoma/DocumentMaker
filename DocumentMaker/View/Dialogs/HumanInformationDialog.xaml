@@ -21,6 +21,7 @@
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
             <RowDefinition Height="auto" />
             <RowDefinition />
             <RowDefinition Height="auto" />
@@ -39,8 +40,17 @@
             Text="{Binding ElementName=DialogContext, Path=HumanName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBox
-            x:Name="HumanIdTextInput"
             Grid.Row="1"
+            Grid.ColumnSpan="2"
+            Margin="10"
+            materialDesign:HintAssist.Hint="Iм'я спiвробiтника:"
+            IsReadOnly="True"
+            Style="{StaticResource MaterialDesignOutlinedTextBox}"
+            Text="{Binding ElementName=DialogContext, Path=HumanNameAlt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBox
+            x:Name="HumanIdTextInput"
+            Grid.Row="2"
             Margin="10"
             materialDesign:HintAssist.Hint="ІНН:"
             IsReadOnly="True"
@@ -48,7 +58,7 @@
             Text="{Binding HumanIdText, ElementName=DialogContext, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBox
             x:Name="AddressTextInput"
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="1"
             Margin="0,10,10,10"
             materialDesign:HintAssist.Hint="Адреса проживання:"
@@ -57,7 +67,7 @@
             Text="{Binding AddressText, ElementName=DialogContext, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBlock
-            Grid.Row="2"
+            Grid.Row="3"
             Grid.ColumnSpan="2"
             HorizontalAlignment="Center"
             FontSize="17"
@@ -65,7 +75,7 @@
             Style="{StaticResource InputWithTextLabel}"
             Text="Банківські реквізити" />
 
-        <Grid Grid.Row="3" Grid.ColumnSpan="2">
+        <Grid Grid.Row="4" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="0.5*" />
@@ -99,7 +109,7 @@
         </Grid>
 
         <TextBlock
-            Grid.Row="4"
+            Grid.Row="5"
             Grid.ColumnSpan="2"
             HorizontalAlignment="Center"
             FontSize="17"
@@ -109,7 +119,7 @@
 
         <TextBox
             x:Name="ContractNumberTextInput"
-            Grid.Row="5"
+            Grid.Row="6"
             Margin="10"
             materialDesign:HintAssist.Hint="Номер договору:"
             IsReadOnly="True"
@@ -117,7 +127,7 @@
             Text="{Binding ElementName=DialogContext, Path=ContractNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBox
             x:Name="ContractDateTextInput"
-            Grid.Row="5"
+            Grid.Row="6"
             Grid.Column="1"
             Margin="0,10,10,10"
             materialDesign:HintAssist.Hint="Дата складання договору:"
@@ -126,7 +136,7 @@
             Text="{Binding ElementName=DialogContext, Path=ContractDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBlock
-            Grid.Row="6"
+            Grid.Row="7"
             Grid.ColumnSpan="2"
             HorizontalAlignment="Center"
             FontSize="17"
@@ -136,7 +146,7 @@
 
         <TextBox
             x:Name="ContractReworkNumberTextInput"
-            Grid.Row="7"
+            Grid.Row="8"
             Margin="10"
             materialDesign:HintAssist.Hint="Номер договору:"
             IsReadOnly="True"
@@ -144,7 +154,7 @@
             Text="{Binding ElementName=DialogContext, Path=ContractReworkNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBox
             x:Name="ContractReworkDateTextInput"
-            Grid.Row="7"
+            Grid.Row="8"
             Grid.Column="1"
             Margin="0,10,10,10"
             materialDesign:HintAssist.Hint="Дата складання договору:"
@@ -153,7 +163,7 @@
             Text="{Binding ElementName=DialogContext, Path=ContractReworkDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Button
-            Grid.Row="8"
+            Grid.Row="9"
             Grid.ColumnSpan="2"
             Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
             Content="Закрити"

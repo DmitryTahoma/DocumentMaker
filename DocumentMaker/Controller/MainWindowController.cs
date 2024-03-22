@@ -79,6 +79,7 @@ namespace DocumentMaker.Controller
 		public string ActDateText { get => model.ActDateText; set => model.ActDateText = value; }
 		public string TechnicalTaskNumText { get => model.TechnicalTaskNumText; set => model.TechnicalTaskNumText = value; }
 		public string SelectedHuman { get => model.SelectedHuman; set => model.SelectedHuman = value; }
+		public string HumanNameAlt { get => model.HumanNameAlt; set => model.HumanNameAlt = value; }
 		public string SelectedContractFile { get => model.SelectedContractFile; set => model.SelectedContractFile = value; }
 		public string HumanIdText { get => model.HumanIdText; set => model.HumanIdText = value; }
 		public string AddressText { get => model.AddressText; set => model.AddressText = value; }
@@ -269,6 +270,7 @@ namespace DocumentMaker.Controller
 		public void SetHuman(HumanData humanData)
 		{
 			SelectedHuman = humanData.Name;
+			HumanNameAlt = humanData.HumanNameAlt;
 			SelectedContractFile = humanData.ContractFile;
 			HumanIdText = humanData.HumanIdText;
 			DocType = humanData.DocType;
@@ -406,6 +408,7 @@ namespace DocumentMaker.Controller
 			ActDateText = ActDateText?.Trim();
 			TechnicalTaskNumText = TechnicalTaskNumText?.Trim();
 			SelectedHuman = SelectedHuman?.Trim();
+			HumanNameAlt = HumanNameAlt?.Trim();
 			SelectedContractFile = SelectedContractFile?.Trim();
 			HumanIdText = HumanIdText?.Trim();
 			AddressText = AddressText?.Trim();

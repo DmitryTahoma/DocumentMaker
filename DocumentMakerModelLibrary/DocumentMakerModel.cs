@@ -99,6 +99,7 @@ namespace DocumentMakerModelLibrary
 		public string ActDateText { get; set; }
 		public string TechnicalTaskNumText { get; set; } = "1";
 		public string SelectedHuman { get; set; }
+		public string HumanNameAlt { get; set; }
 		public string SelectedContractFile { get; set; }
 		public string HumanIdText { get; set; }
 		public string AddressText { get; set; }

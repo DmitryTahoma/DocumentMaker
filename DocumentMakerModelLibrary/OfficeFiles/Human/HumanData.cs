@@ -7,6 +7,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles.Human
 	public class HumanData
 	{
 		public string Name { get; set; }
+		public string HumanNameAlt { get; set; }
 		public DocumentType DocType { get; set; } = DocumentType.Empty;
 		public string HumanIdText { get; set; }
 		public string BankName { get; set; }
@@ -57,6 +58,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles.Human
 					case "M": MfoText = value; break;
 					case "N": DefaultTemplate = value; break;
 					case "O": AccountNumberText = value; break;
+					case "P": HumanNameAlt = value; break;
 				}
 			}
 		}
@@ -71,6 +73,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles.Human
 		{
 			int hashCode = -718311778;
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(HumanNameAlt);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(HumanIdText);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(BankName);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PaymentAccountText);

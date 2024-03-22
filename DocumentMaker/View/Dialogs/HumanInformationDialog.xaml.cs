@@ -11,6 +11,7 @@ namespace DocumentMaker.View.Dialogs
 	public partial class HumanInformationDialog : UserControl
 	{
 		public static readonly DependencyProperty HumanNameProperty;
+		public static readonly DependencyProperty HumanNameAltProperty;
 		public static readonly DependencyProperty HumanIdTextProperty;
 		public static readonly DependencyProperty AddressTextProperty;
 		public static readonly DependencyProperty PaymentAccountTextProperty;
@@ -24,6 +25,7 @@ namespace DocumentMaker.View.Dialogs
 		static HumanInformationDialog()
 		{
 			HumanNameProperty = DependencyProperty.Register("HumanName", typeof(string), typeof(HumanInformationDialog));
+			HumanNameAltProperty = DependencyProperty.Register("HumanNameAlt", typeof(string), typeof(HumanInformationDialog));
 			HumanIdTextProperty = DependencyProperty.Register("HumanIdText", typeof(string), typeof(HumanInformationDialog));
 			AddressTextProperty = DependencyProperty.Register("AddressText", typeof(string), typeof(HumanInformationDialog));
 			PaymentAccountTextProperty = DependencyProperty.Register("PaymentAccountText", typeof(string), typeof(HumanInformationDialog));
@@ -45,6 +47,7 @@ namespace DocumentMaker.View.Dialogs
 			if (humanData != null)
 			{
 				HumanName = humanData.Name;
+				HumanNameAlt = humanData.HumanNameAlt;
 				HumanIdText = humanData.HumanIdText;
 				BankName = humanData.BankName;
 				PaymentAccountText = humanData.PaymentAccountText;
@@ -57,7 +60,7 @@ namespace DocumentMaker.View.Dialogs
 			}
 			else
 			{
-				HumanName = HumanIdText = BankName = PaymentAccountText = ContractNumberText = ContractDateText = ContractReworkNumberText = ContractReworkDateText = AddressText = MfoText = "<error-human>";
+				HumanName = HumanNameAlt = HumanIdText = BankName = PaymentAccountText = ContractNumberText = ContractDateText = ContractReworkNumberText = ContractReworkDateText = AddressText = MfoText = "<error-human>";
 			}
 		}
 
@@ -65,6 +68,12 @@ namespace DocumentMaker.View.Dialogs
 		{
 			get => (string)GetValue(HumanNameProperty);
 			set => SetValue(HumanNameProperty, value);
+		}
+
+		public string HumanNameAlt
+		{
+			get => (string)GetValue(HumanNameAltProperty);
+			set => SetValue(HumanNameAltProperty, value);
 		}
 
 		public string HumanIdText

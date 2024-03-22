@@ -187,6 +187,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 
 		public string HumanName { get; }
 		public string HumanName2 { get; }
+		public string HumanNameAlt { get; }
 
 		public string HumanID { get; }
 
