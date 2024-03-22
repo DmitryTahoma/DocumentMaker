@@ -23,6 +23,21 @@ namespace ActCreator.Controller
 
 		private readonly string openLaterFilename = null;
 
+		public MainWindowController(MainWindowController _mainWindowController)
+		{
+			model = new ActCreatorModel();
+			validator = new StringValidator();
+			model.SessionVersion = _mainWindowController.model.SessionVersion;
+			model.WindowTop = _mainWindowController.model.WindowTop;
+			model.WindowLeft = _mainWindowController.model.WindowLeft;
+			model.WindowHeight = _mainWindowController.model.WindowHeight;
+			model.WindowWidth = _mainWindowController.model.WindowWidth;
+			model.WindowState = _mainWindowController.model.WindowState;
+			model.TemplateType = _mainWindowController.model.TemplateType;
+			model.SelectedHuman = _mainWindowController.model.SelectedHuman;
+			BackDataControllers = new List<ShortBackDataController>(_mainWindowController.BackDataControllers);
+		}
+
 		public MainWindowController(string[] args)
 		{
 			model = new ActCreatorModel();

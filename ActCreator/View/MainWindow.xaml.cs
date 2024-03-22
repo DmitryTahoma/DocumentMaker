@@ -40,6 +40,7 @@ namespace ActCreator
 		private readonly SaveFileDialog saveFileDialog;
 		private readonly OpenFileDialog openFileDialog;
 		private Updater updater = new Updater();
+		private readonly long telegramGroupId = -1002032139384;
 
 		public MainWindow(string[] args)
 		{
@@ -78,6 +79,11 @@ namespace ActCreator
 			};
 
 			updater.LoadLocalVersions();
+
+			System.Windows.Application.Current.DispatcherUnhandledException += (s, e1) =>
+			{
+				SendExceptionTG(e1.Exception);
+			};
 		}
 
 		public IList<DocumentTemplate> DocumentTemplatesList => controller.DocumentTemplatesList;
@@ -301,6 +307,38 @@ namespace ActCreator
 		private void CloseFileClick(object sender, RoutedEventArgs e)
 		{
 			OnCloseFile();
+		}
+
+		private void AddWorkFileBtnClick(object sender, RoutedEventArgs e)
+		{
+			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				if (controller.IsOpenedFile)
+				{
+					MainWindowController controllerAct = new MainWindowController(controller);
+
+					if (!controllerAct.OpenFile(openFileDialog.FileName))
+					{
+						MessageBox.Show("Не вдалось відкрити файл:\n\n" + openFileDialog.FileName,
+							"ActCreator | Open Files",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Error);
+					}
+					else
+					{
+						controller.IsOpeningFile = true;
+						controller.BackDataControllers.AddRange(controllerAct.BackDataControllers);
+						AddLoadedBackData();
+						UpdateViewBackData();
+						controller.IsOpeningFile = false;
+						UpdateFileContentVisibility();
+					}
+				}
+				else
+				{
+					OpenFile(openFileDialog.FileName);
+				}
+			}
 		}
 
 		private void CreateFileClick(object sender, RoutedEventArgs e)
@@ -639,6 +677,12 @@ namespace ActCreator
 		{
 			DataFooter.ClearBackData();
 			HaveUnsavedChanges = true;
+		}
+
+		private void SendExceptionTG(Exception exc)
+		{
+			SendException.ExceptionDialog dialog = new SendException.ExceptionDialog(exc, telegramGroupId, updater.GetCurrentVersion());
+			dialog.ShowDialog();
 		}
 	}
 }

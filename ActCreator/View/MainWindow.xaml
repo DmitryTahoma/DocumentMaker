@@ -86,6 +86,12 @@
                             Header="Зберегти як"
                             Icon="{materialDesign:PackIcon Kind=ContentSaveEditOutline}"
                             InputGestureText="Ctrl+Alt+S" />
+                        <Separator />
+                        <MenuItem
+                            Name="AddWorkFileMenu"
+                            Click="AddWorkFileBtnClick"
+                            Header="Додати акт"
+                            Icon="{materialDesign:PackIcon Kind=VectorCombine}" />
                     </MenuItem>
                     <MenuItem Header="Редагування" Icon="{materialDesign:PackIcon Kind=FileDocumentEditOutline}">
                         <MenuItem

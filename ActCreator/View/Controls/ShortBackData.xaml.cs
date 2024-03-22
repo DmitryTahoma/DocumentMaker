@@ -410,12 +410,14 @@ namespace ActCreator.View.Controls
 			}
 			NotifyPropertyChanged(nameof(GameNameList));
 			GameNameComboBox.SelectedItem = GameNameList.FirstOrDefault(x => x.Name == selectedGame);
+			GameName = GameNameComboBox.Text;
 			if (GameNameComboBox.SelectedItem == null)
 			{
 				GameNameComboBox.Text = null;
 			}
 			NotifyPropertyChanged(nameof(EpisodeNumberList));
 			EpisodeNumberComboBox.SelectedItem = EpisodeNumberList?.FirstOrDefault(x => x == selectedEpisode);
+			EpisodeNumberText = EpisodeNumberComboBox.Text;
 			if (EpisodeNumberComboBox.SelectedItem == null)
 			{
 				EpisodeNumberComboBox.Text = null;
