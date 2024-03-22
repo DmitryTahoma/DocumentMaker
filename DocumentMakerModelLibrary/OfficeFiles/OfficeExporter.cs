@@ -194,7 +194,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 
 				FlushCachedValues(spreadsheetDocument);
 				spreadsheetDocument.Save();
-				spreadsheetDocument.Close();
+				spreadsheetDocument.Dispose();
 			}
 		}
 
@@ -206,7 +206,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 			{
 				Body docBody = doc.MainDocumentPart.Document.Body;
 				res = docBody.OuterXml;
-				doc.Close();
+				doc.Dispose();
 			}
 
 			return res;
@@ -219,7 +219,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 				Body docBody = doc.MainDocumentPart.Document.Body;
 				docBody.InnerXml = xml.DocumentElement.InnerXml;
 				doc.Save();
-				doc.Close();
+				doc.Dispose();
 			}
 		}
 

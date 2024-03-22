@@ -480,7 +480,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		public static void CloseFile()
 		{
 			if (spreadsheetDocument != null)
-				spreadsheetDocument.Close();
+				spreadsheetDocument.Dispose();
 		}
 
 		public static void SaveFile()

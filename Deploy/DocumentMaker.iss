@@ -48,6 +48,7 @@ Source: "..\DocumentMaker\bin\x64\Release\{#MyAppExeName}"; DestDir: "{app}"; Fl
 Source: "..\DocumentMaker\bin\x64\Release\DevelopmentTypes.xlsx"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\Dml.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\DocumentFormat.OpenXml.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DocumentMaker\bin\x64\Release\DocumentFormat.OpenXml.Framework.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\DocumentMakerModelLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\MaterialDesignColors.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\MaterialDesignThemes.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion

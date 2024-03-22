@@ -1,17 +1,12 @@
 ﻿using Dml;
 using Dml.Model.Back;
 using Dml.Model.Template;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentMakerModelLibrary.Algorithm;
 using DocumentMakerModelLibrary.Files;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
-using MessageBox = System.Windows.Forms.MessageBox;
-using System.Linq;
+using System.Windows;
 
 namespace DocumentMakerModelLibrary.OfficeFiles
 {
@@ -125,14 +120,12 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 				ExcelExporter.CloseFile();
 
 				MessageBox.Show("Файл збережено.",
-										"DocumentMaker | Export",
-										MessageBoxButtons.OK,
-										MessageBoxIcon.Information);
+										"DocumentMaker | Export");
 			}
 
 			catch (Exception exc)
 			{
-				MessageBox.Show("Виникла непередбачена помилка під час експорту! Надішліть, будь ласка, скріншот помилки розробнику.\n" + exc.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Виникла непередбачена помилка під час експорту! Надішліть, будь ласка, скріншот помилки розробнику.\n" + exc.ToString(), "Error");
 			}
 			finally
 			{
