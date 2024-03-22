@@ -326,12 +326,16 @@ namespace ActCreator
 					}
 					else
 					{
-						controller.IsOpeningFile = true;
-						controller.BackDataControllers.AddRange(controllerAct.BackDataControllers);
-						AddLoadedBackData();
-						UpdateViewBackData();
-						controller.IsOpeningFile = false;
-						UpdateFileContentVisibility();
+						if (controllerAct.BackDataControllers.Count > 0)
+						{
+							controller.IsOpeningFile = true;
+							controller.BackDataControllers.AddRange(controllerAct.BackDataControllers);
+							controller.HaveUnsavedChanges = true;
+
+							AddLoadedBackData();
+							UpdateViewBackData();
+							controller.IsOpeningFile = false;
+						}
 					}
 				}
 				else
