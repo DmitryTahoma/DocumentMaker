@@ -107,7 +107,9 @@ namespace Dml.Model.Session
 				tempGameNames.Add(gameObj);
 			}
 
-			gameNameList.AddRange(tempGameNames.OrderBy(x => x.Name));
+			tempGameNames.Sort(new NaturalStringComparer());
+
+			gameNameList.AddRange(tempGameNames);
 		}
 
 		protected void SetLoadedProperties(XmlElement root, object model)
