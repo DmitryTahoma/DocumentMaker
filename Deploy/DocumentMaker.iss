@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "DocumentMaker"
-#define MyAppVersion "1.1.0.4"
+#define MyAppVersion "1.1.0.7"
 #define MyAppId "0001"
 #define MyAppPublisher "Five-BN"
 #define MyAppURL "https://five-bn.com/"
@@ -59,6 +59,10 @@ Source: "..\DocumentMaker\bin\x64\Release\UpdaterAPI.dll.config"; DestDir: "{app
 Source: "..\DocumentMaker\bin\x64\Release\WinSCP.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\WinSCPnet.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\updatetext.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DocumentMaker\bin\x64\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DocumentMaker\bin\x64\Release\SendException.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DocumentMaker\bin\x64\Release\System.Threading.Tasks.Extensions.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DocumentMaker\bin\x64\Release\Telegram.Bot.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\Contract\*"; DestDir: "{app}\Contract\"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
