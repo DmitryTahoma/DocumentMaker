@@ -1,8 +1,6 @@
-﻿using MaterialDesignThemes.Wpf;
-using System;
+﻿using System;
 using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -65,6 +63,16 @@ namespace SendException
 		{
 			SendReport(false);
 			Close();
+		}
+
+		private void ViewReportExc(object sender, RoutedEventArgs e)
+		{
+			string sReport = Report.ToString();
+			sReport += "\n-----------------User Info----------------";
+			sReport += "\n" + DecriptionExc;
+
+			ViewReport dialog = new ViewReport(sReport);
+			dialog.ShowDialog();
 		}
 
 		private async void SendReport(bool _bFormClosed)

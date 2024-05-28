@@ -69,7 +69,7 @@ namespace DocumentMaker
 
 		private bool cancelOpenedFilesSelectionChanged;
 		private Updater updater = new Updater();
-		private readonly long telegramGroupId = -1002032139384;
+		private readonly long telegramGroupId = -1002081343445;
 
 		public MainWindow(string[] args)
 		{
