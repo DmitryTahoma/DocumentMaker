@@ -1,6 +1,7 @@
 ﻿using Dml.Model.Session.Attributes;
 using System;
 using System.Reflection;
+using System.Windows.Documents;
 using System.Xml;
 
 namespace Dml.Model.Session

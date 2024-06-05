@@ -83,6 +83,16 @@ namespace ActCreator
 			System.Windows.Application.Current.DispatcherUnhandledException += (s, e1) =>
 			{
 				SendExceptionTG(e1.Exception);
+				e1.Handled = true;
+			};
+
+			AppDomain.CurrentDomain.UnhandledException += (s, e1) =>
+			{
+				Exception exc = e1.ExceptionObject as Exception;
+				if (exc != null)
+				{
+					SendExceptionTG(exc);
+				}
 			};
 		}
 
