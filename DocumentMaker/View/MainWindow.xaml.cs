@@ -1414,7 +1414,13 @@ namespace DocumentMaker
 								fileDmx.TemplateType = file.TemplateType;
 								fileDmx.SelectedHuman = file.SelectedHuman;
 								fileDmx.SelectedContractFile = file.SelectedContractFile;
-								actSum += int.Parse(file.ActSum);
+								if(int.TryParse(file.ActSum, out int sum))
+									actSum += sum;
+								else
+								{
+									MessageBox.Show("Ошибка при объединении файлов " + file.SelectedHuman + "некорректно задана сумма акта (" + (file.ActSum ?? "NULL") + ")", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+								}
+								
 								DateTime tempDateAct = DateTime.Parse(file.ActDateText);
 								if (maxDateAct.Date < tempDateAct.Date)
 									maxDateAct = tempDateAct;
