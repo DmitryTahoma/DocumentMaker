@@ -589,6 +589,14 @@ namespace ActCreator
 					{
 						if (controller.Validate(out string errorText))
 						{
+							if (controller.HaveWarnings(out string warningText))
+							{
+								if (MessageBox.Show(warningText, "ActCreator | Validation", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Cancel)
+								{
+									return;
+								}
+							}
+
 							controller.ExportDmx(saveFileDialog.FileName);
 
 							MessageBox.Show("Файл збережений.",
@@ -643,6 +651,14 @@ namespace ActCreator
 		{
 			if (controller.Validate(out string errorText))
 			{
+				if (controller.HaveWarnings(out string warningText))
+				{
+					if (MessageBox.Show(warningText, "ActCreator | Validation", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Cancel)
+					{
+						return;
+					}
+				}
+
 				saveFileDialog.FileName = controller.GetDmxFileName();
 				if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 				{
@@ -677,6 +693,14 @@ namespace ActCreator
 
 			if (controller.Validate(out string errorText))
 			{
+				if (controller.HaveWarnings(out string warningText))
+				{
+					if (MessageBox.Show(warningText, "ActCreator | Validation", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Cancel)
+					{
+						return;
+					}
+				}
+
 				controller.ExportDmx(controller.OpenedFile);
 				ResetHaveUnsavedChanges();
 				UpdateTitle();

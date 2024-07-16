@@ -154,6 +154,20 @@ namespace ActCreator.Controller
 			return false;
 		}
 
+		public bool HaveWarnings(out string warningText)
+		{
+			bool result = false;
+			warningText = string.Empty;
+			foreach (ShortBackDataController backDataController in BackDataControllers)
+			{
+				if (backDataController.HaveWarnings(ref warningText))
+				{
+					result = true;
+				}
+			}
+			return result;
+		}
+
 		public string GetOpenLaterFile()
 		{
 			return openLaterFilename;
