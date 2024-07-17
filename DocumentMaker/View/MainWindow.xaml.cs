@@ -1356,6 +1356,29 @@ namespace DocumentMaker
 			}
 		}
 
+		private async void ChangeAllGamesNames(object sender, RoutedEventArgs e)
+		{
+			ChangeGamesNamesDialog dialog = new ChangeGamesNamesDialog
+			{
+				GameNameList = new List<Dml.Model.Back.GameObject>(controller.GameNameList)
+			};
+			await DialogHost.Show(dialog);
+			if (dialog.IsChanging)
+			{
+				bool changed = controller.ChangeGameNameAtAllFiles(dialog.SelectedGameName, dialog.NewGameName);
+				if (changed)
+				{
+					DmxFile selectedFile = controller.GetSelectedFile();
+					if (selectedFile != null)
+					{
+						OpenedFilesComboBox.SelectedItem = null;
+						SetSelectedFile(selectedFile.FullName);
+					}
+					SetDataFromController();
+				}
+			}
+		}
+
 		private async void CalculateGamePrice(object sender, RoutedEventArgs e)
 		{
 			DmxFile selectedFile = controller.GetSelectedFile();

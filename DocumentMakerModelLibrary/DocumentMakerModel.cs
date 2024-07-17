@@ -698,5 +698,26 @@ namespace DocumentMakerModelLibrary
 				file.SelectedContractFile = nameFile;
 			}
 		}
+
+		public void ChangeGameNameAtAllFiles(string sourceGameName, string newGameName)
+		{
+			foreach (DmxFile file in openedFilesList)
+			{
+				foreach (FullBackDataModel fullBackDataModel in file.BackDataModels)
+				{
+					if (fullBackDataModel.Type != BackType.Other)
+					{
+						if (fullBackDataModel.GameName == sourceGameName)
+						{
+							fullBackDataModel.GameName = newGameName;
+						}
+					}
+					else
+					{
+						fullBackDataModel.OtherText = fullBackDataModel.OtherText.Replace(sourceGameName, newGameName);
+					}
+				}
+			}
+		}
 	}
 }

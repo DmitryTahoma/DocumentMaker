@@ -137,6 +137,10 @@
                             Click="ChangeAllContractFiles"
                             Header="Змінити файли договору у відкритих файлах"
                             Icon="{materialDesign:PackIcon Kind=FileDocumentOutline}" />
+                        <MenuItem
+                            Click="ChangeAllGamesNames"
+                            Header="Змінити назву гри у відкритих файлах"
+                            Icon="{materialDesign:PackIcon Kind=FileEditOutline}" />
                     </MenuItem>
                     <MenuItem Header="Посилання" Icon="{materialDesign:PackIcon Kind=LinkVariant}">
                         <MenuItem

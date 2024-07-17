@@ -559,5 +559,18 @@ namespace DocumentMaker.Controller
 				return true;
 			}
 		}
+
+		public bool ChangeGameNameAtAllFiles(string sourceGameName, string newGameName)
+		{
+			if (!validator.IsFree(sourceGameName) || !validator.IsFree(newGameName))
+			{
+				return false;
+			}
+			else
+			{
+				model.ChangeGameNameAtAllFiles(sourceGameName, newGameName);
+				return true;
+			}
+		}
 	}
 }
