@@ -15,15 +15,8 @@ namespace DocumentMaker.View.Dialogs
 	/// </summary>
 	public partial class GamePriceDialog : UserControl
 	{
-		public static readonly DependencyProperty GamePriceTextProperty;
-		public static readonly DependencyProperty GamePriceAllTextProperty;
-
 		public Dictionary<string, int> Games = new Dictionary<string, int>();
-		static GamePriceDialog()
-		{
-			GamePriceTextProperty = DependencyProperty.Register("GamePriceText", typeof(string), typeof(GamePriceDialog));
-			GamePriceAllTextProperty = DependencyProperty.Register("GamePriceAllText", typeof(string), typeof(GamePriceDialog));
-		}
+
 		public GamePriceDialog(IEnumerable<FullBackDataModel> _models, IList<GameObject> gameObjects)
 		{
 			InitializeComponent();
@@ -36,23 +29,10 @@ namespace DocumentMaker.View.Dialogs
 				priceGame += game.Value;
 			}
 
-			GamePriceAllText = priceGame.ToString();
-			GamePriceAllInput.Text = GamePriceAllText;
-			GamePriceText = "0";
+			GamePriceAllInput.Text = priceGame.ToString();
+			GamePriceInput.Text = "0";
 
 			GamesComboBox.SelectedIndex = 0;
-		}
-
-		public string GamePriceText
-		{
-			get => (string)GetValue(GamePriceTextProperty);
-			set => SetValue(GamePriceTextProperty, value);
-		}
-
-		public string GamePriceAllText
-		{
-			get => (string)GetValue(GamePriceAllTextProperty);
-			set => SetValue(GamePriceAllTextProperty, value);
 		}
 
 		private void ControlKeyDown(object sender, KeyEventArgs e)
@@ -81,14 +61,12 @@ namespace DocumentMaker.View.Dialogs
 			if (GamesComboBox.SelectedItem != null)
 			{
 				if(Games.ContainsKey(GamesComboBox.SelectedItem.ToString()))
-					GamePriceText = Games[GamesComboBox.SelectedItem.ToString()].ToString();
+					GamePriceInput.Text = Games[GamesComboBox.SelectedItem.ToString()].ToString();
 				else
-					GamePriceText = "0";
+					GamePriceInput.Text = "0";
 			}
 			else
-				GamePriceText = "0";
-
-			GamePriceInput.Text = GamePriceText;
+				GamePriceInput.Text = "0";
 		}
 	}
 }

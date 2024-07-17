@@ -28,7 +28,6 @@
             Grid.Column="1"
             Margin="10,10,10,10"
             materialDesign:HintAssist.Hint="Файл з договорами"
-            ItemsSource="{Binding ElementName=WindowContext, Path=ContractFilesList, UpdateSourceTrigger=PropertyChanged}"
             Keyboard.PreviewKeyDown="UnfocusOnEnter"
             Style="{StaticResource MaterialDesignOutlinedComboBox}" />
         <Grid
