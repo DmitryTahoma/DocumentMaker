@@ -593,6 +593,7 @@ namespace ActCreator
 							{
 								if (MessageBox.Show(warningText, "ActCreator | Validation", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Cancel)
 								{
+									dialogResult = System.Windows.Forms.DialogResult.Cancel;
 									return;
 								}
 							}
