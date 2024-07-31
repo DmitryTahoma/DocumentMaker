@@ -259,19 +259,28 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 		private string GetHumanName(string name)
 		{
 			string[] parts = name.Split(' ');
-			return char.ToUpper(parts[1][0]) + ". " + char.ToUpper(parts[2][0]) + ". " + parts[0];
+			if(parts.Length == 2)
+				return char.ToUpper(parts[1][0]) + ". " + parts[0];
+			else
+				return char.ToUpper(parts[1][0]) + ". " + char.ToUpper(parts[2][0]) + ". " + parts[0];
 		}
 
 		private string GetHumanName2(string name)
 		{
 			string[] parts = name.Split(' ');
-			return parts[0] + ' ' + char.ToUpper(parts[1][0]) + ". " + char.ToUpper(parts[2][0]) + '.';
+			if (parts.Length == 2)
+				return parts[0] + ' ' + char.ToUpper(parts[1][0]) + '.';
+			else
+				return parts[0] + ' ' + char.ToUpper(parts[1][0]) + ". " + char.ToUpper(parts[2][0]) + '.';
 		}
 
 		private string GetHumanFullName(string name)
 		{
 			string[] parts = name.Split(' ');
-			return parts[1] + " " + parts[2] + " " + parts[0];
+			if (parts.Length == 2)
+				return parts[1] + " " + parts[0];
+			else
+				return parts[1] + " " + parts[2] + " " + parts[0];
 		}
 
 		private string GetActSumTextPart2()

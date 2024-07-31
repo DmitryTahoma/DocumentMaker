@@ -39,7 +39,7 @@ namespace Dml.Controller.Validation
 			if (IsFree(str))
 			{
 				string[] parts = str.Split(' ');
-				if (parts.Length == 3)
+				if (parts.Length == 2 || parts.Length == 3)
 				{
 					foreach (string part in parts)
 					{
