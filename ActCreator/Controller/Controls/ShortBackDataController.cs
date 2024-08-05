@@ -1,7 +1,9 @@
 ﻿using ActCreator.Model;
 using Dml.Controller;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Forms;
 
 namespace ActCreator.Controller.Controls
@@ -60,7 +62,16 @@ namespace ActCreator.Controller.Controls
 			{
 				List<int> indexes = new List<int>();
 				int i = 0;
-				foreach (char c in OtherText)
+
+				string otherText = OtherText;
+				string[] replaceSymbolQuotes = { "“", "”", "„", "‟", "«", "»", };
+
+				foreach (string symbol in replaceSymbolQuotes)
+					otherText = otherText.Replace(symbol, "\"");
+
+				otherText = otherText.Replace(Convert.ToChar(160), ' ');
+
+				foreach (char c in otherText)
 				{
 					if (c == '"')
 					{
@@ -84,7 +95,7 @@ namespace ActCreator.Controller.Controls
 					{
 						int indexStart = indexes[i] + 1;
 						int length = indexes[i + 1] - indexStart;
-						string checkGameName = OtherText.Substring(indexStart, length);
+						string checkGameName = otherText.Substring(indexStart, length);
 						if (GameNameList.Where(gameObject => gameObject.Name == checkGameName).Count() > 0)
 						{
 							haveGameName = true;
