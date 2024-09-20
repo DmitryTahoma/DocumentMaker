@@ -47,6 +47,14 @@ Source: "..\ActCreator\bin\x64\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags
 Source: "..\ActCreator\bin\x64\Release\Dml.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\ActCreator\bin\x64\Release\MaterialDesignColors.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\ActCreator\bin\x64\Release\MaterialDesignThemes.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActCreator\bin\x64\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActCreator\bin\x64\Release\ProgramSettings.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActCreator\bin\x64\Release\SendException.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActCreator\bin\x64\Release\SpecialSymbolReplacer.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActCreator\bin\x64\Release\System.ComponentModel.Annotations.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActCreator\bin\x64\Release\System.Runtime.CompilerServices.Unsafe.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActCreator\bin\x64\Release\System.Threading.Tasks.Extensions.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActCreator\bin\x64\Release\Telegram.Bot.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\ActCreator\bin\x64\Release\employees.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\ActCreator\bin\x64\Release\projectnames.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\ActCreator\bin\x64\Release\UpdaterAPI.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -54,10 +62,6 @@ Source: "..\ActCreator\bin\x64\Release\UpdaterAPI.dll.config"; DestDir: "{app}";
 Source: "..\ActCreator\bin\x64\Release\WinSCP.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\ActCreator\bin\x64\Release\WinSCPnet.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\ActCreator\bin\x64\Release\updatetext.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActCreator\bin\x64\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActCreator\bin\x64\Release\SendException.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActCreator\bin\x64\Release\System.Threading.Tasks.Extensions.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActCreator\bin\x64\Release\Telegram.Bot.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

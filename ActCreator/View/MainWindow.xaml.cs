@@ -15,6 +15,7 @@ using UpdaterAPI;
 using UpdaterAPI.View;
 using System;
 using System.Threading.Tasks;
+using SendException;
 
 namespace ActCreator
 {
@@ -40,7 +41,6 @@ namespace ActCreator
 		private readonly SaveFileDialog saveFileDialog;
 		private readonly OpenFileDialog openFileDialog;
 		private Updater updater = new Updater();
-		private readonly long telegramGroupId = -1002032139384;
 
 		public MainWindow(string[] args)
 		{
@@ -79,21 +79,6 @@ namespace ActCreator
 			};
 
 			updater.LoadLocalVersions();
-
-			System.Windows.Application.Current.DispatcherUnhandledException += (s, e1) =>
-			{
-				SendExceptionTG(e1.Exception);
-				e1.Handled = true;
-			};
-
-			AppDomain.CurrentDomain.UnhandledException += (s, e1) =>
-			{
-				Exception exc = e1.ExceptionObject as Exception;
-				if (exc != null)
-				{
-					SendExceptionTG(exc);
-				}
-			};
 		}
 
 		public IList<DocumentTemplate> DocumentTemplatesList => controller.DocumentTemplatesList;
@@ -194,6 +179,8 @@ namespace ActCreator
 			{
 				MessageBox.Show(ex.ToString());
 			}
+
+			await SendExceptionProcessor.TrySendReportsAsync();
 
 			try
 			{
@@ -716,12 +703,6 @@ namespace ActCreator
 		{
 			DataFooter.ClearBackData();
 			HaveUnsavedChanges = true;
-		}
-
-		private void SendExceptionTG(Exception exc)
-		{
-			SendException.ExceptionDialog dialog = new SendException.ExceptionDialog(exc, telegramGroupId, updater.GetCurrentVersion());
-			dialog.ShowDialog();
 		}
 	}
 }

@@ -24,6 +24,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 using UpdaterAPI;
 using UpdaterAPI.View;
 using System.Threading.Tasks;
+using SendException;
 
 namespace DocumentMaker
 {
@@ -69,7 +70,6 @@ namespace DocumentMaker
 
 		private bool cancelOpenedFilesSelectionChanged;
 		private Updater updater = new Updater();
-		private readonly long telegramGroupId = -1002081343445;
 
 		public MainWindow(string[] args)
 		{
@@ -99,21 +99,6 @@ namespace DocumentMaker
 			InitializeComponentFromCode();
 			updater.LoadLocalVersions();
 			Title = $"Five-BN DocumentMaker {updater.GetCurrentVersion()}";
-
-			System.Windows.Application.Current.DispatcherUnhandledException += (s, e1) =>
-			{
-				SendExceptionTG(e1.Exception);
-				e1.Handled = true;
-			};
-
-			AppDomain.CurrentDomain.UnhandledException += (s, e1) =>
-			{
-				Exception exc = e1.ExceptionObject as Exception;
-				if (exc != null)
-				{
-					SendExceptionTG(exc);
-				}
-			};
 		}
 
 		private void InitializeComponentFromCode()
@@ -303,6 +288,8 @@ namespace DocumentMaker
 			{
 				MessageBox.Show(ex.ToString());
 			}
+
+			await SendExceptionProcessor.TrySendReportsAsync();
 
 			try
 			{
@@ -1489,7 +1476,7 @@ namespace DocumentMaker
 			}
 			catch(Exception exc)
 			{
-				SendExceptionTG(exc);
+				SendExceptionWindow.ShowDialog(exc);
 			}
 		}
 
@@ -2103,12 +2090,6 @@ namespace DocumentMaker
 				DisableUpdatingSum();
 			}
 			UpdateSaldo();
-		}
-
-		private void SendExceptionTG(Exception exc)
-		{
-			SendException.ExceptionDialog dialog = new SendException.ExceptionDialog(exc, telegramGroupId, updater.GetCurrentVersion());
-			dialog.ShowDialog();
 		}
 
 		#endregion
