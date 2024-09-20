@@ -16,6 +16,7 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -28,7 +29,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -109,6 +109,13 @@
     <Reference Include="MaterialDesignThemes.Wpf, Version=4.6.1.0, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.4.6.1\lib\net462\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="ProgramSettings">
+      <HintPath>..\libraries\ProgramSettings.dll</HintPath>
+    </Reference>
+    <Reference Include="SendException, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libraries\SendException.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
@@ -123,14 +130,14 @@
     </Reference>
     <Reference Include="UpdaterAPI_x64, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64" Condition="'$(Platform)' == 'x64'">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Updater\UpdaterAPI.dll</HintPath>
+      <HintPath>..\libraries\UpdaterAPI.dll</HintPath>
     </Reference>
     <Reference Include="UpdaterAPI_AnyCPU, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Platform)' == 'AnyCPU'">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Updater\UpdaterAPI_AnyCPU.dll</HintPath>
+      <HintPath>..\libraries\UpdaterAPI_AnyCPU.dll</HintPath>
     </Reference>
     <Reference Include="UpdaterAPI_x86" Condition="'$(Platform)' == 'x86'">
-      <HintPath>..\Updater\UpdaterAPI_x86.dll</HintPath>
+      <HintPath>..\libraries\UpdaterAPI_x86.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -142,6 +149,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controller\Controls\FullBackDataController.cs" />
+    <Compile Include="Settings\ProgramSettings.cs" />
     <Compile Include="View\Dialogs\ChangeContractFilesDialog.xaml.cs">
       <DependentUpon>ChangeContractFilesDialog.xaml</DependentUpon>
     </Compile>
@@ -269,10 +277,6 @@
       <Project>{c6bc5f49-e36f-46cd-a0e9-86b180eaafdf}</Project>
       <Name>DocumentMakerModelLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SendException\SendException.csproj">
-      <Project>{bc5eaa8f-5131-4476-b131-f401a9bc385d}</Project>
-      <Name>SendException</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon.ico" />
@@ -294,8 +298,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF NOT EXIST $(TargetDir)\WinSCP.exe copy $(ProjectDir)\..\Updater\WinSCP.exe $(TargetDir) /Y
-IF NOT EXIST $(TargetDir)\WinSCPnet.dll copy $(ProjectDir)\..\Updater\WinSCPnet.dll $(TargetDir) /Y
+    <PostBuildEvent>IF NOT EXIST $(TargetDir)\WinSCP.exe copy $(ProjectDir)\..\libraries\WinSCP.exe $(TargetDir) /Y
 IF NOT EXIST $(TargetDir)\UpdaterAPI.dll.config copy $(ProjectDir)\UpdaterAPI.dll.config $(TargetDir) /Y
 IF NOT EXIST $(TargetDir)\UpdaterAPI_AnyCPU.dll.config copy $(ProjectDir)\UpdaterAPI_AnyCPU.dll.config $(TargetDir) /Y
 IF NOT EXIST $(TargetDir)\UpdaterAPI_x86.dll.config copy $(ProjectDir)\UpdaterAPI_x86.dll.config $(TargetDir) /Y</PostBuildEvent>
