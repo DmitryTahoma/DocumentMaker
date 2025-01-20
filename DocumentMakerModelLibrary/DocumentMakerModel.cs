@@ -92,6 +92,9 @@ namespace DocumentMakerModelLibrary
 
 		#endregion
 
+		[IsNotDmxContent]
+		public int LastTypeConnection { get; set; } = 0;
+
 		public IList<DmxFile> OpenedFilesList => openedFilesList;
 		public DocumentTemplateType TemplateType { get; set; } = DocumentTemplateType.Empty;
 		public DocumentType DocType { get; set; } = DocumentType.Empty;

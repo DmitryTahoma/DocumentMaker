@@ -1,5 +1,6 @@
 ﻿using ActCreator.Controller.Controls;
 using ActCreator.Model;
+using ActCreator.Settings;
 using Dml.Controller.Validation;
 using Dml.Model.Back;
 using Dml.Model.Files;
@@ -66,6 +67,7 @@ namespace ActCreator.Controller
 
 		#endregion
 
+		public int LastTypeConnection { get => model.LastTypeConnection; set => model.LastTypeConnection = value; }
 		public DocumentTemplateType TemplateType { get => model.TemplateType; set => model.TemplateType = value; }
 		public string SelectedHuman { get => model.SelectedHuman; set => model.SelectedHuman = value; }
 		public List<ShortBackDataController> BackDataControllers { get; set; }
@@ -83,7 +85,7 @@ namespace ActCreator.Controller
 
 		public void Save()
 		{
-			string fullpath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), saveFile);
+			string fullpath = Path.Combine(ProgramSettings.DirectoryPath, saveFile);
 
 			List<ShortBackDataModel> backDataModels = new List<ShortBackDataModel>();
 			foreach (ShortBackDataController controller in BackDataControllers)
@@ -96,8 +98,8 @@ namespace ActCreator.Controller
 
 		public void Load()
 		{
+			string saveFullpath = Path.Combine(ProgramSettings.DirectoryPath, saveFile);
 			string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-			string saveFullpath = Path.Combine(path, saveFile);
 			string humansFullpath = Path.Combine(path, humansFile);
 			string gameNamesFullpath = Path.Combine(path, gameNamesFile);
 

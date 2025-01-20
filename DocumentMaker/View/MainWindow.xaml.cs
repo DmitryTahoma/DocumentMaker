@@ -25,6 +25,7 @@ using UpdaterAPI;
 using UpdaterAPI.View;
 using System.Threading.Tasks;
 using SendException;
+using DocumentMaker.Settings;
 
 namespace DocumentMaker
 {
@@ -69,7 +70,7 @@ namespace DocumentMaker
 		private readonly InputingValidator inputingValidator;
 
 		private bool cancelOpenedFilesSelectionChanged;
-		private Updater updater = new Updater();
+		private Updater updater = null;
 
 		public MainWindow(string[] args)
 		{
@@ -97,6 +98,7 @@ namespace DocumentMaker
 
 			InitializeComponent();
 			InitializeComponentFromCode();
+			updater = new Updater(ProgramSettings.DirectoryPath, (ConnectionType)controller.LastTypeConnection);
 			updater.LoadLocalVersions();
 			Title = $"Five-BN DocumentMaker {updater.GetCurrentVersion()}";
 		}
@@ -293,9 +295,9 @@ namespace DocumentMaker
 
 			try
 			{
-				if (Environment.GetCommandLineArgs().Length > 2 && Environment.GetCommandLineArgs()[1] == "/afterUpdate")
+				if (Environment.GetCommandLineArgs().Length > 1 && Environment.GetCommandLineArgs()[1] == "/afterUpdate")
 				{
-					Version prevVersion = Version.Parse(Environment.GetCommandLineArgs()[2]);
+					Version prevVersion = new Version("0.0.0.0");
 					ChangeLog changeLog = new ChangeLog();
 					changeLog.Initialize($"Обновление {updater.GetCurrentVersion()} успешно установлено! Приятной работы!", updater.GetChangeLog(prevVersion), MessageBoxButtons.OK);
 					changeLog.ShowDialog();
@@ -320,17 +322,7 @@ namespace DocumentMaker
 					if (updater.TryConnect())
 					{
 						UpdateLog.WriteLine("Подключено", updateLogStringColor);
-
-						UpdateLog.WriteLine("Проверка есть ли обновление API...", updateLogStringColor);
-						if (updater.HaveUpdateApi())
-						{
-							UpdateLog.WriteLine("Скачивание обновления API...", updateLogStringColor);
-							updater.DownloadApiUpdates();
-							UpdateLog.WriteLine("Обновление API скачано", updateLogStringColor);
-							updater.UpdateUpdater();
-							UpdateLog.WriteLine("Updater.exe обновлен", updateLogStringColor);
-						}
-
+						controller.LastTypeConnection = (int)updater.GetLastTypeConnection();
 						UpdateLog.WriteLine("Загрузка доступных версий на сервере...", updateLogStringColor);
 						updater.LoadRemoteVersions();
 						UpdateLog.WriteLine("Проверка есть ли новые версии для сервере...", updateLogStringColor);

@@ -16,6 +16,7 @@ using UpdaterAPI.View;
 using System;
 using System.Threading.Tasks;
 using SendException;
+using ActCreator.Settings;
 
 namespace ActCreator
 {
@@ -40,7 +41,7 @@ namespace ActCreator
 		private readonly MainWindowController controller;
 		private readonly SaveFileDialog saveFileDialog;
 		private readonly OpenFileDialog openFileDialog;
-		private Updater updater = new Updater();
+		private Updater updater = null;
 
 		public MainWindow(string[] args)
 		{
@@ -78,6 +79,7 @@ namespace ActCreator
 				Filter = "Файл акту (*" + Dml.Model.Files.BaseDmxFile.Extension + ")|*" + Dml.Model.Files.BaseDmxFile.Extension
 			};
 
+			updater = new Updater(ProgramSettings.DirectoryPath, (ConnectionType)controller.LastTypeConnection);
 			updater.LoadLocalVersions();
 		}
 
@@ -184,9 +186,9 @@ namespace ActCreator
 
 			try
 			{
-				if (Environment.GetCommandLineArgs().Length > 2 && Environment.GetCommandLineArgs()[1] == "/afterUpdate")
+				if (Environment.GetCommandLineArgs().Length > 1 && Environment.GetCommandLineArgs()[1] == "/afterUpdate")
 				{
-					Version prevVersion = Version.Parse(Environment.GetCommandLineArgs()[2]);
+					Version prevVersion = new Version("0.0.0.0");
 					ChangeLog changeLog = new ChangeLog();
 					changeLog.Initialize($"Обновление {updater.GetCurrentVersion()} успешно установлено! Приятной работы!", updater.GetChangeLog(prevVersion), MessageBoxButtons.OK);
 					changeLog.ShowDialog();
@@ -211,7 +213,7 @@ namespace ActCreator
 					if (updater.TryConnect())
 					{
 						UpdateLog.WriteLine("Подключено", updateLogStringColor);
-
+						controller.LastTypeConnection = (int)updater.GetLastTypeConnection();
 						UpdateLog.WriteLine("Проверка есть ли обновление API...", updateLogStringColor);
 						if (updater.HaveUpdateApi())
 						{

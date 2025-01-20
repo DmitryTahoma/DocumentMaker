@@ -347,3 +347,7 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/Deploy/Install/ActCreator/Setup
+/Deploy/Install/DocumentMaker/Setup
+/Deploy/Install/DocumentMaker/Update
+/Deploy/Install/ActCreator/Update

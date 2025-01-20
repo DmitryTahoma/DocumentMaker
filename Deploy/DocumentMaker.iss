@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "DocumentMaker"
-#define MyAppVersion "1.1.1.5"
+#define MyAppVersion "1.1.2.0"
 #define MyAppId "0001"
 #define MyAppPublisher "Five-BN"
 #define MyAppURL "https://five-bn.com/"
@@ -21,11 +21,14 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName=D:\{#MyAppPublisher}\{#MyAppName}
+DefaultDirName={commonpf64}\{#MyAppPublisher}\{#MyAppName}
+VersionInfoDescription={#MyAppName} InnoSetup
+VersionInfoCopyright={#MyAppPublisher}
+VersionInfoVersion=1.0.0.0
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=Setup
+OutputDir=Install\{#MyAppName}\Setup\{#MyAppVersion}
 OutputBaseFilename=DocumentMakerSetup
 SetupIconFile=..\DocumentMaker\icon.ico
 Compression=lzma2/ultra64
@@ -33,8 +36,6 @@ SolidCompression=yes
 WizardStyle=modern
 
 [Languages]
-Name: "english"; MessagesFile: "compiler:Default.isl"
-Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 
 [Tasks]
@@ -62,12 +63,13 @@ Source: "..\DocumentMaker\bin\x64\Release\System.Threading.Tasks.Extensions.dll"
 Source: "..\DocumentMaker\bin\x64\Release\Telegram.Bot.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\projectnames.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\SupportTypes.xlsx"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DocumentMaker\bin\x64\Release\Contract\*"; DestDir: "{app}\Contract\"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\DocumentMaker\bin\x64\Release\UpdaterAPI.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\UpdaterAPI.dll.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\WinSCP.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\WinSCPnet.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\DocumentMaker\bin\x64\Release\updatetext.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\DocumentMaker\bin\x64\Release\Contract\*"; DestDir: "{app}\Contract\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\DocumentMaker\bin\x64\Release\Updater.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Install\{#MyAppName}\updatetext.txt"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -81,5 +83,5 @@ Root: HKCR; Subkey: "{#MyAppName}{#MyAppAssocExt}\DefaultIcon"; ValueType: strin
 Root: HKCR; Subkey: "{#MyAppName}{#MyAppAssocExt}\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: 64bit nowait postinstall
 

@@ -3,6 +3,7 @@ using Dml.Model.Back;
 using Dml.Model.Template;
 using Dml.UndoRedo;
 using DocumentMaker.Controller.Controls;
+using DocumentMaker.Settings;
 using DocumentMakerModelLibrary;
 using DocumentMakerModelLibrary.Back;
 using DocumentMakerModelLibrary.Controls;
@@ -72,6 +73,8 @@ namespace DocumentMaker.Controller
 
 		#endregion
 
+		public int LastTypeConnection { get => model.LastTypeConnection; set => model.LastTypeConnection = value; }
+
 		public IList<DmxFile> OpenedFilesList => model.OpenedFilesList;
 		public DocumentTemplateType TemplateType { get => model.TemplateType; set => model.TemplateType = value; }
 		public DocumentType DocType { get => model.DocType; set => model.DocType = value; }
@@ -112,16 +115,16 @@ namespace DocumentMaker.Controller
 
 		public void Save()
 		{
-			string fullpath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), saveFile);
+			string fullpath = Path.Combine(ProgramSettings.DirectoryPath, saveFile);
 
 			model.Save(fullpath, GetModels());
 		}
 
 		public void Load()
 		{
+			string saveFullpath = Path.Combine(ProgramSettings.DirectoryPath, saveFile);
 			string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			string pathContractFolder = Path.Combine(path, contractFolder);
-			string saveFullpath = Path.Combine(path, saveFile);
 			string developmentTypesFullpath = Path.Combine(path, developmentTypesFile);
 			string supportTypesFullpath = Path.Combine(path, supportTypesFile);
 			string gameNamesFullpath = Path.Combine(path, gameNamesFile);

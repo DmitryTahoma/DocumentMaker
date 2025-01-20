@@ -59,6 +59,8 @@ namespace ActCreator.Model
 
 		#endregion
 
+		[IsNotDmxContent]
+		public int LastTypeConnection { get; set; } = 0;
 		public string OpenedFileName => openedFileName;
 
 		public DocumentTemplateType TemplateType { get; set; } = DocumentTemplateType.Empty;
