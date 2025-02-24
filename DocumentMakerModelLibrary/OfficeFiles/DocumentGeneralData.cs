@@ -146,7 +146,7 @@ namespace DocumentMakerModelLibrary.OfficeFiles
 				CustomerText3 = "О. В. Фролов";
 				Director = "Директор ";
 				DirectorID = "ЄДРПОУ 38187315";
-				DirectorAddress = "вул. Менделєєва, буд 46, прим.9";
+				DirectorAddress = "просп. Свободи, 43";
 				DirectorPA = "р/рUA953052990000026008050250430";
 			}
 		}
