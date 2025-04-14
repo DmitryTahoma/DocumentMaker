@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "ActCreator"
-#define MyAppVersion "1.1.1.5"
+#define MyAppVersion "1.1.1.7"
 #define MyAppId "0001"
 #define MyAppPublisher "Five-BN"
 #define MyAppURL "https://five-bn.com/"
@@ -56,11 +56,11 @@ Source: "..\ActCreator\bin\x64\Release\System.Threading.Tasks.Extensions.dll"; D
 Source: "..\ActCreator\bin\x64\Release\Telegram.Bot.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\ActCreator\bin\x64\Release\employees.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\ActCreator\bin\x64\Release\projectnames.xml"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\DocumentMaker\bin\x64\Release\UpdaterAPI.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\DocumentMaker\bin\x64\Release\UpdaterAPI.dll.config"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\DocumentMaker\bin\x64\Release\WinSCP.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\DocumentMaker\bin\x64\Release\WinSCPnet.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\DocumentMaker\bin\x64\Release\Updater.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActCreator\bin\x64\Release\UpdaterAPI.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActCreator\bin\x64\Release\UpdaterAPI.dll.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActCreator\bin\x64\Release\WinSCP.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActCreator\bin\x64\Release\WinSCPnet.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActCreator\bin\x64\Release\Updater.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Install\{#MyAppName}\updatetext.txt"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
