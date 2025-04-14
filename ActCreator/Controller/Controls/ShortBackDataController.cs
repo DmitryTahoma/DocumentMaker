@@ -42,7 +42,13 @@ namespace ActCreator.Controller.Controls
 					errorText += "Затрачений час невірно введений.\nПриклад: 7";
 				else if(Type == Dml.Model.Back.BackType.Other)
 				{
-					int countKavichka = OtherText.Count(c => c == '"');
+					string otherText = OtherText;
+					char[] replaceSymbolQuotes = { '“', '”', '„', '‟', '«', '»', };
+
+					foreach (char symbol in replaceSymbolQuotes)
+						otherText = otherText.Replace(symbol, '\"');
+
+					int countKavichka = otherText.Count(c => c == '"');
 					if (countKavichka % 2 == 1)
 					{
 						errorText += "Не закриваються лапки.";
