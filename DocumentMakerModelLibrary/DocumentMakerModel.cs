@@ -702,7 +702,7 @@ namespace DocumentMakerModelLibrary
 			}
 		}
 
-		public void ChangeGameNameAtAllFiles(string sourceGameName, string newGameName)
+		public void ChangeGameNameAtAllFiles(string sourceGameName, string newGameName, string sourceEpisode, string newEpisode)
 		{
 			foreach (DmxFile file in openedFilesList)
 			{
@@ -710,14 +710,12 @@ namespace DocumentMakerModelLibrary
 				{
 					if (fullBackDataModel.Type != BackType.Other)
 					{
-						if (fullBackDataModel.GameName == sourceGameName)
+						if (fullBackDataModel.GameName == sourceGameName && (sourceEpisode == null || fullBackDataModel.EpisodeNumberText == sourceEpisode))
 						{
 							fullBackDataModel.GameName = newGameName;
+							if (sourceEpisode != null)
+								fullBackDataModel.EpisodeNumberText = newEpisode;
 						}
-					}
-					else
-					{
-						fullBackDataModel.OtherText = fullBackDataModel.OtherText.Replace(sourceGameName, newGameName);
 					}
 				}
 			}

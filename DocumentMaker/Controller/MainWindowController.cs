@@ -563,7 +563,7 @@ namespace DocumentMaker.Controller
 			}
 		}
 
-		public bool ChangeGameNameAtAllFiles(string sourceGameName, string newGameName)
+		public bool ChangeGameNameAtAllFiles(string sourceGameName, string newGameName, string sourceEpisode, string newEpisode)
 		{
 			if (!validator.IsFree(sourceGameName) || !validator.IsFree(newGameName))
 			{
@@ -571,7 +571,7 @@ namespace DocumentMaker.Controller
 			}
 			else
 			{
-				model.ChangeGameNameAtAllFiles(sourceGameName, newGameName);
+				model.ChangeGameNameAtAllFiles(sourceGameName, newGameName, sourceEpisode, newEpisode);
 				return true;
 			}
 		}

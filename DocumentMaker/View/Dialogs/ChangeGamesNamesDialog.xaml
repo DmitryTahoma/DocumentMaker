@@ -25,6 +25,8 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
             <TextBlock
@@ -39,10 +41,29 @@
                 Margin="5"
                 IsEditable="True"
                 IsTextSearchEnabled="True"
-                ItemsSource="{Binding GameNameList}"
+                ItemsSource="{Binding GameNameList, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                 Keyboard.PreviewKeyDown="UnfocusOnEnter"
+                SelectionChanged="SourceGameNameComboBox_SelectionChanged"
                 Style="{StaticResource MaterialDesignOutlinedComboBox}"
                 Text="{Binding SelectedGameName}" />
+
+            <TextBlock
+                Grid.Column="2"
+                Margin="15,5,5,5"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Text="Епізод" />
+
+            <ComboBox
+                Grid.Column="3"
+                MinWidth="100"
+                Margin="5"
+                IsEditable="True"
+                IsTextSearchEnabled="True"
+                ItemsSource="{Binding EpisodesList}"
+                Keyboard.PreviewKeyDown="UnfocusOnEnter"
+                Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                Text="{Binding SelectedEpisode}" />
 
             <TextBlock
                 Grid.Row="1"
@@ -51,16 +72,38 @@
                 Text="Змінити на" />
 
             <ComboBox
+                x:Name="NewGameNameComboBox"
                 Grid.Row="1"
                 Grid.Column="1"
                 MinWidth="200"
                 Margin="5"
                 IsEditable="True"
                 IsTextSearchEnabled="True"
-                ItemsSource="{Binding GameNameList}"
+                ItemsSource="{Binding GameNameList, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                 Keyboard.PreviewKeyDown="UnfocusOnEnter"
+                SelectionChanged="ComboBox_SelectionChanged"
                 Style="{StaticResource MaterialDesignOutlinedComboBox}"
                 Text="{Binding NewGameName}" />
+
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="2"
+                Margin="15,5,5,5"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Text="Епізод" />
+
+            <ComboBox
+                Grid.Row="1"
+                Grid.Column="3"
+                MinWidth="100"
+                Margin="5"
+                IsEditable="True"
+                IsTextSearchEnabled="True"
+                ItemsSource="{Binding NewEpisodesList}"
+                Keyboard.PreviewKeyDown="UnfocusOnEnter"
+                Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                Text="{Binding NewEpisode}" />
 
         </Grid>
 

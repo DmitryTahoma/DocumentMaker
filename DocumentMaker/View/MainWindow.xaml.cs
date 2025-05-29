@@ -1344,7 +1344,7 @@ namespace DocumentMaker
 			await DialogHost.Show(dialog);
 			if (dialog.IsChanging)
 			{
-				bool changed = controller.ChangeGameNameAtAllFiles(dialog.SelectedGameName, dialog.NewGameName);
+				bool changed = controller.ChangeGameNameAtAllFiles(dialog.SelectedGameName, dialog.NewGameName, dialog.SelectedEpisode, dialog.NewEpisode);
 				if (changed)
 				{
 					DmxFile selectedFile = controller.GetSelectedFile();

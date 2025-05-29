@@ -1,4 +1,5 @@
 ﻿using Dml.Model.Back;
+using DocumentFormat.OpenXml.Wordprocessing;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,34 @@ namespace DocumentMaker.View.Dialogs
 			set { SetValue(NewGameNameProperty, value); }
 		}
 
+		public static readonly DependencyProperty SelectedEpisodeProperty = DependencyProperty.Register(nameof(SelectedEpisode), typeof(string), typeof(ChangeGamesNamesDialog));
+		public string SelectedEpisode
+		{
+			get { return (string)GetValue(SelectedEpisodeProperty); }
+			set { SetValue(SelectedEpisodeProperty, value); }
+		}
+
+		public static readonly DependencyProperty NewEpisodeProperty = DependencyProperty.Register(nameof(NewEpisode), typeof(string), typeof(ChangeGamesNamesDialog));
+		public string NewEpisode
+		{
+			get { return (string)GetValue(NewEpisodeProperty); }
+			set { SetValue(NewEpisodeProperty, value); }
+		}
+
+		public static readonly DependencyProperty EpisodesListProperty = DependencyProperty.Register(nameof(EpisodesList), typeof(List<string>), typeof(ChangeGamesNamesDialog));
+		public List<string> EpisodesList
+		{
+			get { return (List<string>)GetValue(EpisodesListProperty); }
+			set { SetValue(EpisodesListProperty, value); }
+		}
+
+		public static readonly DependencyProperty NewEpisodesListProperty = DependencyProperty.Register(nameof(NewEpisodesList), typeof(List<string>), typeof(ChangeGamesNamesDialog));
+		public List<string> NewEpisodesList
+		{
+			get { return (List<string>)GetValue(NewEpisodesListProperty); }
+			set { SetValue(NewEpisodesListProperty, value); }
+		}
+
 		public bool IsChanging { get; private set; } = false;
 
 		private void ChangeGameNameClick(object sender, RoutedEventArgs e)
@@ -76,6 +105,28 @@ namespace DocumentMaker.View.Dialogs
 			{
 				Keyboard.ClearFocus();
 			}
+		}
+
+		private void SourceGameNameComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (e.AddedItems.Count <= 0)
+				EpisodesList = null;
+			else
+				EpisodesList = GameNameList.FirstOrDefault(x => x.Name == e.AddedItems[0].ToString())?.Episodes.ToList();
+
+			if (EpisodesList == null)
+				SelectedEpisode = null;
+		}
+
+		private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (e.AddedItems.Count <= 0)
+				EpisodesList = null;
+			else
+				NewEpisodesList = GameNameList.FirstOrDefault(x => x.Name == e.AddedItems[0].ToString())?.Episodes.ToList();
+
+			if (NewEpisodesList == null)
+				NewEpisode = null;
 		}
 	}
 }
