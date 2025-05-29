@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "DocumentMaker"
-#define MyAppVersion "1.1.2.2"
+#define MyAppVersion "1.1.3.3"
 #define MyAppId "0001"
 #define MyAppPublisher "Five-BN"
 #define MyAppURL "https://five-bn.com/"
@@ -28,7 +28,7 @@ VersionInfoVersion=1.0.0.0
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=Install\{#MyAppName}\Update\{#MyAppVersion}
+OutputDir=Install\{#MyAppName}\{#MyAppVersion}
 OutputBaseFilename=DocumentMakerUpdate
 SetupIconFile=..\DocumentMaker\icon.ico
 Compression=lzma2/ultra64
@@ -55,7 +55,6 @@ Source: "..\DocumentMaker\bin\x64\Release\ProgramSettings.dll"; DestDir: "{app}"
 Source: "..\DocumentMaker\bin\x64\Release\SendException.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\SpecialSymbolReplacer.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\System.ComponentModel.Annotations.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\DocumentMaker\bin\x64\Release\System.Runtime.CompilerServices.Unsafe.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\System.Threading.Tasks.Extensions.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\Telegram.Bot.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\projectnames.xml"; DestDir: "{app}"; Flags: ignoreversion
