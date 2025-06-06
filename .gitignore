@@ -351,3 +351,5 @@ MigrationBackup/
 /Deploy/Install/DocumentMaker/Setup
 /Deploy/Install/DocumentMaker/Update
 /Deploy/Install/ActCreator/Update
+/Deploy/DocumentMaker/Install
+/Deploy/ActCreator/Install

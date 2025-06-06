@@ -28,7 +28,7 @@ VersionInfoVersion=1.0.0.0
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=Install\{#MyAppName}\{#MyAppVersion}
+OutputDir={#MyAppName}\Install\{#MyAppVersion}
 OutputBaseFilename=DocumentMakerUpdate
 SetupIconFile=..\DocumentMaker\icon.ico
 Compression=lzma2/ultra64
@@ -65,7 +65,7 @@ Source: "..\DocumentMaker\bin\x64\Release\UpdaterAPI.dll.config"; DestDir: "{app
 Source: "..\DocumentMaker\bin\x64\Release\WinSCP.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\WinSCPnet.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DocumentMaker\bin\x64\Release\Updater.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "Install\{#MyAppName}\updatetext.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyAppName}\updatetext.txt"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
