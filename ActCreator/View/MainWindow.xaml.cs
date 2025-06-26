@@ -214,16 +214,6 @@ namespace ActCreator
 					{
 						UpdateLog.WriteLine("Подключено", updateLogStringColor);
 						controller.LastTypeConnection = (int)updater.GetLastTypeConnection();
-						UpdateLog.WriteLine("Проверка есть ли обновление API...", updateLogStringColor);
-						if (updater.HaveUpdateApi())
-						{
-							UpdateLog.WriteLine("Скачивание обновления API...", updateLogStringColor);
-							updater.DownloadApiUpdates();
-							UpdateLog.WriteLine("Обновление API скачано", updateLogStringColor);
-							updater.UpdateUpdater();
-							UpdateLog.WriteLine("Updater.exe обновлен", updateLogStringColor);
-						}
-
 						UpdateLog.WriteLine("Загрузка доступных версий на сервере...", updateLogStringColor);
 						updater.LoadRemoteVersions();
 						UpdateLog.WriteLine("Проверка есть ли новые версии для сервере...", updateLogStringColor);
