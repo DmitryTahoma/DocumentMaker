@@ -8,7 +8,7 @@ using System.Windows;
 [assembly: AssemblyTitle("DocumentMaker")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Five-BN")]
 [assembly: AssemblyProduct("DocumentMaker")]
 [assembly: AssemblyCopyright("Copyright ©  2024")]
 [assembly: AssemblyTrademark("")]

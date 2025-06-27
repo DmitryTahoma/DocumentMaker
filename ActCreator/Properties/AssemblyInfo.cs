@@ -8,7 +8,7 @@ using System.Windows;
 [assembly: AssemblyTitle("ActCreator")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Five-BN")]
 [assembly: AssemblyProduct("ActCreator")]
 [assembly: AssemblyCopyright("Copyright ©  2024")]
 [assembly: AssemblyTrademark("")]
