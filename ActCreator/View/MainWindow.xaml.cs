@@ -78,9 +78,6 @@ namespace ActCreator
 				DefaultExt = Dml.Model.Files.BaseDmxFile.Extension,
 				Filter = "Файл акту (*" + Dml.Model.Files.BaseDmxFile.Extension + ")|*" + Dml.Model.Files.BaseDmxFile.Extension
 			};
-
-			updater = new Updater(ProgramSettings.DirectoryPath, (ConnectionType)controller.LastTypeConnection);
-			updater.LoadLocalVersions();
 		}
 
 		public IList<DocumentTemplate> DocumentTemplatesList => controller.DocumentTemplatesList;
@@ -158,6 +155,16 @@ namespace ActCreator
 
 		private async void WindowLoaded(object sender, RoutedEventArgs e)
 		{
+			try
+			{
+				updater = new Updater(ProgramSettings.DirectoryPath, (ConnectionType)controller.LastTypeConnection);
+				updater.LoadLocalVersions();
+			}
+			catch (Exception exception)
+			{
+				UpdateLog.WriteLine(exception.ToString(), "red");
+			}
+
 			try
 			{
 				SetWindowSettingsFromController();
