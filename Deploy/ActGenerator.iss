@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "ActGenerator"
-#define MyAppVersion "0.0.1"
+#define MyAppVersion "1.0.0.1"
 #define MyAppPublisher "Five-BN"
 #define MyAppURL "https://five-bn.com/"
 #define MyAppExeName "ActGenerator.exe"
@@ -16,7 +16,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={autopf}\{#MyAppPublisher}\{#MyAppName}
+DefaultDirName={commonpf64}\{#MyAppPublisher}\{#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=Setup
 OutputBaseFilename=ActGeneratorSetup
@@ -32,21 +32,22 @@ Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
 [Files]
-Source: "..\ActGenerator\bin\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActGenerator\bin\Release\Dml.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActGenerator\bin\Release\DocumentFormat.OpenXml.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActGenerator\bin\Release\DocumentMakerModelLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActGenerator\bin\Release\DocumentMakerThemes.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActGenerator\bin\Release\EntityFramework.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActGenerator\bin\Release\EntityFramework.SqlServer.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActGenerator\bin\Release\MaterialDesignColors.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActGenerator\bin\Release\MaterialDesignThemes.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActGenerator\bin\Release\Microsoft.Xaml.Behaviors.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActGenerator\bin\Release\Mvvm.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActGenerator\bin\Release\ProjectEditorLib.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActGenerator\bin\Release\ProjectsDb.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActGenerator\bin\Release\Security.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\ActGenerator\bin\Release\Dml.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\Dml.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\DocumentFormat.OpenXml.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\DocumentFormat.OpenXml.Framework.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\DocumentMakerModelLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\DocumentMakerThemes.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\EntityFramework.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\EntityFramework.SqlServer.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\MaterialDesignColors.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\MaterialDesignThemes.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\Microsoft.Xaml.Behaviors.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\Mvvm.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\ProjectEditorLib.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\ProjectsDb.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\Security.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ActGenerator\bin\x64\Release\Dml.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Properties\ActGenerator\HumanData.xlsx"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Properties\ActGenerator\session_act_generator.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Properties\ActGenerator\SupportTypes.xlsx"; DestDir: "{app}"; Flags: ignoreversion
